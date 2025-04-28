@@ -129,7 +129,7 @@ const EditWorkInstruction = () => {
               id="imageFile"
               accept="image/*"
               onChange={(e) => handleFileChange(e, 'imageFile')}
-              className="w-full p-3 border rounded-md file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              className="w-full p-3 border rounded-md file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-brand hover:file:bg-blue-100"
             />
           </div>
 
@@ -142,7 +142,7 @@ const EditWorkInstruction = () => {
               id="videoFile"
               accept="video/mp4,video/mkv,video/mpeg4"
               onChange={(e) => handleFileChange(e, 'videoFile')}
-              className="w-full p-3 border rounded-md file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              className="w-full p-3 border rounded-md file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-brand hover:file:bg-blue-100"
             />
             <small className="text-red-700 mt-2 block">
               We support MP4, MKV, MPEG4, etc.
@@ -153,7 +153,7 @@ const EditWorkInstruction = () => {
         {/* Save Button */}
         <button
           onClick={handleSaveInstruction}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg transition-colors"
+          className="bg-brand text-white px-5 py-3 rounded-lg transition-colors"
         >
           Save Updated Work Instruction
         </button>

@@ -5,7 +5,7 @@ const TopPerformer = () => {
   return (
     <div className="  ">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center ">
         <h1 className="text-xl font-semibold">Top Performer</h1>
         <div className="flex items-center px-3 py-1 rounded-lg border gap-2 cursor-pointer">
           <button className="text-sm font-medium">View all</button>
@@ -14,11 +14,11 @@ const TopPerformer = () => {
       </div>
 
       {/* List */}
-      <div className="flex flex-col">
+      <div className="flex flex-col py-4">
         {data.map((item, index) => (
           <div
             key={index}
-            className="flex items-center justify-between gap-4 p-4 hover:bg-gray-100 rounded-lg transition"
+            className="flex items-center justify-between gap-4 p-3 hover:bg-gray-100 rounded-lg transition"
           >
             {/* Avatar */}
             <div className="w-12 h-12">

@@ -7,27 +7,16 @@ import {
 import Layout from "./components/Layout";
 import SignIn from "./auth/SignIn";
 import DashboardDetails from "./pages/dashboard/DasboardDetails";
-import Employees from "./pages/Employee_Information/Employees";
-import AddSuppliers from "./pages/supplier/AddSuppliers";
-import AddEmployees from "./pages/Employee_Information/AddEmployees";
 import SignUp from "./auth/SignUp";
 import ForgetPassowrd from "./auth/ForgetPassword";
 import OTP from "./auth/OTP";
 import ResetPassword from "./auth/ResetPassword";
 
-import EditSuppliers from "./pages/supplier/EditSuppliers";
-import SupplierOrders from "./pages/supplier/SupplierOrders";
-import SupplierInventory from "./pages/supplier/SupplierInventory";
-import SupplierPartList from "./pages/supplier/SupplierPartList";
 
 import CurrentQuality from "./pages/productionLive/CurrentQuality";
 import Settings from "./pages/settings/Settings";
 import StationLogin from "./pages/production_response/StationLogin";
 
-import VacationList from "./pages/Employee_Information/VacationList";
-import VacationApproval from "./pages/Employee_Information/VacationApproval";
-import TimeClockList from "./pages/Employee_Information/TimeClockList";
-import TimeClockUpdate from "./pages/Employee_Information/TimeClockUpdate";
 import WorkInstruction from "./pages/Work_Instrcution.tsx/WorkInstruction";
 import AddWorkInstruction from "./pages/Work_Instrcution.tsx/AddWorkInstruction";
 import EditWorkInstrcution from "./pages/Work_Instrcution.tsx/EditWorkInstruction";
@@ -73,18 +62,7 @@ const App = () => {
             <Route index element={<DashboardDetails />} />
             <Route path="dashboardDetailes" element={<DashboardDetails />} />
 
-            <Route path="/employees" element={<Employees />} />
-            <Route path="vacation-list" element={<VacationList />} />
-            <Route path="vacation-approval" element={<VacationApproval />} />
-            <Route path="time-clock" element={<TimeClockList />} />
-            <Route path="update" element={<TimeClockUpdate />} />
-            <Route path="dashboard/addEmployees" element={<AddEmployees />} />
 
-            <Route path="supplier-list" element={<SupplierPartList />} />
-            <Route path="add-supplier" element={<AddSuppliers />} />
-            <Route path="edit-supplier" element={<EditSuppliers />} />
-            <Route path="supplier-order" element={<SupplierOrders />} />
-            <Route path="supplier-inventory" element={<SupplierInventory />} />
             <Route path="work-instruction" element={<WorkInstruction />} />
             <Route
               path="add-work-instruction"

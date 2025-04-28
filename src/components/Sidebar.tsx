@@ -15,7 +15,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const dashboard = <FontAwesomeIcon icon={faGaugeSimpleHigh} />;
-const supply_chain = <FontAwesomeIcon icon={faUser} />;
 const time_clock = <FontAwesomeIcon icon={faUser} />;
 const production_live = <FontAwesomeIcon icon={faVectorSquare} />;
 const setting = <FontAwesomeIcon icon={faGear} />;
@@ -58,29 +57,7 @@ const sections: Section[] = [
   {
     category: "Daily Activity",
     items: [
-      {
-        key: "Employee Information",
-        label: "Employee Information ",
-        icon: supply_chain,
-        hasSubmenu: true,
-        submenu: [
-          {
-            key: "Employee User Access Setup",
-            label: "Employee User Access Setup",
-            path: "/employees",
-          },
-          {
-            key: "Vacation Request approval",
-            label: "Vacation Request approval",
-            path: "/vacation-list",
-          },
-          {
-            key: "Time Clock approval",
-            label: "Time Clock approval",
-            path: "/time-clock",
-          },
-        ],
-      },
+     
 
       {
         key: "Work Instruction ",
@@ -110,43 +87,7 @@ const sections: Section[] = [
           },
         ],
       },
-      {
-        key: "Supplier",
-        label: "Supplier",
-        icon: supply_chain,
-        hasSubmenu: true,
-        submenu: [
-          {
-            key: "SupplierInformationList",
-            label: "Supplier Information List",
-            path: "/supplier-list",
-            hasSubmenu: true,
-            submenu: [
-              {
-                key: "Supplier List",
-                label: "Supplier List",
-                path: "/add-supplier",
-              },
-              {
-                key: "editSupplier",
-                label: "Add or Edit supplier",
-                path: "/edit-supplier",
-              },
-            ],
-          },
-          {
-            key: "SupplierOrder",
-            label: "Supplier Order",
-            path: "/supplier-order",
-          },
-
-          {
-            key: "SupplierInventory",
-            label: "Supplier inventory",
-            path: "/supplier-inventory",
-          },
-        ],
-      },
+    
 
       {
         key: "Customer Information ",
