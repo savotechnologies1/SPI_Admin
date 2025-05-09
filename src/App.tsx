@@ -36,8 +36,8 @@ import ProductTree from "./pages/product&BOM/ProductTree";
 const App = () => {
   return (
     <PartProvider>
-      <Router>
-        <Routes>
+      <Router basename="/admin">
+        <Routes >
           {/* Routes without the layout */}
           <Route path="sign-in" element={<SignIn />} />
 

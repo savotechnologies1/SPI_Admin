@@ -20,7 +20,7 @@ const EditWorkInstruction = () => {
     if (e.target.files && e.target.files[0]) {
       setFormData(prev => ({ ...prev, [field]: e.target.files![0] }));
     }
-  };
+  };                                               
 
   const handleSaveInstruction = () => {
     console.log("Saved data:", formData);
