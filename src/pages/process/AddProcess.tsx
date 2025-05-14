@@ -1,57 +1,24 @@
 import { FaCircle } from "react-icons/fa";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import delete_img from "../../assets/delete_1.png";
-import { deleteProcess, editProcess, processDetail } from "./https/processApi";
-import { useEffect, useState } from "react";
-interface ProcessData extends ProcessFormData {
-  id: string;
-}
+import { addProcess } from "./https/processApi";
 
-const EditProcess = () => {
+const AddProcess = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
-  } = useForm<ProcessFormData>();
+  } = useForm();
 
-  const { id } = useParams<{ id: string }>();
-  const [processData, setProcessData] = useState([]);
-  const onSubmit = async (data: object) => {
-    // eslint-disable-next-line no-useless-catch
+  const onSubmit =async(data:object) => {
+    console.log("Form Data:", data);
     try {
-      editProcess(data, id).then();
-    } catch (error: unknown) {
-      throw error;
-    }
-  };
-  const fetchProcessDetail = async () => {
-    try {
-      const response = await processDetail(id);
-      const data = response.data;
-      setProcessData(data);
-      reset({
-        processName: data.processName,
-        machineName: data.machineName,
-        cycleTime: data.cycleTime,
-        ratePerHour: data.ratePerHour,
-        orderNeeded: data.orderNeeded,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    fetchProcessDetail();
-  }, [id]);
-  const handleDelete = () => {
-    try {
-      deleteProcess(id).then();
+      addProcess(data).then();
     } catch (error: unknown) {
       console.log("errorerror", error);
     }
   };
+
   return (
     <div className="p-7">
       <div>
@@ -112,6 +79,7 @@ const EditProcess = () => {
               <input
                 {...register("cycleTime", {
                   required: true,
+                 
                 })}
                 type="string"
                 placeholder="Enter your cycle time"
@@ -180,14 +148,9 @@ const EditProcess = () => {
               </button>
             </div>
 
-            <div className="bg-[#FF5630] rounded-full p-2 cursor-pointer">
-              <img
-                className="w-[20px]"
-                src={delete_img}
-                alt="delete"
-                onClick={handleDelete}
-              />
-            </div>
+            {/* <div className="bg-[#FF5630] rounded-full p-2 cursor-pointer">
+              <img className="w-[20px]" src={delete_img} alt="delete" />
+            </div> */}
           </div>
         </div>
       </form>
@@ -195,6 +158,4 @@ const EditProcess = () => {
   );
 };
 
-export default EditProcess;
-
-
+export default AddProcess;

@@ -114,7 +114,6 @@ const OrderStatus = () => {
                   {item.date}
                 </td>
                 <td className="px-4 py-4">
-                  {" "}
                   <span
                     className={`px-3 py-1 rounded-full text-sm ${getStatusClass(
                       item.status

@@ -1,8 +1,9 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import signin from "../assets/signin.png";
 import { useState } from "react";
+import { resetPassword } from "./https/authApi";
 
 const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,11 +15,18 @@ const ResetPassword = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data: unknown) => {
-    console.log("Submitted data:", data);
+  const navigate = useNavigate();
+  const onSubmit = async (data: object) => {
+    try {
+      const response = await resetPassword(data);
+      navigate("/sign-in");
+      console.log("API Response:", response);
+    } catch (error) {
+      console.error("Error during forgetPassword:", error);
+    }
   };
 
-  const password = watch("password");
+  const password = watch("newPassword");
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
@@ -47,7 +55,7 @@ const ResetPassword = () => {
           <h2 className="text-2xl lg:text-3xl font-bold text-center mb-4">
             Reset Password
           </h2>
-          
+
           <p className="text-gray-600 text-center mb-8">
             Enter new password and confirm new password.
           </p>
@@ -61,7 +69,7 @@ const ResetPassword = () => {
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  {...register("password", {
+                  {...register("newPassword", {
                     required: "Password is required",
                     minLength: {
                       value: 6,
@@ -70,7 +78,7 @@ const ResetPassword = () => {
                   })}
                   placeholder="••••••••"
                   className={`w-full p-3 rounded-lg border ${
-                    errors.password ? "border-red-500" : "border-gray-300"
+                    errors.newPassword ? "border-red-500" : "border-gray-300"
                   } focus:outline-none focus:ring-2 focus:ring-[#052C89]`}
                 />
                 <button
@@ -85,9 +93,9 @@ const ResetPassword = () => {
                   )}
                 </button>
               </div>
-              {errors.password && (
+              {errors.newPassword && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.password.message as string}
+                  {errors.newPassword.message as string}
                 </p>
               )}
             </div>
@@ -107,7 +115,9 @@ const ResetPassword = () => {
                   })}
                   placeholder="••••••••"
                   className={`w-full p-3 rounded-lg border ${
-                    errors.confirmPassword ? "border-red-500" : "border-gray-300"
+                    errors.confirmPassword
+                      ? "border-red-500"
+                      : "border-gray-300"
                   } focus:outline-none focus:ring-2 focus:ring-[#052C89]`}
                 />
                 <button

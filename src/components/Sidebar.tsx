@@ -13,6 +13,7 @@ import {
   faUser,
   faVectorSquare,
 } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
 
 const dashboard = <FontAwesomeIcon icon={faGaugeSimpleHigh} />;
 const time_clock = <FontAwesomeIcon icon={faUser} />;
@@ -57,8 +58,6 @@ const sections: Section[] = [
   {
     category: "Daily Activity",
     items: [
-     
-
       {
         key: "Work Instruction ",
         label: "Work Instruction ",
@@ -87,7 +86,6 @@ const sections: Section[] = [
           },
         ],
       },
-    
 
       {
         key: "Customer Information ",
@@ -95,16 +93,21 @@ const sections: Section[] = [
         icon: production_live,
         hasSubmenu: true,
         submenu: [
+           {
+            key: "customer List",
+            label: "customer List",
+            path: "/customer-list",
+          },
           {
             key: "New Customer",
             label: "Create a new Customer",
             path: "/new-customer",
           },
-          {
-            key: "Edit Customer",
-            label: "Edit Customer",
-            path: "/edit-customer",
-          },
+          // {
+          //   key: "Edit Customer",
+          //   label: "Edit Customer",
+          //   path: "/edit-customer",
+          // },
         ],
       },
 
@@ -122,7 +125,7 @@ const sections: Section[] = [
           {
             key: "Enter/Edit new process",
             label: "Enter/Edit new process ",
-            path: "/edit-process",
+            path: "/add-process",
           },
         ],
       },
@@ -177,7 +180,7 @@ const sections: Section[] = [
         key: "Logout",
         label: "Logout",
         icon: logout,
-        path: "/logout",
+        path: "/sign-in",
       },
     ],
   },
@@ -190,6 +193,7 @@ interface SidebarProps {
 
 const Sidebar = ({ activeMenu, clicked }: SidebarProps) => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+  const profile = useSelector((state) => state.profile.data);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -197,6 +201,7 @@ const Sidebar = ({ activeMenu, clicked }: SidebarProps) => {
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
+  console.log("profileprofileprofile9088888888888", profile);
   const handleLogout = () => {
     localStorage.removeItem("loggedIn"); // Clear the loggedIn flag from localStorage
     navigate("/sign-in"); // Redirect to the sign-in page
@@ -252,12 +257,11 @@ const Sidebar = ({ activeMenu, clicked }: SidebarProps) => {
                               toggleSubmenu(item.key);
                             }
                           }}
-                          className={`flex items-center justify-between w-full p-2 
-                rounded-md transition text-[#061D22] text-[16px]  ${
-                  location.pathname === item.path
-                    ? "bg-brand text-white"
-                    : "hover:bg-gray-100 "
-                }`}
+                          className={`flex items-center justify-between w-full p-2 rounded-md transition text-[#061D22] text-[16px]  ${
+                            location.pathname === item.path
+                              ? "bg-brand text-white"
+                              : "hover:bg-gray-100 "
+                          }`}
                         >
                           <div className="flex items-center space-x-3">
                             <p>{item.icon}</p>
@@ -327,6 +331,7 @@ const Sidebar = ({ activeMenu, clicked }: SidebarProps) => {
                                       <IoIosArrowForward
                                         color="#637381"
                                         className={
+                                          // eslint-disable-next-line no-constant-condition
                                           `${
                                             activeMenu
                                               ? "inline"

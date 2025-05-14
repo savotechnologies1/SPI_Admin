@@ -4,7 +4,9 @@ import setting from "../assets/settings_icon.png";
 import password from "../assets/password_icon'.png";
 import visible from "../assets/visible_icon.png";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { loginApi } from "./https/authApi";
+import { toast } from "react-toastify";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,20 +23,18 @@ const SignIn = () => {
   } = useForm<FormData>();
 
   interface FormData {
-    name: string;
+    userName: string;
     password: string;
   }
 
-  const onSubmit = (data: FormData) => {
-    // Dummy login
-    console.log("Submitted data:", data);
-    const { name, password } = data;
-    if (name === "admin123" && password === "admin123") {
-      localStorage.setItem("loggedIn", "true");
-
-      navigate("/");
-    } else {
-      alert("Invalid email or password");
+  const onSubmit = async (data: FormData) => {
+    try {
+      const response = await loginApi(data);
+      console.log("responseresponse", response);
+      toast.success(response.message);
+      // navigate("/");
+    } catch (error: unknown) {
+      toast.error(error.response.message);
     }
   };
 
@@ -53,12 +53,12 @@ const SignIn = () => {
             <label className="block font-semibold">Name</label>
             <input
               type="text"
-              {...register("name", { required: "Name is required" })}
-              placeholder="Enter your name"
+              {...register("userName", { required: "Name is required" })}
+              placeholder="Enter your userName"
               className="w-full border p-2 rounded"
             />
-            {errors.name && (
-              <p className="text-red-500">{errors.name.message}</p>
+            {errors.userName && (
+              <p className="text-red-500">{errors.userName.message}</p>
             )}
           </div>
 
@@ -82,7 +82,12 @@ const SignIn = () => {
               <p className="text-red-500">{String(errors.password.message)}</p>
             )}
           </div>
-
+          <Link
+            to="/forget-password"
+            className="text-red-700 text-sm flex justify-end mb-5"
+          >
+            Forget Password
+          </Link>
           <button
             type="submit"
             className="w-full bg-brand text-white p-3 rounded"

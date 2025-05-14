@@ -4,10 +4,11 @@ import cross from "../assets/cross.png";
 import home from "../assets/home.png";
 import { Link } from "react-router-dom";
 import upgrade from "../assets/upgrade.png";
+import { useSelector } from "react-redux";
 
 const Account = () => {
   const [isOpen, setIsOpen] = useState(true);
-
+  const profile = useSelector((state) => state.profile.data);
   const section = [
     {
       key: "Home",
@@ -40,15 +41,19 @@ const Account = () => {
       path: "dashboard/suppliers",
     },
   ];
+  console.log(
+    "profileprofileprofileprofileprofileprofile333333333",
+    profile.profileImg
+  );
 
   return (
     <div>
       <div className="fixed overflow-y-auto right-0 top-0 z-20 w-[320px] h-full bg-white shadow-lg">
         <div className="p-4">
           <div>
-            <img 
-              src={cross} 
-              alt="Close sidebar" 
+            <img
+              src={cross}
+              alt="Close sidebar"
               onClick={() => setIsOpen(!isOpen)}
               className="cursor-pointer"
             />
@@ -56,17 +61,23 @@ const Account = () => {
           <div className="flex flex-col items-center pt-6">
             <div>
               <img
-                src={img}
-                alt="User Avatar"
+                src={
+                  profile.profileImg
+                    ? `http://localhost:8080/uploads/profileImg/${profile.profileImg}`
+                    : img
+                }
+                alt="Close sidebar"
+                onClick={() => setIsOpen(!isOpen)}
                 className="rounded-full w-[90px] border-2 border-green-400 mb-2"
               />
+              {/* <img src={img} alt="User Avatar" /> */}
             </div>
             <div className="ml-3">
-              <p className="font-semibold">Hudson Alvarez</p>
-              <p className="text-sm text-gray-500">demo@minimals.cc</p>
+              <p className="font-semibold text-center">{profile.name}</p>
+              <p className="text-sm text-gray-500">{profile.email}</p>
             </div>
           </div>
-          
+
           {/* Menu Items */}
           <div className="flex flex-col justify-between">
             <div>
@@ -104,11 +115,15 @@ const Account = () => {
                 </button>
               </div>
               <div className="absolute right-0 bottom-0 py-4 px-4">
-                <img className="w-28" src={upgrade} alt="Upgrade illustration" />
+                <img
+                  className="w-28"
+                  src={upgrade}
+                  alt="Upgrade illustration"
+                />
               </div>
             </div>
           </div>
-          
+
           <button className="mt-4 w-full bg-[#FF563014] text-[#B71D18] py-2 rounded-lg font-semibold text-lg">
             Logout
           </button>

@@ -1,27 +1,91 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaCircle } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
+import { deleteProfile, getProfile, updateProfile } from "./https/profileApi";
 
 const Settings = () => {
   const [photo, setPhoto] = useState<string | null>(null);
+  const [profileImg,setProfileImg]=useState<string | null>(null);
+  const [isFile ,setIsFile] =useState<string | boolean>(false);
+const handlePhotoChange = (e: any) => {
+  if(isFile === false){
+    setIsFile(true)
+    console.log("is file chamge")
 
-  const handlePhotoChange = (e:any) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPhoto(URL.createObjectURL(file));
-    }
-  };
-  const form1 = useForm(); // For Account form
+  }
+  else{
+     setIsFile(false)
+  }
+  const file = e.target.files[0];
+  if (file) {
+    setProfileImg(file); // <-- Set actual file if uploaded
+    setPhoto(URL.createObjectURL(file)); // For preview
+  }
+};
+
+  const form1 = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      phoneNumber: "",
+      address: "",
+      country: "",
+      city: "",
+      state: "",
+      zipcode: "",
+      about: "",
+    },
+  });
+  const { reset } = form1;
   const form2 = useForm(); // For Language/Currency form
-
-  const onSubmit = (data: any) => {
-    console.log(data);
+console.log('899999999',isFile)
+  const onSubmit = async (data: any) => {
+    console.log("999000000000000000000", data);
+    const response = await updateProfile(data,profileImg,isFile);
+    console.log("dsffffffffffffffffff", response);
   };
   const onSubmit1 = (data: any) => {
     console.log(data);
   };
 
+  //   useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     const data = await getProfile();
+  //     console.log('datadata',data)
+  //     reset(data.data);
+  //     if (data.photo) setPhoto(data.photo);
+  //   };
+  //   fetchUserData();
+  // }, [reset]);
+
+
+useEffect(() => {
+  const fetchUserData = async () => {
+    const data = await getProfile();
+    console.log('datadata', data);
+    reset(data.data);
+
+    if (data.data?.profileImg) {
+      const imageUrl = `http://localhost:8080/uploads/profileImg/${data.data.profileImg}`;
+      setPhoto(imageUrl);
+      setProfileImg(data.data.profileImg); // <-- Store filename for update
+    }
+  };
+  fetchUserData();
+}, [reset]);
+
+
+const deletProfileApi = async()=>{
+  // eslint-disable-next-line no-useless-catch
+  try {
+    deleteProfile().then()
+  } catch (error) {
+    throw error
+    
+  }
+}
+  console.log('photphotophotophotophotophotoo',photo)
   return (
     <div className="p-8  min-h-screen">
       <div className=" mx-auto  p-">
@@ -30,7 +94,7 @@ const Settings = () => {
           <div className="flex gap-2 items-center ">
             <p
               className={`text-[14px] text-black`}
-              onClick={() => ("dashboardDetailes")}
+              onClick={() => "dashboardDetailes"}
             >
               <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
             </p>
@@ -54,7 +118,7 @@ const Settings = () => {
                     className="w-full h-full object-cover rounded-full transition-opacity duration-300 "
                   />
                 ) : (
-                  <div className="w-full h-full bg-gray-200 rounded-full flex items-center justify-center text-gray-400 group-hover:opacity-40 transition-opacity duration-300">
+                  <div className="w-full h-full bg-gray-200 rounded-fu-ll flex items-center justify-center text-gray-400 group-hover:opacity-40 transition-opacity duration-300">
                     Update Photo
                   </div>
                 )}
@@ -85,7 +149,7 @@ const Settings = () => {
                 </label>
               </div>
 
-              <button className="bg-[#FF563014] text-[#B71D18] px-4 py-2 mt-4 rounded-md font-semibold">
+              <button className="bg-[#FF563014] text-[#B71D18] px-4 py-2 mt-4 rounded-md font-semibold" onClick={deletProfileApi}>
                 Delete user
               </button>
             </div>
@@ -121,13 +185,13 @@ const Settings = () => {
                 />
               </div>
 
-              <div  className="col-span-2 md:col-span-1">
+              <div className="col-span-2 md:col-span-1">
                 <label className="text-sm font-medium text-[#637381]">
                   Phone Number
                 </label>
                 <input
                   type="text"
-                  {...form1.register("phone")}
+                  {...form1.register("phoneNumber")}
                   placeholder="365-374-4961"
                   className="w-full border px-4 py-2 rounded-md "
                 />
@@ -189,7 +253,7 @@ const Settings = () => {
                 </label>
                 <input
                   type="text"
-                  {...form1.register("zip")}
+                  {...form1.register("zipcode")}
                   placeholder="Zip code"
                   className="w-full border px-4 py-2 rounded-md "
                 />
@@ -206,7 +270,7 @@ const Settings = () => {
 
               <div className="col-span-2 flex justify-end">
                 <button
-                onClick={form1.handleSubmit(onSubmit)}
+                  onClick={form1.handleSubmit(onSubmit)}
                   type="submit"
                   className="bg-brand text-white px-6 py-2 rounded-sm"
                 >
@@ -221,8 +285,8 @@ const Settings = () => {
           <div className=" bg-white p-6 rounded-lg shadow-md">
             <form
               onSubmit={form2.handleSubmit(onSubmit1)}
-            
-            className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              className="grid grid-cols-1 md:grid-cols-4 gap-6"
+            >
               {/* Language */}
               <div className="col-span-4 md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -239,7 +303,7 @@ const Settings = () => {
               </div>
 
               {/* Currency */}
-              <div className= "col-span-4 md:col-span-2">
+              <div className="col-span-4 md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   CURRENCY
                 </label>
@@ -299,7 +363,10 @@ const Settings = () => {
                     {...form2.register("autoApproval")}
                     className="h-4 w-4 text-brand focus:ring-blue-500 border-gray-300 rounded"
                   />
-                  <label htmlFor="autoApproval" className="ml-2 block text-xs md:text-sm ">
+                  <label
+                    htmlFor="autoApproval"
+                    className="ml-2 block text-xs md:text-sm "
+                  >
                     Auto approve all process/orders when received (uncheck to
                     manually edit)
                   </label>
@@ -319,7 +386,7 @@ const Settings = () => {
               {/* Save Settings Button */}
               <div className=" flex md:justify-end col-span-4 md:col-span-2">
                 <button
-                onClick={form2.handleSubmit(onSubmit1)}
+                  onClick={form2.handleSubmit(onSubmit1)}
                   type="submit"
                   className="bg-brand text-white px-3  md:px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm md:text-base"
                 >

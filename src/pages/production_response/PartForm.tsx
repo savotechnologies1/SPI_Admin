@@ -29,7 +29,7 @@ const PartForm = () => {
     handleSubmit,
   } = useForm();
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: object) => {
     console.log("Form Data:", data);
   };
 

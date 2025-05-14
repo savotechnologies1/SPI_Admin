@@ -23,7 +23,6 @@ const EditWorkInstruction = () => {
   };                                               
 
   const handleSaveInstruction = () => {
-    console.log("Saved data:", formData);
     // Add your save logic here
   };
 

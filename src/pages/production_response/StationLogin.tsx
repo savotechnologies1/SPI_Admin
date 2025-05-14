@@ -9,7 +9,6 @@ const StationLogin = () => {
 
   const onSubmit = (data: any) => {
     console.log(data);
-    alert("Form submitted!");
   };
 
   const navigate = useNavigate();

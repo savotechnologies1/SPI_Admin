@@ -1,7 +1,31 @@
+import { useForm } from "react-hook-form";
 import { FaCircle } from "react-icons/fa";
-import { Link, NavLink } from "react-router-dom";
+import {  NavLink } from "react-router-dom";
+import { addCustomer } from "./https/customersApi";
 
 const NewCustomer = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = async (data: object) => {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      addCustomer(data).then();
+    } catch (error: unknown) {
+      throw error;
+    }
+  };
+  // const onSubmit = async (data: object) => {
+  //   console.log("Form Data:", data);
+  //   // try {
+  //   //   const response = await addProcess(data);
+  //   //   console.log("responseresponse", response);
+  //   // } catch (error: unknown) {
+  //   //   console.log("errorerror", error);
+  //   // }
+  // };
   return (
     <div className="p-4 md:p-7">
       <div>
@@ -14,7 +38,7 @@ const NewCustomer = () => {
         <div className="flex gap-4 items-center ">
           <p
             className={`text-xs sm:text-[16px] text-black`}
-            onClick={() => ("dashboardDetailes")}
+            onClick={() => "dashboardDetailes"}
           >
             <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
           </p>
@@ -22,7 +46,7 @@ const NewCustomer = () => {
             <FaCircle className="text-[6px] text-gray-500" />
           </span>
           <span className="text-xs sm:text-[16px] hover:cursor-pointer">
-            Suppliers
+            Customers
           </span>
           <span>
             <FaCircle className="text-[6px] text-gray-500" />
@@ -32,62 +56,86 @@ const NewCustomer = () => {
           </span>
         </div>
       </div>
-      <div className="mt-4 bg-white p-2 md:p-6 w-full rounded-2xl  xl:w-2/3">
-        <label className="font-semibold" htmlFor="">
-          Suppliers Name
-        </label>
-        <div className="flex flex-col sm:flex-row gap-4 mt-2 mb-6">
-          <div className="sm:w-1/2">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="mt-4 bg-white p-2 md:p-6 w-full rounded-2xl  xl:w-2/3">
+          <label className="font-semibold" htmlFor="">
+            Customer Name
+          </label>
+          <div className="flex flex-col sm:flex-row gap-4 mt-2 mb-6">
+            <div className="sm:w-1/2">
+              <input
+                type="text"
+                {...register("firstName", { required: true })}
+                placeholder="First Name"
+                className="border py-4 px-4 rounded-md w-full"
+              />
+              {errors.firstName && (
+                <p className="text-red-500 text-sm">This field is required .</p>
+              )}
+            </div>
+            <div className="sm:w-1/2">
+              <input
+                type="text"
+                {...register("lastName", { required: true })}
+                placeholder="Last Name"
+                className="border py-4 px-4 rounded-md w-full"
+              />
+              
+              {errors.lastName && (
+                <p className="text-red-500 text-sm">This field is required .</p>
+              )}
+            </div>
+          </div>
+          <label className="font-semibold " htmlFor="">
+            Customer Email
+          </label>
+          <div className="mt-2 w-full mb-6">
             <input
               type="text"
-              placeholder="First Name"
-              className="border py-4 px-4 rounded-md w-full"
+              {...register("email", { required: true })}
+              placeholder="Email address"
+              className="border py-4 px-4 rounded-md w-full "
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm">This field is required</p>
+            )}
           </div>
-          <div className="sm:w-1/2">
+          <label className="font-semibold " htmlFor="">
+            Address
+          </label>
+          <div className="mt-2 w-full mb-6">
             <input
               type="text"
-              placeholder="Last Name"
-              className="border py-4 px-4 rounded-md w-full"
+              {...register("address", { required: true })}
+              placeholder="Address"
+              className="border py-4 px-4 rounded-md w-full "
             />
+            {errors.address && (
+              <p className="text-red-500 text-sm">This field is required</p>
+            )}
+          </div>
+          <label className="font-semibold " htmlFor="">
+            Billing Terms (In Days) <span className="text-red-700">*</span>
+          </label>
+          <div className="mt-2 w-full">
+            <input
+              type="text"
+              {...register("billingTerms", { required: true })}
+              placeholder="Billing Terms"
+              className="border py-4 px-4 rounded-md w-full "
+            />
+            {errors.billingTerms && (
+              <p className="text-red-500 text-sm">This field is required</p>
+            )}
+          </div>
+          <div className="mt-6 text-end">
+            <button className="bg-brand text-white px-5 py-3 rounded-lg ">
+              Create Customer
+              {/* </Link> */}
+            </button>
           </div>
         </div>
-        <label className="font-semibold " htmlFor="">
-          Suppliers Email
-        </label>
-        <div className="mt-2 w-full mb-6">
-          <input
-            type="text"
-            placeholder="Email address"
-            className="border py-4 px-4 rounded-md w-full "
-          />
-        </div>
-        <label className="font-semibold " htmlFor="">
-          Address
-        </label>
-        <div className="mt-2 w-full mb-6">
-          <input
-            type="text"
-            placeholder="Address"
-            className="border py-4 px-4 rounded-md w-full "
-          />
-        </div>
-        <label className="font-semibold " htmlFor="">
-          Billing Terms (In Days) <span className="text-red-700">*</span>
-        </label>
-        <div className="mt-2 w-full">
-          <input
-            type="text"
-            placeholder="Billing Terms"
-            className="border py-4 px-4 rounded-md w-full "
-          />
-        </div>
-        <div className="mt-6 text-end">
-          <button className="bg-brand text-white px-5 py-3 rounded-lg ">
-            <Link to={"/customer-list"}>Create Customer</Link>
-          </button>
-        </div>
-      </div>
+      </form>
     </div>
   );
 };

@@ -16,7 +16,6 @@ const ApplyWorkInstruction = () => {
   };
 
   const handleSubmit = () => {
-    console.log("Form Data:", formData);
     // Add your submission logic here
   };
 

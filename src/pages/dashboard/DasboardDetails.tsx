@@ -15,9 +15,32 @@ import NewEmployees from "./NewEmployees";
 import OrderStatus from "./OrderStatus";
 import TopPerformer from "./TopPerformer";
 import ProcessTable from "./Process";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProfile } from "../../redux/profileSlice";
 
 const DasboardDetails = () => {
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [profileData,setProfileData] =useState([])
+  const [profileImg,setProfileImg]=useState<string | null>(null);
+const dispatch = useDispatch();
+  const profile = useSelector(state => state.profile.data);
+  const status = useSelector(state => state.profile.status);
 
+  console.log('profileprofileprofileprofileprofile',profile)
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (profile?.profileImg) {
+      const imageUrl = `http://localhost:8080/uploads/profileImg/${profile.profileImg}`;
+      setPhoto(imageUrl);
+      setProfileImg(profile.profileImg); // filename
+    }
+  }, [profile]);
+
+console.log('profileImgprofileImgprofileImg',profileData)
   return (
     <div className="p-4">
       <h1 className="text-xl font-semibold">Welcome back, Admin👋</h1>
@@ -33,7 +56,7 @@ const DasboardDetails = () => {
             overlay21={overlay31}
           />
           <Card
-            title=" Total Supplier"
+            title="Total Supplier"
             value="320+"
             img={icon2}
             bgColor="bg-red-50"

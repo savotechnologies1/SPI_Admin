@@ -84,7 +84,6 @@ const CurrentStatus = () => {
       <div className="flex justify-between gap-4 flex-col md:flex-row">
         <div className="flex flex-col justify-between">
           <h1 className="text-2xl font-bold ">
-            {" "}
             Current status of Each process
           </h1>
           <h1 className="font-semibold text-base">Deep Dive</h1>
@@ -94,9 +93,7 @@ const CurrentStatus = () => {
           <div className="flex flex-col md:flex-row  mt-2 gap-4  ">
             {data_1.map((item) => (
               <div className="flex justify-between items-center bg-white  rounded-md  w-36">
-                {" "}
                 <div className="p-2">
-                  {" "}
                   <p className="font-bold text-2xl">{item.num}</p>
                   <p>{item.text}</p>
                 </div>
