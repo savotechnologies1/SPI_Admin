@@ -32,7 +32,7 @@ const SignIn = () => {
       const response = await loginApi(data);
       console.log("responseresponse", response);
       toast.success(response.message);
-      // navigate("/");
+      navigate("/");
     } catch (error: unknown) {
       toast.error(error.response.message);
     }
@@ -50,7 +50,7 @@ const SignIn = () => {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
-            <label className="block font-semibold">Name</label>
+            <label className="block font-semibold">Username</label>
             <input
               type="text"
               {...register("userName", { required: "Name is required" })}
