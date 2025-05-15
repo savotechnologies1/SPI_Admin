@@ -79,11 +79,18 @@ const sections: Section[] = [
             label: "Edit work Instruction",
             path: "/edit-work-instruction",
           },
-          {
-            key: "Apply work instruction to diffrent product/process",
-            label: " Apply work instruction to diffrent product/process ",
-            path: "/apply-work-instruction",
+           {
+            key: "All work Instruction",
+            label: "All work Instruction",
+            path: "work-instructions-list",
           },
+          
+          
+          // {
+          //   key: "Apply work instruction to diffrent product/process",
+          //   label: " Apply work instruction to diffrent product/process ",
+          //   path: "/apply-work-instruction",
+          // },
         ],
       },
 

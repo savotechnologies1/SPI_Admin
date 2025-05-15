@@ -32,6 +32,7 @@ import ProductTree from "./pages/product&BOM/ProductTree";
   import { ToastContainer } from 'react-toastify';
 import AddProcess from "./pages/process/AddProcess";
 import CustomerList from "./pages/customerInfo/CustomerList";
+import WorkInstructionList from "./pages/Work_Instrcution.tsx/WorkInstructionList";
 const App = () => {
   return (
     <PartProvider>
@@ -77,6 +78,11 @@ const App = () => {
               path="apply-work-instruction"
               element={<ApplyWorkInstruction />}
             />
+            <Route
+              path="work-instructions-list"
+              element={<WorkInstructionList/>}
+            />
+            
 
             <Route path="new-customer" element={<NewCustomer />} />
             <Route path="edit-customer/:id" element={<EditCustomer />} />

@@ -1,14 +1,27 @@
 import { useEffect, useState } from "react";
 import { FaCircle } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
-import { workInstructionApi } from "./https/workInstructionApi";
+import { addWork, workInstructionApi } from "./https/workInstructionApi";
 
 const WorkInstruction = () => {
   const [selectedProcess, setSelectedProcess] = useState("");
   const [selectedProduct, setSelectedProduct] = useState("");
 
-  const handleAddInstruction = () => {
+  console.log('099999999999999999',{
+    process:selectedProcess,
+      product:selectedProduct
+  })
+  const handleAddInstruction = async() => {
+   // eslint-disable-next-line no-useless-catch
+   try {
+    const response = await addWork({
+      process:selectedProcess,
+      product:selectedProduct
+    })
    
+   } catch (error) {
+    throw error
+   }
   };
   const [processData, setProcessData] = useState([]);
   const workProcess = async () => {
