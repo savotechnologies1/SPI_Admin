@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { FaCircle } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { deleteProfile, getProfile, updateProfile } from "./https/profileApi";
+import { BASE_URL } from "../../utils/axiosInstance";
 
 const Settings = () => {
   const [photo, setPhoto] = useState<string | null>(null);
@@ -53,7 +54,7 @@ useEffect(() => {
     reset(data.data);
 
     if (data.data?.profileImg) {
-      const imageUrl = `http://localhost:8080/uploads/profileImg/${data.data.profileImg}`;
+      const imageUrl = `${BASE_URL}/uploads/profileImg/${data.data.profileImg}`;
       setPhoto(imageUrl);
       setProfileImg(data.data.profileImg); // <-- Store filename for update
     }

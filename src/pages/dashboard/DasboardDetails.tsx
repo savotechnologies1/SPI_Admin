@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProfile } from "../../redux/profileSlice";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { BASE_URL } from "../../utils/axiosInstance";
 
 const DasboardDetails = () => {
   const [photo, setPhoto] = useState<string | null>(null);
@@ -37,9 +38,9 @@ const DasboardDetails = () => {
 
   useEffect(() => {
     if (profile?.profileImg) {
-      const imageUrl = `http://localhost:8080/uploads/profileImg/${profile.profileImg}`;
+      const imageUrl = `${BASE_URL}/uploads/profileImg/${profile.profileImg}`;
       setPhoto(imageUrl);
-      setProfileImg(profile.profileImg); // filename
+      setProfileImg(profile.profileImg); 
     }
   }, [profile]);
 
@@ -53,7 +54,7 @@ const DasboardDetails = () => {
 
       try {
         const res = await axios.get(
-          "http://localhost:8080/api/admin/check-token",
+          `${BASE_URL}/api/admin/check-token`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -62,12 +63,7 @@ const DasboardDetails = () => {
         );
 
         if (res.data.message === "Token is valid") {
-          const userData = res.data.user;
-          setUser(userData);
-
-          if (userData.profileImage) {
-            setProfileImg(userData.profileImage);
-          }
+          setUser(res.data.user);
         } else {
           navigate("/sign-in");
         }
@@ -79,7 +75,6 @@ const DasboardDetails = () => {
 
     validateToken();
   }, [navigate]);
-
   console.log("profileImgprofileImgprofileImg", profileData);
   return (
     <div className="p-4">

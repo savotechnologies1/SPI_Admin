@@ -89,7 +89,6 @@ export const workInstructionDetail = async (id:string) => {
 export const deleteWorkInstruction = async (id: string) => {
   try {
     const response = await axiosInstance.put(`/delete-work-instruction/${id}`);
-    console.log("response222", response);
     if (response.status === 200) {
       toast.success(response.data.message);
     }

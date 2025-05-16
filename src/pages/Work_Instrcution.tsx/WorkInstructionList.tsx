@@ -5,11 +5,10 @@ import search_2 from "../../assets/search_2.png";
 import more from "../../assets/more.png";
 import edit from "../../assets/edit_icon.png";
 import add from "../../assets/add.png";
-
-import data from "../../components/Data/employeeData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { deleteWorkInstruction, workInstructionList } from "./https/workInstructionApi";
+import { BASE_URL } from "../../utils/axiosInstance";
 
 interface CustomerItem {
   id: string;
@@ -17,6 +16,7 @@ interface CustomerItem {
   part: string;
   stepNumber: number;
   workInstruction: string;
+  workInstructionImg:string;
   createdAt: string;
 }
 
@@ -190,7 +190,7 @@ const WorkInstructionList = () => {
                       <div className="flex items-center">
                         <div className="h-8 w-8 md:h-10 md:w-10 rounded-md bg-gray-300 mr-2 md:mr-4 overflow-hidden">
                           <img
-                            src={`http://localhost:8080/uploads/workInstructionImg/${item.workInstructionImg}`}
+                            src={`${BASE_URL}/uploads/workInstructionImg/${item.workInstructionImg}`}
                             alt=""
                             className="w-full h-full object-cover"
                           />
@@ -199,7 +199,7 @@ const WorkInstructionList = () => {
                         </div>
                         <div>
                           <p className="text-xs md:text-sm lg:text-base font-medium">
-                            {item.firstName} {item.lastName}
+                            {/* {item.firstName} {item.lastName} */}
                           </p>
                           {/* <p className="text-xs text-gray-400 truncate max-w-[100px] md:max-w-none">
                             {item.process}
