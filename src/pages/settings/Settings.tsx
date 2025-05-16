@@ -11,7 +11,6 @@ const Settings = () => {
 const handlePhotoChange = (e: any) => {
   if(isFile === false){
     setIsFile(true)
-    console.log("is file chamge")
 
   }
   else{
@@ -38,32 +37,19 @@ const handlePhotoChange = (e: any) => {
     },
   });
   const { reset } = form1;
-  const form2 = useForm(); // For Language/Currency form
-console.log('899999999',isFile)
+  const form2 = useForm(); 
   const onSubmit = async (data: any) => {
-    console.log("999000000000000000000", data);
     const response = await updateProfile(data,profileImg,isFile);
-    console.log("dsffffffffffffffffff", response);
   };
   const onSubmit1 = (data: any) => {
     console.log(data);
   };
 
-  //   useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     const data = await getProfile();
-  //     console.log('datadata',data)
-  //     reset(data.data);
-  //     if (data.photo) setPhoto(data.photo);
-  //   };
-  //   fetchUserData();
-  // }, [reset]);
 
 
 useEffect(() => {
   const fetchUserData = async () => {
     const data = await getProfile();
-    console.log('datadata', data);
     reset(data.data);
 
     if (data.data?.profileImg) {
@@ -85,7 +71,6 @@ const deletProfileApi = async()=>{
     
   }
 }
-  console.log('photphotophotophotophotophotoo',photo)
   return (
     <div className="p-8  min-h-screen">
       <div className=" mx-auto  p-">

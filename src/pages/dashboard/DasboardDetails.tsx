@@ -16,18 +16,21 @@ import OrderStatus from "./OrderStatus";
 import TopPerformer from "./TopPerformer";
 import ProcessTable from "./Process";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import { fetchProfile } from "../../redux/profileSlice";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const DasboardDetails = () => {
   const [photo, setPhoto] = useState<string | null>(null);
-  const [profileData,setProfileData] =useState([])
-  const [profileImg,setProfileImg]=useState<string | null>(null);
-const dispatch = useDispatch();
-  const profile = useSelector(state => state.profile.data);
-  const status = useSelector(state => state.profile.status);
-
-  console.log('profileprofileprofileprofileprofile',profile)
+  const [profileData, setProfileData] = useState([]);
+  const [profileImg, setProfileImg] = useState<string | null>(null);
+  const [user, setUser] = useState(null);
+  const dispatch = useDispatch();
+  const profile = useSelector((state) => state.profile.data);
+  const status = useSelector((state) => state.profile.status);
+  const navigate = useNavigate();
+  console.log("profileprofileprofileprofileprofile", profile);
   useEffect(() => {
     dispatch(fetchProfile());
   }, [dispatch]);
@@ -40,7 +43,44 @@ const dispatch = useDispatch();
     }
   }, [profile]);
 
-console.log('profileImgprofileImgprofileImg',profileData)
+  useEffect(() => {
+    const validateToken = async () => {
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        navigate("/sign-in");
+        return;
+      }
+
+      try {
+        const res = await axios.get(
+          "http://localhost:8080/api/admin/check-token",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (res.data.message === "Token is valid") {
+          const userData = res.data.user;
+          setUser(userData);
+
+          if (userData.profileImage) {
+            setProfileImg(userData.profileImage);
+          }
+        } else {
+          navigate("/sign-in");
+        }
+      } catch (error) {
+        console.error("Token validation failed:", error);
+        navigate("/sign-in");
+      }
+    };
+
+    validateToken();
+  }, [navigate]);
+
+  console.log("profileImgprofileImgprofileImg", profileData);
   return (
     <div className="p-4">
       <h1 className="text-xl font-semibold">Welcome back, Admin👋</h1>

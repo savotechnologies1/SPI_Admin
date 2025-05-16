@@ -62,7 +62,7 @@ const Chart = () => {
     plugins: {
         tooltip: {
             callbacks: {
-                label: (context: { raw: any; }) => `${context.raw}`,
+                label: (context: { raw: unknown; }) => `${context.raw}`,
             },
         },
 
@@ -77,7 +77,7 @@ const Chart = () => {
             max: 100,
             ticks: {
                 stepSize: 20,
-                callback: (value: any) => `${value}%`,
+                callback: (value: unknown) => `${value}%`,
             },
         },
         // x: {

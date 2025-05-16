@@ -5,8 +5,6 @@ import search_2 from "../../assets/search_2.png";
 import more from "../../assets/more.png";
 import edit from "../../assets/edit_icon.png";
 import add from "../../assets/add.png";
-
-import data from "../../components/Data/employeeData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { customerList } from "./https/customersApi";
@@ -36,8 +34,6 @@ const CustomerList = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const visibleRows = data.slice(startIndex, startIndex + rowsPerPage);
 
   const fetchCustomerList = async (page = 1) => {
     // eslint-disable-next-line no-useless-catch

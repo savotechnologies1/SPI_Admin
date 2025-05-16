@@ -9,7 +9,7 @@ import add from "../../assets/add.png";
 import data from "../../components/Data/employeeData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { workInstructionList } from "./https/workInstructionApi";
+import { deleteWorkInstruction, workInstructionList } from "./https/workInstructionApi";
 
 interface CustomerItem {
   id: string;
@@ -21,12 +21,14 @@ interface CustomerItem {
 }
 
 const WorkInstructionList = () => {
-  const [workInstructionData, setWorkInstructionData] = useState<CustomerItem[]>([]);
+  const [workInstructionData, setWorkInstructionData] = useState<
+    CustomerItem[]
+  >([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
@@ -34,7 +36,6 @@ const WorkInstructionList = () => {
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
-
 
   const fetchCustomerList = async (page = 1) => {
     // eslint-disable-next-line no-useless-catch
@@ -51,11 +52,23 @@ const WorkInstructionList = () => {
     fetchCustomerList(currentPage);
   }, [currentPage]);
 
-    const editCustomer= (id: string) => {
-    navigate(`/edit-customer/${id}`);
+  const editCustomer = (id: string) => {
+    navigate(`/edit-work-instruction/${id}`);
   };
+  const [openOptionsIndex, setOpenOptionsIndex] = useState<number | null>(null);
+  const toggleOptions = (index: number) => {
+    setOpenOptionsIndex((prevIndex) => (prevIndex === index ? null : index));
+  };
+  const handleDelete = (id: string) => {
+      // eslint-disable-next-line no-useless-catch
+      try {
+        deleteWorkInstruction(id).then();
+        fetchCustomerList();
+      } catch (error: unknown) {
+        throw error;
+      }
+    };
 
-  console.log("workInstructionDataworkInstructionData", workInstructionData);
   return (
     <div className="p-4 md:p-7">
       <div>
@@ -91,7 +104,6 @@ const WorkInstructionList = () => {
           <span className="text-sm md:text-base hover:cursor-pointer">
             Work Instructions List
           </span>
-        
         </div>
 
         <div className="rounded-md mt-4">
@@ -130,10 +142,6 @@ const WorkInstructionList = () => {
                     />
                   </div>
                 </div>
-
-                <div className="hidden sm:block">
-                  <img src={more} alt="" className="w-5 h-5" />
-                </div>
               </div>
             </div>
           </div>
@@ -158,14 +166,12 @@ const WorkInstructionList = () => {
                     Steps Numbers
                   </th>
                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
-                   Work Instruction Description
+                    Work Instruction Description
                   </th>
                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
-                   Submit Date
+                    Submit Date
                   </th>
-                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
-                  
-                  </th>
+                  <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium"></th>
                 </tr>
               </thead>
               <tbody>
@@ -182,12 +188,12 @@ const WorkInstructionList = () => {
                     </td>
                     <td className="px-2 py-3 md:px-3 md:py-4">
                       <div className="flex items-center">
-                        <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gray-300 mr-2 md:mr-4 overflow-hidden">
-                          {/* <img
-                            src={item.avatar}
+                        <div className="h-8 w-8 md:h-10 md:w-10 rounded-md bg-gray-300 mr-2 md:mr-4 overflow-hidden">
+                          <img
+                            src={`http://localhost:8080/uploads/workInstructionImg/${item.workInstructionImg}`}
                             alt=""
                             className="w-full h-full object-cover"
-                          /> */}
+                          />
 
                           <FaCircle />
                         </div>
@@ -201,26 +207,30 @@ const WorkInstructionList = () => {
                         </div>
                       </div>
                     </td>
-                      <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
+                    <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
                       {item.process}
                     </td>
                     <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
                       {item.part}
                     </td>
                     <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden md:table-cell">
-                      {item.stepNumber} 
+                      {item.stepNumber}
                     </td>
                     <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden md:table-cell">
-                     {item.workInstruction}
+                      {item.workInstruction}
                     </td>
                     <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
-                    <span  className={`px-2 py-1 md:px-3 rounded-full text-xs md:text-sm font-mediumtext-green-800 bg-green-100`}> {new Date(item.createdAt).toLocaleString("en-IN", {
-                        timeZone: "Asia/Kolkata",
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                       
-                      })}</span>  
+                      <span
+                        className={`px-2 py-1 md:px-3 rounded-full text-xs md:text-sm font-mediumtext-green-800 bg-green-100`}
+                      >
+                        {" "}
+                        {new Date(item.createdAt).toLocaleString("en-IN", {
+                          timeZone: "Asia/Kolkata",
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                        })}
+                      </span>
                     </td>
 
                     {/* <td className="px-2 py-3 md:px-3 md:py-4">
@@ -241,20 +251,42 @@ const WorkInstructionList = () => {
                       </span>
                     </td> */}
                     <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
-                      <button className="text-brand hover:underline" onClick={() => editCustomer(item.id)}>
+                      <button
+                        className="text-brand hover:underline"
+                        onClick={() => editCustomer(item.id)}
+                      >
                         <img
                           src={edit}
                           alt="Edit"
                           className="w-4 h-4 md:w-5 md:h-5"
                         />
                       </button>
-                      <button className="text-brand hover:underline">
-                        <img
-                          src={more}
-                          alt="More"
-                          className="w-4 h-4 md:w-5 md:h-5"
-                        />
+
+                      <button
+                        onClick={() => toggleOptions(index)}
+                        className="p-2"
+                      >
+                        <img src={more} alt="More" />
                       </button>
+
+                      {openOptionsIndex === index && (
+                        <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-md z-10">
+                          <button
+                            onClick={() =>
+                              navigate(`/edit-work-instruction/${item.id}`)
+                            }
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}

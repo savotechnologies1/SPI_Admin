@@ -7,10 +7,6 @@ const WorkInstruction = () => {
   const [selectedProcess, setSelectedProcess] = useState("");
   const [selectedProduct, setSelectedProduct] = useState("");
 
-  console.log('099999999999999999',{
-    process:selectedProcess,
-      product:selectedProduct
-  })
   const handleAddInstruction = async() => {
    // eslint-disable-next-line no-useless-catch
    try {

@@ -65,6 +65,11 @@ const sections: Section[] = [
         hasSubmenu: true,
         submenu: [
           {
+            key: "All work Instruction",
+            label: "All work Instruction",
+            path: "work-instructions-list",
+          },
+          {
             key: "select process & product",
             label: "select process & product",
             path: "/work-instruction",
@@ -74,18 +79,12 @@ const sections: Section[] = [
             label: "Add work Instruction ",
             path: "/add-work-instruction",
           },
-          {
-            key: "Edit work Instruction",
-            label: "Edit work Instruction",
-            path: "/edit-work-instruction",
-          },
-           {
-            key: "All work Instruction",
-            label: "All work Instruction",
-            path: "work-instructions-list",
-          },
-          
-          
+          // {
+          //   key: "Edit work Instruction",
+          //   label: "Edit work Instruction",
+          //   path: "/edit-work-instruction",
+          // },
+
           // {
           //   key: "Apply work instruction to diffrent product/process",
           //   label: " Apply work instruction to diffrent product/process ",
@@ -100,7 +99,7 @@ const sections: Section[] = [
         icon: production_live,
         hasSubmenu: true,
         submenu: [
-           {
+          {
             key: "customer List",
             label: "customer List",
             path: "/customer-list",
@@ -208,7 +207,6 @@ const Sidebar = ({ activeMenu, clicked }: SidebarProps) => {
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  console.log("profileprofileprofile9088888888888", profile);
   const handleLogout = () => {
     localStorage.removeItem("loggedIn"); // Clear the loggedIn flag from localStorage
     navigate("/sign-in"); // Redirect to the sign-in page

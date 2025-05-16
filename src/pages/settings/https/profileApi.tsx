@@ -8,10 +8,7 @@ export const updateProfile = async (
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    console.log(
-      "profileImgprofileImgprofileImgprofileImgprofileImgprofileImg",
-      file
-    );
+ 
     const response = await axiosInstance.put(
       "/profile-update",
       {
@@ -31,7 +28,6 @@ export const updateProfile = async (
             },
           }
     );
-    console.log("response222", response);
     if (response.status === 201) {
       toast.success(response.data.message);
     }

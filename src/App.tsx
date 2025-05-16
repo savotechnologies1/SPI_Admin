@@ -71,7 +71,7 @@ const App = () => {
               element={<AddWorkInstruction />}
             />
             <Route
-              path="edit-work-instruction"
+              path="edit-work-instruction/:id"
               element={<EditWorkInstrcution />}
             />
             <Route
