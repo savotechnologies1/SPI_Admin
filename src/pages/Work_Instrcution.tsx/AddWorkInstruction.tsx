@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { FaCircle } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { addWorkinstruction } from "./https/workInstructionApi";
@@ -30,7 +30,6 @@ export default function AddWorkInstruction() {
     };
     const response = await addWorkinstruction(data);
     console.log(response);
-    
   };
   const breadcrumbs = [
     { path: "/dashboardDetailes", label: "Dashboard" },
@@ -78,7 +77,8 @@ export default function AddWorkInstruction() {
               <select
                 value={step.part}
                 onChange={(e) => handleChange(index, "part", e.target.value)}
-                className="border py-4 px-4 rounded-md w-full mt-2">
+                className="border py-4 px-4 rounded-md w-full mt-2"
+              >
                 <option value="">Select Part</option>
                 <option value="Part 1">Part 1</option>
                 <option value="Part 2">Part 2</option>

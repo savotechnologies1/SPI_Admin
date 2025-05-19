@@ -45,16 +45,13 @@ const LiveProductionGoal = () => {
             <div className="flex flex-col md:flex-row  mt-2 gap-4  ">
               {data_1.map((item) => (
                 <div className="flex justify-between items-center bg-white  rounded-md w-full">
-                  {" "}
                   <div className="p-2">
-                    {" "}
                     <p className="font-bold text-2xl">{item.num}</p>
                     <p>{item.text}</p>
                   </div>
                   <div className="relative right-0">
                     <img src={item.shape} alt="" />
                     <div className="absolute right-4 top-6">
-                      {" "}
                       <img src={item.img} alt="" />
                     </div>
                   </div>

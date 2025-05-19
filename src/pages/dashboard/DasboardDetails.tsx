@@ -44,37 +44,37 @@ const DasboardDetails = () => {
     }
   }, [profile]);
 
-  useEffect(() => {
-    const validateToken = async () => {
-      const token = localStorage.getItem("auth_token");
-      if (!token) {
-        navigate("/sign-in");
-        return;
-      }
+  // useEffect(() => {
+  //   const validateToken = async () => {
+  //     const token = localStorage.getItem("auth_token");
+  //     if (!token) {
+  //       navigate("/sign-in");
+  //       return;
+  //     }
 
-      try {
-        const res = await axios.get(
-          `${BASE_URL}/api/admin/check-token`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+  //     try {
+  //       const res = await axios.get(
+  //         `${BASE_URL}/api/admin/check-token`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
 
-        if (res.data.message === "Token is valid") {
-          setUser(res.data.user);
-        } else {
-          navigate("/sign-in");
-        }
-      } catch (error) {
-        console.error("Token validation failed:", error);
-        navigate("/sign-in");
-      }
-    };
+  //       if (res.data.message === "Token is valid") {
+  //         setUser(res.data.user);
+  //       } else {
+  //         navigate("/sign-in");
+  //       }
+  //     } catch (error) {
+  //       console.error("Token validation failed:", error);
+  //       navigate("/sign-in");
+  //     }
+  //   };
 
-    validateToken();
-  }, [navigate]);
+  //   validateToken();
+  // }, [navigate]);
   console.log("profileImgprofileImgprofileImg", profileData);
   return (
     <div className="p-4">
