@@ -18,7 +18,7 @@ export const addWork = async (data: object) => {
     if (response.status === 201) {
       toast.success(response.data.message);
     }
-    return response.data;
+    return response;
   } catch (error: unknown) {
     toast.error(error.response.data.message);
   }
@@ -35,17 +35,17 @@ export const addWorkinstruction = async (data: object) => {
     if (response.status === 201) {
       toast.success(response.data.message);
     }
-    return response.data;
+    return response;
   } catch (error: unknown) {
     toast.error(error.response.data.message);
   }
 };
 
-export const workInstructionList = async (page = 1, limit = 5) => {
+export const workInstructionList = async (page = 1, limit = 5,process,searchVal) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/work-instruction-list?page=${page}&limit=${limit}`
+      `/work-instruction-list?page=${page}&limit=${limit}&process=${process}&search=${searchVal}`
     );
     return response.data;
   } catch (error) {
@@ -68,7 +68,7 @@ export const editWorkInstruction = async (data: object, id) => {
     if (response.status === 201) {
       toast.success(response.data.message);
     }
-    return response.data;
+    return response;
   } catch (error: unknown) {
     toast.error(error.response.data.message);
   }

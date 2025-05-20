@@ -16,11 +16,11 @@ export const addCustomer = async (apiData:object) => {
 };
 
 
-export const customerList = async (page = 1, limit = 5) => {
+export const customerList = async (page = 1, limit = 5,searchVal: string) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/all-customer-list?page=${page}&limit=${limit}`
+      `/all-customer-list?page=${page}&limit=${limit}&search=${searchVal}`
     );
     console.log('response.dataresponse.data',response.data)
     return response.data;

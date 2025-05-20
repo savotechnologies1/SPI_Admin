@@ -1,13 +1,14 @@
 import { useEffect } from "react";
 import { FaCircle } from "react-icons/fa";
-import { NavLink, useParams } from "react-router-dom";
-import { editWorkInstruction, workInstructionDetail } from "./https/workInstructionApi";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
+import {
+  editWorkInstruction,
+  workInstructionDetail,
+} from "./https/workInstructionApi";
 import { useForm } from "react-hook-form";
 
-
-
 type FormData = {
-  id:string;
+  id: string;
   part: string;
   stepNumber: string;
   workInstruction: string;
@@ -30,17 +31,17 @@ const EditWorkInstruction = () => {
     },
   });
 
+  const navigate = useNavigate();
   const fetchProcessDetail = async () => {
     try {
       const response = await workInstructionDetail(id);
       const data = response.data;
       reset({
         part: data.part,
-        stepNumber: data.stepNumber ,
-        workInstruction: data.workInstruction ,
+        stepNumber: data.stepNumber,
+        workInstruction: data.workInstruction,
       });
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -48,15 +49,22 @@ const EditWorkInstruction = () => {
   }, [id]);
 
   const onSubmit = async (formData: FormData) => {
-    const payload = {
-      part: formData.part,
-      stepNumber: formData.stepNumber,
-      workInstruction: formData.workInstruction,
-      workInstructionImg: formData.workInstructionImg?.[0] || null,
-      workInstructionVideo: formData.workInstructionVideo?.[0] || null,
-    };
+    try {
+      const payload = {
+        part: formData.part,
+        stepNumber: formData.stepNumber,
+        workInstruction: formData.workInstruction,
+        workInstructionImg: formData.workInstructionImg?.[0] || null,
+        workInstructionVideo: formData.workInstructionVideo?.[0] || null,
+      };
 
-    const response = await editWorkInstruction(payload, id);
+      const response = await editWorkInstruction(payload, id);
+      if (response.status === 201) {
+        navigate("/");
+      }
+    } catch (error) {
+      console.log("edit work instruction errror ", error);
+    }
   };
 
   const breadcrumbs = [
@@ -119,7 +127,9 @@ const EditWorkInstruction = () => {
                 </option>
               ))}
             </select>
-            {errors.part && <p className="text-red-500 text-sm">{errors.part.message}</p>}
+            {errors.part && (
+              <p className="text-red-500 text-sm">{errors.part.message}</p>
+            )}
           </div>
 
           <div>
@@ -137,7 +147,9 @@ const EditWorkInstruction = () => {
               placeholder="Enter step number"
             />
             {errors.stepNumber && (
-              <p className="text-red-500 text-sm">{errors.stepNumber.message}</p>
+              <p className="text-red-500 text-sm">
+                {errors.stepNumber.message}
+              </p>
             )}
           </div>
         </div>
@@ -149,20 +161,27 @@ const EditWorkInstruction = () => {
           </label>
           <textarea
             id="workInstruction"
-            {...register("workInstruction", { required: "Description is required" })}
+            {...register("workInstruction", {
+              required: "Description is required",
+            })}
             className="w-full p-3 border rounded-md"
             placeholder="Describe the work instructions here..."
             rows={6}
           />
           {errors.workInstruction && (
-            <p className="text-red-500 text-sm">{errors.workInstruction.message}</p>
+            <p className="text-red-500 text-sm">
+              {errors.workInstruction.message}
+            </p>
           )}
         </div>
 
         {/* File Uploads */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div>
-            <label className="block font-semibold mb-2" htmlFor="workInstructionImg">
+            <label
+              className="block font-semibold mb-2"
+              htmlFor="workInstructionImg"
+            >
               Image of Work Instruction
             </label>
             <input
@@ -175,7 +194,10 @@ const EditWorkInstruction = () => {
           </div>
 
           <div>
-            <label className="block font-semibold mb-2" htmlFor="workInstructionVideo">
+            <label
+              className="block font-semibold mb-2"
+              htmlFor="workInstructionVideo"
+            >
               Upload Video
             </label>
             <input

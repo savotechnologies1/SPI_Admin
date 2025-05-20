@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { FaCircle } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { addWork, workInstructionApi } from "./https/workInstructionApi";
 
 const WorkInstruction = () => {
   const [selectedProcess, setSelectedProcess] = useState("");
   const [selectedProduct, setSelectedProduct] = useState("");
 
+  const navigate = useNavigate()
   const handleAddInstruction = async() => {
    // eslint-disable-next-line no-useless-catch
    try {
@@ -14,7 +15,9 @@ const WorkInstruction = () => {
       process:selectedProcess,
       product:selectedProduct
     })
-   
+    if (response.status === 201) {
+       navigate('/add-work-instruction')
+       }
    } catch (error) {
     throw error
    }

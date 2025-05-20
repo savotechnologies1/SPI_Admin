@@ -29,7 +29,7 @@ export default function AddWorkInstruction() {
       instructionId,
     };
     const response = await addWorkinstruction(data);
-    console.log(response);
+    console.log(response?.status);
   };
   const breadcrumbs = [
     { path: "/dashboardDetailes", label: "Dashboard" },

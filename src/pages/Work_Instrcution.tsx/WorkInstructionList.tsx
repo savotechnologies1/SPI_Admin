@@ -7,7 +7,11 @@ import edit from "../../assets/edit_icon.png";
 import add from "../../assets/add.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { deleteWorkInstruction, workInstructionList } from "./https/workInstructionApi";
+import {
+  deleteWorkInstruction,
+  workInstructionApi,
+  workInstructionList,
+} from "./https/workInstructionApi";
 import { BASE_URL } from "../../utils/axiosInstance";
 
 interface CustomerItem {
@@ -16,7 +20,7 @@ interface CustomerItem {
   part: string;
   stepNumber: number;
   workInstruction: string;
-  workInstructionImg:string;
+  workInstructionImg: string;
   createdAt: string;
 }
 
@@ -26,9 +30,20 @@ const WorkInstructionList = () => {
   >([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchVal, setSearchVal] = useState("");
+  const [process, setProcess] = useState("10001");
+  const [processData, setProcessData] = useState([]);
   const rowsPerPage = 5;
 
   const navigate = useNavigate();
+
+  const handleRoleChange = (e) => {
+    setProcess(e.target.value);
+    console.log("Selected Role:", e.target.value);
+  };
+
+  console.log("rolerolerole", process);
+
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
@@ -37,10 +52,27 @@ const WorkInstructionList = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
+  const handleChange = (e) => {
+    setSearchVal(e.target.value);
+  };
+  const fetchProcess = async () => {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const response = await workInstructionApi();
+      setProcessData(response.processData);
+    } catch (error) {
+      throw error;
+    }
+  };
   const fetchCustomerList = async (page = 1) => {
     // eslint-disable-next-line no-useless-catch
     try {
-      const response = await workInstructionList(page, rowsPerPage);
+      const response = await workInstructionList(
+        page,
+        rowsPerPage,
+        process,
+        searchVal
+      );
       setWorkInstructionData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
@@ -50,7 +82,8 @@ const WorkInstructionList = () => {
 
   useEffect(() => {
     fetchCustomerList(currentPage);
-  }, [currentPage]);
+    fetchProcess();
+  }, [currentPage, searchVal, process]);
 
   const editCustomer = (id: string) => {
     navigate(`/edit-work-instruction/${id}`);
@@ -60,14 +93,14 @@ const WorkInstructionList = () => {
     setOpenOptionsIndex((prevIndex) => (prevIndex === index ? null : index));
   };
   const handleDelete = (id: string) => {
-      // eslint-disable-next-line no-useless-catch
-      try {
-        deleteWorkInstruction(id).then();
-        fetchCustomerList();
-      } catch (error: unknown) {
-        throw error;
-      }
-    };
+    // eslint-disable-next-line no-useless-catch
+    try {
+      deleteWorkInstruction(id).then();
+      fetchCustomerList();
+    } catch (error: unknown) {
+      throw error;
+    }
+  };
 
   return (
     <div className="p-4 md:p-7">
@@ -115,16 +148,20 @@ const WorkInstructionList = () => {
                     htmlFor="role"
                     className="text-xs md:text-sm font-medium text-gray-500"
                   >
-                    Role
+                    Process
                   </label>
+
                   <select
                     id="role"
                     className="mt-1 block w-full sm:w-40 md:w-52 rounded-md border-gray-300 text-sm md:text-base"
                     defaultValue="Project Coordinator"
+                    onChange={handleRoleChange}
                   >
-                    <option>Newly added</option>
-                    <option>Developer</option>
-                    <option>Designer</option>
+                    {processData.map((item) => (
+                      <option value={item.value}>{item.label}</option>
+                    ))}
+                    {/* <option>Developer</option>
+                    <option>Designer</option> */}
                   </select>
                 </div>
 
@@ -132,6 +169,7 @@ const WorkInstructionList = () => {
                   <input
                     type="text"
                     placeholder="Search..."
+                    onChange={handleChange}
                     className="w-full rounded-md border-gray-300 pl-6 text-xs md:text-sm lg:text-base outline-none"
                   />
                   <div className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400">

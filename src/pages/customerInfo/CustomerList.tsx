@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaCircle } from "react-icons/fa";
 import search_2 from "../../assets/search_2.png";
@@ -23,6 +23,7 @@ const CustomerList = () => {
   const [customerData, setCustomerData] = useState<CustomerItem[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchVal, setSearchVal] = useState("");
   const rowsPerPage = 5;
 
   const navigate = useNavigate()
@@ -34,11 +35,14 @@ const CustomerList = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
+  const handleChange=(e: { target: { value: SetStateAction<string>; }; })=>{
+    setSearchVal(e.target.value)
+  }
 
   const fetchCustomerList = async (page = 1) => {
     // eslint-disable-next-line no-useless-catch
     try {
-      const response = await customerList(page, rowsPerPage);
+      const response = await customerList(page, rowsPerPage,searchVal);
       setCustomerData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
@@ -48,13 +52,13 @@ const CustomerList = () => {
 
   useEffect(() => {
     fetchCustomerList(currentPage);
-  }, [currentPage]);
+  }, [currentPage,searchVal]);
 
     const editCustomer= (id: string) => {
     navigate(`/edit-customer/${id}`);
   };
 
-  console.log("customerDatacustomerData", customerData);
+  console.log("searchValsearchValsearchVal", searchVal);
   return (
     <div className="p-4 md:p-7">
       <div>
@@ -124,6 +128,7 @@ const CustomerList = () => {
                   <input
                     type="text"
                     placeholder="Search..."
+                    onChange={handleChange}
                     className="w-full rounded-md border-gray-300 pl-6 text-xs md:text-sm lg:text-base outline-none"
                   />
                   <div className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400">
