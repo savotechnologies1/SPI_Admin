@@ -22,7 +22,6 @@ const ForgetPassword = () => {
   const onSubmit = async(data: string) => {
     try {
       const response = await forgetPassword(data);
-      console.log("API Response:", response);
       navigate("/otp-verify");
     } catch (error) {
       console.error("Error during forgetPassword:", error);
@@ -31,7 +30,6 @@ const ForgetPassword = () => {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen">
-      {/* Left Image Section */}
       <div className="hidden xl:block md:w-1/2 bg-gray-100 ">
         <img
           src={signin}
@@ -40,7 +38,6 @@ const ForgetPassword = () => {
         />
       </div>
 
-      {/* Right Form Section */}
       <div className="w-full xl:w-1/2 bg-white flex items-center justify-center py-10 md:py-0">
         <div className="absolute top-6 right-0 xl:right-6 hidden lg:block">
           <img

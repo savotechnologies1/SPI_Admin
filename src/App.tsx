@@ -34,6 +34,7 @@ import AddProcess from "./pages/process/AddProcess";
 import CustomerList from "./pages/customerInfo/CustomerList";
 import WorkInstructionList from "./pages/Work_Instrcution.tsx/WorkInstructionList";
 const App = () => {
+  const  checkToken =   localStorage.getItem("auth_token") 
   return (
     <PartProvider>
     <ToastContainer />
@@ -54,11 +55,13 @@ const App = () => {
           <Route
             path="/"
             element={
-              localStorage.getItem("auth_token")  ? (
+             checkToken  ? (
                 <Layout />
               ) : (
-                <Navigate to="/sign-in" />
+                // <Navigate to="/sign-in" />
+                <SignIn/>
               )
+              
             }
           >
             <Route index element={<DashboardDetails />} />

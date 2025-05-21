@@ -57,7 +57,7 @@ const ApplyWorkInstruction = () => {
       </div>
 
       {/* Form */}
-      <div className="mt-4 bg-white p-4 sm:p-6 rounded-xl shadow-sm">
+      <div className="mt-4 bg-white p-4 sm:p-6 rounded-xl shadow-sm"> 
         {/* First Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
@@ -81,7 +81,7 @@ const ApplyWorkInstruction = () => {
 
           <div>
             <label className="block font-semibold mb-2" htmlFor="process">
-              Select Process
+              Select Process``
             </label>
             <select
               id="process"

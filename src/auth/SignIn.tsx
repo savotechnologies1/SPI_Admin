@@ -56,6 +56,7 @@ const SignIn = () => {
               {...register("userName", { required: "Name is required" })}
               placeholder="Enter your userName"
               className="w-full border p-2 rounded"
+              autoComplete="true"
             />
             {errors.userName && (
               <p className="text-red-500">{errors.userName.message}</p>
@@ -70,6 +71,7 @@ const SignIn = () => {
                 {...register("password", { required: "Password is required" })}
                 placeholder="********"
                 className="w-full border p-2 rounded"
+                 autoComplete="true"
               />
               <img
                 src={showPassword ? visible : password}
