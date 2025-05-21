@@ -31,7 +31,7 @@ const WorkInstructionList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
-  const [process, setProcess] = useState("10001");
+  const [process, setProcess] = useState("");
   const [processData, setProcessData] = useState([]);
   const rowsPerPage = 5;
 
@@ -152,16 +152,17 @@ const WorkInstructionList = () => {
                   </label>
 
                   <select
-                    id="role"
+                    id="process"
                     className="mt-1 block w-full sm:w-40 md:w-52 rounded-md border-gray-300 text-sm md:text-base"
-                    defaultValue="Project Coordinator"
+                    value={process}
                     onChange={handleRoleChange}
                   >
+                    <option value="">All Processes</option>
                     {processData.map((item) => (
-                      <option value={item.value}>{item.label}</option>
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
                     ))}
-                    {/* <option>Developer</option>
-                    <option>Designer</option> */}
                   </select>
                 </div>
 

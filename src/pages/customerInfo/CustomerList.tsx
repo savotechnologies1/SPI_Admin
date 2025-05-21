@@ -106,7 +106,7 @@ const CustomerList = () => {
           <div className="flex flex-col bg-white rounded-t">
             <div className="p-2 md:p-4">
               <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 p-2 md:p-4">
-                <div className="flex flex-col w-full sm:w-auto">
+                {/* <div className="flex flex-col w-full sm:w-auto">
                   <label
                     htmlFor="role"
                     className="text-xs md:text-sm font-medium text-gray-500"
@@ -122,7 +122,7 @@ const CustomerList = () => {
                     <option>Developer</option>
                     <option>Designer</option>
                   </select>
-                </div>
+                </div> */}
 
                 <div className="flex-1 w-full relative border p-2 md:p-3 rounded-md">
                   <input

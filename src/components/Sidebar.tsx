@@ -208,7 +208,7 @@ const Sidebar = ({ activeMenu, clicked }: SidebarProps) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("loggedIn"); // Clear the loggedIn flag from localStorage
+    localStorage.removeItem("auth_token"); // Clear the loggedIn flag from localStorage
     navigate("/sign-in"); // Redirect to the sign-in page
   };
 
