@@ -1,9 +1,4 @@
-import {
-  Route,
-  Routes,
-  BrowserRouter as Router,
-  Navigate,
-} from "react-router-dom";
+import { Routes, Route, BrowserRouter as Router, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import SignIn from "./auth/SignIn";
 import DashboardDetails from "./pages/dashboard/DasboardDetails";
@@ -33,75 +28,51 @@ import ProductTree from "./pages/product&BOM/ProductTree";
 import AddProcess from "./pages/process/AddProcess";
 import CustomerList from "./pages/customerInfo/CustomerList";
 import WorkInstructionList from "./pages/Work_Instrcution.tsx/WorkInstructionList";
+import { useAuth } from "./context/AuthContext";
+
 const App = () => {
-  const  checkToken =   localStorage.getItem("auth_token") 
+ 
+  const { token } = useAuth();
+ 
   return (
     <PartProvider>
-    <ToastContainer />
-
+      <ToastContainer />
       <Router basename="/admin">
-        <Routes >
-          {/* Routes without the layout */}
+        <Routes>
+          {/* Public Routes */}
           <Route path="sign-in" element={<SignIn />} />
-
           <Route path="sign-up" element={<SignUp />} />
           <Route path="forget-password" element={<ForgetPassowrd />} />
           <Route path="otp-verify" element={<OTP />} />
           <Route path="reset-password" element={<ResetPassword />} />
           <Route path="station-login" element={<StationLogin />} />
 
-          {/* Routes with the layout */}
-
+          {/* Protected Routes */}
           <Route
             path="/"
             element={
-             checkToken  ? (
-                <Layout />
-              ) : (
-                // <Navigate to="/sign-in" />
-                <SignIn/>
-              )
-              
+              token ? <Layout /> : <Navigate to="/sign-in" replace />
             }
           >
             <Route index element={<DashboardDetails />} />
             <Route path="dashboardDetailes" element={<DashboardDetails />} />
-
-
             <Route path="work-instruction" element={<WorkInstruction />} />
-            <Route
-              path="add-work-instruction"
-              element={<AddWorkInstruction />}
-            />
-            <Route
-              path="edit-work-instruction/:id"
-              element={<EditWorkInstrcution />}
-            />
-            <Route
-              path="apply-work-instruction"
-              element={<ApplyWorkInstruction />}
-            />
-            <Route
-              path="work-instructions-list"
-              element={<WorkInstructionList/>}
-            />
-            
-
+            <Route path="add-work-instruction" element={<AddWorkInstruction />} />
+            <Route path="edit-work-instruction/:id" element={<EditWorkInstrcution />} />
+            <Route path="apply-work-instruction" element={<ApplyWorkInstruction />} />
+            <Route path="work-instructions-list" element={<WorkInstructionList />} />
             <Route path="new-customer" element={<NewCustomer />} />
             <Route path="edit-customer/:id" element={<EditCustomer />} />
-            <Route path = "customer-list" element ={<CustomerList/>}/>
+            <Route path="customer-list" element={<CustomerList />} />
             <Route path="process-list" element={<ProcessList />} />
             <Route path="edit-process/:id" element={<EditProcess />} />
             <Route path="add-process" element={<AddProcess />} />
-
             <Route path="partform" element={<PartForm />} />
             <Route path="edit-partform" element={<EditPartForm />} />
             <Route path="product-tree" element={<ProductTree />} />
             <Route path="part-table" element={<PartTable />} />
-
             <Route path="import" element={<Import />} />
             <Route path="user-access" element={<UserAccess />} />
-
             <Route path="current-quality" element={<CurrentQuality />} />
             <Route path="settings" element={<Settings />} />
           </Route>
@@ -112,5 +83,3 @@ const App = () => {
 };
 
 export default App;
-
-

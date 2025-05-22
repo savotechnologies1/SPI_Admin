@@ -10,11 +10,10 @@ export const loginApi = async (userData: object) => {
     'Content-Type': 'application/json',
   },
     });
-    localStorage.setItem("auth_token", response.data.token);
     if (response.status === 201) {
       toast.success(response.data.message);
     }
-    return response.data;
+    return response;
   } catch (error) {
     toast.error(error.response.data.message);
   }

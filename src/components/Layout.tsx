@@ -8,6 +8,7 @@ const Layout = () => {
   const toggleMenu = () => {
     setActiveMenu((prev) => !prev);
   };
+  console.log('0888888888888888888')
   return (
     <div className="flex relative min-h-screen ">
       <Sidebar activeMenu={activeMenu} clicked={toggleMenu} />

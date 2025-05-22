@@ -7,11 +7,12 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginApi } from "./https/authApi";
 import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
+  const { login } = useAuth();
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
@@ -31,8 +32,11 @@ const SignIn = () => {
     try {
       const response = await loginApi(data);
       console.log("responseresponse", response);
-      toast.success(response.message);
-      navigate("/");
+      if (response.status === 200) {
+        login(response.data.token); 
+        console.log("login page redirect");
+        navigate("/", { replace: true });
+      }
     } catch (error: unknown) {
       toast.error(error.response.message);
     }
@@ -71,7 +75,7 @@ const SignIn = () => {
                 {...register("password", { required: "Password is required" })}
                 placeholder="********"
                 className="w-full border p-2 rounded"
-                 autoComplete="true"
+                autoComplete="true"
               />
               <img
                 src={showPassword ? visible : password}
