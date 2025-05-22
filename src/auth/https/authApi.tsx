@@ -1,15 +1,9 @@
 import { toast } from "react-toastify";
 import axiosInstance from "../../utils/axiosInstance";
-import axios from "axios";
 
 export const loginApi = async (userData: object) => {
-  // eslint-disable-next-line no-useless-catch
   try {
-    const response = await axios.post("http://localhost:8080/api/admin/login", userData,{
-       headers: {
-    'Content-Type': 'application/json',
-  },
-    });
+    const response = await axiosInstance.post("/login", userData);
     if (response.status === 201) {
       toast.success(response.data.message);
     }
