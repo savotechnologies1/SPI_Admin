@@ -106,14 +106,14 @@ const sections: Section[] = [
           },
           {
             key: "New Customer",
-            label: "Create a new Customer",
+            label: "Enter new Customer",
             path: "/new-customer",
           },
-          // {
-          //   key: "Edit Customer",
-          //   label: "Edit Customer",
-          //   path: "/edit-customer",
-          // },
+          {
+            key: "Edit Customer",
+            label: "Edit Customer",
+            path: "/edit-customer/:id",
+          },
         ],
       },
 

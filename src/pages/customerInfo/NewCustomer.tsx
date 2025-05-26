@@ -52,7 +52,7 @@ const NewCustomer = () => {
             <FaCircle className="text-[6px] text-gray-500" />
           </span>
           <span className="text-xs sm:text-[16px] hover:cursor-pointer">
-            New suppliers
+            Edit Customer
           </span>
         </div>
       </div>

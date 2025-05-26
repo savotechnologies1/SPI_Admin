@@ -48,12 +48,13 @@ const App = () => {
           <Route path="station-login" element={<StationLogin />} />
 
           {/* Protected Routes */}
-          <Route
+          {/* <Route
             path="/"
             element={
               token ? <Layout /> : <Navigate to="/sign-in" replace />
             }
-          >
+          > */}
+          <Route path="/" element={<Layout />}>
             <Route index element={<DashboardDetails />} />
             <Route path="dashboardDetailes" element={<DashboardDetails />} />
             <Route path="work-instruction" element={<WorkInstruction />} />

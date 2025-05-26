@@ -7,6 +7,8 @@ export default function AddWorkInstruction() {
   const [steps, setSteps] = useState([
     { part: "", stepNumber: "", workInstruction: "", videoFile: null },
   ]);
+  const [fileName, setFileName] = useState("");
+   const [videoFileName, setVideoFileName] = useState("");
 
   const handleChange = (index, field, value) => {
     const newSteps = [...steps];
@@ -36,7 +38,21 @@ export default function AddWorkInstruction() {
     { label: "Work Instruction" },
     { label: "Add Work Instruction" },
   ];
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setFileName(file.name);
+      handleChange(index, "workInstructionImg", file);
+    }
+  };
 
+  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setVideoFileName(file.name);
+      handleChange(index, "workInstructionVideo", file);
+    }
+  };
   return (
     <div className="p-4 sm:p-6">
       <div>
@@ -119,32 +135,42 @@ export default function AddWorkInstruction() {
               <label className="block font-semibold mb-2" htmlFor="imageFile">
                 Image of Work Instruction
               </label>
-              <input
-                type="file"
-                id="imageFile"
-                accept="image/*"
-                onChange={(e) =>
-                  e.target.files &&
-                  handleChange(index, "workInstructionImg", e.target.files[0])
-                }
-                className="w-full p-3 border rounded-md file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-brand hover:file:bg-blue-100"
-              />
+              <div>
+                <label
+                  htmlFor="imageFile"
+                  className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm text-gray-800 bg-[#919EAB33] border-gray-300"
+                >
+                  {fileName ? fileName : "Tap or click to Add Picture or video"}
+                </label>
+                <input
+                  type="file"
+                  id="imageFile"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </div>
             </div>
 
             <div>
               <label className="block font-semibold mb-2" htmlFor="videoFile">
                 Upload Video
               </label>
-              <input
-                type="file"
-                id="videoFile"
-                accept="video/mp4,video/mkv,video/mpeg4"
-                onChange={(e) =>
-                  e.target.files &&
-                  handleChange(index, "workInstructionVideo", e.target.files[0])
-                }
-                className="w-full p-3 border rounded-md file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-brand hover:file:bg-blue-100"
-              />
+            <div>
+      <label
+        htmlFor="videoFile"
+        className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm text-gray-600 bg-white hover:bg-gray-50"
+      >
+        {videoFileName ? videoFileName : " Upload Video or Picture"}
+      </label>
+      <input
+        type="file"
+        id="videoFile"
+        accept="video/mp4,video/mkv,video/mpeg4"
+        onChange={handleVideoChange}
+        className="hidden"
+      />
+    </div>
               <small className="text-red-700 mt-2 block">
                 We support MP4, MKV, MPEG4, etc.
               </small>
@@ -176,7 +202,7 @@ export default function AddWorkInstruction() {
       <div className="flex gap-4 mt-4">
         <button
           onClick={handleAddMoreSteps}
-          className="bg-gray-500 text-white px-5 py-3 rounded-lg"
+          className="bg-brand text-white px-5 py-3 rounded-lg"
         >
           Add More Steps
         </button>

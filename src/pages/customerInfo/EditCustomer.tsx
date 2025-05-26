@@ -153,7 +153,7 @@ const EditCustomer = () => {
     <div className="p-4 md:p-7">
       <div>
         <h1 className="font-bold text-[20px] md:text-[24px] text-black">
-          Create a new Customer
+    Edit  Customer
         </h1>
       </div>
       <div className="flex justify-between mt-2 items-center">
@@ -174,7 +174,7 @@ const EditCustomer = () => {
             <FaCircle className="text-[6px] text-gray-500" />
           </span>
           <span className="text-xs sm:text-[16px] hover:cursor-pointer">
-            New suppliers
+          Edit Customer
           </span>
         </div>
       </div>
@@ -255,9 +255,9 @@ const EditCustomer = () => {
             <div className="mt-6">
               <button
                 type="submit"
-                className="bg-brand text-white px-6 py-3 rounded-md"
+                className="bg-brand text-white px-6 py-2 rounded-md"
               >
-                 Edit Customer
+             Update
               </button>
             </div>
 

@@ -78,7 +78,7 @@ const DasboardDetails = () => {
   console.log("profileImgprofileImgprofileImg", profileData);
   return (
     <div className="p-4">
-      <h1 className="text-xl font-semibold">Welcome back, Admin👋</h1>
+      <h1 className="text-xl font-semibold mt-4">Welcome back, Admin👋</h1>
 
       <div className="py-4">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 ">

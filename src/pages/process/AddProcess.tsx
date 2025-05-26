@@ -2,6 +2,8 @@ import { FaCircle } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { addProcess } from "./https/processApi";
+import delete_img from "../../assets/delete_1.png";
+
 
 const AddProcess = () => {
   const {
@@ -148,9 +150,9 @@ const AddProcess = () => {
               </button>
             </div>
 
-            {/* <div className="bg-[#FF5630] rounded-full p-2 cursor-pointer">
+            <div className="bg-[#FF5630] rounded-full p-2 cursor-pointer">
               <img className="w-[20px]" src={delete_img} alt="delete" />
-            </div> */}
+            </div>
           </div>
         </div>
       </form>
