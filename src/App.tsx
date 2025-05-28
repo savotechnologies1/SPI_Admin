@@ -1,4 +1,9 @@
-import { Routes, Route, BrowserRouter as Router, Navigate } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  BrowserRouter as Router,
+  Navigate,
+} from "react-router-dom";
 import Layout from "./components/Layout";
 import SignIn from "./auth/SignIn";
 import DashboardDetails from "./pages/dashboard/DasboardDetails";
@@ -24,16 +29,15 @@ import { PartProvider } from "./components/Context/PartContext";
 import PartTable from "./pages/product&BOM/PartTable";
 import EditPartForm from "./pages/product&BOM/EditPartForm";
 import ProductTree from "./pages/product&BOM/ProductTree";
-  import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
 import AddProcess from "./pages/process/AddProcess";
 import CustomerList from "./pages/customerInfo/CustomerList";
 import WorkInstructionList from "./pages/Work_Instrcution.tsx/WorkInstructionList";
 import { useAuth } from "./context/AuthContext";
 
 const App = () => {
- 
   const { token } = useAuth();
- 
+
   return (
     <PartProvider>
       <ToastContainer />
@@ -54,14 +58,26 @@ const App = () => {
               token ? <Layout /> : <Navigate to="/sign-in" replace />
             }
           > */}
-          <Route path="/" element={<Layout />}>
+          <Route path="/" element={token ? <Layout /> : <SignIn />}>
             <Route index element={<DashboardDetails />} />
             <Route path="dashboardDetailes" element={<DashboardDetails />} />
             <Route path="work-instruction" element={<WorkInstruction />} />
-            <Route path="add-work-instruction" element={<AddWorkInstruction />} />
-            <Route path="edit-work-instruction/:id" element={<EditWorkInstrcution />} />
-            <Route path="apply-work-instruction" element={<ApplyWorkInstruction />} />
-            <Route path="work-instructions-list" element={<WorkInstructionList />} />
+            <Route
+              path="add-work-instruction"
+              element={<AddWorkInstruction />}
+            />
+            <Route
+              path="edit-work-instruction/:id"
+              element={<EditWorkInstrcution />}
+            />
+            <Route
+              path="apply-work-instruction"
+              element={<ApplyWorkInstruction />}
+            />
+            <Route
+              path="work-instructions-list"
+              element={<WorkInstructionList />}
+            />
             <Route path="new-customer" element={<NewCustomer />} />
             <Route path="edit-customer/:id" element={<EditCustomer />} />
             <Route path="customer-list" element={<CustomerList />} />
