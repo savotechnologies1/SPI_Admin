@@ -1,6 +1,9 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 const PartForm = () => {
+
+  const supplier = "Cortez herring";
   // const [formData, setFormData] = useState({
   //   orderNumber: "",
   //   orderDate: "2025-02-26",
@@ -27,11 +30,17 @@ const PartForm = () => {
   const {
     register,
     handleSubmit,
+    setValue,
   } = useForm();
 
-  const onSubmit = (data: object) => {
+  const onSubmit = (data: any) => {
     console.log("Form Data:", data);
   };
+
+  useEffect (()=>{
+    setValue("supplier", supplier),
+    [supplier, setValue]
+  });
 
   return (
     <div className="">
@@ -50,8 +59,8 @@ const PartForm = () => {
         </div>
 
         {/* Part Family, Part, and Supplier */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-4 ">
-          <div>
+        <div className="grid grid-cols-1 gap-4 bg-white p-4 ">
+          {/* <div>
             <label className="block font-semibold mb-1">
               Select Part Family
             </label>
@@ -66,8 +75,8 @@ const PartForm = () => {
               <option value="family2">Family 2</option>
               <option value="family3">Family 3</option>
             </select>
-          </div>
-          <div>
+          </div> */}
+          {/* <div>
             <label className="block font-semibold mb-1">Select Part</label>
             <select
               {...register("part")}
@@ -80,20 +89,15 @@ const PartForm = () => {
               <option value="part2">Part 2</option>
               <option value="part3">Part 3</option>
             </select>
-          </div>
+          </div> */}
           <div>
             <label className="block font-semibold mb-1">Supplier</label>
-            <select
+            <p
               {...register("supplier")}
               className="border py-3 px-4 rounded-md w-full text-gray-600"
             >
-              <option value="" disabled selected>
-                Select Supplier
-              </option>
-              <option value="supplier1">Supplier 1</option>
-              <option value="supplier2">Supplier 2</option>
-              <option value="supplier3">Supplier 3</option>
-            </select>
+           {supplier}
+            </p>
           </div>
         </div>
 

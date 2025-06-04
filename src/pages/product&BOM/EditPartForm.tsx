@@ -192,7 +192,7 @@ const EditPartForm = () => {
             Part Description
             <textarea
               name="description"
-              placeholder="Meta Description"
+              placeholder="Part Description"
               value={formData.description}
               onChange={handleChange}
               className="border p-2 rounded w-full"
@@ -440,9 +440,9 @@ const EditPartForm = () => {
           <thead className="bg-[#F4F6F8] text-left text-gray-500">
             <tr>
               <th className="px-4 py-3 font-medium">Process</th>
-              <th className="px-4 py-3 font-medium">Part Desc</th>
+              <th className="px-4 py-3 font-medium">Part Description</th>
               <th className="px-4 py-3 font-medium">Cycle Time</th>
-              <th className="px-4 py-3 font-medium">Total Cyclte</th>
+              <th className="px-4 py-3 font-medium">Total Cycle</th>
               <th className="px-4 py-3 font-medium"></th>
             </tr>
           </thead>

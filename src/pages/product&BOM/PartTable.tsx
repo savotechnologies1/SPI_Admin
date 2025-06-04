@@ -71,7 +71,7 @@ export default function PartTable() {
                   Part Family
                 </th>
                 <th className="border p-2 font-semibold text-gray-600">
-                  Part Desc
+                  Part Description
                 </th>
                 <th className="border p-2 font-semibold text-gray-600">Cost</th>
                 <th className="border p-2 font-semibold text-gray-600">

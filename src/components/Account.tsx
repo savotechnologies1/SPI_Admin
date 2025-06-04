@@ -8,29 +8,46 @@ import { useSelector } from "react-redux";
 
 const Account = () => {
   const [isOpen, setIsOpen] = useState(true);
-  const profile = useSelector((state) => state.profile.data);
+  const [activeTab, setActiveTab] = useState("Dashboard");
+  interface RootState {
+    profile: {
+      data: {
+        name: string;
+        email: string;
+        profileImg?: string;
+      };
+    };
+  }
+  const profile = useSelector((state: RootState) => state.profile.data);
+  // const profile = {
+  //   name: "John Doe",
+  //   email: "johndoe@example.com",
+  //   profileImg: "", // or "sample.jpg"
+  // };
   const section = [
     {
-      key: "Home",
-      label: "Home",
+      key: "Dashboard",
+      label: "Dashboard",
       icon: home,
       path: "dashboardDetailes",
     },
+    {
+      key: "Time Clock",
+      label: "Time Clock",
+      icon: home,
+      path: "TimeClock",
+    },
+
     {
       key: "Profile",
       label: "Profile",
       icon: home,
       path: "dashboard/suppliers",
     },
+
     {
-      key: "Projects",
-      label: "Projects",
-      icon: home,
-      path: "dashboard/suppliers",
-    },
-    {
-      key: "Subscription",
-      label: "Subscription",
+      key: "Settings",
+      label: "Settings",
       icon: home,
       path: "dashboard/suppliers",
     },
@@ -54,7 +71,6 @@ const Account = () => {
             <img
               src={cross}
               alt="Close sidebar"
-              onClick={() => setIsOpen(!isOpen)}
               className="cursor-pointer"
             />
           </div>
@@ -86,7 +102,9 @@ const Account = () => {
                   <li key={section.key}>
                     <Link to={`/${section.path}`}>
                       <button
-                        className={`flex items-center space-x-4 w-full px-2 py-3 rounded-md hover:bg-brand hover:text-white`}
+                        className={`flex items-center space-x-4 w-full px-2 py-3 rounded-md hover:bg-brand hover:text-white 
+                             ${activeTab === section.key ? 'bg-brand text-white' : 'hover:bg-brand hover:text-white'}`}
+                               onClick={() => setActiveTab(section.key)}
                       >
                         <img
                           src={section.icon}

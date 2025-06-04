@@ -26,7 +26,7 @@ const StationLogin = () => {
   return (
     <>
       <div className="bg-[#F5F6FA]">
-        <div className="justify-between flex flex-row items-center">
+        <div className="justify-between flex flex-row items-center px-4 py-2">
           <div>
             <img className="w-[126px]" src={logo} alt="" />
           </div>

@@ -7,17 +7,24 @@ import radius from "../assets/Radius.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBagShopping,
+  faBriefcase,
+  faCalendarMinus,
   faGaugeSimpleHigh,
   faGear,
   faRightFromBracket,
   faUser,
   faVectorSquare,
 } from "@fortawesome/free-solid-svg-icons";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 
 const dashboard = <FontAwesomeIcon icon={faGaugeSimpleHigh} />;
+const work = <FontAwesomeIcon icon={faBriefcase} />;
+
+const supply_chain = <FontAwesomeIcon icon={faUser} />;
 const time_clock = <FontAwesomeIcon icon={faUser} />;
 const production_live = <FontAwesomeIcon icon={faVectorSquare} />;
+const production_response = <FontAwesomeIcon icon={faCalendarMinus} />;
+
 const setting = <FontAwesomeIcon icon={faGear} />;
 const operation = <FontAwesomeIcon icon={faBagShopping} />;
 const logout = <FontAwesomeIcon icon={faRightFromBracket} color="red" />;
@@ -26,6 +33,7 @@ interface SubmenuItem {
   label: string;
   path?: string;
   hasSubmenu?: boolean;
+
   submenu?: SubmenuItem[];
 }
 
@@ -35,6 +43,8 @@ interface SectionItem {
   icon: React.ReactNode;
   path?: string;
   hasSubmenu?: boolean;
+  category?: string;
+
   submenu?: SubmenuItem[];
 }
 
@@ -59,9 +69,126 @@ const sections: Section[] = [
     category: "Daily Activity",
     items: [
       {
+        key: "Customer Information ",
+        label: "Customer Information ",
+        icon: production_live,
+        hasSubmenu: true,
+        submenu: [
+          {
+            key: "customer List",
+            label: "Customer List",
+            path: "/customer-list",
+          },
+          {
+            key: "Add & Edit Customer",
+            label: "Add &  Edit Customer",
+            path: "/new-customer",
+          },
+          // {
+          //   key: "Edit Customer",
+          //   label: "Edit Customer",
+          //   path: "/edit-customer/:id",
+          // },
+        ],
+      },
+
+      {
+        key: "Supply Chain",
+        label: "Supply Chain",
+        icon: supply_chain,
+        hasSubmenu: true,
+        submenu: [
+          {
+            key: "SupplierInformationList",
+            label: "Supplier Information List",
+            hasSubmenu: true,
+            submenu: [
+              {
+                key: "SupplierList",
+                label: "Supplier List",
+                path: "/all-supplier",
+              },
+              {
+                key: "newSupplier",
+                label: "Add & Edit supplier",
+                path: "/new-supplier",
+              },
+            ],
+          },
+          {
+            key: "SupplierOrder",
+            label: "Supplier Order",
+            path: "/supplier-order",
+          },
+          // {
+          //   key: "SupplierPartList",
+          //   label: "Supplier part list",
+          //   path: "/supplier-list",
+          // },
+          {
+            key: "SupplierInventory",
+            label: "Supplier inventory",
+            path: "/supplier-inventory",
+          },
+        ],
+      },
+      {
+        key: "Production Response",
+        label: "Production Response",
+        icon: production_response,
+        path: "/station-login",
+      },
+      {
+        key: "Product & BOM  ",
+        label: "Product & BOM ",
+        icon: operation,
+        hasSubmenu: true,
+        submenu: [
+          {
+            key: "Enter/Edit part number",
+            label: "Enter/Edit part number ",
+            path: "/partform",
+          },
+          {
+            key: "Enter/Edit delete product number",
+            label: "Enter/Edit delete product number ",
+            path: "/edit-partform",
+          },
+
+          {
+            key: "Product tree view",
+            label: "Product tree view ",
+            path: "/product-tree",
+          },
+          {
+            key: "Browse BOM",
+            label: "Browse BOM ",
+            path: "/part-table",
+          },
+        ],
+      },
+      {
+        key: "Process ",
+        label: "Process",
+        icon: operation,
+        hasSubmenu: true,
+        submenu: [
+          {
+            key: "process List",
+            label: "process List",
+            path: "/process-list",
+          },
+          {
+            key: "Enter/Edit new process",
+            label: "Enter/Edit new process ",
+            path: "/add-process",
+          },
+        ],
+      },
+      {
         key: "Work Instruction ",
         label: "Work Instruction ",
-        icon: time_clock,
+        icon: work,
         hasSubmenu: true,
         submenu: [
           {
@@ -94,76 +221,62 @@ const sections: Section[] = [
       },
 
       {
-        key: "Customer Information ",
-        label: "Customer Information ",
-        icon: production_live,
+        key: "Employee Information",
+        label: "Employee Information ",
+        icon: time_clock,
         hasSubmenu: true,
         submenu: [
           {
-            key: "customer List",
-            label: "customer List",
-            path: "/customer-list",
+            key: "All Employee List",
+            label: "All Employee List",
+            path: "/employees",
           },
           {
-            key: "New Customer",
-            label: "Enter new Customer",
-            path: "/new-customer",
+            key: "Add & Edit Employee",
+            label: "Add & Edit Employee",
+            path: "/add-employee",
           },
           {
-            key: "Edit Customer",
-            label: "Edit Customer",
-            path: "/edit-customer/:id",
+            key: "Vacation Request approval",
+            label: "Vacation Request approval",
+            path: "/vacation-list",
+          },
+          {
+            key: "Time Clock approval",
+            label: "Time Clock approval",
+            path: "/time-clock",
           },
         ],
       },
 
       {
-        key: "Process ",
-        label: "Process",
-        icon: operation,
+        key: "Time Clock",
+        label: "Time Clock",
+        icon: time_clock,
         hasSubmenu: true,
         submenu: [
           {
-            key: "process List",
-            label: "process List",
-            path: "/process-list",
+            key: "Clockinout",
+            label: "Clock in and out",
+            path: "/clock-in-out",
           },
           {
-            key: "Enter/Edit new process",
-            label: "Enter/Edit new process ",
-            path: "/add-process",
+            key: "VacationRequest",
+            label: "Vacation Request",
+            path: "/vaction-request",
+          },
+          {
+            key: "Time_Sheet",
+            label: "Time Sheet",
+            path: "/time-sheet",
           },
         ],
       },
-      {
-        key: "Product & BOM  ",
-        label: "Product & BOM ",
-        icon: operation,
-        hasSubmenu: true,
-        submenu: [
-          {
-            key: "Enter/Edit part number",
-            label: "Enter/Edit part number ",
-            path: "/partform",
-          },
-          {
-            key: "Enter/Edit delete product number",
-            label: "Enter/Edit delete product number ",
-            path: "/edit-partform",
-          },
-
-          {
-            key: "Product tree view",
-            label: "Porduct tree view ",
-            path: "/product-tree",
-          },
-          {
-            key: "Browse BOM",
-            label: "Browse BOM ",
-            path: "/part-table",
-          },
-        ],
-      },
+    ],
+  },
+  {
+    category: "INSIGHT",
+    items: [
       {
         key: "Import",
         label: "Import",
@@ -199,7 +312,7 @@ interface SidebarProps {
 
 const Sidebar = ({ activeMenu, clicked }: SidebarProps) => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
-  const profile = useSelector((state) => state.profile.data);
+  // const profile = useSelector((state) => state.profile.data);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -490,14 +603,6 @@ const Sidebar = ({ activeMenu, clicked }: SidebarProps) => {
               ))}
             </ul>
           </div>
-
-          {activeMenu && (
-            <div className="justify-center flex items-center mt-12 w-full mb-4">
-              <button className="w-full mx-6 py-2 rounded-md bg-gradient-to-b from-[#22C55E] to-[#118D57] text-white font-semibold">
-                Admin Login
-              </button>
-            </div>
-          )}
         </div>
       </div>
       {activeMenu && (

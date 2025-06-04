@@ -33,21 +33,25 @@ const SignIn = () => {
       const response = await loginApi(data);
       console.log("responseresponse", response);
       if (response.status === 200) {
-        login(response.data.token); 
+        login(response.data.token);
         console.log("login page redirect");
         navigate("/", { replace: true });
       }
     } catch (error: unknown) {
       toast.error(error.response.message);
     }
-  };
-//   const onSubmit = async (data: FormData) => {
-//   // Mock login logic
-//   login("mockToken"); // just pass a fake token
-//   console.log("Redirecting to dashboard without backend validation");
-//   navigate("/", { replace: true });
-// };
 
+    // Simulated login (no backend call)
+    // login("mockToken"); // fake token
+    // console.log("Redirecting to dashboard without backend validation");
+    // navigate("/", { replace: true });
+  };
+  //   const onSubmit = async (data: FormData) => {
+  //   // Mock login logic
+  //   login("mockToken"); // just pass a fake token
+  //   console.log("Redirecting to dashboard without backend validation");
+  //   navigate("/", { replace: true });
+  // };
 
   return (
     <div className="bg-[#F5F6FA] min-h-screen flex items-center justify-center p-4">

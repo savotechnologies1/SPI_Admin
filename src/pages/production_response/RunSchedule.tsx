@@ -3,7 +3,7 @@ import { IoLogOutOutline } from "react-icons/io5";
 import step_1 from "../../assets/step_1.png";
 import step_2 from "../../assets/step_2.png";
 import step_3 from "../../assets/step_3.png";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const data = [
   {
@@ -24,137 +24,171 @@ const data = [
 ];
 
 const RunSchedule = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate("/station-logout");
+  };
+
   return (
-    <>
-      <div className="relative">
-        <div className="bg-[#243C75] flex flex-col md:flex-row items-center justify-between p-4 ">
-          <div className="relative">
-            <img src={belt} alt="" />
+    <div className="bg-[#F5F6FA] min-h-screen flex flex-col">
+      {/* Header Section */}
+      <div className="bg-[#243C75] relative ">
+        <div className="container mx-auto p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="relative w-full md:w-auto">
+            <img className="w-24 md:w-40" src={belt} alt="Belt icon" />
+            {/* Text centered above image on all screens */}
+            <div className="text-white text-lg  font-semibold absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full  whitespace-nowrap flex justify-between">
+              <div className="gap-2 flex flex-col">
+                <p className="text-2xl 2xl:text-4xl"> tdriver GMT800 single</p>
+                <p className="md:text-xl "> 1001</p>
+                <p className="md:text-xl "> 1002</p>
+              </div>
+            </div>
           </div>
-          <div className="text-white text-xl font-semibold absolute ">
-            tdriver GMT800 single
-          </div>
-          <div className="text-white flex  gap-10 flex-col md:flex-row ">
-            <div className="flex flex-col items-center gap-2 ">
-              <p className="font-semibold">Date</p>
-              <p>january 17, 2025</p>
+          <div className="text-white flex gap-4 md:gap-20 flex-wrap justify-center">
+            <div>
+              <p className="md:text-xl "> january 13 ,2025</p>
+            </div>
+            <div>
+              <p className="md:text-2xl "> Devon Lane</p>
             </div>
 
-            <div className="flex flex-col items-center gap-2 ">
-              <p className="font-semibold">Part Desc</p>
-              <p>20</p>
-            </div>
-
-            <div className="flex flex-col items-center gap-2 ">
-              <p className="font-semibold">Step No.</p>
-              <p>1</p>
+            <div className="flex flex-col  gap-1 md:gap-2">
+              <p className="text-sm md:text-base">Date: january 17, 2025</p>
+              <p className=" text-sm md:text-base">Qty: 20</p>
             </div>
           </div>
         </div>
-        <div className="absolute bottom-0 flex items-center gap-2 text-white bg-[#17274C] w-full justify-end p-2">
-          <NavLink to="/station-login">
-            {" "}
-            <button className="text-sm font-semibold">Log out</button>{" "}
-          </NavLink>
-          <span className="text-lg">
-            <IoLogOutOutline size={20} />
-          </span>
+
+        {/* Logout Button */}
+        <div className="flex items-center gap-2 text-white bg-[#17274C] w-full justify-end p-2">
+          <button
+            onClick={handleLogout}
+            className="text-xs md:text-sm font-semibold flex items-center gap-1"
+          >
+            Log out
+            <IoLogOutOutline size={16} className="md:size-[20px]" />
+          </button>
         </div>
       </div>
 
-      <div className="p-6">
-        <div className="flex items-center justify-center gap-4">
-          {/* Comment Input */}
+      {/* Main Content */}
+      <div className="container mx-auto p-4 md:p-6 flex-grow">
+        {/* Comment and Button Section */}
+        <div className="flex flex-col md:flex-row items-center gap-3 mb-6">
           <input
             type="text"
             placeholder="Write your comments"
-            className="border border-gray-400 py-2 px-4 rounded-md w-1/2 placeholder-gray-400 bg-transparent"
+            className="border border-gray-400 py-2 px-4 rounded-md w-full placeholder-gray-400 bg-transparent text-sm md:text-base"
           />
 
-          {/* Send Button */}
-          <button className="bg-brand text-white px-6 py-2 rounded-sm  transition font-semibold">
-            Send
-          </button>
+          <div className="flex gap-3 w-full ">
+            <button className="bg-brand text-white px-4 md:px-8 py-2 rounded-sm text-sm md:text-base font-semibold w-full md:w-auto">
+              Send
+            </button>
 
-          {/* Change Picture Button */}
-          <button className="bg-brand text-white px-6 py-2 rounded-sm  transition font-semibold">
-            Change Picture
-          </button>
+            <button className="bg-brand text-white px-4 py-2 rounded-sm text-sm md:text-base font-semibold w-full md:w-auto">
+              Change Picture
+            </button>
+          </div>
         </div>
 
+        {/* Steps Section */}
         <div className="py-4 flex flex-col gap-4">
-          {data.map((item) => (
-            <div className="flex flex-col md:flex-row gap-20 items-center bg-white rounded-lg shadow-sm">
-              <div className="p-2">
-                <img className="rounded-md" src={item.img} alt="" />
+          {data.map((item, index) => (
+            <div
+              key={index}
+              className="flex flex-col md:flex-row gap-4 md:gap-20 items-center bg-white rounded-lg shadow-sm p-4"
+            >
+              <div className="w-full md:w-auto">
+                <img
+                  className="rounded-md w-full max-w-xs md:max-w-none"
+                  src={item.img}
+                  alt={item.title}
+                />
               </div>
-              <div className="">
-                <p className="font-semibold">{item.title}</p>
-                <p>{item.decs}</p>
+              <div className="text-center md:text-left">
+                <p className="font-semibold text-lg">{item.title}</p>
+                <p className="text-gray-600">{item.decs}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="flex items-center justify-center gap-4">
-          <button className="bg-brand text-white px-6 py-2 rounded-md  transition font-semibold">
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
+          <button className="bg-brand text-white px-4 py-2 rounded-md text-sm md:text-base font-semibold w-full sm:w-auto">
             Complete Order
           </button>
 
-          <NavLink to="/scrap-entry">
-            <button className="bg-transparent text-[#052C89] px-10 py-2   transition font-semibold border-2 border-black rounded-md">
+          <NavLink to="/scrap-entry" className="w-full sm:w-auto">
+            <button className="bg-transparent text-brand px-4 py-2 font-semibold border-2 border-black rounded-md w-full">
               Scrap
             </button>
           </NavLink>
         </div>
       </div>
-      <div className="bg-[#243C75] flex justify-end gap-40 items-center p-4 sticky bottom-0 w-full ">
-        {/* Process & Inspection Section */}
-        <div className="text-white flex gap-10 items-center">
-          <div className="flex flex-col items-center">
-            <p>Process</p>
-            <p>Inspection</p>
+
+      {/* Footer Section */}
+      <div className="bg-[#243C75]  bottom-0 w-full">
+        <div className="container mx-auto p-3 md:p-4 flex flex-col md:flex-row justify-between items-center gap-4">
+          {/* Process & Inspection Section */}
+          <div className="text-white flex gap-4 md:gap-10 items-center flex-wrap justify-center">
+            <div className="flex flex-col items-center">
+              <p className="text-sm md:text-base">Process</p>
+              <p className="text-sm md:text-base">Inspection</p>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <p className="text-green-500 text-sm md:text-base">Qty</p>
+              <p className="text-green-500 text-sm md:text-base">20</p>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <p className="text-red-500 text-sm md:text-base">Scrap</p>
+              <p className="text-red-500 text-sm md:text-base">2</p>
+            </div>
           </div>
 
-          <div className="flex flex-col items-center">
-            <p className="text-green-500">Qty</p>
-            <p className="text-green-500">20</p>
+          {/* Action Buttons */}
+          <div className="flex gap-2 md:gap-6  justify-center">
+            {/* <NavLink to="/current-status" className="w-full sm:w-auto">
+              <button className="bg-white text-black px-3 py-1 md:px-6 md:py-2 rounded-md shadow-md hover:bg-gray-200 transition text-xs md:text-sm">
+                Process
+              </button>
+            </NavLink>
+
+            <NavLink to="/live-production" className="w-full sm:w-auto">
+              <button className="bg-white text-black px-3 py-1 md:px-6 md:py-2 rounded-md shadow-md hover:bg-gray-200 transition text-xs md:text-sm">
+                Employee
+              </button>
+            </NavLink>
+
+            <NavLink to="/live-production" className="w-full sm:w-auto">
+              <button className="bg-white text-black px-3 py-1 md:px-6 md:py-2 rounded-md shadow-md hover:bg-gray-200 transition text-xs md:text-sm">
+                Count
+              </button>
+            </NavLink>
+
+            <NavLink to="/current-quality" className="w-full sm:w-auto">
+              <button className="bg-white text-black px-3 py-1 md:px-6 md:py-2 rounded-md shadow-md hover:bg-gray-200 transition text-xs md:text-sm">
+                Cycle
+              </button>
+            </NavLink> */}
+
+           <div className="flex flex-col items-center text-white">
+              <p className="text-sm md:text-base font-semibold"> Employee</p>
+              <p className="text-sm md:text-base">Devon Lane</p>
+            </div>
+            <div className="flex flex-col items-center text-white">
+              <p className="text-sm md:text-base font-semibold">Cycle count</p>
+              <p className="text-sm md:text-base">150</p>
+            </div>
           </div>
-
-          <div className="flex flex-col items-center">
-            <p className="text-red-500">Scrap</p>
-            <p className="text-red-500">2</p>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex gap-4">
-          <NavLink to="/current-status">
-            <button className="bg-white text-black px-6 py-2 rounded-md shadow-md hover:bg-gray-200 transition">
-              Process
-            </button>
-          </NavLink>
-
-          <NavLink to="/live-production">
-            <button className="bg-white text-black px-6 py-2 rounded-md shadow-md hover:bg-gray-200 transition">
-              Employee
-            </button>
-          </NavLink>
-
-          <NavLink to="/live-production">
-            <button className="bg-white text-black px-6 py-2 rounded-md shadow-md hover:bg-gray-200 transition">
-              Count
-            </button>
-          </NavLink>
-
-          <NavLink to="/current-quality">
-            <button className="bg-white text-black px-6 py-2 rounded-md shadow-md hover:bg-gray-200 transition">
-              Cycle
-            </button>
-          </NavLink>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
