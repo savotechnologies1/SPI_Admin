@@ -72,7 +72,7 @@ const partsData = [
 ];
 
 const cycleData = [{ name: "Cut Trim", avgCycle: 20 }];
-``;
+
 
 const CurrentStatus = () => {
   const [selected, setSelected] = useState("Cut Trim");
