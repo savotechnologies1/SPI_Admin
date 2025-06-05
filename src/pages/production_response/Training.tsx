@@ -47,6 +47,16 @@ const Training = () => {
       <div className="bg-[#F5F6FA] min-h-screen flex flex-col">
         {/* Header Section */}
         <div className="bg-[#243C75] relative ">
+           {/* Logout Button */}
+          <div className="flex items-center gap-2 text-white bg-[#17274C] w-full justify-end p-2">
+            <button
+              onClick={handleLogout}
+              className="text-xs md:text-sm font-semibold flex items-center gap-1"
+            >
+              Log out
+              <IoLogOutOutline size={16} className="md:size-[20px]" />
+            </button>
+          </div>
           <div className="container mx-auto p-4 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="relative w-full md:w-auto">
               <img className="w-24 md:w-40" src={belt} alt="Belt icon" />
@@ -77,16 +87,7 @@ const Training = () => {
             </div>
           </div>
 
-          {/* Logout Button */}
-          <div className="flex items-center gap-2 text-white bg-[#17274C] w-full justify-end p-2">
-            <button
-              onClick={handleLogout}
-              className="text-xs md:text-sm font-semibold flex items-center gap-1"
-            >
-              Log out
-              <IoLogOutOutline size={16} className="md:size-[20px]" />
-            </button>
-          </div>
+         
         </div>
 
         {/* Main Content */}

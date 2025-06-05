@@ -8,12 +8,12 @@ import next from "../../assets/next.png";
 import data from "../../components/Data/TimeClockData";
 
 const TimeClockList = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
   const totalPages = Math.ceil(data.length / rowsPerPage);
-  const [selectedRow, setSelectedRow] = useState<number | null>(null);
+  // const [selectedRow, setSelectedRow] = useState<number | null>(null);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -26,16 +26,19 @@ const TimeClockList = () => {
   const startIndex = (currentPage - 1) * rowsPerPage;
   const visibleRows = data.slice(startIndex, startIndex + rowsPerPage);
 
-  const handleRowClick = (index: number) => {
-    setSelectedRow(selectedRow === index ? null : index);
-  };
+  // const handleRowClick = (index: number) => {
+  //   setSelectedRow(selectedRow === index ? null : index);
+  // };
 
-  const openModal = () => {
-    setIsOpen(true);
-  };
+  // const openModal = () => {
+  //   setIsOpen(true);
+  // };
 
-  const update = () => {
-    navigate('/update');
+  // const update = () => {
+  //   navigate('/update');
+  // };
+  const handleRowClicked = () => {
+    navigate("/time-sheet");
   };
 
   return (
@@ -47,15 +50,22 @@ const TimeClockList = () => {
               Time Clock List
             </h1>
           </div>
-          
+
           <div className="flex flex-wrap items-center mt-2 gap-1 md:gap-2">
-            <p className="text-sm md:text-base text-black" onClick={() => ("dashboardDetailes")}>
+            <p
+              className="text-sm md:text-base text-black"
+              onClick={() => "dashboardDetailes"}
+            >
               <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
             </p>
             <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
-            <span className="text-sm md:text-base hover:cursor-pointer">Employees</span>
+            <span className="text-sm md:text-base hover:cursor-pointer">
+              Employees
+            </span>
             <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
-            <span className="text-sm md:text-base hover:cursor-pointer">Approval</span>
+            <span className="text-sm md:text-base hover:cursor-pointer">
+              Approval
+            </span>
           </div>
 
           {/* Table Section */}
@@ -64,7 +74,10 @@ const TimeClockList = () => {
               <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 p-2 md:p-4">
                 {/* Dropdown for Role */}
                 <div className="flex flex-col w-full sm:w-auto border  rounded-md p-1">
-                  <label htmlFor="role" className="text-xs md:text-sm font-medium text-gray-500">
+                  <label
+                    htmlFor="role"
+                    className="text-xs md:text-sm font-medium text-gray-500"
+                  >
                     Role
                   </label>
                   <select
@@ -86,7 +99,11 @@ const TimeClockList = () => {
                     className="w-full rounded-md border-gray-300 pl-6 text-xs md:text-sm outline-none"
                   />
                   <div className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400">
-                    <img src={search_2} alt="" className="w-3 h-3 md:w-4 md:h-4" />
+                    <img
+                      src={search_2}
+                      alt=""
+                      className="w-3 h-3 md:w-4 md:h-4"
+                    />
                   </div>
                 </div>
 
@@ -101,7 +118,10 @@ const TimeClockList = () => {
                 <thead>
                   <tr className="bg-[#F4F6F8]">
                     <th className="px-2 py-2 text-left text-gray-400 text-xs md:text-sm font-medium">
-                      <input type="checkbox" className="w-3 h-3 md:w-4 md:h-4" />
+                      <input
+                        type="checkbox"
+                        className="w-3 h-3 md:w-4 md:h-4"
+                      />
                     </th>
                     <th className="px-2 py-2 text-left text-gray-400 text-xs md:text-sm font-medium">
                       Name
@@ -121,24 +141,33 @@ const TimeClockList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {visibleRows.map((item, index) => (
-                    <React.Fragment key={item.id }>
+                  {visibleRows.map((item) => (
+                    <React.Fragment key={item.id}>
                       <tr
-                        className={`border-b border-dashed border-gray-200 cursor-pointer ${
-                          selectedRow === index ? "bg-gray-100" : ""
-                        }`}
-                        onClick={() => handleRowClick(index)}
+                        className={`border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100 
+                         `}
+                        // onClick={() => handleRowClick(index)}
+                        onClick={() => handleRowClicked()}
                       >
                         <td className="px-2 py-2">
-                          <input type="checkbox" className="w-3 h-3 md:w-4 md:h-4" />
+                          <input
+                            type="checkbox"
+                            className="w-3 h-3 md:w-4 md:h-4"
+                          />
                         </td>
                         <td className="px-2 py-3">
                           <div className="flex items-center">
                             <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gray-300 mr-2 md:mr-4 overflow-hidden">
-                              <img src={item.avatar} alt="" className="w-full h-full object-cover" />
+                              <img
+                                src={item.avatar}
+                                alt=""
+                                className="w-full h-full object-cover"
+                              />
                             </div>
                             <div>
-                              <p className="text-xs md:text-sm font-medium">{item.name}</p>
+                              <p className="text-xs md:text-sm font-medium">
+                                {item.name}
+                              </p>
                               <p className="text-xs text-gray-400 truncate max-w-[100px] md:max-w-none">
                                 {item.email}
                               </p>
@@ -159,7 +188,7 @@ const TimeClockList = () => {
                         </td>
                       </tr>
 
-                      {selectedRow === index && (
+                      {/* {selectedRow === index && (
                         <tr>
                           <td colSpan={6} className="px-2 py-3 text-end">
                             <div className="flex flex-col sm:flex-row justify-end gap-2">
@@ -178,7 +207,7 @@ const TimeClockList = () => {
                             </div>
                           </td>
                         </tr>
-                      )}
+                      )} */}
                     </React.Fragment>
                   ))}
                 </tbody>
@@ -228,7 +257,7 @@ const TimeClockList = () => {
             <div className="mt-4 md:mt-6 flex flex-col sm:flex-row justify-center gap-3">
               <button
                 onClick={() => {
-                  setIsOpen(false); 
+                  setIsOpen(false);
                   console.log("Request Approved");
                 }}
                 className="px-4 py-2 bg-brand text-white rounded-md text-sm md:text-base"
@@ -236,7 +265,7 @@ const TimeClockList = () => {
                 Confirm
               </button>
               <button
-                onClick={() => setIsOpen(false)} 
+                onClick={() => setIsOpen(false)}
                 className="px-4 py-2 text-red-600 rounded-md text-sm md:text-base border border-gray-300"
               >
                 Cancel

@@ -202,8 +202,8 @@ const sections: Section[] = [
             path: "/work-instruction",
           },
           {
-            key: "Add work Instruction",
-            label: "Add work Instruction ",
+            key: "Add & Edit work Instruction",
+            label: "Add & Edit work Instruction ",
             path: "/add-work-instruction",
           },
           // {

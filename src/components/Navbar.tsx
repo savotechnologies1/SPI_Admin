@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import search from "../assets/search.png";
 import language from "../assets/language.png";
 import notification from "../assets/notification.png";
@@ -14,7 +14,49 @@ const Navbar = () => {
   const [isLanguage, isLanguageOpen] = useState(false);
   const [isNotification, isNotificationOpen] = useState(false);
   const [isProfile, isProfileOpen] = useState(false);
+  const languageRef = useRef<HTMLDivElement>(null);
+  const notificationRef = useRef<HTMLDivElement>(null);
   const profile = useSelector((state) => state.profile.data);
+
+const handleClickOutside = (event: MouseEvent) => {
+  if (
+    languageRef.current &&
+    !languageRef.current.contains(event.target as Node)
+  ) {
+    isLanguageOpen(false); 
+  }
+};
+
+// Add event listener for clicks outside the language dropdown
+useEffect(() => {
+  if (isLanguage) {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }
+}, [isLanguage]);
+
+
+useEffect(() => {
+  const handleClickOutsideNotification = (event: MouseEvent) => {
+    if (
+      notificationRef.current &&
+      !notificationRef.current.contains(event.target as Node)
+    ) {
+      isNotificationOpen(false);
+    }
+  };
+
+  if (isNotification) {
+    document.addEventListener("mousedown", handleClickOutsideNotification);
+  }
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutsideNotification);
+  };
+}, [isNotification]);
+
   return (
     <div className="fixed top-0 right-0 w-full z-30 items-center ">
       <div className="flex items-center justify-end  bg-white p-4 shadow   w-full ">
@@ -80,7 +122,8 @@ const Navbar = () => {
         </div>
 
         {isLanguage && (
-          <div className=" flex flex-col gap-4 absolute top-16 right-12 z-10 p-4">
+          <div
+          ref={languageRef} className=" flex flex-col gap-4 absolute top-16 right-12 z-10 p-4">
             <div className="flex flex-col i gap-2 bg-white py-2">
               <div className="flex gap-2 hover:bg-[#919EAB29] items-center cursor-pointer px-6">
                 <div>
@@ -115,10 +158,13 @@ const Navbar = () => {
         )}
 
         {isNotification && (
-          <div className="relative">
+          <div 
+           className="relative">
             <div className="fixed inset-0 bg-black opacity-30 z-10" />{" "}
             {/* Background overlay */}
-            <div className="absolute right-0 top-0 z-20">
+            <div
+          ref={notificationRef}
+             className="absolute right-0 top-0 z-20">
               <NotificationList />
             </div>
           </div>
@@ -128,7 +174,7 @@ const Navbar = () => {
             <div className="fixed inset-0 bg-black opacity-30 z-10" />{" "}
             {/* Background overlay */}
             <div className="absolute right-0 top-0 z-20">
-              <Account />
+              <Account  onClose={() => isProfileOpen(false)} />
             </div>
           </div>
         )}

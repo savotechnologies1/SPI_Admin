@@ -38,13 +38,13 @@ const handlePhotoChange = (e: any) => {
     },
   });
   const { reset } = form1;
-  const form2 = useForm(); 
+  // const form2 = useForm(); 
   const onSubmit = async (data: any) => {
     const response = await updateProfile(data,profileImg,isFile);
   };
-  const onSubmit1 = (data: any) => {
-    console.log(data);
-  };
+  // const onSubmit1 = (data: any) => {
+  //   console.log(data);
+  // };
 
 
 
@@ -267,13 +267,12 @@ const deletProfileApi = async()=>{
           </div>
         </div>
 
-        <div className="grid grid-cols-1 mt-6">
+        {/* <div className="grid grid-cols-1 mt-6">
           <div className=" bg-white p-6 rounded-lg shadow-md">
             <form
               onSubmit={form2.handleSubmit(onSubmit1)}
               className="grid grid-cols-1 md:grid-cols-4 gap-6"
             >
-              {/* Language */}
               <div className="col-span-4 md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   LANGUAGE
@@ -288,7 +287,6 @@ const deletProfileApi = async()=>{
                 </select>
               </div>
 
-              {/* Currency */}
               <div className="col-span-4 md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   CURRENCY
@@ -304,7 +302,6 @@ const deletProfileApi = async()=>{
                 </select>
               </div>
 
-              {/* Notifications */}
               <div className="col-span-4 md:col-span-2">
                 <div className="flex flex-col">
                   <input
@@ -317,7 +314,6 @@ const deletProfileApi = async()=>{
                 </div>
               </div>
 
-              {/* Terms and Conditions */}
               <div className="col-span-4 md:col-span-1">
                 <input
                   type="text"
@@ -328,7 +324,6 @@ const deletProfileApi = async()=>{
                 />
               </div>
 
-              {/* Change Password */}
               <div className="col-span-4 md:col-span-1">
                 <NavLink to="/forget-password">
                   <button
@@ -340,7 +335,6 @@ const deletProfileApi = async()=>{
                 </NavLink>
               </div>
 
-              {/* Auto Approval */}
               <div className="col-span-4">
                 <div className="flex items-center">
                   <input
@@ -359,7 +353,6 @@ const deletProfileApi = async()=>{
                 </div>
               </div>
 
-              {/* Delete Account */}
               <div className=" col-span-4 md:col-span-2">
                 <button
                   type="button"
@@ -369,7 +362,6 @@ const deletProfileApi = async()=>{
                 </button>
               </div>
 
-              {/* Save Settings Button */}
               <div className=" flex md:justify-end col-span-4 md:col-span-2">
                 <button
                   onClick={form2.handleSubmit(onSubmit1)}
@@ -381,7 +373,7 @@ const deletProfileApi = async()=>{
               </div>
             </form>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

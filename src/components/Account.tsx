@@ -6,7 +6,11 @@ import { Link } from "react-router-dom";
 import upgrade from "../assets/upgrade.png";
 import { useSelector } from "react-redux";
 
-const Account = () => {
+interface AccountProps {
+  onClose: () => void;
+}
+
+const Account = ({ onClose }: AccountProps) => {
   const [isOpen, setIsOpen] = useState(true);
   const [activeTab, setActiveTab] = useState("Dashboard");
   interface RootState {
@@ -65,13 +69,14 @@ const Account = () => {
 
   return (
     <div>
-      <div className="fixed overflow-y-auto right-0 top-0 z-20 w-[320px] h-full bg-white shadow-lg">
+      <div className="fixed overflow-y-auto right-0 top-0 z-60 w-[320px] h-full bg-white shadow-lg">
         <div className="p-4">
           <div>
             <img
               src={cross}
               alt="Close sidebar"
               className="cursor-pointer"
+              onClick={onClose}
             />
           </div>
           <div className="flex flex-col items-center pt-6">
