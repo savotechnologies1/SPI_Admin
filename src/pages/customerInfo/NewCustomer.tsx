@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { FaCircle } from "react-icons/fa";
-import {  NavLink } from "react-router-dom";
+import {  NavLink, useNavigate } from "react-router-dom";
 import { addCustomer } from "./https/customersApi";
 
 const NewCustomer = () => {
@@ -9,10 +9,16 @@ const NewCustomer = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const navigate = useNavigate()
   const onSubmit = async (data: object) => {
     // eslint-disable-next-line no-useless-catch
     try {
-      addCustomer(data).then();
+      const response = await addCustomer(data);
+      console.log('responseresponseresponse',response);
+      if(response?.status == 201){
+
+        navigate('/customer-list')
+      }
     } catch (error: unknown) {
       throw error;
     }

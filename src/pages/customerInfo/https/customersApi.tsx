@@ -8,7 +8,7 @@ export const addCustomer = async (apiData:object) => {
     if (response.status === 201) {
       toast.success(response.data.message);
     }
-    return response.data;
+    return response;
   } catch (error) {
      toast.error(error.response.data.message);
 
@@ -46,7 +46,7 @@ export const editCustomer = async (data: object, id: string) => {
     if (response.status === 201) {
       toast.success(response.data.message);
     }
-    return response.data;
+    return response;
   } catch (error: unknown) {
     toast.error(error.response.data.message);
   }
@@ -60,7 +60,7 @@ export const deleteCustomer = async (id: string) => {
     if (response.status === 201) {
       toast.success(response.data.message);
     }
-    return response.data;
+    return response;
   } catch (error: unknown) {
     toast.error(error.response.data.message);
   }

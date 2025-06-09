@@ -61,15 +61,15 @@ const WorkInstruction = () => {
             <FaCircle className="text-[6px] text-gray-500" />
           </span>
           <span className="text-xs sm:text-[14px] hover:cursor-pointer">
-            select process & product
+            select process & product 
           </span>
         </div>
       </div>
       <div className="mt-4 bg-white p-6 w-full rounded-2xl">
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
+        <div className="flex flex-col md:flex-row gap-4 mb-6"> 
           {/* Select Process */}
           <div className="w-full md:w-1/2">
-            <label className="font-semibold" htmlFor="process">
+            <label className="font-semibold" htmlFor="process"> 
               Select Process
             </label>
             <select
@@ -78,7 +78,7 @@ const WorkInstruction = () => {
               onChange={(e) => setSelectedProcess(e.target.value)}
               className="border py-4 px-4 rounded-md w-full mt-2"
             >
-              <option value="">Select Process</option>
+              <option value="">Select Process</option> 
               {processData.map((item) => (
                 <option value={item.value}>{item.label}</option>
               ))}
@@ -90,7 +90,7 @@ const WorkInstruction = () => {
             <label className="font-semibold" htmlFor="product">
               Select Product
             </label>
-            <select
+            <select 
               id="product"
               value={selectedProduct}
               onChange={(e) => setSelectedProduct(e.target.value)}
