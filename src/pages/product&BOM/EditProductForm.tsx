@@ -186,10 +186,10 @@ const EditProductForm = () => {
 
           {/* Description */}
           <label className="block col-span-4">
-            Part Description
+            Product Description
             <textarea
               name="description"
-              placeholder="Part Description"
+              placeholder="Product Description"
               value={partFormData.description}
               onChange={handlePartFormChange}
               className="border p-2 rounded w-full"
