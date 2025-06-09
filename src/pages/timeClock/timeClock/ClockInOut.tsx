@@ -1,6 +1,6 @@
 
-import img from "../../assets/arrow-right.png";
-import dp from "../../assets/dp_1.png";
+import img from "../../../assets/arrow-right.png";
+import dp from "../../../assets/dp_1.png";
 import QuickPunch from "./QuickPunch";
 import Timeline from "./TimeLine";
 const ClockInOut = () => {

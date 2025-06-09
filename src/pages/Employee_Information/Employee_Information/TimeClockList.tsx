@@ -6,7 +6,7 @@ import more from "../../assets/more.png";
 import back from "../../assets/back.png";
 import next from "../../assets/next.png";
 import data from "../../components/Data/TimeClockData";
- 
+
 const TimeClockList = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -14,14 +14,15 @@ const TimeClockList = () => {
   const rowsPerPage = 5;
   const totalPages = Math.ceil(data.length / rowsPerPage);
   // const [selectedRow, setSelectedRow] = useState<number | null>(null);
+
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
- 
+
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
- 
+
   const startIndex = (currentPage - 1) * rowsPerPage;
   const visibleRows = data.slice(startIndex, startIndex + rowsPerPage);
 
@@ -39,6 +40,7 @@ const TimeClockList = () => {
   const handleRowClicked = () => {
     navigate("/time-sheet");
   };
+
   return (
     <>
       <div className="p-4 md:p-7">
@@ -48,6 +50,7 @@ const TimeClockList = () => {
               Time Clock List
             </h1>
           </div>
+
           <div className="flex flex-wrap items-center mt-2 gap-1 md:gap-2">
             <p
               className="text-sm md:text-base text-black"
@@ -64,7 +67,7 @@ const TimeClockList = () => {
               Approval
             </span>
           </div>
- 
+
           {/* Table Section */}
           <div className="rounded-md mt-4 bg-white">
             <div className="p-2 md:p-4">
@@ -87,7 +90,7 @@ const TimeClockList = () => {
                     <option>Designer</option>
                   </select>
                 </div>
- 
+
                 {/* Search Field */}
                 <div className="flex-1 w-full relative border p-2 md:p-3 rounded-md">
                   <input
@@ -103,13 +106,13 @@ const TimeClockList = () => {
                     />
                   </div>
                 </div>
- 
+
                 <div className="hidden sm:block">
                   <img src={more} alt="" className="w-5 h-5" />
                 </div>
               </div>
             </div>
- 
+
             <div className="overflow-x-auto">
               <table className="w-full bg-white">
                 <thead>
@@ -184,6 +187,7 @@ const TimeClockList = () => {
                           {item.Hour}
                         </td>
                       </tr>
+
                       {/* {selectedRow === index && (
                         <tr>
                           <td colSpan={6} className="px-2 py-3 text-end">
@@ -208,7 +212,7 @@ const TimeClockList = () => {
                   ))}
                 </tbody>
               </table>
- 
+
               {/* Pagination Controls */}
               <div className="flex flex-col sm:flex-row justify-between items-center bg-white py-2 px-2 md:px-4 gap-2">
                 <p className="text-xs md:text-sm text-gray-600">
@@ -241,7 +245,7 @@ const TimeClockList = () => {
           </div>
         </div>
       </div>
- 
+
       {/* Modal */}
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
@@ -249,7 +253,7 @@ const TimeClockList = () => {
             <h2 className="text-lg md:text-xl font-semibold text-center">
               Confirm Your Approval Request
             </h2>
- 
+
             <div className="mt-4 md:mt-6 flex flex-col sm:flex-row justify-center gap-3">
               <button
                 onClick={() => {

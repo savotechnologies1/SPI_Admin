@@ -111,7 +111,7 @@ const sections: Section[] = [
               {
                 key: "newSupplier",
                 label: "Add & Edit supplier",
-                path: "/new-supplier",
+                path: "/add-supplier",
               },
             ],
           },
@@ -149,10 +149,16 @@ const sections: Section[] = [
             label: "Enter/Edit part number ",
             path: "/partform",
           },
+           
+          {
+            key: "Browse BOM",
+            label: "Browse BOM ",
+            path: "/part-table",
+          },
           {
             key: "Enter/Edit delete product number",
             label: "Enter/Edit delete product number ",
-            path: "/edit-partform",
+            path: "/add-product-number",
           },
 
           {
@@ -160,11 +166,7 @@ const sections: Section[] = [
             label: "Product tree view ",
             path: "/product-tree",
           },
-          {
-            key: "Browse BOM",
-            label: "Browse BOM ",
-            path: "/part-table",
-          },
+         
         ],
       },
       {

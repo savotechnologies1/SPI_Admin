@@ -9,7 +9,7 @@ export const addSupplier = async (apiData:object) => {
     if (response.status === 201) {
       toast.success(response.data.message);
     }
-    return response.data;
+    return response;
   }  catch (error: unknown) {
     const axiosError = error as AxiosError<{ message: string }>;
     if (axiosError.response?.data?.message) {
@@ -21,11 +21,11 @@ export const addSupplier = async (apiData:object) => {
 };
 
 
-export const supplierList = async (page = 1, limit = 5) => {
+export const supplierList = async (page = 1, limit = 5,searchVal:string) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/all-supplier?page=${page}&limit=${limit}`
+      `/all-supplier?page=${page}&limit=${limit}&search=${searchVal}`
     );
     console.log('response.dataresponse.data',response.data)
     return response.data;

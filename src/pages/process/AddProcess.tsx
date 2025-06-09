@@ -1,5 +1,5 @@
 import { FaCircle } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { addProcess } from "./https/processApi";
 import delete_img from "../../assets/delete_1.png";
@@ -12,10 +12,14 @@ const AddProcess = () => {
     formState: { errors },
   } = useForm();
 
+  const navigate = useNavigate()
   const onSubmit =async(data:object) => {
     console.log("Form Data:", data);
     try {
-      addProcess(data).then();
+     const response = await addProcess(data)
+       if (response.status === 200) {
+        navigate("/process-list");
+      }
     } catch (error: unknown) {
       console.log("errorerror", error);
     }
