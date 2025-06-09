@@ -116,7 +116,11 @@ const EditCustomer = () => {
   const onSubmit = async (data: object) => {
     // eslint-disable-next-line no-useless-catch
     try {
-      editCustomer(data, id).then();
+      const response = await editCustomer(data, id);
+      if(response?.status == 200){
+
+        navigate('/customer-list')
+      }
     } catch (error: unknown) {
       throw error;
     }
@@ -125,7 +129,6 @@ const EditCustomer = () => {
     try {
       const response = await customerDetail(id);
       const data = response.data;
-      console.log('datadata23111111111111',data);
       
       reset({
         firstName: data.firstName,
@@ -141,10 +144,14 @@ const EditCustomer = () => {
   useEffect(() => {
     fetchProcessDetail();
   }, [id]);
-  const handleDelete = () => {
+
+  const handleDelete = async() => {
       try {
-        deleteCustomer(id).then();
-        navigate('/')
+       const response = await deleteCustomer(id)
+        if(response?.status == 200){
+
+        navigate('/customer-list')
+      }
       } catch (error: unknown) {
         console.log("errorerror", error);
       }
