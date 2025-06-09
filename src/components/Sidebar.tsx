@@ -9,8 +9,11 @@ import {
   faBagShopping,
   faBriefcase,
   faCalendarMinus,
+  faChartSimple,
+  faFileInvoiceDollar,
   faGaugeSimpleHigh,
   faGear,
+  faNewspaper,
   faRightFromBracket,
   faUser,
   faVectorSquare,
@@ -18,7 +21,7 @@ import {
 // import { useSelector } from "react-redux";
 
 const dashboard = <FontAwesomeIcon icon={faGaugeSimpleHigh} />;
-const work = <FontAwesomeIcon icon={faBriefcase} />;
+const order = <FontAwesomeIcon icon={faChartSimple} />;
 
 const supply_chain = <FontAwesomeIcon icon={faUser} />;
 const time_clock = <FontAwesomeIcon icon={faUser} />;
@@ -27,6 +30,9 @@ const production_response = <FontAwesomeIcon icon={faCalendarMinus} />;
 
 const setting = <FontAwesomeIcon icon={faGear} />;
 const operation = <FontAwesomeIcon icon={faBagShopping} />;
+const invoice = <FontAwesomeIcon icon={faFileInvoiceDollar} />;
+const blog = <FontAwesomeIcon icon={faNewspaper} />;
+const work = <FontAwesomeIcon icon={faBriefcase} />;
 const logout = <FontAwesomeIcon icon={faRightFromBracket} color="red" />;
 interface SubmenuItem {
   key: string;
@@ -144,17 +150,18 @@ const sections: Section[] = [
         icon: operation,
         hasSubmenu: true,
         submenu: [
+                    {
+            key: "Browse BOM",
+            label: "Browse BOM ",
+            path: "/part-table",
+          },
           {
             key: "Enter/Edit part number",
             label: "Enter/Edit part number ",
             path: "/partform",
           },
            
-          {
-            key: "Browse BOM",
-            label: "Browse BOM ",
-            path: "/part-table",
-          },
+         
           {
             key: "Enter/Edit delete product number",
             label: "Enter/Edit delete product number ",
@@ -279,6 +286,49 @@ const sections: Section[] = [
   {
     category: "INSIGHT",
     items: [
+
+        {
+            key: "Operation performance",
+            label: "Operation performance",
+            icon: operation,
+            path: "/operation-performance",
+          },
+          {
+            key: " Quality Performance",
+            label: " Quality Performance",
+            icon: invoice,
+            path: "/quality-performance",
+          },
+          {
+            key: "Continuous Improvement",
+            label: "Continuous Improvement ",
+            icon: blog,
+            path: "/continuous-improvement",
+          },
+          {
+            key: "Customer relation",
+            label: "Customer relation",
+            icon: order,
+            path: "/customer-relation",
+          },
+          {
+            key: "Business Intelligence ",
+            label: "Business Intelligence  ",
+            icon: order,
+            path: "/business-intelligence",
+          },
+          {
+            key: "Business Analysis",
+            label: "Business Analysis ",
+            icon: blog,
+            path: "/business-analysis",
+          },
+          {
+            key: "projecion ",
+            label: "Projecion  ",
+            icon: production_response,
+            path: "/projecion",
+          },
       {
         key: "Import",
         label: "Import",

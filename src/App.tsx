@@ -57,6 +57,13 @@ import ClockInOut from "./pages/timeClock/timeClock/ClockInOut";
 import VacationRequest from "./pages/timeClock/timeClock/VacationRequest";
 import VacationList from "./pages/Employee_Information/Employee_Information/VacationList";
 import TimeSheet from "./pages/timeClock/timeClock/TimeSheet";
+import OperationPerformance from "./pages/Operation_performance/OperationPerformance";
+import QualityPerformance from "./pages/qualityPerformance/QualityPerformance";
+import ContinuousImprovement from "./pages/Continuous_Improvement/ContinuousImprovement";
+import CustomerRelation from "./pages/Customer_Relation/CustomerRelation";
+import BusinessIntelligence from "./pages/business-intelligence/BusinessIntelligence";
+import BusinessAnalysis from "./pages/business-analysis/BusinessAnalysis";
+import Projection from "./pages/projection/Projection";
 
 const App = () => {
   const { token } = useAuth();
@@ -140,6 +147,25 @@ const App = () => {
             <Route path="clock-in-out" element={<ClockInOut />} />
             <Route path="vaction-request" element={<VacationRequest />} />
             <Route path="time-sheet" element={<TimeSheet />} />
+             <Route
+              path="operation-performance"
+              element={<OperationPerformance />}
+            />
+            <Route
+              path="quality-performance"
+              element={<QualityPerformance />}
+            />
+            <Route
+              path="continuous-improvement"
+              element={<ContinuousImprovement />}
+            />
+            <Route path="customer-relation" element={<CustomerRelation />} />
+            <Route
+              path="business-intelligence"
+              element={<BusinessIntelligence />}
+            />
+            <Route path="business-analysis" element={<BusinessAnalysis />} />
+            <Route path="projecion" element={<Projection />} />
           </Route>
         </Routes>
       </Router>

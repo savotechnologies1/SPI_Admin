@@ -94,7 +94,7 @@ const PartForm = () => {
             <label className="block font-semibold mb-1">Supplier</label>
             <p
               {...register("supplier")}
-              className="border py-3 px-4 rounded-md w-full text-gray-600"
+              className="border py-3 px-4 rounded-md w-full text-gray-600 bg-gray-100"
             >
            {supplier}
             </p>

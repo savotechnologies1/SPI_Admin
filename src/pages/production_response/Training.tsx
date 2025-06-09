@@ -32,7 +32,7 @@ const Training = () => {
   const navigate = useNavigate();
 
   const [completedSteps, setCompletedSteps] = useState(new Set());
-  const handleStepClick = (stepIndex) => {
+  const handleStepClick = (stepIndex: unknown) => {
     setCompletedSteps((prev) => new Set(prev).add(stepIndex));
   };
   // Check if all steps are completed
@@ -61,14 +61,20 @@ const Training = () => {
             <div className="relative w-full md:w-auto">
               <img className="w-24 md:w-40" src={belt} alt="Belt icon" />
               {/* Text centered above image on all screens */}
-              <div className="text-white text-lg  font-semibold absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full  whitespace-nowrap flex justify-between">
+            <div className="text-white text-lg   absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full  whitespace-nowrap flex justify-between">
                 <div className="gap-2 flex flex-col">
-                  <p className="text-2xl 2xl:text-4xl">
+                  <p className="text-3xl 2xl:text-5xl font-semibold">
                     {" "}
                     tdriver GMT800 single
                   </p>
-                  <p className="md:text-xl "> 1001</p>
-                  <p className="md:text-xl "> 1002</p>
+                  <div className="flex gap-4">
+                    <p className="md:text-xl font-semibold"> 1001</p>
+                    <p className=" "> january 13 ,2025</p>
+                  </div>
+                  <div className="flex gap-4">
+                    <p className="md:text-xl font-semibold "> 1002</p>
+                    <p className=""> March 13 ,2025</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -83,6 +89,8 @@ const Training = () => {
               <div className="flex flex-col  gap-1 md:gap-2">
                 <p className="text-sm md:text-base">Date: january 17, 2025</p>
                 <p className=" text-sm md:text-base">Qty: 20</p>
+              <p className=" text-sm md:text-base">Scrap Qty: 2</p>
+
               </div>
             </div>
           </div>
@@ -102,11 +110,11 @@ const Training = () => {
 
             <div className="flex gap-3 w-full ">
               <button className="bg-brand text-white px-4 md:px-8 py-2 rounded-sm text-sm md:text-base font-semibold w-full md:w-auto">
-                Send
+                Add Picture
               </button>
 
               <button className="bg-brand text-white px-4 py-2 rounded-sm text-sm md:text-base font-semibold w-full md:w-auto">
-                Change Picture
+                Send
               </button>
             </div>
           </div>
@@ -209,8 +217,12 @@ const Training = () => {
               <p className="text-sm md:text-base font-semibold"> Employee</p>
               <p className="text-sm md:text-base">Devon Lane</p>
             </div>
+               <div className="flex flex-col items-center text-white">
+              <p className="text-sm md:text-base font-semibold"> Qty</p>
+              <p className="text-sm md:text-base"> 20</p>
+            </div>
             <div className="flex flex-col items-center text-white">
-              <p className="text-sm md:text-base font-semibold">Cycle count</p>
+              <p className="text-sm md:text-base font-semibold">Cycle Time</p>
               <p className="text-sm md:text-base">150</p>
             </div>
           </div>
