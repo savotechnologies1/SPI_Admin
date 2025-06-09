@@ -54,6 +54,9 @@ import VacationRequest from "./pages/timeClock/VacationRequest";
 import TimeSheet from "./pages/timeClock/TimeSheet";
 import AddEmployee from "./pages/Employee_Information/AddEmployee";
 import EditEmployee from "./pages/Employee_Information/EditEmployee";
+import AddSuppliers from "./pages/supplier_chain/AddSuppliers";
+import ProductNumber from "./pages/product&BOM/ProductNumber";
+import EditProductForm from "./pages/product&BOM/EditProductForm";
 
 const App = () => {
   const { token } = useAuth();
@@ -111,7 +114,9 @@ const App = () => {
             <Route path="edit-process/:id" element={<EditProcess />} />
             <Route path="add-process" element={<AddProcess />} />
             <Route path="partform" element={<PartForm />} />
-            <Route path="edit-partform" element={<EditPartForm />} />
+            <Route path="add-product-number" element={<ProductNumber />} />
+            <Route path="edit-part/:id" element={<EditPartForm />} />
+            <Route path="edit-product/:id" element={<EditProductForm />} />
             <Route path="product-tree" element={<ProductTree />} />
             <Route path="part-table" element={<PartTable />} />
             <Route path="import" element={<Import />} />
@@ -119,6 +124,7 @@ const App = () => {
             <Route path="current-quality" element={<CurrentQuality />} />
             <Route path="settings" element={<Settings />} />
             <Route path="all-supplier" element={<SupplierList />} />
+            <Route path="add-supplier" element={<AddSuppliers />} />
             <Route path="edit-supplier/:id" element={<EditSuppliers />} />
             <Route path="supplier-order" element={<SupplierOrders />} />
             <Route path="supplier-inventory" element={<SupplierInventory />} />

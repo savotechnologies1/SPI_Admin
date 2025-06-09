@@ -1,5 +1,5 @@
 import { FaCircle } from "react-icons/fa";
-import {  NavLink } from "react-router-dom";
+import {  NavLink, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { addSupplier } from "./https/suppliersApi";
 
@@ -10,11 +10,15 @@ const AddSuppliers = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data :object) => {
+  const navigate = useNavigate()
+  const onSubmit = async(data :object) => {
     console.log("✅ Supplier Form Data:", data);
      // eslint-disable-next-line no-useless-catch
     try {
-      addSupplier(data).then();
+      const response = await addSupplier(data);
+       if (response.status === 201) {
+        navigate("/all-supplier");
+      }
     } catch (error: unknown) {
       throw error;
     }
@@ -140,7 +144,7 @@ const AddSuppliers = () => {
             type="submit"
             className="bg-brand text-white px-5 py-3 rounded-lg"
           >
-            Create Supplier
+            Add/Edit Supplier
           </button>
         </div>
       </div>

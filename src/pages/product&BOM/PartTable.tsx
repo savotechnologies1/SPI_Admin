@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { PartContext } from "../../components/Context/PartContext";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FaCircle } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -13,9 +13,16 @@ export default function PartTable() {
       "PartContext is undefined. Ensure it is properly provided."
     );
   }
+const navigate = useNavigate()
 
   const { parts } = partContext;
 
+
+  const handleClick = (id)=>{
+    console.log('handleClickhandleClickhandleClick');
+    
+    navigate(`/edit-part/${id}`)
+  }
   return (
     <div className="p-4">
       <div>
@@ -113,6 +120,7 @@ export default function PartTable() {
                     <FiEdit2
                       className="text-black  cursor-pointer text-lg"
                       title="Quick Edit"
+                      onClick={()=>handleClick(index+1)}
                     />
                     {/* More Icon */}
                     <BsThreeDotsVertical

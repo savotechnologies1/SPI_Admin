@@ -44,7 +44,7 @@ const data = [
   },
 ];
 
-const EditPartForm = () => {
+const EditProductForm = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const context = useContext(PartContext);
 
@@ -501,4 +501,4 @@ const EditPartForm = () => {
   );
 };
 
-export default EditPartForm;
+export default EditProductForm;

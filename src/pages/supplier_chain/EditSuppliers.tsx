@@ -35,11 +35,10 @@ interface SupplierFormData {
     // eslint-disable-next-line no-useless-catch
     try {
       const response = await editSupplier(data, id!).then();
-       navigate("/all-supplier");
        console.log(response)
-      // if (response.status === 201) {
-      //   navigate("/all-supplier");
-      // }
+      if (response.status === 200) {
+        navigate("/all-supplier");
+      }
     } catch (error: unknown) {
       throw error;
     }

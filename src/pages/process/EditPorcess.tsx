@@ -1,5 +1,5 @@
 import { FaCircle } from "react-icons/fa";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import delete_img from "../../assets/delete_1.png";
 import { deleteProcess, editProcess, processDetail } from "./https/processApi";
@@ -15,13 +15,17 @@ const EditProcess = () => {
     formState: { errors },
     reset,
   } = useForm<ProcessFormData>();
+  const navigate = useNavigate()
 
   const { id } = useParams<{ id: string }>();
   const [processData, setProcessData] = useState([]);
   const onSubmit = async (data: object) => {
     // eslint-disable-next-line no-useless-catch
     try {
-      editProcess(data, id).then();
+      const response = await editProcess(data, id);
+        if (response.status === 200) {
+        navigate("/process-list");
+      }
     } catch (error: unknown) {
       throw error;
     }
@@ -45,9 +49,12 @@ const EditProcess = () => {
   useEffect(() => {
     fetchProcessDetail();
   }, [id]);
-  const handleDelete = () => {
+  const handleDelete = async() => {
     try {
-      deleteProcess(id).then();
+      const response = await deleteProcess(id)
+       if (response.status === 200) {
+        navigate("/process-list");
+      }
     } catch (error: unknown) {
       console.log("errorerror", error);
     }
@@ -56,7 +63,7 @@ const EditProcess = () => {
     <div className="p-7">
       <div>
         <h1 className="font-bold text-[20px] md:text-[24px] text-black">
-          Process
+          Edit Process
         </h1>
       </div>
 
@@ -67,11 +74,11 @@ const EditProcess = () => {
           </p>
           <FaCircle className="text-[6px] text-gray-500" />
           <span className="text-xs sm:text-[16px] hover:cursor-pointer">
-            Process
+          Process List
           </span>
           <FaCircle className="text-[6px] text-gray-500" />
           <span className="text-xs sm:text-[16px] hover:cursor-pointer">
-            Add/edit process
+          Edit process
           </span>
         </div>
       </div>
@@ -176,7 +183,7 @@ const EditProcess = () => {
                 type="submit"
                 className="bg-brand text-white px-6 py-3 rounded-md"
               >
-                Add/Edit Process
+               Save
               </button>
             </div>
 

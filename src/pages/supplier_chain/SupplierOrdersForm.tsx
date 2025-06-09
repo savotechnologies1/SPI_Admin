@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import del_img from "../../assets/delete_1.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotateRight } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 const SupplierOrdersForm = () => {
   const [showFields, setShowFields] = useState(false);
@@ -86,7 +87,7 @@ const SupplierOrdersForm = () => {
               <option value="Swizz">Swizz </option>
             </select>
           </div>
-          <div className="md:col-span-3 flex items-center justify-end gap-2">
+          <Link className="md:col-span-3 flex items-center justify-end gap-2" to='/add-supplier' >
             <span
               className="text-blue-500 text-sm flex items-center gap-1 cursor-pointer"
               onClick={handleClick}
@@ -107,7 +108,7 @@ const SupplierOrdersForm = () => {
               </svg>
               Add New supplier
             </span>
-          </div>
+          </Link>
         </div>
 
         {/* Render Fields When Clicked */}

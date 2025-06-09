@@ -43,7 +43,7 @@ export const editProcess = async (userData: object, id: string) => {
     if (response.status === 201) {
       toast.success(response.data.message);
     }
-    return response.data;
+    return response;
   } catch (error: unknown) {
     toast.error(error.response.data.message);
   }
@@ -56,7 +56,7 @@ export const deleteProcess = async (id: string) => {
     if (response.status === 200) {
       toast.success(response.data.message);
     }
-    return response.data;
+    return response;
   } catch (error: unknown) {
     toast.error(error.response.data.message);
   }
