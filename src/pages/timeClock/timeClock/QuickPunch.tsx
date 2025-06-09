@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import timer from "../../assets/timer.png";
+import timer from "../../../assets/timer.png";
 
 const QuickPunch = () => {
   const navigate = useNavigate();

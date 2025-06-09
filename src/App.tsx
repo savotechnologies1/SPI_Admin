@@ -44,19 +44,19 @@ import RunSchedule from "./pages/production_response/RunSchedule";
 import RunWithScan from "./pages/production_response/RunWithScan";
 import Training from "./pages/production_response/Training";
 import ScrapEntry from "./pages/production_response/ScrapEntry";
-import Employees from "./pages/Employee_Information/Employees";
-import VacationApproval from "./pages/Employee_Information/VacationApproval";
 import TimeClockList from "./pages/Employee_Information/TimeClockList";
-import TimeClockUpdate from "./pages/Employee_Information/TimeClockUpdate";
-import VacationList from "./pages/Employee_Information/VacationList";
-import ClockInOut from "./pages/timeClock/ClockInOut";
-import VacationRequest from "./pages/timeClock/VacationRequest";
-import TimeSheet from "./pages/timeClock/TimeSheet";
-import AddEmployee from "./pages/Employee_Information/AddEmployee";
-import EditEmployee from "./pages/Employee_Information/EditEmployee";
 import AddSuppliers from "./pages/supplier_chain/AddSuppliers";
 import ProductNumber from "./pages/product&BOM/ProductNumber";
 import EditProductForm from "./pages/product&BOM/EditProductForm";
+import Employees from "./pages/Employee_Information/Employee_Information/Employees";
+import AddEmployee from "./pages/Employee_Information/Employee_Information/AddEmployee";
+import EditEmployee from "./pages/Employee_Information/Employee_Information/EditEmployee";
+import VacationApproval from "./pages/Employee_Information/Employee_Information/VacationApproval";
+import TimeClockUpdate from "./pages/Employee_Information/Employee_Information/TimeClockUpdate";
+import ClockInOut from "./pages/timeClock/timeClock/ClockInOut";
+import VacationRequest from "./pages/timeClock/timeClock/VacationRequest";
+import VacationList from "./pages/Employee_Information/Employee_Information/VacationList";
+import TimeSheet from "./pages/timeClock/timeClock/TimeSheet";
 
 const App = () => {
   const { token } = useAuth();
