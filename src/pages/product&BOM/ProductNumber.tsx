@@ -10,38 +10,38 @@ const data = [
   {
     process: "Cut Trim",
     partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 days",
-    totalCycle: 54252,
+    cycleTime: "40 min",
+    totalCycle: "40 min",
   },
   {
     process: "Cut Trim",
     partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 days",
-    totalCycle: 54252,
+    cycleTime: "40 min",
+    totalCycle: "40 min",
   },
   {
     process: "Cut Trim",
     partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 days",
-    totalCycle: 54252,
+    cycleTime: "40 min",
+    totalCycle: "40 min",
   },
   {
     process: "Cut Trim",
     partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 days",
-    totalCycle: 54252,
+    cycleTime: "40 min",
+    totalCycle: "40 min",
   },
   {
     process: "Cut Trim",
     partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 days",
-    totalCycle: 54252,
+    cycleTime: "40 min",
+    totalCycle: "40 min",
   },
   {
     process: "Cut Trim",
     partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 days",
-    totalCycle: 54252,
+    cycleTime: "40 min",
+    totalCycle: "40 min",
   },
 ];
 
@@ -442,7 +442,7 @@ const ProductNumber = () => {
               <th className="px-4 py-3 font-medium">Process</th>
               <th className="px-4 py-3 font-medium">Product Description</th>
               <th className="px-4 py-3 font-medium">Cycle Time</th>
-              <th className="px-4 py-3 font-medium">Total Cycle</th>
+              <th className="px-4 py-3 font-medium">Total Cycle Time</th>
               <th className="px-4 py-3 font-medium"></th>
             </tr>
           </thead>
