@@ -5,7 +5,7 @@ import search_2 from "../../assets/search_2.png";
 import more from "../../assets/more.png";
 import back from "../../assets/back.png";
 import next from "../../assets/next.png";
-import data from "../../components/Data/TimeClockData";
+import data from "../../../components/Data/TimeClockData";
 
 const TimeClockList = () => {
   const navigate = useNavigate();
