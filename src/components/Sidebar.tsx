@@ -74,6 +74,76 @@ const sections: Section[] = [
   {
     category: "Daily Activity",
     items: [
+
+        {
+            key: "Order Scheduling",
+            label: "Order Scheduling",
+            icon: order,
+            hasSubmenu: true,
+            submenu: [
+              {
+                key: "Customer Order",
+                label: "Customer Order",
+                hasSubmenu: true,
+                submenu: [
+                  {
+                    key: "Stock Order",
+                    label: "Stock Order",
+                    path: "/stock-order",
+                  },
+                  {
+                    key: "Custom Order",
+                    label: "Custom Order",
+                    path: "/custom-order",
+                  },
+                ],
+              },
+              {
+                key: "Order Schedule",
+                label: "Order Schedule",
+                hasSubmenu: true,
+                submenu: [
+                  {
+                    key: "Stock Order Schedule",
+                    label: "Stock Order Schedule",
+                    path: "/stock-order-schedule",
+                  },
+                  {
+                    key: "Custom Order Schedule",
+                    label: "Custom Order Schedule",
+                    path: "/custom-order-schedule",
+                  },
+                  {
+                    key: "Daily Schedule",
+                    label: "Daily Schedule",
+                    hasSubmenu: true,
+                    submenu: [
+                      {
+                        key: "Daily schedule",
+                        label: "Daily schedule",
+                        path: "/daily-schedule",
+                      },
+                      {
+                        key: "Capacity Status",
+                        label: "Capacity Status",
+                        path: "/capacity-status",
+                      },
+                      {
+                        key: "Labor Forecast",
+                        label: "Labor Forecast",
+                        path: "/labor-forecast",
+                      },
+                      {
+                        key: "Inventory Status",
+                        label: "Inventory Status",
+                        path: "/inventory-status",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
       {
         key: "Customer Information ",
         label: "Customer Information ",

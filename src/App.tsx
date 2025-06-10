@@ -64,6 +64,15 @@ import CustomerRelation from "./pages/Customer_Relation/CustomerRelation";
 import BusinessIntelligence from "./pages/business-intelligence/BusinessIntelligence";
 import BusinessAnalysis from "./pages/business-analysis/BusinessAnalysis";
 import Projection from "./pages/projection/Projection";
+import StockOrder from "./pages/order_schedule/StockOrder";
+import CustomOrder from "./pages/order_schedule/CustomOrder";
+import StockOrderSchedule from "./pages/order_schedule/StockOrderSchedule";
+import CustomOrderSchedule from "./pages/order_schedule/CustomOrderSchedule";
+import CustomOrderDetails from "./pages/order_schedule/CustomOrderDetails";
+import DailySchedule from "./pages/order_schedule/DailySchedule";
+import LaborForecast from "./pages/order_schedule/LaborForecast";
+import InventoryStatus from "./pages/order_schedule/InventoryStatus";
+import CapacityStatus from "./pages/order_schedule/CapacityStatus";
 
 const App = () => {
   const { token } = useAuth();
@@ -113,6 +122,22 @@ const App = () => {
               path="work-instructions-list"
               element={<WorkInstructionList />}
             />
+
+             <Route path="stock-order" element={<StockOrder />} />
+            <Route path="custom-order" element={<CustomOrder />} />
+            <Route
+              path="stock-order-schedule"
+              element={<StockOrderSchedule />}
+            />
+            <Route
+              path="custom-order-schedule"
+              element={<CustomOrderSchedule />}
+            />
+            <Route path="custom-details" element={<CustomOrderDetails />} />
+            <Route path="daily-schedule" element={<DailySchedule />} />
+            <Route path="labor-forecast" element={<LaborForecast />} />
+            <Route path="inventory-status" element={<InventoryStatus />} />
+            <Route path="capacity-status" element={<CapacityStatus />} />
 
             <Route path="new-customer" element={<NewCustomer />} />
             <Route path="edit-customer/:id" element={<EditCustomer />} />
