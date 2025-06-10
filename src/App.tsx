@@ -73,6 +73,8 @@ import DailySchedule from "./pages/order_schedule/DailySchedule";
 import LaborForecast from "./pages/order_schedule/LaborForecast";
 import InventoryStatus from "./pages/order_schedule/InventoryStatus";
 import CapacityStatus from "./pages/order_schedule/CapacityStatus";
+import LiveProductionGoal from "./pages/productionLive/LiveProductionGoal";
+import CurrentStatus from "./pages/productionLive/CurrentStatus";
 
 const App = () => {
   const { token } = useAuth();
@@ -123,7 +125,7 @@ const App = () => {
               element={<WorkInstructionList />}
             />
 
-             <Route path="stock-order" element={<StockOrder />} />
+            <Route path="stock-order" element={<StockOrder />} />
             <Route path="custom-order" element={<CustomOrder />} />
             <Route
               path="stock-order-schedule"
@@ -139,6 +141,9 @@ const App = () => {
             <Route path="inventory-status" element={<InventoryStatus />} />
             <Route path="capacity-status" element={<CapacityStatus />} />
 
+            <Route path="live-production" element={<LiveProductionGoal />} />
+            <Route path="current-status" element={<CurrentStatus />} />
+            <Route path="current-quality" element={<CurrentQuality />} />
             <Route path="new-customer" element={<NewCustomer />} />
             <Route path="edit-customer/:id" element={<EditCustomer />} />
             <Route path="customer-list" element={<CustomerList />} />
@@ -172,7 +177,7 @@ const App = () => {
             <Route path="clock-in-out" element={<ClockInOut />} />
             <Route path="vaction-request" element={<VacationRequest />} />
             <Route path="time-sheet" element={<TimeSheet />} />
-             <Route
+            <Route
               path="operation-performance"
               element={<OperationPerformance />}
             />

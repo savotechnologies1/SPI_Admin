@@ -102,7 +102,7 @@ const CustomItemSelected = () => {
 
       {/* Text Info */}
       <div className="flex-1 px-4">
-        <p className=" text-base font-bold">{item.text}</p>
+        <p className=" text-sm 2xl:text-base font-bold">{item.text}</p>
         <div className="flex items-center text-xs text-gray-600 mt-1 space-x-2">
           <span>{item.text1}</span>
           <span className="text-gray-400">|</span>
@@ -117,9 +117,9 @@ const CustomItemSelected = () => {
           </select>
         </div>
       </div>
-
+<div className="space-y-2">
       {/* Quantity Controls */}
-      <div className="flex  items-center space-x-2 border rounded-md">
+      <div className="flex  items-center space-x-2 border rounded-md ">
         <button
           className=" px-2 py-1 rounded text-sm"
           onClick={() => handleInputChange(index, "dec", side)}
@@ -139,9 +139,10 @@ const CustomItemSelected = () => {
       <div className="text-xs text-gray-500 px-4 whitespace-nowrap">
         Available: {item.qty}
       </div>
+      </div>
 
       {/* Icon */}
-      <div className="text-blue-500 hover:text-blue-600 cursor-pointer">
+      <div className="text-blue-500 hover:text-blue-600 cursor-pointer ml-2">
         {side === "right" ? (
           <FaTrashAlt
             className="text-red-500   bg-red-100"
@@ -163,7 +164,7 @@ const CustomItemSelected = () => {
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 p-4">
       {/* Left Column - All Items */}
       <div>
-        <h2 className="font-semibold mb-4">Available Items</h2>
+        <h2 className="font-semibold mb-4">Custom orders avaiable to be scheduled</h2>
         <div className="space-y-4">
           {initialItems.map((item, index) =>
             renderItemCard(item, index, "left")
@@ -173,7 +174,7 @@ const CustomItemSelected = () => {
 
       {/* Right Column - Selected Items */}
       <div>
-        <h2 className="font-semibold mb-4">Selected Items</h2>
+        <h2 className="font-semibold mb-4">Custom orders selected to be scheduled</h2>
         {selectedItems.length === 0 ? (
           <p className="text-gray-500 text-sm">No items selected.</p>
         ) : (

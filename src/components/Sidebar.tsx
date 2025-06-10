@@ -74,76 +74,75 @@ const sections: Section[] = [
   {
     category: "Daily Activity",
     items: [
-
-        {
-            key: "Order Scheduling",
-            label: "Order Scheduling",
-            icon: order,
+      {
+        key: "Order Scheduling",
+        label: "Order Scheduling",
+        icon: order,
+        hasSubmenu: true,
+        submenu: [
+          {
+            key: "Customer Order",
+            label: "Customer Order",
             hasSubmenu: true,
             submenu: [
               {
-                key: "Customer Order",
-                label: "Customer Order",
-                hasSubmenu: true,
-                submenu: [
-                  {
-                    key: "Stock Order",
-                    label: "Stock Order",
-                    path: "/stock-order",
-                  },
-                  {
-                    key: "Custom Order",
-                    label: "Custom Order",
-                    path: "/custom-order",
-                  },
-                ],
+                key: "Stock Order",
+                label: "Stock Order",
+                path: "/stock-order",
               },
               {
-                key: "Order Schedule",
-                label: "Order Schedule",
+                key: "Custom Order",
+                label: "Custom Order",
+                path: "/custom-order",
+              },
+            ],
+          },
+          {
+            key: "Order Schedule",
+            label: "Order Schedule",
+            hasSubmenu: true,
+            submenu: [
+              {
+                key: "Stock Order Schedule",
+                label: "Stock Order Schedule",
+                path: "/stock-order-schedule",
+              },
+              {
+                key: "Custom Order Schedule",
+                label: "Custom Order Schedule",
+                path: "/custom-order-schedule",
+              },
+              {
+                key: "Daily Schedule",
+                label: "Daily Schedule",
                 hasSubmenu: true,
                 submenu: [
                   {
-                    key: "Stock Order Schedule",
-                    label: "Stock Order Schedule",
-                    path: "/stock-order-schedule",
+                    key: "Daily schedule",
+                    label: "Daily schedule",
+                    path: "/daily-schedule",
                   },
                   {
-                    key: "Custom Order Schedule",
-                    label: "Custom Order Schedule",
-                    path: "/custom-order-schedule",
+                    key: "Capacity Status",
+                    label: "Capacity Status",
+                    path: "/capacity-status",
                   },
                   {
-                    key: "Daily Schedule",
-                    label: "Daily Schedule",
-                    hasSubmenu: true,
-                    submenu: [
-                      {
-                        key: "Daily schedule",
-                        label: "Daily schedule",
-                        path: "/daily-schedule",
-                      },
-                      {
-                        key: "Capacity Status",
-                        label: "Capacity Status",
-                        path: "/capacity-status",
-                      },
-                      {
-                        key: "Labor Forecast",
-                        label: "Labor Forecast",
-                        path: "/labor-forecast",
-                      },
-                      {
-                        key: "Inventory Status",
-                        label: "Inventory Status",
-                        path: "/inventory-status",
-                      },
-                    ],
+                    key: "Labor Forecast",
+                    label: "Labor Forecast",
+                    path: "/labor-forecast",
+                  },
+                  {
+                    key: "Inventory Status",
+                    label: "Inventory Status",
+                    path: "/inventory-status",
                   },
                 ],
               },
             ],
           },
+        ],
+      },
       {
         key: "Customer Information ",
         label: "Customer Information ",
@@ -157,7 +156,7 @@ const sections: Section[] = [
           },
           {
             key: "Add & Edit Customer",
-            label: "Add &  Edit Customer",
+            label: "Add & Edit Customer",
             path: "/new-customer",
           },
           // {
@@ -208,6 +207,30 @@ const sections: Section[] = [
           },
         ],
       },
+
+      {
+        key: "Production Live",
+        label: "Production Live",
+        icon: production_live,
+        hasSubmenu: true,
+        submenu: [
+          {
+            key: "liveProduction",
+            label: "Live Production goal board",
+            path: "/live-production",
+          },
+          {
+            key: "currentState",
+            label: "Current status of each process",
+            path: "/current-status",
+          },
+          {
+            key: "currentQuality",
+            label: "Current quality performance",
+            path: "/current-quality",
+          },
+        ],
+      },
       {
         key: "Production Response",
         label: "Production Response",
@@ -220,30 +243,26 @@ const sections: Section[] = [
         icon: operation,
         hasSubmenu: true,
         submenu: [
-                    {
-            key: "Browse BOM",
-            label: "Browse BOM ",
-            path: "/part-table",
-          },
-          {
-            key: "Enter/Edit part number",
-            label: "Enter/Edit part number ",
-            path: "/partform",
-          },
-           
-         
-          {
-            key: "Enter/Edit delete product number",
-            label: "Enter/Edit delete product number ",
-            path: "/add-product-number",
-          },
-
           {
             key: "Product tree view",
             label: "Product tree view ",
             path: "/product-tree",
           },
-         
+          {
+            key: "Add & Edit   product number",
+            label: "Add & Edit   product number ",
+            path: "/add-product-number",
+          },
+          {
+            key: "Browse BOM",
+            label: "Browse BOM ",
+            path: "/part-table",
+          },
+          {
+            key: "Add & Edit  part number",
+            label: "Add & Edit  part number ",
+            path: "/partform",
+          },
         ],
       },
       {
@@ -258,8 +277,8 @@ const sections: Section[] = [
             path: "/process-list",
           },
           {
-            key: "Enter/Edit new process",
-            label: "Enter/Edit new process ",
+            key: "Add & Edit  new process",
+            label: "Add & Edit  new process ",
             path: "/add-process",
           },
         ],
@@ -315,16 +334,7 @@ const sections: Section[] = [
             label: "Add & Edit Employee",
             path: "/add-employee",
           },
-          {
-            key: "Vacation Request approval",
-            label: "Vacation Request approval",
-            path: "/vacation-list",
-          },
-          {
-            key: "Time Clock approval",
-            label: "Time Clock approval",
-            path: "/time-clock",
-          },
+         
         ],
       },
 
@@ -344,11 +354,23 @@ const sections: Section[] = [
             label: "Vacation Request",
             path: "/vaction-request",
           },
+           {
+            key: "Vacation Request approval",
+            label: "Vacation Request approval",
+            path: "/vacation-list",
+          },
+          
           {
+            key: "Time Clock approval",
+            label: "Time Clock approval",
+            path: "/time-clock",
+          },
+           {
             key: "Time_Sheet",
             label: "Time Sheet",
             path: "/time-sheet",
           },
+         
         ],
       },
     ],
@@ -356,49 +378,48 @@ const sections: Section[] = [
   {
     category: "INSIGHT",
     items: [
-
-        {
-            key: "Operation performance",
-            label: "Operation performance",
-            icon: operation,
-            path: "/operation-performance",
-          },
-          {
-            key: " Quality Performance",
-            label: " Quality Performance",
-            icon: invoice,
-            path: "/quality-performance",
-          },
-          {
-            key: "Continuous Improvement",
-            label: "Continuous Improvement ",
-            icon: blog,
-            path: "/continuous-improvement",
-          },
-          {
-            key: "Customer relation",
-            label: "Customer relation",
-            icon: order,
-            path: "/customer-relation",
-          },
-          {
-            key: "Business Intelligence ",
-            label: "Business Intelligence  ",
-            icon: order,
-            path: "/business-intelligence",
-          },
-          {
-            key: "Business Analysis",
-            label: "Business Analysis ",
-            icon: blog,
-            path: "/business-analysis",
-          },
-          {
-            key: "projecion ",
-            label: "Projecion  ",
-            icon: production_response,
-            path: "/projecion",
-          },
+      {
+        key: "Operation performance",
+        label: "Operation performance",
+        icon: operation,
+        path: "/operation-performance",
+      },
+      {
+        key: " Quality Performance",
+        label: " Quality Performance",
+        icon: invoice,
+        path: "/quality-performance",
+      },
+      {
+        key: "Continuous Improvement",
+        label: "Continuous Improvement ",
+        icon: blog,
+        path: "/continuous-improvement",
+      },
+      {
+        key: "Customer relation",
+        label: "Customer relation",
+        icon: order,
+        path: "/customer-relation",
+      },
+      {
+        key: "Business Intelligence ",
+        label: "Business Intelligence  ",
+        icon: order,
+        path: "/business-intelligence",
+      },
+      {
+        key: "Business Analysis",
+        label: "Business Analysis ",
+        icon: blog,
+        path: "/business-analysis",
+      },
+      {
+        key: "projecion ",
+        label: "Projecion  ",
+        icon: production_response,
+        path: "/projecion",
+      },
       {
         key: "Import",
         label: "Import",

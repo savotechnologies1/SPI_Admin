@@ -36,11 +36,11 @@ const ProductForm = () => {
         {/* Search Part */}
         <div className="bg-white p-4">
           <label className="block font-semibold mb-1">
-            Search Part For Update
+            Search Product For Update
           </label>
           <input
             type="text"
-            placeholder="Search part for update....."
+            placeholder="Search product for update....."
             className="border py-3 px-4 rounded-md w-full text-gray-600 placeholder-black"
             {...register("searchPart")}
           />
@@ -152,7 +152,7 @@ const ProductForm = () => {
             <span className="text-sm mr-1 bg-[#4092FF] rounded-full  text-white px-1 ">
               +
             </span>{" "}
-            Add More Parts
+            Add More Product
           </button>
         </div>
 
