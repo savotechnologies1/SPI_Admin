@@ -132,7 +132,7 @@ const EditEmployee = () => {
           >
           Save
           </button>
-             <div className="bg-[#FF5630] rounded-full p-2 cursor-pointer">
+             <div className="bg-[#FF5630] rounded-full py-2 px-2 cursor-pointer">
               <img
                 className="w-[20px]"
               src={delete_img}
