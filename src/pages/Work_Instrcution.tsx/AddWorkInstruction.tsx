@@ -193,7 +193,7 @@ export default function AddWorkInstruction() {
             onClick={() => handleSaveInstruction(index)}
             className="bg-brand text-white px-5 py-3 rounded-lg"
           >
-            Save Instruction
+           Add/Edit Instruction
           </button>
         </div>
       ))}

@@ -136,7 +136,7 @@ const NewCustomer = () => {
           </div>
           <div className="mt-6 text-end">
             <button className="bg-brand text-white px-5 py-3 rounded-lg ">
-              Create Customer
+              Add/Edit Customer
               {/* </Link> */}
             </button>
           </div>

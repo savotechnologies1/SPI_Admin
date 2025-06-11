@@ -310,11 +310,11 @@ const sections: Section[] = [
           //   path: "/edit-work-instruction",
           // },
 
-          // {
-          //   key: "Apply work instruction to diffrent product/process",
-          //   label: " Apply work instruction to diffrent product/process ",
-          //   path: "/apply-work-instruction",
-          // },
+          {
+            key: "Apply work instruction to diffrent product/process",
+            label: " Apply work instruction to diffrent product/process ",
+            path: "/apply-work-instruction",
+          },
         ],
       },
 

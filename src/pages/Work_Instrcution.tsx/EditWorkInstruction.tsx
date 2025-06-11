@@ -218,7 +218,7 @@ const EditWorkInstruction = () => {
           type="submit"
           className="bg-brand text-white px-5 py-3 rounded-lg transition-colors"
         >
-          Save Updated Work Instruction
+          Save 
         </button>
       </form>
     </div>

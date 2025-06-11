@@ -9,38 +9,38 @@ const data = [
   {
     process: "Cut Trim",
     partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 days",
-    totalCycle: 54252,
+    cycleTime: "320 min",
+    totalCycle: "54252 min",
   },
   {
     process: "Cut Trim",
     partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 days",
-    totalCycle: 54252,
+    cycleTime: "320 min",
+    totalCycle: "54252 min",
   },
   {
     process: "Cut Trim",
     partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 days",
-    totalCycle: 54252,
+    cycleTime: "320 min",
+    totalCycle: "54252 min",
   },
   {
     process: "Cut Trim",
     partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 days",
-    totalCycle: 54252,
+    cycleTime: "320 min",
+    totalCycle: "54252 min",
   },
   {
     process: "Cut Trim",
     partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 days",
-    totalCycle: 54252,
+    cycleTime: "320 min",
+    totalCycle: "54252 min",
   },
   {
     process: "Cut Trim",
     partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 days",
-    totalCycle: 54252,
+    cycleTime: "320 min",
+    totalCycle: "54252 min",
   },
 ];
 
@@ -132,7 +132,7 @@ const EditPartForm = () => {
     <div className="p-4 md:p-7">
       <div>
         <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-black">
-          Part Number
+          Edit Part Number
         </h1>
       </div>
 
@@ -146,7 +146,7 @@ const EditPartForm = () => {
         </span>
         <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
         <span className="text-xs sm:text-sm md:text-base hover:cursor-pointer">
-          Edit Part Number
+          Save
         </span>
       </div>
 
@@ -338,7 +338,7 @@ const EditPartForm = () => {
               type="submit"
               className="bg-brand text-white py-2 rounded px-4"
             >
-              Add Part Number
+              Save
             </button>
 
             <div className="bg-[#FF5630] p-3 rounded-full cursor-pointer">

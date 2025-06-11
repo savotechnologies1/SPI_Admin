@@ -181,7 +181,7 @@ const ProductNumber = () => {
               type="text"
               name="productNumber"
               placeholder="Enter Your Product Number"
-              value={formData.partNumber}
+              value={formData.productNumber}
               onChange={handleChange}
               className="border p-2 rounded w-full"
             />

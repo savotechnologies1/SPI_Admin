@@ -128,7 +128,7 @@ const EditEmployee = () => {
             type="submit"
             className="bg-brand text-white px-4 py-2 rounded-md"
           >
-           Update employee
+          Save
           </button>
        </div>
       </form>

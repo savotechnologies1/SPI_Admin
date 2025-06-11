@@ -149,20 +149,20 @@ const AddEmployee = () => {
           <label>I accept Term & Conditions.</label>
         </div>
 
-        <div className="flex gap-3 pt-2">
+        <div className="flex justify-between pt-2">
           <button
             type="submit"
             className="bg-brand text-white px-4 py-2 rounded-md"
           >
-            Add employee-
+            Add/Edit Employee
           </button>
-          <button
+          {/* <button
           onClick={handleEditEmployee}
             type="button"
             className="bg-green-600 text-white px-4 py-2 rounded-md"
           >
             Edit Employee
-          </button>
+          </button> */}
           <button
             type="button"
             className="bg-green-600 text-white px-4 py-2 rounded-md"
