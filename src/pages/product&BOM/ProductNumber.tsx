@@ -149,7 +149,7 @@ const ProductNumber = () => {
             <FaCircle className="text-[6px] text-gray-500" />
           </span>
           <span className="text-xs sm:text-[16px] hover:cursor-pointer">
-            Add Product Number
+            Add/Edit Product Number
           </span>
         </div>
       </div>

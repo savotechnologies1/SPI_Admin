@@ -160,6 +160,7 @@ const EditWorkInstruction = () => {
             Work Instruction (Describe Steps)
           </label>
           <textarea
+
             id="workInstruction"
             {...register("workInstruction", {
               required: "Description is required",
@@ -171,7 +172,7 @@ const EditWorkInstruction = () => {
           {errors.workInstruction && (
             <p className="text-red-500 text-sm">
               {errors.workInstruction.message}
-            </p>
+            </p> 
           )}
         </div>
 
@@ -226,5 +227,4 @@ const EditWorkInstruction = () => {
 };
 
 export default EditWorkInstruction;
-
 

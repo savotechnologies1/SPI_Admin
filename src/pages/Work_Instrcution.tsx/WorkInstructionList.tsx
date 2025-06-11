@@ -160,6 +160,7 @@ const handleEdit = (id:string) =>{
                   </td>
                   <td className="px-4 py-3 relative flex items-center gap-4">
                     <FiEdit2
+
                         onClick={()=>handleEdit(item.id)}
 
                       className="cursor-pointer text-lg"

@@ -338,7 +338,7 @@ const PartForm = () => {
               type="submit"
               className="bg-brand text-white py-2 rounded px-4"
             >
-              Add Part Number
+              Add/Edit Part Number
             </button>
 
             <div className="bg-[#FF5630] p-3 rounded-full cursor-pointer">
