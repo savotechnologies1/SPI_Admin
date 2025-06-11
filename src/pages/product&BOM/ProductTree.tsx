@@ -4,6 +4,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaCircle} from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import add from "../../assets/add.png";
+
 
 export default function ProductTree() {
   const partContext = useContext(PartContext);
@@ -15,19 +17,33 @@ export default function ProductTree() {
   const { parts } = partContext;
 
   const navigate = useNavigate()
-  const handleClick = (id)=>{
+  const handleClick = (id:string)=>{
     console.log('handleClickhandleClickhandleClick');
     
     navigate(`/edit-product/${id}`)
   }
   return (
     <div className="p-4 mt-4">
-      <div>
-        {" "}
-        <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
-          Browse Product
-        </h1>
-      </div>
+     
+        <div className="flex flex-col sm:flex-row justify-between gap-4">
+          <div>
+            <h1 className="font-bold text-xl md:text-2xl text-black">
+             Browse Product
+            </h1>
+            
+          </div>
+
+          <div className="flex relative">
+            <button className="py-2 px-7 rounded-lg border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer">
+              <NavLink to="/add-product-number">
+                <span className="">New Product Number</span>
+              </NavLink>
+            </button>
+            <div className="absolute top-3 left-2">
+              <img src={add} alt="" className="w-4 h-4" />
+            </div>
+          </div>
+        </div>
       <div className="flex justify-between  items-center">
         <div className="flex gap-2 items-center ">
           <p

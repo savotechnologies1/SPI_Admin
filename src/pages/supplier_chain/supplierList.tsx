@@ -267,11 +267,12 @@ const SupplierList = () => {
             <h1 className="font-bold text-xl md:text-2xl text-black">
               Suppliers
             </h1>
+            
           </div>
 
           <div className="flex relative">
             <button className="py-2 px-7 rounded-lg border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer">
-              <NavLink to="/new-customer">
+              <NavLink to="/add-supplier">
                 <span className="">New Supplier</span>
               </NavLink>
             </button>

@@ -7,6 +7,8 @@ import more from "../../assets/more.png";
 import edit from "../../assets/edit_icon.png";
 import back from "../../assets/back.png";
 import next from "../../assets/next.png";
+import add from "../../assets/add.png";
+
 // import data from "../../components/Data/processListData";
 import { deleteProcess, processList } from "./https/processApi";
 interface ProcessItem {
@@ -71,6 +73,17 @@ const ProcessList = () => {
           <h1 className="font-bold text-[20px] md:text-[24px] text-black">
             Process
           </h1>
+          
+          <div className="flex relative">
+            <button className="py-2 px-7 rounded-lg border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer">
+              <NavLink to="/add-process">
+                <span className="">New Process</span>
+              </NavLink>
+            </button>
+            <div className="absolute top-3 left-2">
+              <img src={add} alt="" className="w-4 h-4" />
+            </div>
+          </div>
         </div>
 
         <div className="flex justify-between mt-2 items-center">
@@ -85,6 +98,7 @@ const ProcessList = () => {
               Process List
             </span>
           </div>
+          
         </div>
 
         <div className="overflow-x-auto mt-6 bg-white rounded">

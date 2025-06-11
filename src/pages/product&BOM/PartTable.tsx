@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaCircle } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import add from "../../assets/add.png";
 
 export default function PartTable() {
   const partContext = useContext(PartContext);
@@ -25,11 +26,22 @@ const navigate = useNavigate()
   }
   return (
     <div className="p-4">
-      <div>
+      <div className="flex justify-between mt-8">
         {" "}
         <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
           Browse BOM
         </h1>
+        
+          <div className="flex relative">
+            <button className="py-2 px-7 rounded-lg border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer">
+              <NavLink to="/partform">
+                <span className="">New Part Number</span>
+              </NavLink>
+            </button>
+            <div className="absolute top-3 left-2">
+              <img src={add} alt="" className="w-4 h-4" />
+            </div>
+          </div>
       </div>
       <div className="flex justify-between  items-center">
         <div className="flex gap-2 items-center ">

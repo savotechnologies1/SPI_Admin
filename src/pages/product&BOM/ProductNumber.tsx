@@ -130,6 +130,7 @@ const ProductNumber = () => {
         <h1 className="font-bold text-[20px] md:text-[24px] text-black">
           Product Number
         </h1>
+        
       </div>
       <div className="flex justify-between mt-2 items-center">
         <div className="flex gap-4 items-center ">
@@ -149,7 +150,7 @@ const ProductNumber = () => {
             <FaCircle className="text-[6px] text-gray-500" />
           </span>
           <span className="text-xs sm:text-[16px] hover:cursor-pointer">
-            Add/Edit Product Number
+            Product Number
           </span>
         </div>
       </div>

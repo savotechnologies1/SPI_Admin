@@ -3,6 +3,7 @@ import { FiEdit2 } from "react-icons/fi";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
+import add from "../../assets/add.png";
 
 interface WorkInstructionItem {
   id: string;
@@ -99,10 +100,22 @@ const handleEdit = (id:string) =>{
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="font-semibold text-[20px] md:text-[24px] text-black mb-2">
+    <div className="flex justify-between">
+        <h1 className="font-semibold text-[20px] md:text-[24px] text-black mb-2">
         List of Work Instruction
       </h1>
-
+  
+          <div className="flex relative">
+            <button className="py-2 px-7 rounded-lg border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer">
+              <NavLink to="/add-work-instruction">
+                <span className="">New Work Instruction</span>
+              </NavLink>
+            </button>
+            <div className="absolute top-3 left-2">
+              <img src={add} alt="" className="w-4 h-4" />
+            </div>
+          </div>
+      </div>
       <div className="flex gap-2 items-center text-sm text-gray-500">
         <NavLink to="/dashboardDetailes">Dashboard</NavLink>
         <FaCircle className="text-[6px]" />
@@ -116,6 +129,7 @@ const handleEdit = (id:string) =>{
           <select className="border w-full md:w-1/3 px-3 py-2 rounded-md">
             <option>Project Cordinator</option>
           </select>
+          
           <input
             type="text"
             placeholder="Search..."
@@ -200,3 +214,5 @@ const handleEdit = (id:string) =>{
 };
 
 export default WorkInstructionList;
+
+

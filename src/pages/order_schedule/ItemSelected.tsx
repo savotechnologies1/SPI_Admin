@@ -100,6 +100,8 @@ const ItemSelected = () => {
                 <p className="font-bold text-[#637381] bg-[#919EAB29] px-2 py-1 rounded-md">
                   {item.qty}
                 </p>
+
+                
               </div>
               <input
                 className="w-full sm:w-40 p-2 border-2 rounded-md text-sm text-[#5A6774]"
