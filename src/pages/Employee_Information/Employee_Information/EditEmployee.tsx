@@ -1,6 +1,8 @@
 import { FaCircle } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import delete_img from "../../../assets/delete_1.png";
+
 
 type FormData = {
   firstName: string;
@@ -123,13 +125,21 @@ const EditEmployee = () => {
           />
         </div>
 
- <div className="flex justify-end pt-2">
+ <div className="flex justify-between pt-2">
         <button
             type="submit"
             className="bg-brand text-white px-4 py-2 rounded-md"
           >
           Save
           </button>
+             <div className="bg-[#FF5630] rounded-full p-2 cursor-pointer">
+              <img
+                className="w-[20px]"
+              src={delete_img}
+                alt="delete"
+                // onClick={handleDelete}
+              />
+            </div>
        </div>
       </form>
     </div>

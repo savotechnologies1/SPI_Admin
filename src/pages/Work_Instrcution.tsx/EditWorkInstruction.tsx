@@ -6,6 +6,7 @@ import {
   workInstructionDetail,
 } from "./https/workInstructionApi";
 import { useForm } from "react-hook-form";
+import delete_img from "../../assets/delete_1.png";
 
 type FormData = {
   id: string;
@@ -215,12 +216,22 @@ const EditWorkInstruction = () => {
         </div>
 
         {/* Save Button */}
-        <button
+       <div className="flex justify-between">  
+         <button
           type="submit"
           className="bg-brand text-white px-5 py-3 rounded-lg transition-colors"
         >
           Save 
         </button>
+         <div className="bg-[#FF5630] rounded-full p-2 cursor-pointer">
+              <img
+                className="w-[20px]"
+              src={delete_img}
+                alt="delete"
+                // onClick={handleDelete}
+              />
+            </div>
+       </div>
       </form>
     </div>
   );

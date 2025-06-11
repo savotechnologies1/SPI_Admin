@@ -252,7 +252,7 @@ const EditCustomer = () => {
               {...register("billingTerms", { required: true })}
               placeholder="Billing Terms"
               className="border py-4 px-4 rounded-md w-full "
-            />
+            />  
             {errors.billingTerms && (
               <p className="text-red-500 text-sm">This field is required</p>
             )}
@@ -264,7 +264,7 @@ const EditCustomer = () => {
                 type="submit"
                 className="bg-brand text-white px-6 py-2 rounded-md"
               >
-             Update
+             Save
               </button>
             </div>
 
