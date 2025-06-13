@@ -35,7 +35,6 @@ const NewCustomer = () => {
   return (
     <div className="p-4 md:p-7">
       <div>
-        {" "}
         <h1 className="font-bold text-[20px] md:text-[24px] text-black">
           Create a new Customer
         </h1>
@@ -58,7 +57,7 @@ const NewCustomer = () => {
             <FaCircle className="text-[6px] text-gray-500" />
           </span>
           <span className="text-xs sm:text-[16px] hover:cursor-pointer">
-            Edit Customer
+            New Customer
           </span>
         </div>
       </div>

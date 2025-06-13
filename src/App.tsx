@@ -169,7 +169,7 @@ const App = () => {
             <Route path="Scrap-entry" element={<ScrapEntry />} />
             <Route path="/employees" element={<Employees />} />
             <Route path="/add-employee" element={<AddEmployee />} />
-            <Route path="/edit-employee" element={<EditEmployee />} />
+            <Route path="/edit-employee/:id" element={<EditEmployee />} />
             <Route path="vacation-list" element={<VacationList />} />
             <Route path="vacation-approval" element={<VacationApproval />} />
             <Route path="time-clock" element={<TimeClockList />} />

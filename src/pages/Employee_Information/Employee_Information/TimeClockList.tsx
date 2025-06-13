@@ -49,10 +49,8 @@ const TimeClockList = () => {
             </h1>
           </div>
           <div className="flex flex-wrap items-center mt-2 gap-1 md:gap-2">
-            <p
-              className="text-sm md:text-base text-black"
-              onClick={() => "dashboardDetailes"}
-            >
+            <p className="text-sm md:text-base text-black"
+              onClick={() => "dashboardDetailes"} >
               <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
             </p>
             <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
@@ -69,7 +67,6 @@ const TimeClockList = () => {
           <div className="rounded-md mt-4 bg-white">
             <div className="p-2 md:p-4">
               <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 p-2 md:p-4">
-                {/* Dropdown for Role */}
                 <div className="flex flex-col w-full sm:w-auto border  rounded-md p-1">
                   <label
                     htmlFor="role"
@@ -141,9 +138,7 @@ const TimeClockList = () => {
                   {visibleRows.map((item) => (
                     <React.Fragment key={item.id}>
                       <tr
-                        className={`border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100
-                         `}
-                        // onClick={() => handleRowClick(index)}
+                        className={`border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100`}
                         onClick={() => handleRowClicked()}
                       >
                         <td className="px-2 py-2">
@@ -157,7 +152,6 @@ const TimeClockList = () => {
                             <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gray-300 mr-2 md:mr-4 overflow-hidden">
                               <img
                                 src={item.avatar}
-                                alt=""
                                 className="w-full h-full object-cover"
                               />
                             </div>

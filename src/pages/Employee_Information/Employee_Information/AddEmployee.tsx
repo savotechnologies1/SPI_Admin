@@ -1,6 +1,7 @@
 import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { addEmployee } from "../https/EmployeeApis";
 
 type FormData = {
   firstName: string;
@@ -8,6 +9,7 @@ type FormData = {
   fullName: string;
   hourlyRate: string;
   shift: string;
+  status: string;
   startDate: string;
   pin: string;
   shopFloorLogin: string;
@@ -17,14 +19,24 @@ type FormData = {
 const AddEmployee = () => {
   const { register, handleSubmit } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     console.log("Form Submitted:", data);
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const response = await addEmployee(data);
+      console.log("responseresponseresponse", response);
+      if (response?.status == 201) {
+        navigate("/employees");
+      }
+    } catch (error: unknown) {
+      throw error;
+    }
   };
 
   const navigate = useNavigate();
-  const handleEditEmployee = ()=>{
-    navigate ("/edit-employee")
-  }
+  const handleEditEmployee = () => {
+    navigate("/edit-employee");
+  };
   return (
     <div className="p-4 md:p-7">
       <div>
@@ -107,7 +119,7 @@ const AddEmployee = () => {
             <option value="night">Night</option>
           </select>
         </div>
-
+    
         <div>
           <label className="font-semibold block mb-1">Start Date</label>
           <input
@@ -139,7 +151,19 @@ const AddEmployee = () => {
             <option value="no">No</option>
           </select>
         </div>
-
+        <div>
+          <label className="font-semibold block mb-1">Status</label>
+          <select
+            {...register("status")}
+            className="w-full border px-4 py-2 rounded-md text-gray-600"
+          >
+            <option value="">Status</option>
+            <option value="pending">Pending</option>
+            <option value="active">Active</option>
+            <option value="banned">Banned</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
         <div className="flex items-center gap-2">
           <input
             type="checkbox"

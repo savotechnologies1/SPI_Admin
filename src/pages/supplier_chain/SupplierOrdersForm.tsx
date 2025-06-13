@@ -4,6 +4,7 @@ import del_img from "../../assets/delete_1.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotateRight } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import { addSupplierOrder, selectSupplier } from "./https/suppliersApi";
 
 const SupplierOrdersForm = () => {
   const [showFields, setShowFields] = useState(false);
@@ -44,13 +45,40 @@ const SupplierOrdersForm = () => {
      setValue,
   } = useForm();
 
-  const onSubmit = (data :object) => {
+  const onSubmit = async (data :object) => {
     console.log("Form Data:", data);
+     // eslint-disable-next-line no-useless-catch
+     try {
+          const response = await addSupplierOrder(data);
+          //  if (response.status === 201) {
+          //   navigate("/all-supplier");
+          // }
+        } catch (error: unknown) {
+          throw error;
+        }
   };
 
   useEffect(() => {
   setValue("orderNumber", orderNumber);
 }, [orderNumber, setValue]);
+
+  const [supplierData,setSupplierData] = useState([])
+  const fetchCustomerList = async (page = 1) => {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const response = await selectSupplier();
+      setSupplierData(response);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomerList();
+  }, []);
+  console.log('supplierData',supplierData);
+  
+
   return (
     <div className="p-4 bg-white rounded-2xl border shadow-md">
       <form onSubmit={handleSubmit(onSubmit)} className="">
@@ -59,7 +87,7 @@ const SupplierOrdersForm = () => {
           <div>
             <label className="font-semibold">Order Number</label>
             <input
-              {...register("orderNumber", {
+              {...register("order_number", {
                 required: "Order Number required",
               })}
               type="number"
@@ -68,25 +96,29 @@ const SupplierOrdersForm = () => {
               className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
             />
           </div>
-          <div>
+          <div> 
             <label className="font-semibold">Order Date</label>
             <input
-              {...register("OrderDate", { required: "Order Date is required" })}
+              {...register("order_date", { required: "Order Date is required" })}
               type="date"
               placeholder=""
               className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
             />
           </div>
           <div>
-            <label className="font-semibold">Supplier</label>
-            <select
-              {...register("Process")}
-              className="border py-3 px-4 rounded-md w-full  text-gray-600"
-            >
-              <option value="cortez Herring">Cortez Herring </option>
-              <option value="Swizz">Swizz </option>
-            </select>
-          </div>
+        <label className="font-semibold">Supplier</label>
+        <select
+          {...register("supplier_id")}
+          className="border py-3 px-4 rounded-md w-full text-gray-600"
+        >
+          <option value="">-- Select Supplier --</option>
+          {supplierData.map((item) => (
+            <option key={item.id} value={item.id}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+      </div>
           <Link className="md:col-span-3 flex items-center justify-end gap-2" to='/add-supplier' >
             <span
               className="text-blue-500 text-sm flex items-center gap-1 cursor-pointer"
@@ -168,7 +200,7 @@ const SupplierOrdersForm = () => {
               </span>{" "}
             </label>
             <select
-              {...register("Process1")}
+              {...register("part_name")}
               className="border py-3 px-4 rounded-md w-full  text-gray-600 "
             >
               <option value="Cortez Herring">Cortez Herring </option>
@@ -179,7 +211,7 @@ const SupplierOrdersForm = () => {
           <div>
             <label className="font-semibold">Order Quantity</label>
             <input
-              {...register("ProductQuantity", {})}
+              {...register("quantity", {})}
               type="number"
               placeholder="Enter part Quantity"
               className="border py-3 px-4 rounded-md w-full  text-gray-600"
@@ -188,7 +220,7 @@ const SupplierOrdersForm = () => {
           <div>
             <label className="font-semibold">Cost</label>
             <input
-              {...register("Cost")}
+              {...register("cost")}
               type="number"
               placeholder="Enter part Cost"
               className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
@@ -198,21 +230,31 @@ const SupplierOrdersForm = () => {
           <div>
             <label className="font-semibold">Need Date</label>
             <input
-              {...register("Time")}
+              {...register("need_date")}
               type="date"
               placeholder="09:33 AM"
               className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
             />
           </div>
         </div>
-
+    <div className="flex justify-between">
+      <div className="mt-6 text-end">
+          <button
+            type="submit"
+            className="bg-brand text-white px-5 py-3 rounded-lg"
+          >
+            Add Supplier Order
+          </button>
+        </div>
         {/* Submit Button */}
         <div className=" mt-6">
+
           <button className="px-6 py-2  text-red-700 transition ml-6 ">
        
           <FontAwesomeIcon icon={faRotateRight} />   Reset
           </button>
         </div>
+    </div>
       </form>
     </div>
   );

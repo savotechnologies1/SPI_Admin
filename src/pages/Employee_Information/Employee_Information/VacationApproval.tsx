@@ -12,10 +12,7 @@ const VacationApproval = () => {
       </div>
       <div className="flex justify-between mt-2 items-center">
         <div className="flex gap-4 items-center ">
-          <p
-            className={`text-xs sm:text-[14px] text-black`}
-            onClick={() => ("dashboardDetailes")}
-          >
+          <p className={`text-xs sm:text-[14px] text-black`} onClick={() => ("dashboardDetailes")}>
             <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
           </p>
           <span>
@@ -33,7 +30,7 @@ const VacationApproval = () => {
         </div>
       </div>
       <div className="mt-4 bg-white p-6 w-full rounded-2xl md:w-2/3">
-        <label className="font-semibold " htmlFor="">
+        <label className="font-semibold">
           Employee Full Name
         </label>
         <div className="mt-2 w-full mb-6">
