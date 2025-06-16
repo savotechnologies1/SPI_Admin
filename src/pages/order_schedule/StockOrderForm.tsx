@@ -74,7 +74,6 @@ const StockOrderForm = () => {
   const { register, handleSubmit } = useForm();
 
  useEffect(() => {
-    // Generates random order number like: ORD-594203
     const randomOrder =  + Math.floor(10000 + Math.random() * 90000);
     setOrderNumber(randomOrder.toString());
   }, []);

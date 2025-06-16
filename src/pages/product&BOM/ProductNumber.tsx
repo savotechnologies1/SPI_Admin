@@ -5,6 +5,7 @@ import { PartContext } from "../../components/Context/PartContext";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import edit from "../../assets/edit.png";
 import more from "../../assets/more.png";
+import { createProductNumber } from "./https/partProductApis";
 
 const data = [
   {
@@ -58,11 +59,11 @@ const ProductNumber = () => {
 
   interface Part {
     partFamily: string;
-    partNumber: string;
+    productNumber: string;
     description: string;
     cost: number;
     leadTime: number;
-    availableStock: string;
+    availStock: string;
     orderQty: number;
     cycleTime: number;
     company?: string;
@@ -72,11 +73,11 @@ const ProductNumber = () => {
 
   const [formData, setFormData] = useState<Part>({
     partFamily: "",
-    partNumber: "",
+    productNumber: "",
     description: "",
     cost: 0,
     leadTime: 0,
-    availableStock: "",
+    availStock: "",
     orderQty: 0,
     cycleTime: 0,
   });
@@ -85,15 +86,25 @@ const ProductNumber = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: { preventDefault: () => void }) => {
+  const handleSubmit =async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     addPart(formData); // Save data in Context
     navigate("/product-tree"); // Redirect to table page
     console.log("Submitted Form Data:", formData);
+     // eslint-disable-next-line no-useless-catch
+     try {
+          const response = await createProductNumber(formData);
+          console.log("responseresponseresponse", response);
+          if (response?.status == 201) {
+            // navigate("/employees");
+          }
+        } catch (error: unknown) {
+          throw error;
+        }
   };
 
   const [processFormData, setProcessFormData] = useState({
-    partNumber: "",
+    productNumber: "",
     qty: "",
     process: "",
     cycleTime: "",
@@ -270,9 +281,9 @@ const ProductNumber = () => {
             Available Stock
             <input
               type="number"
-              name="availableStock"
+              name="availStock"
               placeholder="Available Stock"
-              value={formData.availableStock}
+              value={formData.availStock}
               onChange={handleChange}
               className="border p-2 rounded w-full"
             />
@@ -295,8 +306,8 @@ const ProductNumber = () => {
           <label className="block col-span-4 md:col-span-1">
             Process order required
             <select
-              name="availableStock"
-              value={formData.availableStock}
+              name="availStock"
+              value={formData.availStock}
               onChange={handleChange}
               className="border p-2 rounded w-full"
             >

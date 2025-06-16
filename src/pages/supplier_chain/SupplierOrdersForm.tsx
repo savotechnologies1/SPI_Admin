@@ -8,7 +8,6 @@ import { addSupplierOrder, selectSupplier } from "./https/suppliersApi";
 
 const SupplierOrdersForm = () => {
   const [showFields, setShowFields] = useState(false);
-  const [orderNumber] = useState(1002); // Replace with your logic
 
 
   const handleClick = () => {
@@ -38,6 +37,7 @@ const SupplierOrdersForm = () => {
   //   assignTo: "Cortez Herring",
   // });
   
+  const [order_number, setOrderNumber] = useState("");
 
   const {
     register,
@@ -49,6 +49,7 @@ const SupplierOrdersForm = () => {
     console.log("Form Data:", data);
      // eslint-disable-next-line no-useless-catch
      try {
+      
           const response = await addSupplierOrder(data);
           //  if (response.status === 201) {
           //   navigate("/all-supplier");
@@ -59,9 +60,14 @@ const SupplierOrdersForm = () => {
   };
 
   useEffect(() => {
-  setValue("orderNumber", orderNumber);
-}, [orderNumber, setValue]);
+  setValue("order_number", order_number);
+}, [order_number, setValue]);
 
+
+ useEffect(() => {
+    const randomOrder =  + Math.floor(10000 + Math.random() * 90000);
+    setOrderNumber(randomOrder.toString());
+  }, []);
   const [supplierData,setSupplierData] = useState([])
   const fetchCustomerList = async (page = 1) => {
     // eslint-disable-next-line no-useless-catch
@@ -84,7 +90,7 @@ const SupplierOrdersForm = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="">
         {/* Channel & Platform */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white  ">
-          <div>
+          {/* <div>
             <label className="font-semibold">Order Number</label>
             <input
               {...register("order_number", {
@@ -95,8 +101,22 @@ const SupplierOrdersForm = () => {
               placeholder="Enter Order Number"
               className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
             />
+          </div> */}
+                <div>
+            <label className="font-semibold">Order Number</label>
+            <p
+              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600 bg-gray-100"
+              {...register("order_number", {
+                required: "Order Number required",
+              })}
+            >
+              {" "}
+              {order_number}
+            </p>
           </div>
-          <div> 
+          <div>
+
+          
             <label className="font-semibold">Order Date</label>
             <input
               {...register("order_date", { required: "Order Date is required" })}
@@ -104,7 +124,7 @@ const SupplierOrdersForm = () => {
               placeholder=""
               className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
             />
-          </div>
+            </div>
           <div>
         <label className="font-semibold">Supplier</label>
         <select
