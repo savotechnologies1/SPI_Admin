@@ -140,7 +140,6 @@ const App = () => {
             <Route path="labor-forecast" element={<LaborForecast />} />
             <Route path="inventory-status" element={<InventoryStatus />} />
             <Route path="capacity-status" element={<CapacityStatus />} />
-
             <Route path="live-production" element={<LiveProductionGoal />} />
             <Route path="current-status" element={<CurrentStatus />} />
             <Route path="current-quality" element={<CurrentQuality />} />

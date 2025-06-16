@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { FaChevronRight } from "react-icons/fa";
+import { FaArrowLeft, FaChevronRight } from "react-icons/fa";
 import logo from "../../assets/logo.png";
 import setting from "../../assets/settings_icon.png";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -27,11 +27,24 @@ const StationLogin = () => {
     <>
       <div className="bg-[#F5F6FA]">
         <div className="justify-between flex flex-row items-center px-4 py-2">
-          <div>
-            <img className="w-[126px]" src={logo} alt="" />
+          <div className="flex items-center gap-3">
+            <div className="relative group">
+              <button
+                onClick={() => navigate(-1)}
+                className="text-gray-600 hover:text-black"
+              >
+                <FaArrowLeft size={20} />
+              </button>
+              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 w-62 text-xs bg-black text-white rounded opacity-0 group-hover:opacity-100 transition">
+                 Go to dashboard
+              </div>
+            </div>
+
+            <img className="w-[126px]" src={logo} alt="Logo" />
           </div>
+
           <div className="flex items-center gap-2">
-            <img src={setting} alt="" />
+            <img src={setting} alt="Settings" />
             <p className="font-semibold text-sm">Need Help?</p>
           </div>
         </div>
