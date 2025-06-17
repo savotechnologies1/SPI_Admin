@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { FiEdit2 } from "react-icons/fi";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import edit from "../../assets/edit_icon.png";
 import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import add from "../../assets/add.png";
+import { Trash2 } from "lucide-react";
 
 interface WorkInstructionItem {
   id: string;
@@ -75,6 +75,7 @@ const WorkInstructionList: React.FC = () => {
   const [openOptionsIndex, setOpenOptionsIndex] = useState<number | null>(null);
   const rowsPerPage = 4;
   const currentPage = 2;
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const toggleOptions = (index: number) => {
     setOpenOptionsIndex((prev) => (prev === index ? null : index));
@@ -172,7 +173,7 @@ const handleEdit = (id:string) =>{
                       {item.submitDate}
                     </span>
                   </td>
-                  <td className="px-4 py-3 relative flex items-center gap-4">
+                  {/* <td className="px-4 py-3 relative flex items-center gap-4">
                     <FiEdit2
 
                         onClick={()=>handleEdit(item.id)}
@@ -195,7 +196,56 @@ const handleEdit = (id:string) =>{
                         </button>
                       </div>
                     )}
-                  </td>
+                  </td> */}
+                          <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
+                      <button
+                        className="text-brand hover:underline"
+                        // onClick={() => editProcess(item.id)}
+                      >
+                        <img
+                          src={edit}
+                          alt="Edit"
+                          className="w-4 h-4 md:w-5 md:h-5"
+                        />
+                      </button>
+                      <button className="text-brand hover:underline">
+                        <Trash2
+                          className="text-red-500 cursor-pointer"
+                          onClick={() => setShowConfirm(true)}
+                        />
+                        {showConfirm && (
+                          <div
+                            className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
+                                    flex items-center justify-center z-50"
+                          >
+                            <div className="bg-white p-6 rounded-xl shadow-lg">
+                              <h2 className="text-lg font-semibold mb-4">
+                                Are you sure?
+                              </h2>
+                              <p className="mb-4">
+                                Do you really want to delete this process ?
+                              </p>
+                              <div className="flex justify-end space-x-3">
+                                <button
+                                  className="px-4 py-2 bg-gray-300 rounded"
+                                  onClick={() => setShowConfirm(false)}
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  className="px-4 py-2 bg-red-500 text-white rounded"
+                                  onClick={() => {
+                                    setShowConfirm(false);
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </button>
+                    </td>
                 </tr>
               ))}
             </tbody>

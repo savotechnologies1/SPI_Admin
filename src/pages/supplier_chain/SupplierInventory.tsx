@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import more from "../../assets/more.png";
 import { FiEdit2 } from "react-icons/fi"; 
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { Trash2 } from "lucide-react";
 
 const SupplierInventory = () => {
   const [data, setData] = useState([
@@ -60,7 +61,7 @@ const SupplierInventory = () => {
     stock: "",
     cost: "",
   });
-
+const [showConfirm, setShowConfirm] = useState(false);
   // Handle Edit Click
   const handleEditClick = (index:any) => {
     setEditingRow(index);
@@ -202,10 +203,42 @@ const SupplierInventory = () => {
                       title="Quick Edit"
                     />
                     {/* More Icon */}
-                    <BsThreeDotsVertical
-                      className="text-black hover:text-black cursor-pointer text-lg"
-                      title="More Options"
-                    />
+                      <Trash2
+                          className="text-red-500 cursor-pointer"
+                          onClick={() => setShowConfirm(true)}
+                        />
+                        {showConfirm && (
+                          <div
+                            className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
+                                    flex items-center justify-center z-50"
+                          >
+                            <div className="bg-white p-6 rounded-xl shadow-lg">
+                              <h2 className="text-lg font-semibold mb-4">
+                                Are you sure?
+                              </h2>
+                              <p className="mb-4">
+                                Do you really want to delete?
+                              </p>
+                              <div className="flex justify-end space-x-3">
+                                <button
+                                  className="px-4 py-2 bg-gray-300 rounded"
+                                  onClick={() => setShowConfirm(false)}
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  className="px-4 py-2 bg-red-500 text-white rounded"
+                                  onClick={() => {
+                                    // handleDelete(item.id);
+                                    setShowConfirm(false);
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                   </td>
                 </tr>
 

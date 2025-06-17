@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaCircle } from "react-icons/fa";
+import { FaCircle, FaTrash } from "react-icons/fa";
 import search_2 from "../../../assets/search_2.png";
 import more from "../../../assets/more.png";
 import edit from "../../../assets/edit_icon.png";
@@ -8,7 +8,8 @@ import add from "../../../assets/add.png";
 import back from "../../../assets/back.png";
 import next from "../../../assets/next.png";
 import data from "../../../components/Data/employeeData";
-import { employeeList } from "../https/EmployeeApis";
+import { deleteEmployee, employeeList } from "../https/EmployeeApis";
+import { Trash2 } from "lucide-react";
 
 const Employees = () => {
   const [activeTab, setActiveTab] = useState("All ");
@@ -18,6 +19,8 @@ const Employees = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
+
   // const rowsPerPage = 5;
   // const totalPages = Math.ceil(data.length / rowsPerPage);
 
@@ -76,7 +79,17 @@ const Employees = () => {
     { tab: "Banned", text: statusCounts["banned"] || 0 },
     { tab: "Rejected", text: statusCounts["rejected"] || 0 },
   ];
-
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await deleteEmployee(id);
+      if (response?.status == 200) {
+        fetchCustomerList(currentPage);
+        navigate("/employees");
+      }
+    } catch (error: unknown) {
+      console.log("errorerror", error);
+    }
+  };
   return (
     <div className="p-4 md:p-7">
       <div>
@@ -322,11 +335,42 @@ const Employees = () => {
                             />
                           </button>
                           <button className="text-brand hover:underline">
-                            <img
-                              src={more}
-                              alt="More"
-                              className="w-4 h-4 md:w-5 md:h-5"
+                            <FaTrash
+                              className="text-red-500 cursor-pointer"
+                              onClick={() => setShowConfirm(true)}
                             />
+                            {showConfirm && (
+                              <div
+                                className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
+                                    flex items-center justify-center z-50"
+                              >
+                                <div className="bg-white p-6 rounded-xl shadow-lg">
+                                  <h2 className="text-lg font-semibold mb-4">
+                                    Are you sure?
+                                  </h2>
+                                  <p className="mb-4">
+                                    Do you really want to delete this supplier?
+                                  </p>
+                                  <div className="flex justify-end space-x-3">
+                                    <button
+                                      className="px-4 py-2 bg-gray-300 rounded"
+                                      onClick={() => setShowConfirm(false)}
+                                    >
+                                      Cancel
+                                    </button>
+                                    <button
+                                      className="px-4 py-2 bg-red-500 text-white rounded"
+                                      onClick={() => {
+                                        handleDelete(item.id);
+                                        setShowConfirm(false);
+                                      }}
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </button>
                         </td>
                       </tr>

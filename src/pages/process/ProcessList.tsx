@@ -11,6 +11,7 @@ import add from "../../assets/add.png";
 
 // import data from "../../components/Data/processListData";
 import { deleteProcess, processList } from "./https/processApi";
+import { Trash2 } from "lucide-react";
 interface ProcessItem {
   id: string;
   processName: string;
@@ -23,6 +24,7 @@ const ProcessList = () => {
   const [processData, setProcessData] = useState<ProcessItem[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
   const [openOptionsIndex, setOpenOptionsIndex] = useState<number | null>(null);
 
@@ -73,7 +75,7 @@ const ProcessList = () => {
           <h1 className="font-bold text-[20px] md:text-[24px] text-black">
             Process
           </h1>
-          
+
           <div className="flex relative">
             <button className="py-2 px-7 rounded-lg border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer">
               <NavLink to="/add-process">
@@ -98,7 +100,6 @@ const ProcessList = () => {
               Process List
             </span>
           </div>
-          
         </div>
 
         <div className="overflow-x-auto mt-6 bg-white rounded">
@@ -137,40 +138,56 @@ const ProcessList = () => {
                   <td className="px-3 py-4">{item.cycleTime}</td>
                   <td className="px-3 py-4">{item.ratePerHour}</td>
                   <td className="px-3 py-4">200</td>
-                  <td className="px-3 py-4 flex gap-4">
-                    <div className="relative inline-block text-left">
-                      <button>
+                 <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
+                      <button
+                        className="text-brand hover:underline"
+                        onClick={() => editProcess(item.id)}
+                      >
                         <img
                           src={edit}
                           alt="Edit"
-                          onClick={() => editProcess(item.id)}
+                          className="w-4 h-4 md:w-5 md:h-5"
                         />
                       </button>
-                      <button
-                        onClick={() => toggleOptions(index)}
-                        className="p-2"
-                      >
-                        <img src={more} alt="More" />
+                      <button className="text-brand hover:underline">
+                        <Trash2
+                          className="text-red-500 cursor-pointer"
+                          onClick={() => setShowConfirm(true)}
+                        />
+                        {showConfirm && (
+                          <div
+                            className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
+                                    flex items-center justify-center z-50"
+                          >
+                            <div className="bg-white p-6 rounded-xl shadow-lg">
+                              <h2 className="text-lg font-semibold mb-4">
+                                Are you sure?
+                              </h2>
+                              <p className="mb-4">
+                                Do you really want to delete this process ?
+                              </p>
+                              <div className="flex justify-end space-x-3">
+                                <button
+                                  className="px-4 py-2 bg-gray-300 rounded"
+                                  onClick={() => setShowConfirm(false)}
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  className="px-4 py-2 bg-red-500 text-white rounded"
+                                  onClick={() => {
+                                    handleDelete(item.id);
+                                    setShowConfirm(false);
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </button>
-
-                      {openOptionsIndex === index && (
-                        <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-md z-10">
-                          <button
-                            onClick={() => navigate(`/edit-process/${item.id}`)}
-                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </td>
+                    </td>
                 </tr>
               ))}
             </tbody>

@@ -1,13 +1,15 @@
 import { SetStateAction, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaCircle } from "react-icons/fa";
+import { FaCircle, FaTrash } from "react-icons/fa";
 import search_2 from "../../assets/search_2.png";
 import more from "../../assets/more.png";
 import edit from "../../assets/edit_icon.png";
 import add from "../../assets/add.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { customerList } from "./https/customersApi";
+import { customerList, deleteCustomer } from "./https/customersApi";
+import delete_img from "../../assets/delete_1.png";
+import { Trash2 } from "lucide-react";
 
 interface CustomerItem {
   id: string;
@@ -24,9 +26,11 @@ const CustomerList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
+
   const rowsPerPage = 5;
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
@@ -35,14 +39,14 @@ const CustomerList = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-  const handleChange=(e: { target: { value: SetStateAction<string>; }; })=>{
-    setSearchVal(e.target.value)
-  }
+  const handleChange = (e: { target: { value: SetStateAction<string> } }) => {
+    setSearchVal(e.target.value);
+  };
 
   const fetchCustomerList = async (page = 1) => {
     // eslint-disable-next-line no-useless-catch
     try {
-      const response = await customerList(page, rowsPerPage,searchVal);
+      const response = await customerList(page, rowsPerPage, searchVal);
       setCustomerData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
@@ -50,11 +54,22 @@ const CustomerList = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      const response = await deleteCustomer(id);
+      if (response?.status == 200) {
+         fetchCustomerList(currentPage);
+      }
+    } catch (error: unknown) {
+      console.log("errorerror", error);
+    }
+  };
+
   useEffect(() => {
     fetchCustomerList(currentPage);
-  }, [currentPage,searchVal]);
+  }, [currentPage, searchVal]);
 
-    const editCustomer= (id: string) => {
+  const editCustomer = (id: string) => {
     navigate(`/edit-customer/${id}`);
   };
 
@@ -169,9 +184,7 @@ const CustomerList = () => {
                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
                     Submit Date
                   </th>
-                  <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
-                    
-                  </th>
+                  <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium"></th>
                 </tr>
               </thead>
               <tbody>
@@ -214,16 +227,19 @@ const CustomerList = () => {
                       {item.billingTerms} Days
                     </td>
                     <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden md:table-cell">
-                     Admin
+                      Admin
                     </td>
                     <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
-                    <span  className={`px-2 py-1 md:px-3 rounded-full text-xs md:text-sm font-mediumtext-green-800 bg-green-100`}> {new Date(item.createdAt).toLocaleString("en-IN", {
-                        timeZone: "Asia/Kolkata",
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                       
-                      })}</span>  
+                      <span
+                        className={`px-2 py-1 md:px-3 rounded-full text-xs md:text-sm font-mediumtext-green-800 bg-green-100`}
+                      >
+                        {new Date(item.createdAt).toLocaleString("en-IN", {
+                          timeZone: "Asia/Kolkata",
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                        })}
+                      </span>
                     </td>
 
                     {/* <td className="px-2 py-3 md:px-3 md:py-4">
@@ -244,20 +260,52 @@ const CustomerList = () => {
                       </span>
                     </td> */}
                     <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
-                      <button className="text-brand hover:underline" onClick={() => editCustomer(item.id)}>
+                      <button
+                        className="text-brand hover:underline"
+                        onClick={() => editCustomer(item.id)}
+                      >
                         <img
                           src={edit}
                           alt="Edit"
                           className="w-4 h-4 md:w-5 md:h-5"
                         />
                       </button>
-                      <button className="text-brand hover:underline">
-                        <img
-                          src={more}
-                          alt="More"
-                          className="w-4 h-4 md:w-5 md:h-5"
-                        />
-                      </button>
+                      <FaTrash
+                        className="text-red-500 cursor-pointer"
+                        onClick={() => setShowConfirm(true)}
+                      />
+                      {showConfirm && (
+                        <div
+                          className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
+                                    flex items-center justify-center z-50"
+                        >
+                          <div className="bg-white p-6 rounded-xl shadow-lg">
+                            <h2 className="text-lg font-semibold mb-4">
+                              Are you sure?
+                            </h2>
+                            <p className="mb-4">
+                              Do you really want to delete this customer?
+                            </p>
+                            <div className="flex justify-end space-x-3">
+                              <button
+                                className="px-4 py-2 bg-gray-300 rounded"
+                                onClick={() => setShowConfirm(false)}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                className="px-4 py-2 bg-red-500 text-white rounded"
+                                onClick={() => {
+                                  handleDelete(item.id);
+                                  setShowConfirm(false);
+                                }}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -296,6 +344,8 @@ const CustomerList = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal */}
     </div>
   );
 };

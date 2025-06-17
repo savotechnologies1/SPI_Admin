@@ -57,7 +57,7 @@ export const deleteCustomer = async (id: string) => {
   try {
     const response = await axiosInstance.put(`/delete-customer/${id}`);
     console.log("response222", response);
-    if (response.status === 201) {
+    if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response;

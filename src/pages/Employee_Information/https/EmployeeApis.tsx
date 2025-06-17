@@ -57,7 +57,7 @@ export const deleteEmployee = async (id: string) => {
   try {
     const response = await axiosInstance.patch(`/delete-employee/${id}`);
     console.log("response222", response);
-    if (response.status === 201) {
+    if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response;

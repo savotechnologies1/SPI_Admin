@@ -1,12 +1,12 @@
-import  { useState,  } from "react";
+import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaCircle } from "react-icons/fa";
+import { FaCircle, FaTrash } from "react-icons/fa";
 import search_2 from "../../../assets/search_2.png";
 import more from "../../../assets/more.png";
 import edit from "../../../assets/edit_icon.png";
 import back from "../../../assets/back.png";
 import next from "../../../assets/next.png";
-import data from "../../../components/Data/vacationListData"
+import data from "../../../components/Data/vacationListData";
 const VacationList = () => {
   const navigate = useNavigate();
   const categorys = [
@@ -17,6 +17,7 @@ const VacationList = () => {
   ];
   const [activeTab, setActiveTab] = useState("All ");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showConfirm, setShowConfirm] = useState(false);
   const rowsPerPage = 5;
 
   const totalPages = Math.ceil(data.length / rowsPerPage);
@@ -36,6 +37,14 @@ const VacationList = () => {
     setActiveTab(value);
   };
 
+  const handleEdit= async()=>{
+    // eslint-disable-next-line no-useless-catch
+    try {
+      navigate("/vaction-request")
+    } catch (error) {
+      throw error
+    }
+  }
   return (
     <div className="p-4 md:p-7">
       <div>
@@ -46,17 +55,24 @@ const VacationList = () => {
             </h1>
           </div>
         </div>
-        
+
         <div className="flex flex-wrap items-center mt-2 gap-1 md:gap-2">
-          <p className="text-sm md:text-base text-black" onClick={() => ("dashboardDetailes")}>
+          <p
+            className="text-sm md:text-base text-black"
+            onClick={() => "dashboardDetailes"}
+          >
             <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
           </p>
           <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
-          <span className="text-sm md:text-base hover:cursor-pointer">Employee</span>
+          <span className="text-sm md:text-base hover:cursor-pointer">
+            Employee
+          </span>
           <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
-          <span className="text-sm md:text-base hover:cursor-pointer">vacation list</span>
+          <span className="text-sm md:text-base hover:cursor-pointer">
+            vacation list
+          </span>
         </div>
-        
+
         <div className="rounded-md mt-4">
           <div className="flex flex-col bg-white rounded-t">
             <div className="flex gap-2 md:gap-4 font-semibold px-2 items-center hover:cursor-pointer border-b overflow-x-auto whitespace-nowrap">
@@ -95,7 +111,10 @@ const VacationList = () => {
             <div className="p-2 md:p-4">
               <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 p-2 md:p-4">
                 <div className="flex flex-col w-full sm:w-auto">
-                  <label htmlFor="role" className="text-xs md:text-sm font-medium text-gray-500">
+                  <label
+                    htmlFor="role"
+                    className="text-xs md:text-sm font-medium text-gray-500"
+                  >
                     Role
                   </label>
                   <select
@@ -116,7 +135,11 @@ const VacationList = () => {
                     className="w-full rounded-md border-gray-300 pl-6 text-xs md:text-sm outline-none"
                   />
                   <div className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400">
-                    <img src={search_2} alt="" className="w-3 h-3 md:w-4 md:h-4" />
+                    <img
+                      src={search_2}
+                      alt=""
+                      className="w-3 h-3 md:w-4 md:h-4"
+                    />
                   </div>
                 </div>
 
@@ -162,19 +185,29 @@ const VacationList = () => {
                   <tr
                     key={index}
                     className="border-b border-dashed border-gray-200 cursor-pointer"
-                    onClick={() => navigate(`/vacation-approval`)}
                   >
                     <td className="px-2 py-2">
-                      <input type="checkbox" className="w-3 h-3 md:w-4 md:h-4" />
+                      <input
+                        type="checkbox"
+                        className="w-3 h-3 md:w-4 md:h-4"
+                      />
                     </td>
                     <td className="px-2 py-3">
                       <div className="flex items-center">
                         <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gray-300 mr-2 md:mr-4 overflow-hidden">
-                          <img src={item.avatar} alt="" className="w-full h-full object-cover" />
+                          <img
+                            src={item.avatar}
+                            alt=""
+                            className="w-full h-full object-cover"
+                          />
                         </div>
                         <div>
-                          <p className="text-xs md:text-sm font-medium">{item.name}</p>
-                          <p className="text-xs text-gray-400 truncate max-w-[100px] md:max-w-none">{item.email}</p>
+                          <p className="text-xs md:text-sm font-medium">
+                            {item.name}
+                          </p>
+                          <p className="text-xs text-gray-400 truncate max-w-[100px] md:max-w-none">
+                            {item.email}
+                          </p>
                         </div>
                       </div>
                     </td>
@@ -207,10 +240,51 @@ const VacationList = () => {
                     </td>
                     <td className="px-2 py-3 flex gap-2 md:gap-4">
                       <button className="text-brand hover:underline">
-                        <img src={edit} alt="Edit" className="w-4 h-4 md:w-5 md:h-5" />
+                        <img
+                          src={edit}
+                          alt="Edit"
+                          className="w-4 h-4 md:w-5 md:h-5"
+                          onClick={()=>handleEdit()}
+                        />
                       </button>
                       <button className="text-brand hover:underline">
-                        <img src={more} alt="More" className="w-4 h-4 md:w-5 md:h-5" />
+                        {" "}
+                        <FaTrash
+                          className="text-red-500 cursor-pointer"
+                          onClick={() => setShowConfirm(true)}
+                        />
+                        {showConfirm && (
+                          <div
+                            className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
+                                                                                flex items-center justify-center z-50"
+                          >
+                            <div className="bg-white p-6 rounded-xl shadow-lg">
+                              <h2 className="text-lg font-semibold mb-4">
+                                Are you sure?
+                              </h2>
+                              <p className="mb-4">
+                                Do you really want to delete this vacation request?
+                              </p>
+                              <div className="flex justify-end space-x-3">
+                                <button
+                                  className="px-4 py-2 bg-gray-300 rounded"
+                                  onClick={() => setShowConfirm(false)}
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  className="px-4 py-2 bg-red-500 text-white rounded"
+                                  onClick={() => {
+                                    // handleDelete(item.id);
+                                    setShowConfirm(false);
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </button>
                     </td>
                   </tr>
