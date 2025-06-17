@@ -204,7 +204,7 @@ const [showConfirm, setShowConfirm] = useState(false);
                     />
                     {/* More Icon */}
                       <Trash2
-                          className="text-red-500 cursor-pointer"
+                          className="text-red-500 cursor-pointer h-7"
                           onClick={() => setShowConfirm(true)}
                         />
                         {showConfirm && (
@@ -238,7 +238,7 @@ const [showConfirm, setShowConfirm] = useState(false);
                               </div>
                             </div>
                           </div>
-                        )}
+                      )}
                   </td>
                 </tr>
 

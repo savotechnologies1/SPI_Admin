@@ -17,7 +17,9 @@ const AddProcess = () => {
     console.log("Form Data:", data);
     try {
      const response = await addProcess(data)
-       if (response.status === 200) {
+     console.log(response.status);
+     
+       if (response.status === 201) {
         navigate("/process-list");
       }
     } catch (error: unknown) {
@@ -84,7 +86,6 @@ const AddProcess = () => {
               <label className="font-semibold">Cycle Time</label>
               <input
                 {...register("cycleTime", {
-                  required: true,
                  
                 })}
                 type="string"
@@ -100,7 +101,6 @@ const AddProcess = () => {
               <label className="font-semibold">Rate per hour</label>
               <input
                 {...register("ratePerHour", {
-                  required: true,
                 })}
                 type="string"
                 placeholder="Enter your rate per hour"

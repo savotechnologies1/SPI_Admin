@@ -8,7 +8,7 @@ export const addProcess = async (userData: object) => {
     if (response.status === 201) {
       toast.success(response.data.message);
     }
-    return response.data;
+    return response;
   } catch (error: unknown) {
     toast.error(error.response.data.message);
   }

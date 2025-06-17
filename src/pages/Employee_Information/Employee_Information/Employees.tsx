@@ -336,7 +336,7 @@ const Employees = () => {
                           </button>
                           <button className="text-brand hover:underline">
                             <FaTrash
-                              className="text-red-500 cursor-pointer"
+                              className="text-red-500 cursor-pointer h-7"
                               onClick={() => setShowConfirm(true)}
                             />
                             {showConfirm && (

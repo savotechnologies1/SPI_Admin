@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaCircle } from "react-icons/fa";
+import { FaCircle, FaTrash } from "react-icons/fa";
 
 import more from "../../assets/more.png";
 import edit from "../../assets/edit_icon.png";
@@ -63,7 +63,7 @@ const ProcessList = () => {
     // eslint-disable-next-line no-useless-catch
     try {
       deleteProcess(id).then();
-      fetchProcessList();
+      fetchProcessList(currentPage);
     } catch (error: unknown) {
       throw error;
     }
@@ -150,7 +150,7 @@ const ProcessList = () => {
                         />
                       </button>
                       <button className="text-brand hover:underline">
-                        <Trash2
+                        <FaTrash
                           className="text-red-500 cursor-pointer"
                           onClick={() => setShowConfirm(true)}
                         />

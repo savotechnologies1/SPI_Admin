@@ -271,7 +271,7 @@ const CustomerList = () => {
                         />
                       </button>
                       <FaTrash
-                        className="text-red-500 cursor-pointer"
+                        className="text-red-500 cursor-pointer h-7"
                         onClick={() => setShowConfirm(true)}
                       />
                       {showConfirm && (

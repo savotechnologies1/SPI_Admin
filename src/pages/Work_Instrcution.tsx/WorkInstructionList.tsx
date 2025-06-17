@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import edit from "../../assets/edit_icon.png";
-import { FaCircle } from "react-icons/fa";
+import { FaCircle, FaTrash } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import add from "../../assets/add.png";
 import { Trash2 } from "lucide-react";
@@ -209,8 +209,8 @@ const handleEdit = (id:string) =>{
                         />
                       </button>
                       <button className="text-brand hover:underline">
-                        <Trash2
-                          className="text-red-500 cursor-pointer"
+                        <FaTrash
+                          className="text-red-500 cursor-pointer h-7"
                           onClick={() => setShowConfirm(true)}
                         />
                         {showConfirm && (
