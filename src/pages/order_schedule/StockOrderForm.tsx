@@ -1,30 +1,22 @@
 import { useForm } from "react-hook-form";
-import Select from "react-select";
 import { addStockOrder } from "./https/schedulingApis";
 import { useEffect, useState } from "react";
 import del_img from "../../assets/delete_1.png";
 
-const options = [
-  { value: "cortez-herring", label: "Cortez Herring" },
-  { value: "john-doe", label: "John Doe" },
-  { value: "jane-smith", label: "Jane Smith" },
-];
-
-// const partOption = [
-//   { value: "cortez-herring", label: "Cortez Herring" },
-//   { value: "john-doe", label: "John Doe" },
-//   { value: "jane-smith", label: "Jane Smith" },
-// ];
-// const processOption = [
-//   { value: "cortez-herring", label: "Cortez Herring" },
-//   { value: "john-doe", label: "John Doe" },
-//   { value: "jane-smith", label: "Jane Smith" },
-// ];
-// const assignOption = [
-//   { value: "cortez-herring", label: "Cortez Herring" },
-//   { value: "john-doe", label: "John Doe" },
-//   { value: "jane-smith", label: "Jane Smith" },
-// ];
+const productData: Record<string, { quantity: number; description: string }> = {
+  "1001": {
+    quantity: 5,
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+  },
+  "1002": {
+    quantity: 10,
+    description: "Sed do eiusmod tempor incididunt ut labore et dolore magna ",
+  },
+  "1003": {
+    quantity: 3,
+    description: "Ut enim ad minim veniam, quis nostrud exercitation ullamco",
+  },
+};
 
 const StockOrderForm = () => {
   // const [formData, setFormData] = useState({
@@ -59,37 +51,74 @@ const StockOrderForm = () => {
   //   }
   // };
 
+  const customers = [
+    { id: 1, name: "John Doe", email: "john@example.com", phone: "1234567890" },
+    {
+      id: 2,
+      name: "Jane Smith",
+      email: "jane@example.com",
+      phone: "9876543210",
+    },
+    { id: 3, name: "Mike Lee", email: "mike@example.com", phone: "9988776655" },
+  ];
+
   const [showFields, setShowFields] = useState(false);
-  // const [showPart, setShowPart] = useState(false);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(
+    null
+  );
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+  });
 
   const handleClick = () => {
-    setShowFields(true); // Show fields when clicking the Add button
+    setShowFields(true);
   };
-  // const handleClick2 = () => {
-  //   setShowPart(true); // Show fields when clicking the Add button
-  // };
+
   const [orderNumber, setOrderNumber] = useState("");
-  const cost = "4500";
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, watch, setValue } = useForm();
 
- useEffect(() => {
-    const randomOrder =  + Math.floor(10000 + Math.random() * 90000);
+  useEffect(() => {
+    const randomOrder = +Math.floor(10000 + Math.random() * 90000);
     setOrderNumber(randomOrder.toString());
   }, []);
-  // useEffect(() => {
-  //   setValue("cost", cost), [cost, setValue];
-  // });
 
   const onSubmit = (data: object) => {
     console.log("Form Data:", data);
-    // eslint-disable-next-line no-useless-catch
     try {
       addStockOrder(data).then();
     } catch (error: unknown) {
       throw error;
     }
   };
+
+  const productNumber = watch("productNumber");
+  useEffect(() => {
+    if (productNumber && productData[productNumber]) {
+      setValue("productQuantity", productData[productNumber].quantity);
+      setValue("productDesc", productData[productNumber].description);
+    } else {
+      setValue("productQuantity", "");
+      setValue("productDesc", "");
+    }
+  }, [productNumber, setValue]);
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const customerId = Number(e.target.value);
+    setSelectedCustomerId(customerId);
+
+    const selectedCustomer = customers.find((c) => c.id === customerId);
+    if (selectedCustomer) {
+      setFormData({
+        name: selectedCustomer.name,
+        email: selectedCustomer.email,
+        phone: selectedCustomer.phone,
+      });
+    }
+  };
+  const today = new Date().toISOString().split("T")[0];
 
   return (
     <div className="p-4 bg-white rounded-2xl border shadow-md">
@@ -113,6 +142,7 @@ const StockOrderForm = () => {
             <input
               {...register("orderDate", { required: "Order Date is required" })}
               type="date"
+              value={today}
               placeholder=""
               className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
             />
@@ -130,7 +160,7 @@ const StockOrderForm = () => {
 
         {/* Personal Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-4 mt-4 bg-white px-6 ">
-          <div>
+          <div className="flex flex-col ">
             <label className="font-semibold">Select Customer</label>
             {/* <input
               {...register("SelectCustomer")}
@@ -139,12 +169,18 @@ const StockOrderForm = () => {
               className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
             /> */}
 
-            <Select
-              isMulti
-              options={options}
-              className="w-full "
-              placeholder="Select People"
-            />
+            <select
+              onChange={handleSelectChange}
+              value={selectedCustomerId ?? ""}
+              className="border px-2 py-1 rounded"
+            >
+              <option value="">Select Customer </option>
+              {customers.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -152,6 +188,7 @@ const StockOrderForm = () => {
             <input
               {...register("customerName")}
               type="text"
+              value={formData.name}
               placeholder="Enter Customer Name "
               className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
             />
@@ -161,6 +198,7 @@ const StockOrderForm = () => {
             <input
               {...register("customerEmail")}
               type="email"
+              value={formData.email}
               placeholder="Enter Customer Email"
               className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
             />
@@ -170,8 +208,9 @@ const StockOrderForm = () => {
             <input
               {...register("customerPhoneNum")}
               type="number"
+              value={formData.phone}
               placeholder="Enter Customer Phone  "
-              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
+              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
           </div>
           <div className=" flex  justify-start gap-2">
@@ -232,7 +271,7 @@ const StockOrderForm = () => {
                   })}
                   type="number"
                   placeholder="Enter Customer Phone"
-                  className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
+                  className="border py-3 px-4 rounded-md w-full  placeholder-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
               </div>
               <div
@@ -253,18 +292,18 @@ const StockOrderForm = () => {
               {...register("productNumber")}
               type="number"
               placeholder="Enter Product No..."
-              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
+              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
           </div>
           <div>
             <label className="font-semibold">Cost</label>
 
-            <p
-              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600 bg-gray-100"
+            <input
+              type="number"
+              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600 bg-gray-100 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               {...register("cost")}
-            >
-              {cost}
-            </p>
+              placeholder="Enter Cost"
+            ></input>
           </div>
 
           <div>
@@ -273,7 +312,7 @@ const StockOrderForm = () => {
               {...register("productQuantity", {})}
               type="number"
               placeholder="Enter Quantity"
-              className="border py-3 px-4 rounded-md w-full  text-gray-600"
+              className="border py-3 px-4 rounded-md w-full  text-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
           </div>
         </div>
