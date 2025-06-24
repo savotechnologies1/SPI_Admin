@@ -281,7 +281,7 @@ const Employees = () => {
                                 {item.firstName} {item.lastName}
                               </p>
                               <p className="text-xs text-gray-400 truncate max-w-[100px] md:max-w-none">
-                                {item.fullName}
+                                {item.email}
                               </p>
                             </div>
                           </div>

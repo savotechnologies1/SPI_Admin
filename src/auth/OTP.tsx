@@ -101,7 +101,7 @@ import { otpVarify } from "./https/authApi";
 import { ChangeEvent, useState } from "react";
 
 const OTP = () => {
-  const {handleSubmit } = useForm();
+  const { handleSubmit } = useForm();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const navigate = useNavigate();
 
@@ -119,14 +119,16 @@ const OTP = () => {
     }
   };
   const onSubmit = async () => {
-    const otpString = otp.join(""); 
+    const otpString = otp.join("");
     const email = localStorage.getItem("email");
     try {
       const response = await otpVarify({
         email: email,
         otp: otpString,
       });
-      navigate("/reset-password");
+      if (response.status === 200) {
+        navigate("/reset-password");
+      }
     } catch (error) {
       console.error("Error during OTP verification:", error);
     }

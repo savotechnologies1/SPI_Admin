@@ -7,6 +7,7 @@ type FormData = {
   firstName: string;
   lastName: string;
   fullName: string;
+  email: string;
   hourlyRate: string;
   shift: string;
   status: string;
@@ -98,6 +99,14 @@ const AddEmployee = () => {
             className="w-full border px-4 py-2 rounded-md"
           />
         </div>
+        <div>
+          <label className="font-semibold block mb-1">Employee Email</label>
+          <input
+            {...register("email")}
+            placeholder="Enter  Email"
+            className="w-full border px-4 py-2 rounded-md"
+          />
+        </div>
 
         <div>
           <label className="font-semibold block mb-1">Hourly Rate</label>
@@ -119,7 +128,7 @@ const AddEmployee = () => {
             <option value="night">Night</option>
           </select>
         </div>
-    
+
         <div>
           <label className="font-semibold block mb-1">Start Date</label>
           <input

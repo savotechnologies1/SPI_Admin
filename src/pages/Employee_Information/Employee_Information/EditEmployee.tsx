@@ -2,88 +2,86 @@ import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import delete_img from "../../../assets/delete_1.png";
-import { deleteEmployee, editEmployee, employeeDetail } from "../https/EmployeeApis";
+import {
+  deleteEmployee,
+  editEmployee,
+  employeeDetail,
+} from "../https/EmployeeApis";
 import { useEffect } from "react";
-
 
 type FormData = {
   firstName: string;
   lastName: string;
   fullName: string;
+  email: string;
   hourlyRate: string;
   shift: string;
   startDate: string;
   pin: string;
   shopFloorLogin: string;
-  status:string;
+  status: string;
   termsAccepted: boolean;
 };
 
 const EditEmployee = () => {
-   const {
-    register,
-    handleSubmit,
-    reset,
-  } = useForm<FormData>();
-  const {id} = useParams()
-  const navigate = useNavigate()
-  const onSubmit =async (data: FormData) => {
+  const { register, handleSubmit, reset } = useForm<FormData>();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const onSubmit = async (data: FormData) => {
     console.log("Form Submitted:", data);
-      // eslint-disable-next-line no-useless-catch
-      try {
-          const response = await editEmployee(data, id);
-          if(response?.status == 200){
-    
-            navigate('/employees')
-          }
-        } catch (error: unknown) {
-          throw error;
-        }
-  };
-   const fetchProcessDetail = async () => {
-      try {
-        const response = await employeeDetail(id);
-        const data = response.data;
-        
-        reset({
-          firstName: data.firstName,
-          lastName: data.lastName,
-          fullName: data.fullName,
-          hourlyRate: data.hourlyRate,
-          pin: data.pin,
-          shift: data.shift,
-          shopFloorLogin: data.shopFloorLogin,
-          status:data.status,
-          startDate: data.startDate,
-          termsAccepted: data.termsAccepted,
-        });
-      } catch (error) {
-        console.log(error);
+    try {
+      const response = await editEmployee(data, id);
+      if (response?.status == 200) {
+        navigate("/employees");
       }
-    };
-    useEffect(() => {
-      fetchProcessDetail();
-    }, [id]);
-    console.log('idididparrrrrrma',id);
-    
-    const handleDelete = async() => {
-          try {
-           const response = await deleteEmployee(id)
-            if(response?.status == 200){
-    
-            navigate('/employees')
-          }
-          } catch (error: unknown) {
-            console.log("errorerror", error);
-          }
-        };
+    } catch (error: unknown) {
+      throw error;
+    }
+  };
+  const fetchProcessDetail = async () => {
+    try {
+      const response = await employeeDetail(id);
+      const data = response.data;
+
+      reset({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        fullName: data.fullName,
+        email: data.email,
+        hourlyRate: data.hourlyRate,
+        pin: data.pin,
+        shift: data.shift,
+        shopFloorLogin: data.shopFloorLogin,
+        status: data.status,
+        startDate: data.startDate,
+        termsAccepted: data.termsAccepted,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchProcessDetail();
+  }, [id]);
+  console.log("idididparrrrrrma", id);
+
+  const handleDelete = async () => {
+    try {
+      const response = await deleteEmployee(id);
+      if (response?.status == 200) {
+        navigate("/employees");
+      }
+    } catch (error: unknown) {
+      console.log("errorerror", error);
+    }
+  };
   return (
     <div className="p-4 md:p-7">
       <div>
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <div>
             <h1 className="font-bold text-xl md:text-2xl text-black">
-             Edit Employee
+              Edit Employee
             </h1>
           </div>
         </div>
@@ -140,6 +138,15 @@ const EditEmployee = () => {
         </div>
 
         <div>
+          <label className="font-semibold block mb-1">Employee Email</label>
+          <input
+            {...register("email")}
+            placeholder="Employee Email"
+            className="w-full border px-4 py-2 rounded-md"
+          />
+        </div>
+
+        <div>
           <label className="font-semibold block mb-1">Hourly Rate</label>
           <input
             {...register("hourlyRate")}
@@ -179,7 +186,7 @@ const EditEmployee = () => {
             className="w-full border px-4 py-2 rounded-md"
           />
         </div>
-           <div>
+        <div>
           <label className="font-semibold block mb-1">Shop Floor Login</label>
           <select
             {...register("shopFloorLogin")}
@@ -190,7 +197,7 @@ const EditEmployee = () => {
             <option value="no">No</option>
           </select>
         </div>
- <div>
+        <div>
           <label className="font-semibold block mb-1">Status</label>
           <select
             {...register("status")}
@@ -204,21 +211,21 @@ const EditEmployee = () => {
           </select>
         </div>
         <div className="flex justify-between pt-2">
-        <button
+          <button
             type="submit"
             className="bg-brand text-white px-4 py-2 rounded-md"
           >
-          Save
+            Save
           </button>
-             <div className="bg-[#FF5630] rounded-full py-2 px-2 cursor-pointer">
-              <img
-                className="w-[20px]"
+          <div className="bg-[#FF5630] rounded-full py-2 px-2 cursor-pointer">
+            <img
+              className="w-[20px]"
               src={delete_img}
-                alt="delete"
-                onClick={handleDelete}
-              />
-            </div>
-       </div>
+              alt="delete"
+              onClick={handleDelete}
+            />
+          </div>
+        </div>
       </form>
     </div>
   );

@@ -18,9 +18,12 @@ export const forgetPassword = async (data: string) => {
   try {
     const response = await axiosInstance.post("/forget-password", data);
     localStorage.setItem("email", response.data.email);
-    return response.data;
+    if (response.status === 200) {
+      toast.success(response.data.message);
+    }
+    return response;
   } catch (error) {
-    throw error;
+    toast.error(error.response.data.message);
   }
 };
 
@@ -28,11 +31,15 @@ export const otpVarify = async (data: object) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.post("/validate-otp", data);
-    localStorage.removeItem("email");
-    localStorage.setItem("token", response.data.token);
-    return response.data;
+    if (response.status === 200) {
+      localStorage.removeItem("email");
+      localStorage.setItem("token", response.data.resetToken);
+      toast.success(response.data.message);
+    }
+
+    return response;
   } catch (error) {
-    throw error;
+    toast.error(error.response.data.message);
   }
 };
 
@@ -44,11 +51,19 @@ export const resetPassword = async (data: object) => {
       ...data,
       token: token,
     });
+    console.log("32080328032", {
+      ...data,
+      token: token,
+    });
 
-    localStorage.removeItem("email");
-    localStorage.setItem("token", response.data.token);
-    return response.data;
+    if (response.status === 200) {
+      localStorage.removeItem("email");
+      localStorage.setItem("token", response.data.token);
+      toast.success(response.data.message);
+    }
+
+    return response;
   } catch (error) {
-    throw error;
+    toast.error(error.response.data.message);
   }
 };

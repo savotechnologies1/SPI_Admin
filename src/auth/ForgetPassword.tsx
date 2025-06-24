@@ -18,11 +18,15 @@ const ForgetPassword = () => {
     formState: { errors },
   } = useForm();
 
-  const navigate = useNavigate()
-  const onSubmit = async(data: string) => {
+  const navigate = useNavigate();
+  const onSubmit = async (data: string) => {
     try {
       const response = await forgetPassword(data);
-      navigate("/otp-verify");
+      console.log("response", response);
+
+      if (response.status === 200) {
+        navigate("/otp-verify");
+      }
     } catch (error) {
       console.error("Error during forgetPassword:", error);
     }
@@ -84,7 +88,7 @@ const ForgetPassword = () => {
                   <input
                     type="email"
                     {...register("email", {
-                      // required: "Email is required",
+                      required: "Email is required",
                       pattern: {
                         value: /^\S+@\S+$/i,
                         message: "Invalid email format",

@@ -8,8 +8,6 @@ import add from "../../assets/add.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { customerList, deleteCustomer } from "./https/customersApi";
-import delete_img from "../../assets/delete_1.png";
-import { Trash2 } from "lucide-react";
 
 interface CustomerItem {
   id: string;
@@ -27,6 +25,7 @@ const CustomerList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showConfirmId, setShowConfirmId] = useState(null);
 
   const rowsPerPage = 5;
 
@@ -54,20 +53,21 @@ const CustomerList = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  useEffect(() => {
+    fetchCustomerList(currentPage);
+  }, [currentPage, searchVal]);
+  const handleDelete = async (id: string) => {
+    console.log("ididididididididididididididid", id);
+
     try {
       const response = await deleteCustomer(id);
       if (response?.status == 200) {
-         fetchCustomerList(currentPage);
+        await fetchCustomerList(currentPage);
       }
     } catch (error: unknown) {
       console.log("errorerror", error);
     }
   };
-
-  useEffect(() => {
-    fetchCustomerList(currentPage);
-  }, [currentPage, searchVal]);
 
   const editCustomer = (id: string) => {
     navigate(`/edit-customer/${id}`);
@@ -215,7 +215,7 @@ const CustomerList = () => {
                             {item.firstName} {item.lastName}
                           </p>
                           <p className="text-xs text-gray-400 truncate max-w-[100px] md:max-w-none">
-                            {item.email}
+                            {item.email} {item.id}
                           </p>
                         </div>
                       </div>
@@ -272,13 +272,11 @@ const CustomerList = () => {
                       </button>
                       <FaTrash
                         className="text-red-500 cursor-pointer h-7"
-                        onClick={() => setShowConfirm(true)}
+                        onClick={() => setShowConfirmId(item.id)}
                       />
-                      {showConfirm && (
-                        <div
-                          className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
-                                    flex items-center justify-center z-50"
-                        >
+
+                      {showConfirmId === item.id && (
+                        <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
                           <div className="bg-white p-6 rounded-xl shadow-lg">
                             <h2 className="text-lg font-semibold mb-4">
                               Are you sure?
@@ -289,15 +287,15 @@ const CustomerList = () => {
                             <div className="flex justify-end space-x-3">
                               <button
                                 className="px-4 py-2 bg-gray-300 rounded"
-                                onClick={() => setShowConfirm(false)}
+                                onClick={() => setShowConfirmId(null)}
                               >
                                 Cancel
                               </button>
                               <button
                                 className="px-4 py-2 bg-red-500 text-white rounded"
                                 onClick={() => {
-                                  handleDelete(item.id);
-                                  setShowConfirm(false);
+                                  handleDelete(showConfirmId);
+                                  setShowConfirmId(null);
                                 }}
                               >
                                 Delete

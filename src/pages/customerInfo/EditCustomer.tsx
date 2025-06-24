@@ -99,10 +99,13 @@
 import { useForm } from "react-hook-form";
 import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
-import { customerDetail, deleteCustomer, editCustomer } from "./https/customersApi";
+import {
+  customerDetail,
+  deleteCustomer,
+  editCustomer,
+} from "./https/customersApi";
 import { useEffect } from "react";
 import delete_img from "../../assets/delete_1.png";
-
 
 const EditCustomer = () => {
   const {
@@ -112,14 +115,14 @@ const EditCustomer = () => {
     reset,
   } = useForm();
   const { id } = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   const onSubmit = async (data: object) => {
     // eslint-disable-next-line no-useless-catch
     try {
       const response = await editCustomer(data, id);
-      if(response?.status == 200){
-
-        navigate('/customer-list')
+      if (response?.status == 200) {
+        navigate("/customer-list");
       }
     } catch (error: unknown) {
       throw error;
@@ -129,7 +132,7 @@ const EditCustomer = () => {
     try {
       const response = await customerDetail(id);
       const data = response.data;
-      
+
       reset({
         firstName: data.firstName,
         lastName: data.lastName,
@@ -145,22 +148,21 @@ const EditCustomer = () => {
     fetchProcessDetail();
   }, [id]);
 
-  const handleDelete = async() => {
-      try {
-       const response = await deleteCustomer(id)
-        if(response?.status == 200){
-
-        navigate('/customer-list')
+  const handleDelete = async () => {
+    try {
+      const response = await deleteCustomer(id);
+      if (response?.status == 200) {
+        navigate("/customer-list");
       }
-      } catch (error: unknown) {
-        console.log("errorerror", error);
-      }
-    };
+    } catch (error: unknown) {
+      console.log("errorerror", error);
+    }
+  };
   return (
     <div className="p-4 md:p-7">
       <div>
         <h1 className="font-bold text-[20px] md:text-[24px] text-black">
-    Edit  Customer
+          Edit Customer
         </h1>
       </div>
       <div className="flex justify-between mt-2 items-center">
@@ -181,7 +183,7 @@ const EditCustomer = () => {
             <FaCircle className="text-[6px] text-gray-500" />
           </span>
           <span className="text-xs sm:text-[16px] hover:cursor-pointer">
-          Edit Customer
+            Edit Customer
           </span>
         </div>
       </div>
@@ -252,19 +254,19 @@ const EditCustomer = () => {
               {...register("billingTerms", { required: true })}
               placeholder="Billing Terms"
               className="border py-4 px-4 rounded-md w-full "
-            />  
+            />
             {errors.billingTerms && (
               <p className="text-red-500 text-sm">This field is required</p>
             )}
           </div>
-          
+
           <div className="flex justify-between items-end">
             <div className="mt-6">
               <button
                 type="submit"
                 className="bg-brand text-white px-6 py-2 rounded-md"
               >
-             Save
+                Save
               </button>
             </div>
 
@@ -277,7 +279,6 @@ const EditCustomer = () => {
               />
             </div>
           </div>
-      
         </div>
       </form>
     </div>
@@ -285,4 +286,3 @@ const EditCustomer = () => {
 };
 
 export default EditCustomer;
-
