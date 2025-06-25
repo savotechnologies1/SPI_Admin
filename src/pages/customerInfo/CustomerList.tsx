@@ -56,16 +56,21 @@ const CustomerList = () => {
   useEffect(() => {
     fetchCustomerList(currentPage);
   }, [currentPage, searchVal]);
-  const handleDelete = async (id: string) => {
-    console.log("ididididididididididididididid", id);
 
+  const handleDelete = async (id: string) => {
     try {
       const response = await deleteCustomer(id);
-      if (response?.status == 200) {
-        await fetchCustomerList(currentPage);
+      console.log("Delete response:", response);
+
+      if (response?.status === 200) {
+        setCustomerData((prev) => prev.filter((cust) => cust.id !== id));
+
+        if (customerData.length === 1 && currentPage > 1) {
+          setCurrentPage((prev) => prev - 1);
+        }
       }
-    } catch (error: unknown) {
-      console.log("errorerror", error);
+    } catch (error) {
+      console.error("Delete error:", error);
     }
   };
 

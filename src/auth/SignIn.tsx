@@ -41,10 +41,10 @@ const SignIn = () => {
       toast.error(error.response.message);
     }
 
-    //   Simulated login (no backend call)
-    //   login("mockToken"); // fake token
-    //   console.log("Redirecting to dashboard without backend validation");
-    //   navigate("/", { replace: true });
+    // Simulated login (no backend call)
+    // login("mockToken"); // fake token
+    // console.log("Redirecting to dashboard without backend validation");
+    // navigate("/", { replace: true });
   };
   //   const onSubmit = async (data: FormData) => {
   //   // Mock login logic

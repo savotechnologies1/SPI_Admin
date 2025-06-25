@@ -45,7 +45,7 @@ const StockOrderScheduleForm = () => {
     <>
       <div className="p-4 bg-white rounded-2xl border shadow-md mb-6">
         <form onSubmit={handleSubmit(onSubmit)} className="">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white p-6 ">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-6 ">
             <div>
               <label className="font-semibold">Customer Name</label>
               <input
@@ -57,7 +57,8 @@ const StockOrderScheduleForm = () => {
                 className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
               />
             </div>
-            <div>
+
+            {/* <div>
               <label className="font-semibold">Customer Email</label>
               <input
                 {...register("CustomerEmail", {
@@ -67,8 +68,8 @@ const StockOrderScheduleForm = () => {
                 placeholder="Enter Customer Email"
                 className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
               />
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <label className="font-semibold">Customer Phone</label>
               <input
                 {...register("CustomerPhone", {
@@ -78,7 +79,7 @@ const StockOrderScheduleForm = () => {
                 placeholder="number"
                 className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
               />
-            </div>
+            </div> */}
             <div>
               <label className="font-semibold">Ship Date </label>
               <input
@@ -90,9 +91,19 @@ const StockOrderScheduleForm = () => {
                 className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
               />
             </div>
+            <div>
+              <label className="font-semibold">Part Number</label>
+              <input
+                {...register("ProductDescription")}
+                type="text"
+                placeholder="Meta description
+"
+                className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
+              />
+            </div>
           </div>
 
-          <div className="grid grid-cols-1  gap-4  bg-white px-6 ">
+          {/* <div className="grid grid-cols-1  gap-4  bg-white px-6 ">
             <div>
               <label className="font-semibold">Product Description</label>
               <input
@@ -103,9 +114,9 @@ const StockOrderScheduleForm = () => {
                 className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
               />
             </div>
-          </div>
+          </div> */}
           <div className="flex flex-col sm:flex-row  gap-4 mt-4 bg-white px-6 justify-between md;items-center  ">
-            <div className="md:w-1/2">
+            {/* <div className="md:w-1/2">
               <label className="block border py-2 px-4 rounded-md w-full bg-[#919EAB33] text-center cursor-pointer hover:bg-gray-200 shadow-sm items-center">
                 <input
                   {...register("file")}
@@ -119,7 +130,14 @@ const StockOrderScheduleForm = () => {
                   <span className="text-sm">Tap or Click to Add Picture</span>
                 )}
               </label>
-            </div>
+            </div> */}
+
+            <button
+              type="submit"
+              className="px-6 py-2 bg-brand text-white text-md  hover:bg-[#1a2e57] transition ml-6 "
+            >
+              Search Stock Orders
+            </button>
             <div>
               <span></span> <p className="text-[#B71D18] text-sm">Clear Cart</p>
             </div>
@@ -134,8 +152,7 @@ const StockOrderScheduleForm = () => {
         </form>
       </div>
 
-      <ItemSelected/>
- 
+      <ItemSelected />
     </>
   );
 };
