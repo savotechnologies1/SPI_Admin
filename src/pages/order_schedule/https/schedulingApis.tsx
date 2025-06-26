@@ -9,7 +9,7 @@ export const addStockOrder = async (apiData: object) => {
     if (response.status === 201) {
       toast.success(response.data.message);
     }
-    return response.data;
+    return response;
   } catch (error: unknown) {
     const axiosError = error as AxiosError<{ message: string }>;
     if (axiosError.response?.data?.message) {

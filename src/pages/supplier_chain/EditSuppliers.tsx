@@ -10,14 +10,14 @@ import {
 import { useEffect } from "react";
 
 const EditSuppliers = () => {
-interface SupplierFormData {
-  firstName: string;
-  lastName: string;
-  email?: string;
-  address?: string;
-  billingTerms?: string;
-  // add more fields if needed
-}
+  interface SupplierFormData {
+    firstName: string;
+    lastName: string;
+    email?: string;
+    address?: string;
+    billingTerms?: string;
+    // add more fields if needed
+  }
 
   const {
     register,
@@ -30,12 +30,12 @@ interface SupplierFormData {
   const navigate = useNavigate();
 
   // Step 2: Strongly type the onSubmit function
- const onSubmit = async (data: object) => {
+  const onSubmit = async (data: object) => {
     console.log("✅ Updated Supplier Data:", data);
     // eslint-disable-next-line no-useless-catch
     try {
       const response = await editSupplier(data, id!).then();
-       console.log(response)
+      console.log(response);
       if (response.status === 200) {
         navigate("/all-supplier");
       }
@@ -43,7 +43,6 @@ interface SupplierFormData {
       throw error;
     }
   };
-
 
   const fetchProcessDetail = async () => {
     try {
@@ -56,7 +55,9 @@ interface SupplierFormData {
         address: data.address,
         billingTerms: data.billingTerms,
       });
-    } catch (error) {console.log(error)}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -69,11 +70,10 @@ interface SupplierFormData {
     try {
       const response = await deleteSupplier(id!);
       console.log("response", response);
-        navigate("/all-supplier");
+      navigate("/all-supplier");
       // if (response.status === 200) {
       //   navigate("/all-supplier");
       // }
-      
     } catch (error: unknown) {
       throw error;
     }
@@ -82,7 +82,6 @@ interface SupplierFormData {
   return (
     <div className="p-7">
       <div>
-        {" "}
         <h1 className="font-bold text-[20px] md:text-[24px] text-black">
           Edit Supplier
         </h1>
@@ -109,9 +108,8 @@ interface SupplierFormData {
           </span>
         </div>
       </div>
-    <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mt-4 bg-white p-6 w-full rounded-2xl md:w-2/3">
-          {/* Name */}
           <label className="font-semibold">Supplier's Name</label>
           <div className="flex flex-col sm:flex-row gap-4 mt-2 mb-6">
             <div className="sm:w-1/2">
@@ -143,8 +141,6 @@ interface SupplierFormData {
               )}
             </div>
           </div>
-
-          {/* Email */}
           <label className="font-semibold">Supplier's Email</label>
           <div className="mt-2 w-full mb-6">
             <input
@@ -226,4 +222,4 @@ interface SupplierFormData {
     </div>
   );
 };
-export default EditSuppliers
+export default EditSuppliers;

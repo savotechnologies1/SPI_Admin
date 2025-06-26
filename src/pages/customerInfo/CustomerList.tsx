@@ -14,6 +14,7 @@ interface CustomerItem {
   firstName: string;
   lastName: string;
   address: string;
+  customerPhone: number;
   email: string;
   billingTerms: string;
   createdAt: string;
@@ -60,7 +61,6 @@ const CustomerList = () => {
   const handleDelete = async (id: string) => {
     try {
       const response = await deleteCustomer(id);
-      console.log("Delete response:", response);
 
       if (response?.status === 200) {
         setCustomerData((prev) => prev.filter((cust) => cust.id !== id));
@@ -70,7 +70,7 @@ const CustomerList = () => {
         }
       }
     } catch (error) {
-      console.error("Delete error:", error);
+      throw error;
     }
   };
 
@@ -78,7 +78,6 @@ const CustomerList = () => {
     navigate(`/edit-customer/${id}`);
   };
 
-  console.log("searchValsearchValsearchVal", searchVal);
   return (
     <div className="p-4 md:p-7">
       <div>
@@ -180,6 +179,9 @@ const CustomerList = () => {
                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium hidden sm:table-cell">
                     Address
                   </th>
+                  <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium hidden sm:table-cell">
+                    Phone Number
+                  </th>
                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium hidden md:table-cell">
                     Billing Terms
                   </th>
@@ -220,13 +222,16 @@ const CustomerList = () => {
                             {item.firstName} {item.lastName}
                           </p>
                           <p className="text-xs text-gray-400 truncate max-w-[100px] md:max-w-none">
-                            {item.email} {item.id}
+                            {item.email}
                           </p>
                         </div>
                       </div>
                     </td>
                     <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
                       {item.address}
+                    </td>
+                    <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
+                      {item.customerPhone}
                     </td>
                     <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden md:table-cell">
                       {item.billingTerms} Days

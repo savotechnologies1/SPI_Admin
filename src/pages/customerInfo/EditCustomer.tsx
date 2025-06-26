@@ -137,6 +137,7 @@ const EditCustomer = () => {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
+        customerPhone: data.customerPhone,
         address: data.address,
         billingTerms: data.billingTerms,
       });
@@ -225,6 +226,20 @@ const EditCustomer = () => {
               type="text"
               {...register("email", { required: true })}
               placeholder="Email address"
+              className="border py-4 px-4 rounded-md w-full "
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm">This field is required</p>
+            )}
+          </div>
+          <label className="font-semibold " htmlFor="">
+            Customer Phone Number
+          </label>
+          <div className="mt-2 w-full mb-6">
+            <input
+              type="number"
+              {...register("customerPhone", { required: true })}
+              placeholder="Phone Number"
               className="border py-4 px-4 rounded-md w-full "
             />
             {errors.email && (

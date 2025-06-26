@@ -41,7 +41,7 @@ const ProcessList = () => {
     // eslint-disable-next-line no-useless-catch
     try {
       const response = await processList(page, rowsPerPage);
-      setProcessData(response.processData);
+      setProcessData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
       throw error;
@@ -138,56 +138,56 @@ const ProcessList = () => {
                   <td className="px-3 py-4">{item.cycleTime}</td>
                   <td className="px-3 py-4">{item.ratePerHour}</td>
                   <td className="px-3 py-4">200</td>
-                 <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
-                      <button
-                        className="text-brand hover:underline"
-                        onClick={() => editProcess(item.id)}
-                      >
-                        <img
-                          src={edit}
-                          alt="Edit"
-                          className="w-4 h-4 md:w-5 md:h-5"
-                        />
-                      </button>
-                      <button className="text-brand hover:underline">
-                        <FaTrash
-                          className="text-red-500 cursor-pointer"
-                          onClick={() => setShowConfirm(true)}
-                        />
-                        {showConfirm && (
-                          <div
-                            className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
+                  <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
+                    <button
+                      className="text-brand hover:underline"
+                      onClick={() => editProcess(item.id)}
+                    >
+                      <img
+                        src={edit}
+                        alt="Edit"
+                        className="w-4 h-4 md:w-5 md:h-5"
+                      />
+                    </button>
+                    <button className="text-brand hover:underline">
+                      <FaTrash
+                        className="text-red-500 cursor-pointer"
+                        onClick={() => setShowConfirm(true)}
+                      />
+                      {showConfirm && (
+                        <div
+                          className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
                                     flex items-center justify-center z-50"
-                          >
-                            <div className="bg-white p-6 rounded-xl shadow-lg">
-                              <h2 className="text-lg font-semibold mb-4">
-                                Are you sure?
-                              </h2>
-                              <p className="mb-4">
-                                Do you really want to delete this process ?
-                              </p>
-                              <div className="flex justify-end space-x-3">
-                                <button
-                                  className="px-4 py-2 bg-gray-300 rounded"
-                                  onClick={() => setShowConfirm(false)}
-                                >
-                                  Cancel
-                                </button>
-                                <button
-                                  className="px-4 py-2 bg-red-500 text-white rounded"
-                                  onClick={() => {
-                                    handleDelete(item.id);
-                                    setShowConfirm(false);
-                                  }}
-                                >
-                                  Delete
-                                </button>
-                              </div>
+                        >
+                          <div className="bg-white p-6 rounded-xl shadow-lg">
+                            <h2 className="text-lg font-semibold mb-4">
+                              Are you sure?
+                            </h2>
+                            <p className="mb-4">
+                              Do you really want to delete this process ?
+                            </p>
+                            <div className="flex justify-end space-x-3">
+                              <button
+                                className="px-4 py-2 bg-gray-300 rounded"
+                                onClick={() => setShowConfirm(false)}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                className="px-4 py-2 bg-red-500 text-white rounded"
+                                onClick={() => {
+                                  handleDelete(item.id);
+                                  setShowConfirm(false);
+                                }}
+                              >
+                                Delete
+                              </button>
                             </div>
                           </div>
-                        )}
-                      </button>
-                    </td>
+                        </div>
+                      )}
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

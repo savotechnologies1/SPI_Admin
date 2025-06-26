@@ -3,10 +3,11 @@ import { createContext, useState, ReactNode } from "react";
 // Define Part Data Structure
 interface Part {
   partNumber: string;
-  partFamily : string;
-  description : string;
+  partFamily: string;
+  productNumber: string;
+  description: string;
   cost: number;
-  leadTime : number;
+  leadTime: number;
   availableStock: string;
   orderQty: number;
   cycleTime: number;
@@ -19,7 +20,9 @@ interface PartContextType {
 }
 
 // Create Context with Default Values
-export const PartContext = createContext<PartContextType | undefined>(undefined);
+export const PartContext = createContext<PartContextType | undefined>(
+  undefined
+);
 
 // Props for Provider
 interface PartProviderProps {

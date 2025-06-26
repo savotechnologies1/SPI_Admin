@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 import { useContext, useState } from "react";
 import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -71,15 +71,23 @@ const ProductNumber = () => {
     image?: File;
   }
 
-  const { register: registerProduct, handleSubmit: handleProductSubmit, formState: { errors: productErrors } } = useForm<Part>();
-  const { register: registerProcess, handleSubmit: handleProcessSubmit, formState: { errors: processErrors } } = useForm({
+  const {
+    register: registerProduct,
+    handleSubmit: handleProductSubmit,
+    formState: { errors: productErrors },
+  } = useForm<Part>();
+  const {
+    register: registerProcess,
+    handleSubmit: handleProcessSubmit,
+    formState: { errors: processErrors },
+  } = useForm({
     defaultValues: {
       productNumber: "",
       qty: "",
       process: "",
       cycleTime: "",
       workInstruction: "",
-    }
+    },
   });
 
   const onSubmitProduct = async (data: Part) => {
@@ -87,15 +95,15 @@ const ProductNumber = () => {
     navigate("/product-tree"); // Redirect to table page
     console.log("Submitted Form Data:", data);
     // eslint-disable-next-line no-useless-catch
-    try {
-      const response = await createProductNumber(data);
-      console.log("responseresponseresponse", response);
-      if (response?.status == 201) {
-        // navigate("/employees");
-      }
-    } catch (error: unknown) {
-      throw error;
-    }
+    // try {
+    //   const response = await createProductNumber(data);
+    //   console.log("responseresponseresponse", response);
+    //   if (response?.status == 201) {
+    //     // navigate("/employees");
+    //   }
+    // } catch (error: unknown) {
+    //   throw error;
+    // }
   };
 
   const onSubmitProcess = (data: any) => {
@@ -138,7 +146,7 @@ const ProductNumber = () => {
           </span>
         </div>
       </div>
-      
+
       {/* Product Form */}
       <div className="mt-6 bg-white p-6 w-full rounded-2xl shadow-md">
         <form
@@ -149,7 +157,9 @@ const ProductNumber = () => {
           <label className="block col-span-4 md:col-span-2">
             Part Family
             <select
-              {...registerProduct("partFamily", { required: "Part Family is required" })}
+              {...registerProduct("partFamily", {
+                required: "Part Family is required",
+              })}
               className="border p-2 rounded w-full"
             >
               <option value="">Select Part Family</option>
@@ -158,7 +168,9 @@ const ProductNumber = () => {
               <option value="Plastic">Plastic</option>
             </select>
             {productErrors.partFamily && (
-              <p className="text-red-500 text-xs">{productErrors.partFamily.message}</p>
+              <p className="text-red-500 text-xs">
+                {productErrors.partFamily.message}
+              </p>
             )}
           </label>
 
@@ -167,12 +179,16 @@ const ProductNumber = () => {
             Product Number
             <input
               type="text"
-              {...registerProduct("productNumber", { required: "Product Number is required" })}
+              {...registerProduct("productNumber", {
+                required: "Product Number is required",
+              })}
               placeholder="Enter Your Product Number"
               className="border p-2 rounded w-full"
             />
             {productErrors.productNumber && (
-              <p className="text-red-500 text-xs">{productErrors.productNumber.message}</p>
+              <p className="text-red-500 text-xs">
+                {productErrors.productNumber.message}
+              </p>
             )}
           </label>
 
@@ -180,12 +196,16 @@ const ProductNumber = () => {
           <label className="block col-span-4">
             Product Description
             <textarea
-              {...registerProduct("description", { required: "Description is required" })}
+              {...registerProduct("description", {
+                required: "Description is required",
+              })}
               placeholder="Product Description"
               className="border p-2 rounded w-full"
             ></textarea>
             {productErrors.description && (
-              <p className="text-red-500 text-xs">{productErrors.description.message}</p>
+              <p className="text-red-500 text-xs">
+                {productErrors.description.message}
+              </p>
             )}
           </label>
 
@@ -194,11 +214,14 @@ const ProductNumber = () => {
             Cost ($)
             <input
               type="number"
+              {...registerProduct("cost", {})}
               placeholder="Enter Cost"
               className="border p-2 rounded w-full"
             />
             {productErrors.cost && (
-              <p className="text-red-500 text-xs">{productErrors.cost.message}</p>
+              <p className="text-red-500 text-xs">
+                {productErrors.cost.message}
+              </p>
             )}
           </label>
 
@@ -207,11 +230,14 @@ const ProductNumber = () => {
             Lead Time (Days)
             <input
               type="number"
+              {...registerProduct("leadTime", {})}
               placeholder="Lead Time Days"
               className="border p-2 rounded w-full"
             />
             {productErrors.leadTime && (
-              <p className="text-red-500 text-xs">{productErrors.leadTime.message}</p>
+              <p className="text-red-500 text-xs">
+                {productErrors.leadTime.message}
+              </p>
             )}
           </label>
 
@@ -221,10 +247,13 @@ const ProductNumber = () => {
             <input
               type="number"
               placeholder="Order Qty"
+              {...registerProduct("orderQty", {})}
               className="border p-2 rounded w-full"
             />
             {productErrors.orderQty && (
-              <p className="text-red-500 text-xs">{productErrors.orderQty.message}</p>
+              <p className="text-red-500 text-xs">
+                {productErrors.orderQty.message}
+              </p>
             )}
           </label>
 
@@ -253,11 +282,14 @@ const ProductNumber = () => {
             Available Stock
             <input
               type="number"
+              {...registerProduct("availStock", {})}
               placeholder="Available Stock"
               className="border p-2 rounded w-full"
             />
             {productErrors.availStock && (
-              <p className="text-red-500 text-xs">{productErrors.availStock.message}</p>
+              <p className="text-red-500 text-xs">
+                {productErrors.availStock.message}
+              </p>
             )}
           </label>
 
@@ -270,7 +302,9 @@ const ProductNumber = () => {
               className="border p-2 rounded w-full"
             />
             {productErrors.cycleTime && (
-              <p className="text-red-500 text-xs">{productErrors.cycleTime.message}</p>
+              <p className="text-red-500 text-xs">
+                {productErrors.cycleTime.message}
+              </p>
             )}
           </label>
 
@@ -278,7 +312,9 @@ const ProductNumber = () => {
           <label className="block col-span-4 md:col-span-1">
             Process order required
             <select
-              {...registerProduct("availStock", { required: "This field is required" })}
+              {...registerProduct("availStock", {
+                required: "This field is required",
+              })}
               className="border p-2 rounded w-full"
             >
               <option value="100">Yes</option>
@@ -319,17 +355,24 @@ const ProductNumber = () => {
       {/* Process Form */}
       <div className="mt-6 bg-white p-6 w-full rounded-2xl shadow-md">
         <p className="font-semibold text-lg mb-4">Bill of material table:</p>
-        <form onSubmit={handleProcessSubmit(onSubmitProcess)} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <form
+          onSubmit={handleProcessSubmit(onSubmitProcess)}
+          className="grid grid-cols-1 md:grid-cols-3 gap-4"
+        >
           <label className="block col-span-1">
             Part Number
             <input
               type="text"
-              {...registerProcess("productNumber", { required: "Product Number is required" })}
+              {...registerProcess("productNumber", {
+                required: "Product Number is required",
+              })}
               placeholder="#357445"
               className="border p-2 rounded w-full"
             />
             {processErrors.productNumber && (
-              <p className="text-red-500 text-xs">{processErrors.productNumber.message}</p>
+              <p className="text-red-500 text-xs">
+                {processErrors.productNumber.message}
+              </p>
             )}
           </label>
 
@@ -342,14 +385,18 @@ const ProductNumber = () => {
               className="border p-2 rounded w-full"
             />
             {processErrors.qty && (
-              <p className="text-red-500 text-xs">{processErrors.qty.message}</p>
+              <p className="text-red-500 text-xs">
+                {processErrors.qty.message}
+              </p>
             )}
           </label>
 
           <label className="block col-span-1">
             Process
             <select
-              {...registerProcess("process", { required: "Process is required" })}
+              {...registerProcess("process", {
+                required: "Process is required",
+              })}
               className="border p-2 rounded w-full"
             >
               <option value="">Select Process</option>
@@ -358,7 +405,9 @@ const ProductNumber = () => {
               <option value="Assembly">Assembly</option>
             </select>
             {processErrors.process && (
-              <p className="text-red-500 text-xs">{processErrors.process.message}</p>
+              <p className="text-red-500 text-xs">
+                {processErrors.process.message}
+              </p>
             )}
           </label>
 
@@ -366,19 +415,25 @@ const ProductNumber = () => {
             Cycle Time
             <input
               type="number"
-              {...registerProcess("cycleTime", { required: "Cycle Time is required" })}
+              {...registerProcess("cycleTime", {
+                required: "Cycle Time is required",
+              })}
               placeholder="4000"
               className="border p-2 rounded w-full"
             />
             {processErrors.cycleTime && (
-              <p className="text-red-500 text-xs">{processErrors.cycleTime.message}</p>
+              <p className="text-red-500 text-xs">
+                {processErrors.cycleTime.message}
+              </p>
             )}
           </label>
 
           <label className="block col-span-1">
             Work Instruction
             <select
-              {...registerProcess("workInstruction", { required: "Work Instruction is required" })}
+              {...registerProcess("workInstruction", {
+                required: "Work Instruction is required",
+              })}
               className="border p-2 rounded w-full"
             >
               <option value="">Select</option>
@@ -386,7 +441,9 @@ const ProductNumber = () => {
               <option value="No">No</option>
             </select>
             {processErrors.workInstruction && (
-              <p className="text-red-500 text-xs">{processErrors.workInstruction.message}</p>
+              <p className="text-red-500 text-xs">
+                {processErrors.workInstruction.message}
+              </p>
             )}
           </label>
 
@@ -430,7 +487,10 @@ const ProductNumber = () => {
           </thead>
           <tbody className="text-gray-800">
             {paginatedData.map((item, index) => (
-              <tr key={index} className="border-b border-dashed border-gray-200">
+              <tr
+                key={index}
+                className="border-b border-dashed border-gray-200"
+              >
                 <td className="px-4 py-4">{item.process}</td>
                 <td className="px-4 py-4">
                   {item.partDesc.split("/")[0]} <br />/

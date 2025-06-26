@@ -102,6 +102,8 @@ const EditProductForm = () => {
 
   const handleSubmitPartForm = (e: any) => {
     e.preventDefault();
+    console.log("partFormDatapartFormData", partFormData);
+
     addPart({
       ...partFormData,
       cost: parseFloat(partFormData.cost),
@@ -132,7 +134,7 @@ const EditProductForm = () => {
     <div className="p-4 md:p-7">
       <div>
         <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-black">
-         Edit Product Number
+          Edit Product Number
         </h1>
       </div>
 
@@ -338,7 +340,7 @@ const EditProductForm = () => {
               type="submit"
               className="bg-brand text-white py-2 rounded px-4"
             >
-             Save
+              Save
             </button>
 
             <div className="bg-[#FF5630] p-3 rounded-full cursor-pointer">
@@ -475,27 +477,32 @@ const EditProductForm = () => {
           </tbody>
         </table>
         <div className="flex justify-end items-center py-4 gap-4">
-  <button
-    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-    disabled={currentPage === 1}
-    className={`px-3 py-1 border rounded ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-  >
-    Prev
-  </button>
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className={`px-3 py-1 border rounded ${
+              currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            Prev
+          </button>
 
-  <span className="text-sm text-gray-600">
-    Page {currentPage} of {totalPages}
-  </span>
+          <span className="text-sm text-gray-600">
+            Page {currentPage} of {totalPages}
+          </span>
 
-  <button
-    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-    disabled={currentPage === totalPages}
-    className={`px-3 py-1 border rounded ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
-  >
-    Next
-  </button>
-</div>
-
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className={`px-3 py-1 border rounded ${
+              currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

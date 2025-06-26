@@ -20,13 +20,15 @@ export const processList = async (page = 1, limit = 5) => {
     const response = await axiosInstance.get(
       `/all-process?page=${page}&limit=${limit}`
     );
+    console.log("responseresponseresponse", response);
+
     return response.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const processDetail = async (id:string) => {
+export const processDetail = async (id: string) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(`/get-process-detail/${id}`);

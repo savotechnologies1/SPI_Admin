@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { FaCircle } from "react-icons/fa";
-import {  NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { addCustomer } from "./https/customersApi";
 
 const NewCustomer = () => {
@@ -9,15 +9,14 @@ const NewCustomer = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const onSubmit = async (data: object) => {
     // eslint-disable-next-line no-useless-catch
     try {
       const response = await addCustomer(data);
-      console.log('responseresponseresponse',response);
-      if(response?.status == 201){
-
-        navigate('/customer-list')
+      console.log("responseresponseresponse", response);
+      if (response?.status == 201) {
+        navigate("/customer-list");
       }
     } catch (error: unknown) {
       throw error;
@@ -85,7 +84,7 @@ const NewCustomer = () => {
                 placeholder="Last Name"
                 className="border py-4 px-4 rounded-md w-full"
               />
-              
+
               {errors.lastName && (
                 <p className="text-red-500 text-sm">This field is required .</p>
               )}
@@ -106,12 +105,26 @@ const NewCustomer = () => {
             )}
           </div>
           <label className="font-semibold " htmlFor="">
+            Customer Phone Number
+          </label>
+          <div className="mt-2 w-full mb-6">
+            <input
+              type="number"
+              {...register("customerPhone", { required: true })}
+              placeholder="Phone Number"
+              className="border py-4 px-4 rounded-md w-full "
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm">This field is required</p>
+            )}
+          </div>
+          <label className="font-semibold " htmlFor="">
             Address
           </label>
           <div className="mt-2 w-full mb-6">
             <input
               type="text"
-              {...register("address", { required: true })}
+              {...register("address")}
               placeholder="Address"
               className="border py-4 px-4 rounded-md w-full "
             />
@@ -125,7 +138,7 @@ const NewCustomer = () => {
           <div className="mt-2 w-full">
             <input
               type="text"
-              {...register("billingTerms", { required: true })}
+              {...register("billingTerms")}
               placeholder="Billing Terms"
               className="border py-4 px-4 rounded-md w-full "
             />
