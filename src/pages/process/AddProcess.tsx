@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { addProcess } from "./https/processApi";
 import delete_img from "../../assets/delete_1.png";
 
-
 const AddProcess = () => {
   const {
     register,
@@ -12,19 +11,15 @@ const AddProcess = () => {
     formState: { errors },
   } = useForm();
 
-  const navigate = useNavigate()
-  const onSubmit =async(data:object) => {
-    console.log("Form Data:", data);
+  const navigate = useNavigate();
+  const onSubmit = async (data: object) => {
     try {
-     const response = await addProcess(data)
-     console.log(response.status);
-     
-       if (response.status === 201) {
+      const response = await addProcess(data);
+
+      if (response.status === 201) {
         navigate("/process-list");
       }
-    } catch (error: unknown) {
-      console.log("errorerror", error);
-    }
+    } catch (error: unknown) {}
   };
 
   return (
@@ -85,9 +80,7 @@ const AddProcess = () => {
             <div className="sm:w-1/2">
               <label className="font-semibold">Cycle Time</label>
               <input
-                {...register("cycleTime", {
-                 
-                })}
+                {...register("cycleTime", {})}
                 type="string"
                 placeholder="Enter your cycle time"
                 className="border py-4 px-4 rounded-md w-full"
@@ -100,8 +93,7 @@ const AddProcess = () => {
             <div className="sm:w-1/2">
               <label className="font-semibold">Rate per hour</label>
               <input
-                {...register("ratePerHour", {
-                })}
+                {...register("ratePerHour", {})}
                 type="string"
                 placeholder="Enter your rate per hour"
                 className="border py-4 px-4 rounded-md w-full"

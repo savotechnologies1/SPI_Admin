@@ -32,7 +32,7 @@ const SignIn = () => {
     try {
       const response = await loginApi(data);
       console.log("responseresponse", response);
-      if (response.status === 200) {
+      if (response.status === 201) {
         login(response.data.token);
         console.log("login page redirect");
         navigate("/", { replace: true });

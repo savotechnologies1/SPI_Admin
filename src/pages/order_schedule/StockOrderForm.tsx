@@ -417,8 +417,18 @@ const StockOrderForm = () => {
   }, [productNumber, setValue]);
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const customerId = Number(e.target.value);
+    const value = e.target.value;
+
+    if (value === "new") {
+      setShowFields(true);
+      setSelectedCustomerId(null); // Clear previous selection
+      setFormData({ name: "", email: "", phone: "" }); // Clear form data
+      return;
+    }
+
+    const customerId = Number(value);
     setSelectedCustomerId(customerId);
+    setShowFields(false); // Hide new customer fields if existing selected
 
     const selectedCustomer = customers.find((c) => c.id === customerId);
     if (selectedCustomer) {
@@ -429,6 +439,7 @@ const StockOrderForm = () => {
       });
     }
   };
+
   const today = new Date().toISOString().split("T")[0];
 
   return (
@@ -479,8 +490,21 @@ const StockOrderForm = () => {
               placeholder="Select Customer"
               className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
             /> */}
-
             <select
+              onChange={handleSelectChange}
+              value={selectedCustomerId ?? ""}
+              className="border px-2 py-1 rounded"
+            >
+              <option value="">Select Customer </option>
+              <option value="new">➕ Add New Customer</option>
+              {customers.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+
+            {/* <select
               onChange={handleSelectChange}
               value={selectedCustomerId ?? ""}
               className="border px-2 py-1 rounded"
@@ -491,7 +515,7 @@ const StockOrderForm = () => {
                   {c.name}
                 </option>
               ))}
-            </select>
+            </select> */}
           </div>
 
           <div>
@@ -500,8 +524,12 @@ const StockOrderForm = () => {
               {...register("customerName")}
               type="text"
               value={formData.name}
-              placeholder="Enter Customer Name "
-              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, name: e.target.value }))
+              }
+              readOnly={selectedCustomerId !== null}
+              placeholder="Enter Customer Name"
+              className="border py-3 px-4 rounded-md w-full placeholder-gray-600"
             />
           </div>
           <div className="col-span-">
@@ -510,8 +538,12 @@ const StockOrderForm = () => {
               {...register("customerEmail")}
               type="email"
               value={formData.email}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, email: e.target.value }))
+              }
+              readOnly={selectedCustomerId !== null}
               placeholder="Enter Customer Email"
-              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
+              className="border py-3 px-4 rounded-md w-full placeholder-gray-600"
             />
           </div>
           <div className="col-span-">
@@ -520,11 +552,15 @@ const StockOrderForm = () => {
               {...register("customerPhoneNum")}
               type="number"
               value={formData.phone}
-              placeholder="Enter Customer Phone  "
-              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, phone: e.target.value }))
+              }
+              readOnly={selectedCustomerId !== null}
+              placeholder="Enter Customer Phone"
+              className="border py-3 px-4 rounded-md w-full placeholder-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
           </div>
-          <div className=" flex  justify-start gap-2">
+          {/* <div className=" flex  justify-start gap-2">
             <span
               className="text-blue-500 text-sm flex items-center gap-1 cursor-pointer"
               onClick={handleClick}
@@ -545,11 +581,11 @@ const StockOrderForm = () => {
               </svg>
               Add New Customer
             </span>
-          </div>
+          </div> */}
         </div>
 
         {/* Render Fields When Clicked */}
-        {showFields && (
+        {/* {showFields && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  bg-white p-4  ">
             <div>
               <label className="font-semibold">Customer Name</label>
@@ -593,7 +629,7 @@ const StockOrderForm = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Codes & Dates */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 bg-white px-6 ">

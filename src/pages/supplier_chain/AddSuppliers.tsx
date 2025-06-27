@@ -1,5 +1,5 @@
 import { FaCircle } from "react-icons/fa";
-import {  NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { addSupplier } from "./https/suppliersApi";
 
@@ -10,13 +10,12 @@ const AddSuppliers = () => {
     formState: { errors },
   } = useForm();
 
-  const navigate = useNavigate()
-  const onSubmit = async(data :object) => {
-    console.log("✅ Supplier Form Data:", data);
-     // eslint-disable-next-line no-useless-catch
+  const navigate = useNavigate();
+  const onSubmit = async (data: object) => {
+    // eslint-disable-next-line no-useless-catch
     try {
       const response = await addSupplier(data);
-       if (response.status === 201) {
+      if (response.status === 201) {
         navigate("/all-supplier");
       }
     } catch (error: unknown) {
@@ -35,7 +34,7 @@ const AddSuppliers = () => {
         <div className="flex gap-4 items-center ">
           <p
             className={`text-xs sm:text-[16px] text-black`}
-            onClick={() => ("dashboardDetailes")}
+            onClick={() => "dashboardDetailes"}
           >
             <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
           </p>
@@ -54,101 +53,113 @@ const AddSuppliers = () => {
         </div>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="mt-4 bg-white p-6 w-full rounded-2xl md:w-2/3">
-        {/* Supplier Name */}
-        <label className="font-semibold">Supplier's Name</label>
-        <div className="flex flex-col sm:flex-row gap-4 mt-2 mb-6">
-          <div className="sm:w-1/2">
+        <div className="mt-4 bg-white p-6 w-full rounded-2xl md:w-2/3">
+          {/* Supplier Name */}
+          <label className="font-semibold">Supplier's Name</label>
+          <div className="flex flex-col sm:flex-row gap-4 mt-2 mb-6">
+            <div className="sm:w-1/2">
+              <input
+                {...register("firstName", {
+                  required: "First name is required",
+                })}
+                type="text"
+                placeholder="First Name"
+                className="border py-4 px-4 rounded-md w-full"
+              />
+              {errors.firstName && (
+                <span className="text-red-500 text-sm">
+                  {String(errors.firstName.message)}
+                </span>
+              )}
+            </div>
+            <div className="sm:w-1/2">
+              <input
+                {...register("lastName", { required: "Last name is required" })}
+                type="text"
+                placeholder="Last Name"
+                className="border py-4 px-4 rounded-md w-full"
+              />
+              {errors.lastName && (
+                <span className="text-red-500 text-sm">
+                  {String(errors.lastName.message)}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Email */}
+          <label className="font-semibold">Supplier's Email</label>
+          <div className="mt-2 w-full mb-6">
             <input
-              {...register("firstName", { required: "First name is required" })}
-              type="text"
-              placeholder="First Name"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^\S+@\S+$/i,
+                  message: "Enter a valid email",
+                },
+              })}
+              type="email"
+              placeholder="Email address"
               className="border py-4 px-4 rounded-md w-full"
             />
-            {errors.firstName && (
-              <span className="text-red-500 text-sm">{String(errors.firstName.message)}</span>
+            {errors.email && (
+              <span className="text-red-500 text-sm">
+                {String(errors.email.message)}
+              </span>
             )}
           </div>
-          <div className="sm:w-1/2">
+
+          {/* Address */}
+          <label className="font-semibold">Address</label>
+          <div className="mt-2 w-full mb-6">
             <input
-              {...register("lastName", { required: "Last name is required" })}
+              {...register("address", { required: "Address is required" })}
               type="text"
-              placeholder="Last Name"
+              placeholder="Address"
               className="border py-4 px-4 rounded-md w-full"
             />
-            {errors.lastName && (
-              <span className="text-red-500 text-sm">{String(errors.lastName.message)}</span>
+            {errors.address && (
+              <span className="text-red-500 text-sm">
+                {String(errors.address.message)}
+              </span>
             )}
           </div>
-        </div>
 
-        {/* Email */}
-        <label className="font-semibold">Supplier's Email</label>
-        <div className="mt-2 w-full mb-6">
-          <input
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^\S+@\S+$/i,
-                message: "Enter a valid email",
-              },
-            })}
-            type="email"
-            placeholder="Email address"
-            className="border py-4 px-4 rounded-md w-full"
-          />
-          {errors.email && (
-            <span className="text-red-500 text-sm">{String(errors.email.message)}</span>
-          )}
-        </div>
+          {/* Billing Terms */}
+          <label className="font-semibold">
+            Billing Terms (In Days) <span className="text-red-700">*</span>
+          </label>
+          <div className="mt-2 w-full">
+            <input
+              {...register("billingTerms", {
+                required: "Billing terms are required",
+                pattern: {
+                  value: /^[0-9]+$/,
+                  message: "Only numbers allowed",
+                },
+              })}
+              type="text"
+              placeholder="Billing Terms"
+              className="border py-4 px-4 rounded-md w-full"
+            />
+            {errors.billingTerms && (
+              <span className="text-red-500 text-sm">
+                {String(errors.billingTerms.message)}
+              </span>
+            )}
+          </div>
 
-        {/* Address */}
-        <label className="font-semibold">Address</label>
-        <div className="mt-2 w-full mb-6">
-          <input
-            {...register("address", { required: "Address is required" })}
-            type="text"
-            placeholder="Address"
-            className="border py-4 px-4 rounded-md w-full"
-          />
-          {errors.address && (
-            <span className="text-red-500 text-sm">{String(errors.address.message)}</span>
-          )}
+          {/* Submit */}
+          <div className="mt-6 text-end">
+            <button
+              type="submit"
+              className="bg-brand text-white px-5 py-3 rounded-lg"
+            >
+              Add/Edit Supplier
+            </button>
+          </div>
         </div>
-
-        {/* Billing Terms */}
-        <label className="font-semibold">
-          Billing Terms (In Days) <span className="text-red-700">*</span>
-        </label>
-        <div className="mt-2 w-full">
-          <input
-            {...register("billingTerms", {
-              required: "Billing terms are required",
-              pattern: {
-                value: /^[0-9]+$/,
-                message: "Only numbers allowed",
-              },
-            })}
-            type="text"
-            placeholder="Billing Terms"
-            className="border py-4 px-4 rounded-md w-full"
-          />
-          {errors.billingTerms && (
-            <span className="text-red-500 text-sm">{String(errors.billingTerms.message)}</span>
-          )}
-        </div>
-
-        {/* Submit */}
-        <div className="mt-6 text-end">
-          <button
-            type="submit"
-            className="bg-brand text-white px-5 py-3 rounded-lg"
-          >
-            Add/Edit Supplier
-          </button>
-        </div>
-      </div>
-    </form>
+      </form>
     </div>
   );
 };

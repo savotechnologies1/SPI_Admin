@@ -9,9 +9,7 @@ const VacationRequest = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data :any) => {
-    console.log("📦 Request Data:", data);
-  };
+  const onSubmit = (data: any) => {};
   return (
     <div>
       <div className="p-7">
@@ -96,7 +94,9 @@ const VacationRequest = () => {
                   className="border py-4 px-4 rounded-md w-full"
                 />
                 {errors.hours && (
-                  <p className="text-red-500 text-sm">{String(errors.hours.message)}</p>
+                  <p className="text-red-500 text-sm">
+                    {String(errors.hours.message)}
+                  </p>
                 )}
               </div>
 
@@ -113,7 +113,9 @@ const VacationRequest = () => {
                   className="border py-4 px-4 rounded-md w-full"
                 />
                 {errors.pin && (
-                  <p className="text-red-500 text-sm">{String(errors.pin.message)}</p>
+                  <p className="text-red-500 text-sm">
+                    {String(errors.pin.message)}
+                  </p>
                 )}
               </div>
 

@@ -205,7 +205,6 @@ import add from "../../assets/add.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { deleteSupplier, supplierList } from "./https/suppliersApi";
-import { Trash2 } from "lucide-react";
 
 interface CustomerItem {
   id: string;
@@ -251,11 +250,9 @@ const SupplierList = () => {
   };
 
   const handleDelete = async (id) => {
-    console.log("Updated2332323");
     // eslint-disable-next-line no-useless-catch
     try {
       const response = await deleteSupplier(id);
-      console.log("response", response);
       fetchCustomerList(currentPage);
       navigate("/all-supplier");
       // if (response.status === 200) {
@@ -274,7 +271,6 @@ const SupplierList = () => {
     navigate(`/edit-supplier/${id}`);
   };
 
-  console.log("searchValsearchValsearchVal", searchVal);
   return (
     <div className="p-4 md:p-7">
       <div>

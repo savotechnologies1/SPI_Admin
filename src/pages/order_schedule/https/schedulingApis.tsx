@@ -24,7 +24,6 @@ export const selectCustomer = async () => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(`/select-customer`);
-    console.log("response.dataresponse.data", response.data);
     return response.data;
   } catch (error) {
     throw error;

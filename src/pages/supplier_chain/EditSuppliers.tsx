@@ -31,11 +31,9 @@ const EditSuppliers = () => {
 
   // Step 2: Strongly type the onSubmit function
   const onSubmit = async (data: object) => {
-    console.log("✅ Updated Supplier Data:", data);
     // eslint-disable-next-line no-useless-catch
     try {
       const response = await editSupplier(data, id!).then();
-      console.log(response);
       if (response.status === 200) {
         navigate("/all-supplier");
       }
@@ -56,7 +54,7 @@ const EditSuppliers = () => {
         billingTerms: data.billingTerms,
       });
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 
@@ -65,11 +63,9 @@ const EditSuppliers = () => {
   }, [id]);
 
   const handleDelete = async () => {
-    console.log("Updated2332323");
     // eslint-disable-next-line no-useless-catch
     try {
       const response = await deleteSupplier(id!);
-      console.log("response", response);
       navigate("/all-supplier");
       // if (response.status === 200) {
       //   navigate("/all-supplier");

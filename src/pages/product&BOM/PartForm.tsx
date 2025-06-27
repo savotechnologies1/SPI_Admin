@@ -102,7 +102,6 @@ const PartForm = () => {
 
   const handleSubmitPartForm = (e: any) => {
     e.preventDefault();
-    console.log("partFormData", partFormData);
 
     addPart({
       ...partFormData,
@@ -117,7 +116,6 @@ const PartForm = () => {
   const handleSubmitProcessStep = (e: any) => {
     e.preventDefault();
     // Add your own logic here
-    console.log("Process Step Data:", processStepFormData);
   };
 
   const filteredData = data.filter((item) =>
@@ -316,6 +314,31 @@ const PartForm = () => {
               <option value="No">No</option>
             </select>
           </div>
+          <label className="block col-span-4 md:col-span-2">
+            Process
+            <select
+              name="process"
+              value={processStepFormData.process}
+              onChange={handleProcessStepChange}
+              className="border p-2 rounded w-full"
+            >
+              <option value="">Select Process</option>
+              <option value="Cutting">Cutting</option>
+              <option value="Molding">Molding</option>
+              <option value="Assembly">Assembly</option>
+            </select>
+          </label>
+
+          <label className="block col-span-4 md:col-span-2">
+            Process Description
+            <textarea
+              name="description"
+              placeholder="Process Description"
+              value={processStepFormData.description}
+              onChange={handleProcessStepChange}
+              className="border p-2 rounded w-full"
+            ></textarea>
+          </label>
 
           <label className="border bg-gray-100 rounded p-4 text-sm cursor-pointer block text-center">
             {partFormData.image ? (
@@ -350,14 +373,13 @@ const PartForm = () => {
         </form>
       </div>
 
-      <div>
+      {/* <div>
         <h1 className="font-bold text-lg mt-6">Process step table</h1>
         <div className="mt-6 bg-white p-6 w-full rounded-2xl shadow-md">
           <form
             onSubmit={handleSubmitProcessStep}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
           >
-            {/* Process */}
             <label className="block col-span-4 md:col-span-2">
               Process
               <select
@@ -373,7 +395,6 @@ const PartForm = () => {
               </select>
             </label>
 
-            {/* Cycle Time */}
             <label className="block col-span-4 md:col-span-2">
               Cycle Time
               <input
@@ -386,7 +407,6 @@ const PartForm = () => {
               />
             </label>
 
-            {/* Description */}
             <label className="block col-span-4">
               Process Description
               <textarea
@@ -398,7 +418,6 @@ const PartForm = () => {
               ></textarea>
             </label>
 
-            {/* Total Cycle Time */}
             <label className="block col-span-4">
               Total Cycle Time
               <input
@@ -425,7 +444,7 @@ const PartForm = () => {
             </div>
           </form>
         </div>
-      </div>
+      </div> */}
 
       <div className="mt-6 bg-white p-6 rounded-2xl shadow-md">
         {/* Search bar */}

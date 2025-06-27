@@ -37,9 +37,7 @@ const StockOrderScheduleForm = () => {
 
   const { register, handleSubmit } = useForm();
 
-  const onSubmit = (data: unknown) => {
-    console.log("Form Data:", data);
-  };
+  const onSubmit = (data: unknown) => {};
 
   return (
     <>

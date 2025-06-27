@@ -7,9 +7,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 const StationLogin = () => {
   const { register, handleSubmit } = useForm();
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-  };
+  const onSubmit = (data: any) => {};
 
   const navigate = useNavigate();
 
@@ -36,7 +34,7 @@ const StationLogin = () => {
                 <FaArrowLeft size={20} />
               </button>
               <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 w-62 text-xs bg-black text-white rounded opacity-0 group-hover:opacity-100 transition">
-                 Back to dashboard
+                Back to dashboard
               </div>
             </div>
 

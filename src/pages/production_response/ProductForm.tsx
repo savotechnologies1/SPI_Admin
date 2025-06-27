@@ -26,9 +26,7 @@ const ProductForm = () => {
 
   const { register, handleSubmit } = useForm();
 
-  const onSubmit = (data: any) => {
-    console.log("Form Data:", data);
-  };
+  const onSubmit = (data: any) => {};
 
   return (
     <div className="">

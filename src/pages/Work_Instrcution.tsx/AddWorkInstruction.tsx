@@ -8,7 +8,7 @@ export default function AddWorkInstruction() {
     { part: "", stepNumber: "", workInstruction: "", videoFile: null },
   ]);
   const [fileName, setFileName] = useState("");
-   const [videoFileName, setVideoFileName] = useState("");
+  const [videoFileName, setVideoFileName] = useState("");
 
   const handleChange = (index, field, value) => {
     const newSteps = [...steps];
@@ -31,7 +31,6 @@ export default function AddWorkInstruction() {
       instructionId,
     };
     const response = await addWorkinstruction(data);
-    console.log(response?.status);
   };
   const breadcrumbs = [
     { path: "/dashboardDetailes", label: "Dashboard" },
@@ -156,21 +155,21 @@ export default function AddWorkInstruction() {
               <label className="block font-semibold mb-2" htmlFor="videoFile">
                 Upload Video
               </label>
-            <div>
-      <label
-        htmlFor="videoFile"
-        className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm text-gray-600 bg-white hover:bg-gray-50"
-      >
-        {videoFileName ? videoFileName : " Upload Video or Picture"}
-      </label>
-      <input
-        type="file"
-        id="videoFile"
-        accept="video/mp4,video/mkv,video/mpeg4"
-        onChange={handleVideoChange}
-        className="hidden"
-      />
-    </div>
+              <div>
+                <label
+                  htmlFor="videoFile"
+                  className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm text-gray-600 bg-white hover:bg-gray-50"
+                >
+                  {videoFileName ? videoFileName : " Upload Video or Picture"}
+                </label>
+                <input
+                  type="file"
+                  id="videoFile"
+                  accept="video/mp4,video/mkv,video/mpeg4"
+                  onChange={handleVideoChange}
+                  className="hidden"
+                />
+              </div>
               <small className="text-red-700 mt-2 block">
                 We support MP4, MKV, MPEG4, etc.
               </small>
@@ -193,7 +192,7 @@ export default function AddWorkInstruction() {
             onClick={() => handleSaveInstruction(index)}
             className="bg-brand text-white px-5 py-3 rounded-lg"
           >
-           Add/Edit Instruction
+            Add/Edit Instruction
           </button>
         </div>
       ))}

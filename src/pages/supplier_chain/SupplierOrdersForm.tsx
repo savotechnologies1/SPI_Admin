@@ -41,7 +41,6 @@ const SupplierOrdersForm = () => {
   const { register, handleSubmit, setValue } = useForm();
 
   const onSubmit = async (data: object) => {
-    console.log("Form Data:", data);
     // eslint-disable-next-line no-useless-catch
     try {
       const response = await addSupplierOrder(data);
@@ -75,7 +74,6 @@ const SupplierOrdersForm = () => {
   useEffect(() => {
     fetchCustomerList();
   }, []);
-  console.log("supplierData", supplierData);
 
   return (
     <div className="p-4 bg-white rounded-2xl border shadow-md">

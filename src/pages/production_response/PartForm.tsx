@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 const PartForm = () => {
-
   const supplier = "Cortez herring";
   // const [formData, setFormData] = useState({
   //   orderNumber: "",
@@ -27,25 +26,17 @@ const PartForm = () => {
   //   assignTo: "Cortez Herring",
   // });
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-  } = useForm();
+  const { register, handleSubmit, setValue } = useForm();
 
-  const onSubmit = (data: any) => {
-    console.log("Form Data:", data);
-  };
+  const onSubmit = (data: any) => {};
 
-  useEffect (()=>{
-    setValue("supplier", supplier),
-    [supplier, setValue]
+  useEffect(() => {
+    setValue("supplier", supplier), [supplier, setValue];
   });
 
   return (
     <div className="">
       <form onSubmit={handleSubmit(onSubmit)} className="">
-        {/* Search Part */}
         <div className="bg-white p-4">
           <label className="block font-semibold mb-1">
             Search Part For Update
@@ -58,7 +49,6 @@ const PartForm = () => {
           />
         </div>
 
-        {/* Part Family, Part, and Supplier */}
         <div className="grid grid-cols-1 gap-4 bg-white p-4 ">
           {/* <div>
             <label className="block font-semibold mb-1">
@@ -96,7 +86,7 @@ const PartForm = () => {
               {...register("supplier")}
               className="border py-3 px-4 rounded-md w-full text-gray-600 bg-gray-100"
             >
-           {supplier}
+              {supplier}
             </p>
           </div>
         </div>

@@ -315,7 +315,6 @@ const TimeSheet = () => {
               <button
                 onClick={() => {
                   setIsOpen(false);
-                  console.log("Request Approved");
                 }}
                 className="px-4 py-2 bg-brand text-white rounded-md text-sm md:text-base"
               >

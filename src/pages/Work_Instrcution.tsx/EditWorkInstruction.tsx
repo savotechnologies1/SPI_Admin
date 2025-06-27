@@ -64,7 +64,7 @@ const EditWorkInstruction = () => {
         navigate("/");
       }
     } catch (error) {
-      console.log("edit work instruction errror ", error);
+      throw error;
     }
   };
 
@@ -161,7 +161,6 @@ const EditWorkInstruction = () => {
             Work Instruction (Describe Steps)
           </label>
           <textarea
-
             id="workInstruction"
             {...register("workInstruction", {
               required: "Description is required",
@@ -173,7 +172,7 @@ const EditWorkInstruction = () => {
           {errors.workInstruction && (
             <p className="text-red-500 text-sm">
               {errors.workInstruction.message}
-            </p> 
+            </p>
           )}
         </div>
 
@@ -216,26 +215,25 @@ const EditWorkInstruction = () => {
         </div>
 
         {/* Save Button */}
-       <div className="flex justify-between">  
-         <button
-          type="submit"
-          className="bg-brand text-white px-5  rounded-lg transition-colors"
-        >
-          Save 
-        </button>
-         <div className="bg-[#FF5630] rounded-full p-2 cursor-pointer">
-              <img
-                className="w-[20px]"
+        <div className="flex justify-between">
+          <button
+            type="submit"
+            className="bg-brand text-white px-5  rounded-lg transition-colors"
+          >
+            Save
+          </button>
+          <div className="bg-[#FF5630] rounded-full p-2 cursor-pointer">
+            <img
+              className="w-[20px]"
               src={delete_img}
-                alt="delete"
-                // onClick={handleDelete}
-              />
-            </div>
-       </div>
+              alt="delete"
+              // onClick={handleDelete}
+            />
+          </div>
+        </div>
       </form>
     </div>
   );
 };
 
 export default EditWorkInstruction;
-

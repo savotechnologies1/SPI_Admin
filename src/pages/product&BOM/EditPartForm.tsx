@@ -115,7 +115,6 @@ const EditPartForm = () => {
   const handleSubmitProcessStep = (e: any) => {
     e.preventDefault();
     // Add your own logic here
-    console.log("Process Step Data:", processStepFormData);
   };
 
   const filteredData = data.filter((item) =>
@@ -475,27 +474,32 @@ const EditPartForm = () => {
           </tbody>
         </table>
         <div className="flex justify-end items-center py-4 gap-4">
-  <button
-    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-    disabled={currentPage === 1}
-    className={`px-3 py-1 border rounded ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-  >
-    Prev
-  </button>
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className={`px-3 py-1 border rounded ${
+              currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            Prev
+          </button>
 
-  <span className="text-sm text-gray-600">
-    Page {currentPage} of {totalPages}
-  </span>
+          <span className="text-sm text-gray-600">
+            Page {currentPage} of {totalPages}
+          </span>
 
-  <button
-    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-    disabled={currentPage === totalPages}
-    className={`px-3 py-1 border rounded ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
-  >
-    Next
-  </button>
-</div>
-
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className={`px-3 py-1 border rounded ${
+              currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

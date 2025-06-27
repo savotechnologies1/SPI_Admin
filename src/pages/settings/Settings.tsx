@@ -7,22 +7,20 @@ import { BASE_URL } from "../../utils/axiosInstance";
 
 const Settings = () => {
   const [photo, setPhoto] = useState<string | null>(null);
-  const [profileImg,setProfileImg]=useState<string | null>(null);
-  const [isFile ,setIsFile] =useState<string | boolean>(false);
-const handlePhotoChange = (e: any) => {
-  if(isFile === false){
-    setIsFile(true)
-
-  }
-  else{
-     setIsFile(false)
-  }
-  const file = e.target.files[0];
-  if (file) {
-    setProfileImg(file); // <-- Set actual file if uploaded
-    setPhoto(URL.createObjectURL(file)); // For preview
-  }
-};
+  const [profileImg, setProfileImg] = useState<string | null>(null);
+  const [isFile, setIsFile] = useState<string | boolean>(false);
+  const handlePhotoChange = (e: any) => {
+    if (isFile === false) {
+      setIsFile(true);
+    } else {
+      setIsFile(false);
+    }
+    const file = e.target.files[0];
+    if (file) {
+      setProfileImg(file); // <-- Set actual file if uploaded
+      setPhoto(URL.createObjectURL(file)); // For preview
+    }
+  };
 
   const form1 = useForm({
     defaultValues: {
@@ -38,40 +36,33 @@ const handlePhotoChange = (e: any) => {
     },
   });
   const { reset } = form1;
-  // const form2 = useForm(); 
+  // const form2 = useForm();
   const onSubmit = async (data: any) => {
-    const response = await updateProfile(data,profileImg,isFile);
+    const response = await updateProfile(data, profileImg, isFile);
   };
-  // const onSubmit1 = (data: any) => {
-  //   console.log(data);
-  // };
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const data = await getProfile();
+      reset(data.data);
 
+      if (data.data?.profileImg) {
+        const imageUrl = `${BASE_URL}/uploads/profileImg/${data.data.profileImg}`;
+        setPhoto(imageUrl);
+        setProfileImg(data.data.profileImg); // <-- Store filename for update
+      }
+    };
+    fetchUserData();
+  }, [reset]);
 
-useEffect(() => {
-  const fetchUserData = async () => {
-    const data = await getProfile();
-    reset(data.data);
-
-    if (data.data?.profileImg) {
-      const imageUrl = `${BASE_URL}/uploads/profileImg/${data.data.profileImg}`;
-      setPhoto(imageUrl);
-      setProfileImg(data.data.profileImg); // <-- Store filename for update
+  const deletProfileApi = async () => {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      deleteProfile().then();
+    } catch (error) {
+      throw error;
     }
   };
-  fetchUserData();
-}, [reset]);
-
-
-const deletProfileApi = async()=>{
-  // eslint-disable-next-line no-useless-catch
-  try {
-    deleteProfile().then()
-  } catch (error) {
-    throw error
-    
-  }
-}
   return (
     <div className="p-8  min-h-screen">
       <div className=" mx-auto  p-">
@@ -135,7 +126,10 @@ const deletProfileApi = async()=>{
                 </label>
               </div>
 
-              <button className="bg-[#FF563014] text-[#B71D18] px-4 py-2 mt-4 rounded-md font-semibold" onClick={deletProfileApi}>
+              <button
+                className="bg-[#FF563014] text-[#B71D18] px-4 py-2 mt-4 rounded-md font-semibold"
+                onClick={deletProfileApi}
+              >
                 Delete user
               </button>
             </div>

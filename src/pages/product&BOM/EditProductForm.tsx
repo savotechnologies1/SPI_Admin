@@ -102,7 +102,6 @@ const EditProductForm = () => {
 
   const handleSubmitPartForm = (e: any) => {
     e.preventDefault();
-    console.log("partFormDatapartFormData", partFormData);
 
     addPart({
       ...partFormData,
@@ -117,7 +116,6 @@ const EditProductForm = () => {
   const handleSubmitProcessStep = (e: any) => {
     e.preventDefault();
     // Add your own logic here
-    console.log("Process Step Data:", processStepFormData);
   };
 
   const filteredData = data.filter((item) =>

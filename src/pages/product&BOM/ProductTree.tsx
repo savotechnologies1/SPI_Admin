@@ -17,8 +17,6 @@ export default function ProductTree() {
 
   const navigate = useNavigate();
   const handleClick = (id: string) => {
-    console.log("handleClickhandleClickhandleClick");
-
     navigate(`/edit-product/${id}`);
   };
   return (

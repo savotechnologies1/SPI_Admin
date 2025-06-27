@@ -15,7 +15,7 @@ const EditProcess = () => {
     formState: { errors },
     reset,
   } = useForm<ProcessFormData>();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const { id } = useParams<{ id: string }>();
   const [processData, setProcessData] = useState([]);
@@ -23,7 +23,7 @@ const EditProcess = () => {
     // eslint-disable-next-line no-useless-catch
     try {
       const response = await editProcess(data, id);
-        if (response.status === 200) {
+      if (response.status === 200) {
         navigate("/process-list");
       }
     } catch (error: unknown) {
@@ -43,20 +43,20 @@ const EditProcess = () => {
         orderNeeded: data.orderNeeded,
       });
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
   useEffect(() => {
     fetchProcessDetail();
   }, [id]);
-  const handleDelete = async() => {
+  const handleDelete = async () => {
     try {
-      const response = await deleteProcess(id)
-       if (response.status === 200) {
+      const response = await deleteProcess(id);
+      if (response.status === 200) {
         navigate("/process-list");
       }
     } catch (error: unknown) {
-      console.log("errorerror", error);
+      throw error;
     }
   };
   return (
@@ -74,11 +74,11 @@ const EditProcess = () => {
           </p>
           <FaCircle className="text-[6px] text-gray-500" />
           <span className="text-xs sm:text-[16px] hover:cursor-pointer">
-          Process List
+            Process List
           </span>
           <FaCircle className="text-[6px] text-gray-500" />
           <span className="text-xs sm:text-[16px] hover:cursor-pointer">
-          Edit process
+            Edit process
           </span>
         </div>
       </div>
@@ -183,7 +183,7 @@ const EditProcess = () => {
                 type="submit"
                 className="bg-brand text-white px-6 py-3 rounded-md"
               >
-               Save
+                Save
               </button>
             </div>
 
@@ -203,5 +203,3 @@ const EditProcess = () => {
 };
 
 export default EditProcess;
-
-

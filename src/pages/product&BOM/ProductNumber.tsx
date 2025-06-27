@@ -93,7 +93,6 @@ const ProductNumber = () => {
   const onSubmitProduct = async (data: Part) => {
     addPart(data); // Save data in Context
     navigate("/product-tree"); // Redirect to table page
-    console.log("Submitted Form Data:", data);
     // eslint-disable-next-line no-useless-catch
     // try {
     //   const response = await createProductNumber(data);
@@ -106,9 +105,7 @@ const ProductNumber = () => {
     // }
   };
 
-  const onSubmitProcess = (data: any) => {
-    console.log("Process Form Data:", data);
-  };
+  const onSubmitProcess = (data: any) => {};
 
   const filteredData = data.filter((item) =>
     item.partDesc.toLowerCase().includes(searchTerm.toLowerCase())

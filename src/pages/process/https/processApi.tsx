@@ -4,7 +4,6 @@ import axiosInstance from "../../../utils/axiosInstance";
 export const addProcess = async (userData: object) => {
   try {
     const response = await axiosInstance.post("/add-process", userData);
-    console.log("response222", response);
     if (response.status === 201) {
       toast.success(response.data.message);
     }
@@ -20,7 +19,6 @@ export const processList = async (page = 1, limit = 5) => {
     const response = await axiosInstance.get(
       `/all-process?page=${page}&limit=${limit}`
     );
-    console.log("responseresponseresponse", response);
 
     return response.data;
   } catch (error) {
@@ -41,7 +39,6 @@ export const processDetail = async (id: string) => {
 export const editProcess = async (userData: object, id: string) => {
   try {
     const response = await axiosInstance.put(`/edit-process/${id}`, userData);
-    console.log("response222", response);
     if (response.status === 201) {
       toast.success(response.data.message);
     }
@@ -54,7 +51,6 @@ export const editProcess = async (userData: object, id: string) => {
 export const deleteProcess = async (id: string) => {
   try {
     const response = await axiosInstance.put(`/delete-process/${id}`);
-    console.log("response222", response);
     if (response.status === 200) {
       toast.success(response.data.message);
     }
