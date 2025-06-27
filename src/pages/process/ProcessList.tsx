@@ -41,7 +41,7 @@ const ProcessList = () => {
     // eslint-disable-next-line no-useless-catch
     try {
       const response = await processList(page, rowsPerPage);
-      setProcessData(response.data);
+      setProcessData(response.processData);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
       throw error;
