@@ -18,44 +18,43 @@ const Navbar = () => {
   const notificationRef = useRef<HTMLDivElement>(null);
   const profile = useSelector((state) => state.profile.data);
 
-const handleClickOutside = (event: MouseEvent) => {
-  if (
-    languageRef.current &&
-    !languageRef.current.contains(event.target as Node)
-  ) {
-    isLanguageOpen(false); 
-  }
-};
-
-// Add event listener for clicks outside the language dropdown
-useEffect(() => {
-  if (isLanguage) {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }
-}, [isLanguage]);
-
-
-useEffect(() => {
-  const handleClickOutsideNotification = (event: MouseEvent) => {
+  const handleClickOutside = (event: MouseEvent) => {
     if (
-      notificationRef.current &&
-      !notificationRef.current.contains(event.target as Node)
+      languageRef.current &&
+      !languageRef.current.contains(event.target as Node)
     ) {
-      isNotificationOpen(false);
+      isLanguageOpen(false);
     }
   };
 
-  if (isNotification) {
-    document.addEventListener("mousedown", handleClickOutsideNotification);
-  }
+  // Add event listener for clicks outside the language dropdown
+  useEffect(() => {
+    if (isLanguage) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, [isLanguage]);
 
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutsideNotification);
-  };
-}, [isNotification]);
+  useEffect(() => {
+    const handleClickOutsideNotification = (event: MouseEvent) => {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target as Node)
+      ) {
+        isNotificationOpen(false);
+      }
+    };
+
+    if (isNotification) {
+      document.addEventListener("mousedown", handleClickOutsideNotification);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutsideNotification);
+    };
+  }, [isNotification]);
 
   return (
     <div className="fixed top-0 right-0 w-full z-30 items-center ">
@@ -98,7 +97,7 @@ useEffect(() => {
             />
           </div>
           <div className="flex space-x-4">
-            <img
+            {/* <img
               src={
                 profile?.profileImg
                   ? `http://localhost:8080/uploads/profileImg/${profile?.profileImg}`
@@ -109,21 +108,23 @@ useEffect(() => {
                 isProfileOpen(true);
               }}
               className="rounded-full w-[40px] border-2 border-green-400 mb-2"
-            />
-            {/* <img
+            /> */}
+            <img
               src={profileImg}
               alt="avatar"
               className="w-10"
               onClick={() => {
                 isProfileOpen(true);
               }}
-            /> */}
+            />
           </div>
         </div>
 
         {isLanguage && (
           <div
-          ref={languageRef} className=" flex flex-col gap-4 absolute top-16 right-12 z-10 p-4">
+            ref={languageRef}
+            className=" flex flex-col gap-4 absolute top-16 right-12 z-10 p-4"
+          >
             <div className="flex flex-col i gap-2 bg-white py-2">
               <div className="flex gap-2 hover:bg-[#919EAB29] items-center cursor-pointer px-6">
                 <div>
@@ -158,13 +159,10 @@ useEffect(() => {
         )}
 
         {isNotification && (
-          <div 
-           className="relative">
+          <div className="relative">
             <div className="fixed inset-0 bg-black opacity-30 z-10" />{" "}
             {/* Background overlay */}
-            <div
-          ref={notificationRef}
-             className="absolute right-0 top-0 z-20">
+            <div ref={notificationRef} className="absolute right-0 top-0 z-20">
               <NotificationList />
             </div>
           </div>
@@ -174,7 +172,7 @@ useEffect(() => {
             <div className="fixed inset-0 bg-black opacity-30 z-10" />{" "}
             {/* Background overlay */}
             <div className="absolute right-0 top-0 z-20">
-              <Account  onClose={() => isProfileOpen(false)} />
+              <Account onClose={() => isProfileOpen(false)} />
             </div>
           </div>
         )}

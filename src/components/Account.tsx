@@ -22,12 +22,12 @@ const Account = ({ onClose }: AccountProps) => {
       };
     };
   }
-  const profile = useSelector((state: RootState) => state.profile.data);
-  // const profile = {
-  //   name: "John Doe",
-  //   email: "johndoe@example.com",
-  //   profileImg: "", // or "sample.jpg"
-  // };
+  // const profile = useSelector((state: RootState) => state.profile.data);
+  const profile = {
+    name: "John Doe",
+    email: "johndoe@example.com",
+    profileImg: "", // or "sample.jpg"
+  };
   const section = [
     {
       key: "Dashboard",
@@ -83,9 +83,10 @@ const Account = ({ onClose }: AccountProps) => {
             <div>
               <img
                 src={
-                  profile.profileImg
-                    ? `http://localhost:8080/uploads/profileImg/${profile.profileImg}`
-                    : img
+                  // profile.profileImg
+                  //   ? `http://localhost:8080/uploads/profileImg/${profile.profileImg}`
+                  //   :
+                  img
                 }
                 alt="Close sidebar"
                 onClick={() => setIsOpen(!isOpen)}
@@ -108,8 +109,12 @@ const Account = ({ onClose }: AccountProps) => {
                     <Link to={`/${section.path}`}>
                       <button
                         className={`flex items-center space-x-4 w-full px-2 py-3 rounded-md hover:bg-brand hover:text-white 
-                             ${activeTab === section.key ? 'bg-brand text-white' : 'hover:bg-brand hover:text-white'}`}
-                               onClick={() => setActiveTab(section.key)}
+                             ${
+                               activeTab === section.key
+                                 ? "bg-brand text-white"
+                                 : "hover:bg-brand hover:text-white"
+                             }`}
+                        onClick={() => setActiveTab(section.key)}
                       >
                         <img
                           src={section.icon}
