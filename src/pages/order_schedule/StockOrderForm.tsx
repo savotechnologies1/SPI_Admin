@@ -312,7 +312,7 @@
 import { useForm } from "react-hook-form";
 import { addStockOrder } from "./https/schedulingApis";
 import { useEffect, useState } from "react";
-import del_img from "../../assets/delete_1.png";
+// import del_img from "../../assets/delete_1.png";
 
 const productData: Record<string, { quantity: number; description: string }> = {
   "1001": {
@@ -374,6 +374,7 @@ const StockOrderForm = () => {
   ];
 
   const [showFields, setShowFields] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(
     null
   );
@@ -407,6 +408,16 @@ const StockOrderForm = () => {
 
   const productNumber = watch("productNumber");
   useEffect(() => {
+    if (productNumber) {
+      const filtered = Object.keys(productData).filter((key) =>
+        key.startsWith(productNumber.toString())
+      );
+      setSuggestions(filtered);
+    } else {
+      setSuggestions([]);
+    }
+  }, [productNumber]);
+  useEffect(() => {
     if (productNumber && productData[productNumber]) {
       setValue("productQuantity", productData[productNumber].quantity);
       setValue("productDesc", productData[productNumber].description);
@@ -415,6 +426,11 @@ const StockOrderForm = () => {
       setValue("productDesc", "");
     }
   }, [productNumber, setValue]);
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setValue("productNumber", suggestion); // This will also trigger useEffect autofill
+    setSuggestions([]);
+  };
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
@@ -641,13 +657,26 @@ const StockOrderForm = () => {
               placeholder="Enter Product No..."
               className="border py-3 px-4 rounded-md w-full  placeholder-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
+            {suggestions.length > 0 && (
+              <ul className="absolute bg-white border w-40 mt-1 rounded shadow z-10">
+                {suggestions.map((item) => (
+                  <li
+                    key={item}
+                    onClick={() => handleSuggestionClick(item)}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div>
             <label className="font-semibold">Cost</label>
 
             <input
               type="number"
-              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600 bg-gray-100 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="border py-3 px-4 rounded-md w-full  [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               {...register("cost")}
               placeholder="Enter Cost"
             ></input>

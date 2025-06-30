@@ -427,7 +427,7 @@ const EditProductForm = () => {
 
       <div className="mt-6 bg-white p-6 rounded-2xl shadow-md">
         {/* Search bar */}
-        <div className="flex justify-between items-center mb-4">
+        {/* <div className="flex justify-between items-center mb-4">
           <input
             type="text"
             placeholder="Search..."
@@ -436,7 +436,7 @@ const EditProductForm = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <img src={more} alt="" />
-        </div>
+        </div> */}
 
         {/* Table */}
         <table className="text-sm w-full">
@@ -445,7 +445,6 @@ const EditProductForm = () => {
               <th className="px-4 py-3 font-medium">Process</th>
               <th className="px-4 py-3 font-medium">Part Description</th>
               <th className="px-4 py-3 font-medium">Cycle Time</th>
-              <th className="px-4 py-3 font-medium">Total Cycle</th>
               <th className="px-4 py-3 font-medium"></th>
             </tr>
           </thead>

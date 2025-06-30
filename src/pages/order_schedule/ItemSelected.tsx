@@ -121,11 +121,12 @@ const ItemSelected = () => {
             </div>
 
             <div
-              className="rounded-full p-2 cursor-pointer w-10 self-start"
-              style={{ backgroundColor: item.bg }}
+              className=" text-center rounded-md py-1 cursor-pointer w-16 self-start bg-brand text-white"
+              // style={{ backgroundColor: item.bg }}
               onClick={() => addItem(item)}
             >
-              <img src={item.img} alt="bag" className="w-full h-auto" />
+              {/* <img src={item.img} alt="bag" className="w-full h-auto" /> */}
+              <p className="text-xs">Schedule Order</p>
             </div>
           </div>
         ))}

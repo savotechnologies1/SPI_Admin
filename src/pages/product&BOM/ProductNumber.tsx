@@ -6,7 +6,7 @@ import { PartContext } from "../../components/Context/PartContext";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import edit from "../../assets/edit.png";
 import more from "../../assets/more.png";
-import { createProductNumber } from "./https/partProductApis";
+// import { createProductNumber } from "./https/partProductApis";
 const data = [
   {
     process: "Cut Trim",
@@ -64,6 +64,7 @@ const ProductNumber = () => {
     cost: number;
     leadTime: number;
     availStock: string;
+    availableStock: string; // Added to match expected type
     orderQty: number;
     cycleTime: number;
     company?: string;
@@ -78,7 +79,7 @@ const ProductNumber = () => {
   } = useForm<Part>();
   const {
     register: registerProcess,
-    handleSubmit: handleProcessSubmit,
+    // handleSubmit: handleProcessSubmit,
     formState: { errors: processErrors },
   } = useForm({
     defaultValues: {
@@ -105,7 +106,7 @@ const ProductNumber = () => {
     // }
   };
 
-  const onSubmitProcess = (data: any) => {};
+  // const onSubmitProcess = (data: any) => {};
 
   const filteredData = data.filter((item) =>
     item.partDesc.toLowerCase().includes(searchTerm.toLowerCase())
@@ -314,12 +315,13 @@ const ProductNumber = () => {
               })}
               className="border p-2 rounded w-full"
             >
+              <option value="">Select</option>
               <option value="100">Yes</option>
               <option value="500">No</option>
             </select>
           </label>
 
-          <label className="border bg-gray-100 rounded p-2 md:p-4 text-sm cursor-pointer block text-center">
+          <label className="border bg-gray-100 rounded p-2 md:p-4 text-sm cursor-pointer block text-center col-span-4 w-1/2">
             <input
               type="file"
               className="hidden"
@@ -332,6 +334,94 @@ const ProductNumber = () => {
               }}
             />
             Tap or Click to Add Picture
+          </label>
+          <p className="font-semibold text-lg  col-span-4">
+            Bill of material :
+          </p>
+
+          <label className="block col-span-1">
+            Part Number
+            <input
+              type="text"
+              {...registerProduct("productNumber", {
+                required: "Product Number is required",
+              })}
+              placeholder="#357445"
+              className="border p-2 rounded w-full"
+            />
+            {processErrors.productNumber && (
+              <p className="text-red-500 text-xs">
+                {processErrors.productNumber.message}
+              </p>
+            )}
+          </label>
+
+          <label className="block col-span-1">
+            Qty
+            <input
+              type="number"
+              {...registerProcess("qty", { required: "Quantity is required" })}
+              placeholder="356"
+              className="border p-2 rounded w-full"
+            />
+            {processErrors.qty && (
+              <p className="text-red-500 text-xs">
+                {processErrors.qty.message}
+              </p>
+            )}
+          </label>
+
+          <label className="block col-span-1">
+            Process
+            <input
+              type="text"
+              {...registerProcess("process", {
+                required: "Process is required",
+              })}
+              placeholder="e.g., Cutting"
+              className="border p-2 rounded w-full"
+            />
+            {processErrors.process && (
+              <p className="text-red-500 text-xs">
+                {processErrors.process.message}
+              </p>
+            )}
+          </label>
+
+          <label className="block col-span-1">
+            Cycle Time
+            <input
+              type="number"
+              {...registerProcess("cycleTime", {
+                required: "Cycle Time is required",
+              })}
+              placeholder="4000"
+              className="border p-2 rounded w-full"
+            />
+            {processErrors.cycleTime && (
+              <p className="text-red-500 text-xs">
+                {processErrors.cycleTime.message}
+              </p>
+            )}
+          </label>
+
+          <label className="block col-span-1">
+            Work Instruction
+            <select
+              {...registerProcess("workInstruction", {
+                required: "Work Instruction is required",
+              })}
+              className="border p-2 rounded w-full"
+            >
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+            {processErrors.workInstruction && (
+              <p className="text-red-500 text-xs">
+                {processErrors.workInstruction.message}
+              </p>
+            )}
           </label>
 
           <div className="flex justify-between items-center col-span-4">
@@ -350,7 +440,7 @@ const ProductNumber = () => {
       </div>
 
       {/* Process Form */}
-      <div className="mt-6 bg-white p-6 w-full rounded-2xl shadow-md">
+      {/* <div className="mt-6 bg-white p-6 w-full rounded-2xl shadow-md">
         <p className="font-semibold text-lg mb-4">Bill of material table:</p>
         <form
           onSubmit={handleProcessSubmit(onSubmitProcess)}
@@ -390,17 +480,14 @@ const ProductNumber = () => {
 
           <label className="block col-span-1">
             Process
-            <select
+            <input
+              type="text"
               {...registerProcess("process", {
                 required: "Process is required",
               })}
+              placeholder="e.g., Cutting"
               className="border p-2 rounded w-full"
-            >
-              <option value="">Select Process</option>
-              <option value="Cutting">Cutting</option>
-              <option value="Molding">Molding</option>
-              <option value="Assembly">Assembly</option>
-            </select>
+            />
             {processErrors.process && (
               <p className="text-red-500 text-xs">
                 {processErrors.process.message}
@@ -457,11 +544,11 @@ const ProductNumber = () => {
             </div>
           </div>
         </form>
-      </div>
+      </div> */}
 
       {/* Table Section */}
       <div className="mt-6 bg-white p-6 rounded-2xl shadow-md">
-        <div className="flex justify-between items-center mb-4">
+        {/* <div className="flex justify-between items-center mb-4">
           <input
             type="text"
             placeholder="Search..."
@@ -470,15 +557,14 @@ const ProductNumber = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <img src={more} alt="" />
-        </div>
+        </div> */}
 
         <table className="text-sm w-full">
           <thead className="bg-[#F4F6F8] text-left text-gray-500">
             <tr>
               <th className="px-4 py-3 font-medium">Process</th>
-              <th className="px-4 py-3 font-medium">Product Description</th>
+              <th className="px-4 py-3 font-medium">Part Description</th>
               <th className="px-4 py-3 font-medium">Cycle Time</th>
-              <th className="px-4 py-3 font-medium">Total Cycle Time</th>
               <th className="px-4 py-3 font-medium"></th>
             </tr>
           </thead>
@@ -494,7 +580,6 @@ const ProductNumber = () => {
                   {item.partDesc.split("/")[1]}
                 </td>
                 <td className="px-4 py-4">{item.cycleTime}</td>
-                <td className="px-4 py-4">{item.totalCycle}</td>
                 <td className="px-4 py-4 flex items-center gap-4">
                   <button>
                     <img className="" src={edit} alt="Edit" />

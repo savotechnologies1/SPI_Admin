@@ -104,37 +104,58 @@ const AddProcess = () => {
             </div>
           </div>
 
-          <label className="font-semibold">Process Order Needed?</label>
-          <div className="mt-2 mb-6 flex gap-6">
-            <div className="flex items-center">
-              <input
-                {...register("orderNeeded", { required: true })}
-                type="radio"
-                id="yes"
-                value="yes"
-                className="border py-4 px-4 rounded-md"
-              />
-              <label htmlFor="yes" className="ml-2">
-                Yes
-              </label>
-            </div>
+          <div className="flex items-center flex-col sm:flex-row gap-4 mt-2 mb-6">
+            {/* Part Family Dropdown */}
+            <label className="block w-full sm:w-1/2">
+              <span className="font-semibold">Part Family</span>
+              <select
+                name="partFamily"
+                className="border mt-1 p-2 rounded w-full"
+              >
+                <option value="">Select Part Family</option>
+                <option value="Cut Trim">Cut Trim</option>
+                <option value="Metal">Metal</option>
+                <option value="Plastic">Plastic</option>
+              </select>
+            </label>
 
-            <div className="flex items-center">
-              <input
-                {...register("orderNeeded", { required: true })}
-                type="radio"
-                id="no"
-                value="no"
-                className="border py-4 px-4 rounded-md"
-              />
-              <label htmlFor="no" className="ml-2">
-                No
-              </label>
+            {/* Process Order Needed Radios */}
+            <div className="w-full sm:w-1/2">
+              <span className="block font-semibold mb-2">
+                Process Order Needed?
+              </span>
+
+              <div className="flex gap-6">
+                <label className="flex items-center gap-2">
+                  <input
+                    {...register("orderNeeded", { required: true })}
+                    type="radio"
+                    id="yes"
+                    value="yes"
+                    className="accent-blue-600"
+                  />
+                  <span>Yes</span>
+                </label>
+
+                <label className="flex items-center gap-2">
+                  <input
+                    {...register("orderNeeded", { required: true })}
+                    type="radio"
+                    id="no"
+                    value="no"
+                    className="accent-blue-600"
+                  />
+                  <span>No</span>
+                </label>
+              </div>
+
+              {errors.orderNeeded && (
+                <p className="text-red-500 text-sm mt-1">
+                  Please select an option
+                </p>
+              )}
             </div>
           </div>
-          {errors.orderNeeded && (
-            <p className="text-red-500 text-sm">Please select an option</p>
-          )}
 
           <div className="flex justify-between items-end">
             <div className="mt-6">

@@ -58,6 +58,8 @@ const CustomOrderForm = () => {
 
   const [showFields, setShowFields] = useState(false);
   // const [showPart, setShowPart] = useState(false);
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+  
 
   const handleClick = () => {
     setShowFields(true); // Show fields when clicking the Add button
@@ -128,6 +130,17 @@ const CustomOrderForm = () => {
   };
   const productNumber = watch("productNumber");
 
+ useEffect(() => {
+    if (productNumber) {
+      const filtered = Object.keys(productData).filter((key) =>
+        key.startsWith(productNumber.toString())
+      );
+      setSuggestions(filtered);
+    } else {
+      setSuggestions([]);
+    }
+  }, [productNumber]);
+
   useEffect(() => {
     if (productNumber && productData[productNumber]) {
       setValue("ProductQuantity", productData[productNumber].quantity);
@@ -137,6 +150,11 @@ const CustomOrderForm = () => {
       setValue("ProductDescription", "");
     }
   }, [productNumber, setValue]);
+
+   const handleSuggestionClick = (suggestion: string) => {
+    setValue("productNumber", Number(suggestion)); // This will also trigger useEffect autofill
+    setSuggestions([]);
+  };
 
   return (
     <div className="p-4 bg-white rounded-2xl border shadow-md">
@@ -224,7 +242,8 @@ const CustomOrderForm = () => {
               className="border py-3 px-4 rounded-md w-full  placeholder-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
           </div>
-          <div className=" flex  justify-start gap-2">
+          {!showFields && (
+             <div className=" flex  justify-start gap-2">
             <span
               className="text-blue-500 text-sm flex items-center gap-1 cursor-pointer"
               onClick={handleClick}
@@ -246,6 +265,8 @@ const CustomOrderForm = () => {
               Add New Customer
             </span>
           </div>
+          )}
+         
         </div>
 
         {/* Render Fields When Clicked */}
@@ -305,13 +326,26 @@ const CustomOrderForm = () => {
               placeholder="Enter Product No..."
               className="border py-3 px-4 rounded-md w-full  placeholder-gray-600  [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
+              {suggestions.length > 0 && (
+              <ul className="absolute bg-white border w-40 mt-1 rounded shadow z-10">
+                {suggestions.map((item) => (
+                  <li
+                    key={item}
+                    onClick={() => handleSuggestionClick(item)}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div>
             <label className="font-semibold">Cost</label>
 
             <input
               type="number"
-              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600 bg-gray-100 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="border py-3 px-4 rounded-md w-full   [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               {...register("cost")}
               placeholder="Enter Cost"
             ></input>

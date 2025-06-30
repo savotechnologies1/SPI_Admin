@@ -361,7 +361,7 @@ const EditPartForm = () => {
                 name="process"
                 value={processStepFormData.process}
                 onChange={handleProcessStepChange}
-                className="border p-2 rounded w-full"
+                className="border p-2 rounded w-full "
               >
                 <option value="">Select Process</option>
                 <option value="Cutting">Cutting</option>
@@ -426,7 +426,7 @@ const EditPartForm = () => {
 
       <div className="mt-6 bg-white p-6 rounded-2xl shadow-md">
         {/* Search bar */}
-        <div className="flex justify-between items-center mb-4">
+        {/* <div className="flex justify-between items-center mb-4">
           <input
             type="text"
             placeholder="Search..."
@@ -435,7 +435,7 @@ const EditPartForm = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <img src={more} alt="" />
-        </div>
+        </div> */}
 
         {/* Table */}
         <table className="text-sm w-full">
@@ -444,7 +444,6 @@ const EditPartForm = () => {
               <th className="px-4 py-3 font-medium">Process</th>
               <th className="px-4 py-3 font-medium">Part Description</th>
               <th className="px-4 py-3 font-medium">Cycle Time</th>
-              <th className="px-4 py-3 font-medium">Total Cycle</th>
               <th className="px-4 py-3 font-medium"></th>
             </tr>
           </thead>
@@ -460,7 +459,6 @@ const EditPartForm = () => {
                   {item.partDesc.split("/")[1]}
                 </td>
                 <td className="px-4 py-4">{item.cycleTime}</td>
-                <td className="px-4 py-4">{item.totalCycle}</td>
                 <td className="px-4 py-4 flex items-center gap-4">
                   <button>
                     <img className="" src={edit} alt="Edit" />
