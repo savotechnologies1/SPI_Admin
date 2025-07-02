@@ -14,7 +14,6 @@ const NewCustomer = () => {
     // eslint-disable-next-line no-useless-catch
     try {
       const response = await addCustomer(data);
-      console.log("responseresponseresponse", response);
       if (response?.status == 201) {
         navigate("/customer-list");
       }
@@ -22,15 +21,6 @@ const NewCustomer = () => {
       throw error;
     }
   };
-  // const onSubmit = async (data: object) => {
-  //   console.log("Form Data:", data);
-  //   // try {
-  //   //   const response = await addProcess(data);
-  //   //   console.log("responseresponse", response);
-  //   // } catch (error: unknown) {
-  //   //   console.log("errorerror", error);
-  //   // }
-  // };
   return (
     <div className="p-4 md:p-7">
       <div>

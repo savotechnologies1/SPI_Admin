@@ -61,7 +61,6 @@ const Employees = () => {
   useEffect(() => {
     fetchCustomerList(currentPage);
   }, [currentPage, searchVal]);
-  console.log("activeTabactiveTab", activeTab.toLowerCase());
   const normalizedTab = activeTab?.trim().toLowerCase();
   const statusCounts = customerData.reduce(
     (acc, item) => {

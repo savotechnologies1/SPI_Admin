@@ -21,11 +21,9 @@ const AddEmployee = () => {
   const { register, handleSubmit } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
-    console.log("Form Submitted:", data);
     // eslint-disable-next-line no-useless-catch
     try {
       const response = await addEmployee(data);
-      console.log("responseresponseresponse", response);
       if (response?.status == 201) {
         navigate("/employees");
       }

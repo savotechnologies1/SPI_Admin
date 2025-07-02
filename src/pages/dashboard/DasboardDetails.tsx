@@ -31,7 +31,6 @@ const DasboardDetails = () => {
   const profile = useSelector((state) => state.profile.data);
   const status = useSelector((state) => state.profile.status);
   const navigate = useNavigate();
-  console.log("profileprofileprofileprofileprofile", profile);
   useEffect(() => {
     dispatch(fetchProfile());
   }, [dispatch]);
@@ -40,7 +39,7 @@ const DasboardDetails = () => {
     if (profile?.profileImg) {
       const imageUrl = `${BASE_URL}/uploads/profileImg/${profile.profileImg}`;
       setPhoto(imageUrl);
-      setProfileImg(profile.profileImg); 
+      setProfileImg(profile.profileImg);
     }
   }, [profile]);
 
@@ -151,5 +150,3 @@ const DasboardDetails = () => {
 };
 
 export default DasboardDetails;
-
-

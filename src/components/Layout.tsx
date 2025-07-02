@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar"; // Import the Sidebar component
 import Navbar from "./Navbar";
@@ -8,7 +8,6 @@ const Layout = () => {
   const toggleMenu = () => {
     setActiveMenu((prev) => !prev);
   };
-  console.log('0888888888888888888')
   return (
     <div className="flex relative min-h-screen ">
       <Sidebar activeMenu={activeMenu} clicked={toggleMenu} />
@@ -18,7 +17,9 @@ const Layout = () => {
           activeMenu ? "md:ml-64" : "pl-16"
         }`}
       >
-        <div className="pt-16"> {/* This matches the height of your navbar */}
+        <div className="pt-16">
+          {" "}
+          {/* This matches the height of your navbar */}
           <Navbar />
           <Outlet />
         </div>

@@ -63,7 +63,6 @@ const EditEmployee = () => {
   useEffect(() => {
     fetchProcessDetail();
   }, [id]);
-  console.log("idididparrrrrrma", id);
 
   const handleDelete = async () => {
     try {

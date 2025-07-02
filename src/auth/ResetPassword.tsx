@@ -18,13 +18,10 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const onSubmit = async (data: object) => {
     try {
-      console.log("datadatadata", data);
-
       const response = await resetPassword(data);
       if (response.status === 200) {
         navigate("/sign-in");
       }
-      console.log("API Response:", response);
     } catch (error) {
       console.error("Error during forgetPassword:", error);
     }

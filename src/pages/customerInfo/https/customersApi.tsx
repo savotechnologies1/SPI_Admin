@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
 
-export const addCustomer = async (apiData:object) => {
+export const addCustomer = async (apiData: object) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.post("/create-customer", apiData);
@@ -10,26 +10,23 @@ export const addCustomer = async (apiData:object) => {
     }
     return response;
   } catch (error) {
-     toast.error(error.response.data.message);
-
+    toast.error(error.response.data.message);
   }
 };
 
-
-export const customerList = async (page = 1, limit = 5,searchVal: string) => {
+export const customerList = async (page = 1, limit = 5, searchVal: string) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
       `/all-customer-list?page=${page}&limit=${limit}&search=${searchVal}`
     );
-    console.log('response.dataresponse.data',response.data)
     return response.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const customerDetail = async (id:string) => {
+export const customerDetail = async (id: string) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(`/get-customer-detail/${id}`);
@@ -41,8 +38,10 @@ export const customerDetail = async (id:string) => {
 
 export const editCustomer = async (data: object, id: string) => {
   try {
-    const response = await axiosInstance.put(`/edit-customer-detail/${id}`, data);
-    console.log("response222", response);
+    const response = await axiosInstance.put(
+      `/edit-customer-detail/${id}`,
+      data
+    );
     if (response.status === 201) {
       toast.success(response.data.message);
     }
@@ -52,11 +51,9 @@ export const editCustomer = async (data: object, id: string) => {
   }
 };
 
-
 export const deleteCustomer = async (id: string) => {
   try {
     const response = await axiosInstance.put(`/delete-customer/${id}`);
-    console.log("response222", response);
     if (response.status === 200) {
       toast.success(response.data.message);
     }

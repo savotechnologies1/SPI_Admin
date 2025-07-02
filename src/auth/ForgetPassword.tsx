@@ -22,7 +22,6 @@ const ForgetPassword = () => {
   const onSubmit = async (data: string) => {
     try {
       const response = await forgetPassword(data);
-      console.log("response", response);
 
       if (response.status === 200) {
         navigate("/otp-verify");

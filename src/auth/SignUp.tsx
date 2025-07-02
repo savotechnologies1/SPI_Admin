@@ -17,9 +17,7 @@ const SignUp = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data: unknown) => {
-    console.log("Submitted data:", data);
-  };
+  const onSubmit = (data: unknown) => {};
 
   const password = watch("password");
 
@@ -132,7 +130,9 @@ const SignUp = () => {
                   })}
                   placeholder="••••••••"
                   className={`w-full p-3 rounded-lg border ${
-                    errors.confirmPassword ? "border-red-500" : "border-gray-300"
+                    errors.confirmPassword
+                      ? "border-red-500"
+                      : "border-gray-300"
                   } focus:outline-none focus:ring-2 focus:ring-[#052C89]`}
                 />
                 <button

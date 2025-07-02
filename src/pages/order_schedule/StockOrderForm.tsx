@@ -399,6 +399,7 @@ const StockOrderForm = () => {
 
   const onSubmit = (data: object) => {
     console.log("Form Data:", data);
+
     try {
       addStockOrder(data).then();
     } catch (error: unknown) {

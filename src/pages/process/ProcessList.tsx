@@ -18,6 +18,8 @@ interface ProcessItem {
   machineName: string;
   cycleTime: number;
   ratePerHour: number;
+  partFamily: string;
+  orderNeeded: boolean;
 }
 
 const ProcessList = () => {
@@ -41,7 +43,7 @@ const ProcessList = () => {
     // eslint-disable-next-line no-useless-catch
     try {
       const response = await processList(page, rowsPerPage);
-      setProcessData(response.processData);
+      setProcessData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
       throw error;
@@ -113,6 +115,9 @@ const ProcessList = () => {
                   Machine Name
                 </th>
                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
+                  Part Family
+                </th>
+                <th className="px-3 py-3 text-left text-gray-400 font-medium">
                   Cycle Time
                 </th>
                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
@@ -135,9 +140,14 @@ const ProcessList = () => {
                 >
                   <td className="px-3 py-4">{item.processName}</td>
                   <td className="px-3 py-4">{item.machineName}</td>
+                  <td className="px-3 py-4">{item.partFamily}</td>
                   <td className="px-3 py-4">{item.cycleTime}</td>
                   <td className="px-3 py-4">{item.ratePerHour}</td>
-                  <td className="px-3 py-4">200</td>
+                  {item.orderNeeded === true ? (
+                    <td className="px-3 py-4">yes</td>
+                  ) : (
+                    <td className="px-3 py-4">no</td>
+                  )}
                   <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
                     <button
                       className="text-brand hover:underline"

@@ -51,10 +51,6 @@ export const resetPassword = async (data: object) => {
       ...data,
       token: token,
     });
-    console.log("32080328032", {
-      ...data,
-      token: token,
-    });
 
     if (response.status === 200) {
       localStorage.removeItem("email");
