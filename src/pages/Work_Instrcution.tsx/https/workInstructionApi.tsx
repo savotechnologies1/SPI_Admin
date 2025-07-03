@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
 
+
 export const workInstructionApi = async () => {
   // eslint-disable-next-line no-useless-catch
   try {
@@ -41,7 +42,7 @@ export const addWorkinstruction = async (data: object) => {
   }
 };
 
-export const workInstructionList = async (page = 1, limit = 5,process,searchVal) => {
+export const workInstructionList = async (page = 1, limit = 5, process, searchVal) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
@@ -75,7 +76,7 @@ export const editWorkInstruction = async (data: object, id) => {
 };
 
 
-export const workInstructionDetail = async (id:string) => {
+export const workInstructionDetail = async (id: string) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(`/get-work-detail/${id}`);
@@ -97,3 +98,29 @@ export const deleteWorkInstruction = async (id: string) => {
     toast.error(error.response.data.message);
   }
 };
+
+
+export const selectProcessApi = async () => {
+  try {
+    const response = await axiosInstance.get(`/select-process`)
+    if (response.status === 200) {
+      toast.success(response.data.message)
+    }
+    return response.data;
+  } catch (error: any) {
+    toast.error(error.response.data.message);
+  }
+}
+
+
+export const selectProductApi = async () => {
+  try {
+    const response = await axiosInstance.get(`/select-product-number`)
+    if (response.status === 200) {
+      toast.success(response.data.message)
+    }
+    return response.data;
+  } catch (error: any) {
+    toast.error(error.response.data.message);
+  }
+}
