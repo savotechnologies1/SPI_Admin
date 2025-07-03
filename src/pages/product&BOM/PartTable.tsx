@@ -1,10 +1,11 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { PartContext } from "../../components/Context/PartContext";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaCircle } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import add from "../../assets/add.png";
+import { bomList } from "./https/partProductApis";
 
 export default function PartTable() {
   const partContext = useContext(PartContext);
@@ -21,6 +22,36 @@ export default function PartTable() {
   const handleClick = (id) => {
     navigate(`/edit-part/${id}`);
   };
+  const [customerData, setCustomerData] = useState<CustomerItem[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchVal, setSearchVal] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const rowsPerPage = 5;
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+  const fetchCustomerList = async (page = 1) => {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const response = await bomList(page, rowsPerPage, searchVal);
+      setCustomerData(response.data);
+      setTotalPages(response.pagination?.totalPages || 1);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomerList(currentPage);
+  }, [currentPage, searchVal]);
+
   return (
     <div className="p-4">
       <div className="flex justify-between mt-8">
@@ -102,8 +133,8 @@ export default function PartTable() {
               </tr>
             </thead>
             <tbody>
-              {parts.map((part, index) => (
-                <tr key={index} className="hover:bg-gray-100">
+              {customerData.map((part, index) => (
+                <tr key={index} className="hover:bg-gray-100 text-center">
                   <td className="border-b border-dashed p-2">
                     {part.partNumber}
                   </td>
@@ -111,17 +142,17 @@ export default function PartTable() {
                     {part.partFamily}
                   </td>
                   <td className="border-b border-dashed p-2">
-                    {part.description}
+                    {part.partDescription}
                   </td>
                   <td className="border-b border-dashed p-2">${part.cost}</td>
                   <td className="border-b border-dashed p-2">
-                    {part.leadTime}
+                    {part.leadTime} Days
                   </td>
                   <td className="border-b border-dashed p-2">
-                    {part.availableStock}
+                    {part.availStock}
                   </td>
                   <td className="border-b border-dashed p-2">
-                    {part.orderQty}
+                    {part.supplierOrderQty}
                   </td>
                   <td className="flex items-center gap-4 border-b border-dashed p-2">
                     {/* Edit Icon */}

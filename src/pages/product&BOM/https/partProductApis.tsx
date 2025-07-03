@@ -72,3 +72,27 @@ export const getPartDetail = async (id: string) => {
     toast.error(error.response.data.message);
   }
 };
+
+export const bomList = async (page = 1, limit = 5, searchVal: string) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await axiosInstance.get(
+      `/bom-data-list?page=${page}&limit=${limit}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const productTree = async (page = 1, limit = 5, searchVal: string) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await axiosInstance.get(
+      `/get-product-tree?page=${page}&limit=${limit}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

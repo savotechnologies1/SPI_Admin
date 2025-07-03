@@ -1,10 +1,11 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { PartContext } from "../../components/Context/PartContext";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaCircle } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import add from "../../assets/add.png";
+import { productTree } from "./https/partProductApis";
 
 export default function ProductTree() {
   const partContext = useContext(PartContext);
@@ -19,6 +20,29 @@ export default function ProductTree() {
   const handleClick = (id: string) => {
     navigate(`/edit-product/${id}`);
   };
+  const [customerData, setCustomerData] = useState<[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchVal, setSearchVal] = useState("");
+  const rowsPerPage = 5;
+
+  const fetchCustomerList = async (page = 1) => {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const response = await productTree(page, rowsPerPage, searchVal);
+      setCustomerData(response.result);
+      setTotalPages(response.pagination?.totalPages || 1);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  console.log("customerDatacustomerData", customerData);
+
+  useEffect(() => {
+    fetchCustomerList(currentPage);
+  }, [currentPage, searchVal]);
+
   return (
     <div className="p-4 mt-4">
       <div className="flex flex-col sm:flex-row justify-between gap-4">
@@ -83,15 +107,17 @@ export default function ProductTree() {
             <thead className="bg-gray-200">
               <tr className="whitespace-nowrap">
                 <th className="border p-2 font-semibold text-gray-600">
-                  Part Number
+                  Product Number
                 </th>
                 <th className="border p-2 font-semibold text-gray-600">
-                  Part Family
+                  Part Number
                 </th>
                 <th className="border p-2 font-semibold text-gray-600">
                   Part Description
                 </th>
-                <th className="border p-2 font-semibold text-gray-600">Cost</th>
+                <th className="border p-2 font-semibold text-gray-600">
+                  Process
+                </th>
                 <th className="border p-2 font-semibold text-gray-600">
                   LeadTimeDays
                 </th>
@@ -105,42 +131,49 @@ export default function ProductTree() {
               </tr>
             </thead>
             <tbody>
-              {parts.map((part, index) => (
-                <tr key={index} className="hover:bg-gray-100 text-center">
-                  <td className="border-b border-dashed p-2">
-                    {part.productNumber}
-                  </td>
-                  <td className="border-b border-dashed p-2">
-                    {part.partFamily}
-                  </td>
-                  <td className="border-b border-dashed p-2">
-                    {part.description}
-                  </td>
-                  <td className="border-b border-dashed p-2">${part.cost}</td>
-                  <td className="border-b border-dashed p-2">
-                    {part.leadTime} Days
-                  </td>
-                  <td className="border-b border-dashed p-2">
-                    {part.availStock}
-                  </td>
-                  <td className="border-b border-dashed p-2">
-                    {part.orderQty}
-                  </td>
-                  <td className="flex items-center gap-4 border-b border-dashed p-2">
-                    {/* Edit Icon */}
-                    <FiEdit2
-                      className="text-black  cursor-pointer text-lg"
-                      title="Quick Edit"
-                      onClick={() => handleClick(part + index)}
-                    />
-                    {/* More Icon */}
-                    <BsThreeDotsVertical
-                      className="text-black hover:text-black cursor-pointer text-lg"
-                      title="More Options"
-                    />
-                  </td>
-                </tr>
-              ))}
+              {customerData.flatMap((product, productIndex) =>
+                product.parts.map((part, partIndex) => (
+                  <tr
+                    key={`${productIndex}-${partIndex}`}
+                    className="hover:bg-gray-100 text-center"
+                  >
+                    <td className="border-b border-dashed p-2">
+                      {product.productNumber}
+                    </td>
+                    <td className="border-b border-dashed p-2">
+                      {part.partNumber}
+                    </td>
+                    <td className="border-b border-dashed p-2">
+                      {part.partFamily || "-"}
+                    </td>
+                    <td className="border-b border-dashed p-2">
+                      {part.cost ? `$${part.cost}` : "-"}
+                    </td>
+                    <td className="border-b border-dashed p-2">
+                      {part.process?.processName
+                        ? `${part.process.processName} `
+                        : "-"}
+                    </td>
+                    <td className="border-b border-dashed p-2">
+                      {part.availStock || "-"}
+                    </td>
+                    <td className="border-b border-dashed p-2">
+                      {part.orderQty || "-"}
+                    </td>
+                    <td className="flex items-center gap-4 border-b border-dashed p-2">
+                      <FiEdit2
+                        className="text-black cursor-pointer text-lg"
+                        title="Quick Edit"
+                        onClick={() => handleClick(part.part_id)}
+                      />
+                      <BsThreeDotsVertical
+                        className="text-black hover:text-black cursor-pointer text-lg"
+                        title="More Options"
+                      />
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

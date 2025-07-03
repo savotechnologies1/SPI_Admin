@@ -312,6 +312,7 @@
 import { useForm } from "react-hook-form";
 import { addStockOrder } from "./https/schedulingApis";
 import { useEffect, useState } from "react";
+import { selectPartNamber } from "../product&BOM/https/partProductApis";
 // import del_img from "../../assets/delete_1.png";
 
 const productData: Record<string, { quantity: number; description: string }> = {
@@ -378,6 +379,8 @@ const StockOrderForm = () => {
   const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(
     null
   );
+  const [partData, setPartData] = useState<any[]>([]);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -406,7 +409,18 @@ const StockOrderForm = () => {
       throw error;
     }
   };
+  const fetchPartNumber = async () => {
+    try {
+      const response = await selectPartNamber();
+      setPartData(response?.data || []);
+    } catch (error) {
+      console.error("Error fetching part numbers:", error);
+    }
+  };
 
+  useEffect(() => {
+    fetchPartNumber();
+  }, []);
   const productNumber = watch("productNumber");
   useEffect(() => {
     if (productNumber) {
@@ -429,7 +443,7 @@ const StockOrderForm = () => {
   }, [productNumber, setValue]);
 
   const handleSuggestionClick = (suggestion: string) => {
-    setValue("productNumber", suggestion); // This will also trigger useEffect autofill
+    setValue("productNumber", suggestion);
     setSuggestions([]);
   };
 
@@ -438,14 +452,14 @@ const StockOrderForm = () => {
 
     if (value === "new") {
       setShowFields(true);
-      setSelectedCustomerId(null); // Clear previous selection
-      setFormData({ name: "", email: "", phone: "" }); // Clear form data
+      setSelectedCustomerId(null);
+      setFormData({ name: "", email: "", phone: "" });
       return;
     }
 
     const customerId = Number(value);
     setSelectedCustomerId(customerId);
-    setShowFields(false); // Hide new customer fields if existing selected
+    setShowFields(false);
 
     const selectedCustomer = customers.find((c) => c.id === customerId);
     if (selectedCustomer) {
@@ -501,12 +515,7 @@ const StockOrderForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-4 mt-4 bg-white px-6 ">
           <div className="flex flex-col ">
             <label className="font-semibold">Select Customer</label>
-            {/* <input
-              {...register("SelectCustomer")}
-              type="text"
-              placeholder="Select Customer"
-              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
-            /> */}
+
             <select
               onChange={handleSelectChange}
               value={selectedCustomerId ?? ""}
@@ -520,19 +529,6 @@ const StockOrderForm = () => {
                 </option>
               ))}
             </select>
-
-            {/* <select
-              onChange={handleSelectChange}
-              value={selectedCustomerId ?? ""}
-              className="border px-2 py-1 rounded"
-            >
-              <option value="">Select Customer </option>
-              {customers.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select> */}
           </div>
 
           <div>
@@ -577,78 +573,8 @@ const StockOrderForm = () => {
               className="border py-3 px-4 rounded-md w-full placeholder-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
           </div>
-          {/* <div className=" flex  justify-start gap-2">
-            <span
-              className="text-blue-500 text-sm flex items-center gap-1 cursor-pointer"
-              onClick={handleClick}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              Add New Customer
-            </span>
-          </div> */}
         </div>
 
-        {/* Render Fields When Clicked */}
-        {/* {showFields && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  bg-white p-4  ">
-            <div>
-              <label className="font-semibold">Customer Name</label>
-              <input
-                {...register("customerName1", {
-                  required: "Customer name required",
-                })}
-                type="text"
-                placeholder="Enter Customer Name"
-                className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
-              />
-            </div>
-            <div>
-              <label className="font-semibold">Customer Email</label>
-              <input
-                {...register("customerEmail1", {
-                  required: "Customer Email  required",
-                })}
-                type="email"
-                placeholder="Enter Customer Email"
-                className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
-              />
-            </div>
-            <div className="flex items-center gap-4">
-              <div>
-                <label className="font-semibold">Customer Phone</label>
-                <input
-                  {...register("customerPhone1", {
-                    required: "Customer number  required",
-                  })}
-                  type="number"
-                  placeholder="Enter Customer Phone"
-                  className="border py-3 px-4 rounded-md w-full  placeholder-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </div>
-              <div
-                onClick={() => setShowFields(false)}
-                className="bg-red-600 p-2 rounded-full cursor-pointer"
-              >
-                <img src={del_img} alt="" />
-              </div>
-            </div>
-          </div>
-        )} */}
-
-        {/* Codes & Dates */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 bg-white px-6 ">
           <div>
             <label className="font-semibold">Product Number</label>
