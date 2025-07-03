@@ -192,11 +192,14 @@ const ProductNumber = () => {
     try {
       const response = await getPartDetail(value); // API call
       const partDetail = response.data;
+      console.log("partDetailpartDetail", partDetail);
 
+      updated[index].part_id = partDetail.part_id || "";
       updated[index].process = partDetail.process?.processName || "";
-      updated[index].processId = partDetail.process?.processId || "";
-      updated[index].cycleTime = partDetail.cycleTime || "";
-      updated[index].qty = partDetail.supplierOrderQty || "";
+      updated[index].processId =
+        partDetail.processId || partDetail.process?.id || "";
+      updated[index].cycleTime = partDetail.cycleTime?.toString() || "";
+      updated[index].qty = partDetail.supplierOrderQty?.toString() || "";
 
       setBomEntries(updated);
       setSuggestions((prev) => ({ ...prev, [index]: [] }));
@@ -294,16 +297,20 @@ const ProductNumber = () => {
 
           <input
             type="number"
-            {...register("cost")}
+            step="0.01"
+            {...register("cost", { valueAsNumber: true })}
             placeholder="Cost ($)"
             className="border p-2 rounded w-full"
           />
+
           <input
             type="number"
-            {...register("leadTime")}
+            step="1" // ensures only integer input
+            {...register("leadTime", { valueAsNumber: true })}
             placeholder="Lead Time (Days)"
             className="border p-2 rounded w-full"
           />
+
           <input
             type="number"
             {...register("orderQty")}
@@ -318,19 +325,22 @@ const ProductNumber = () => {
           />
           <input
             type="number"
-            {...register("minStock")}
+            step="1" // ensures only integer input
+            {...register("minStock", { valueAsNumber: true })}
             placeholder="Minimum Stock"
             className="border p-2 rounded w-full"
           />
           <input
             type="number"
-            {...register("availStock")}
+            step="1" // ensures only integer input
+            {...register("availStock", { valueAsNumber: true })}
             placeholder="Available Stock"
             className="border p-2 rounded w-full"
           />
           <input
             type="number"
-            {...register("cycleTime")}
+            step="1" // ensures only integer input
+            {...register("cycleTime", { valueAsNumber: true })}
             placeholder="Cycle Time"
             className="border p-2 rounded w-full"
           />
