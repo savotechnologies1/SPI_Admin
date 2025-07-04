@@ -88,19 +88,19 @@ export default function ProductTree() {
       </div>
       <div className=" mx-auto p-6 bg-white shadow-lg rounded-lg mt-4">
         <div className="flex justify-between gap-4 items-center mb-6">
-          <div className="w-full">
+          {/* <div className="w-full">
             <input
               type="text"
               placeholder="Search..."
               className="border w-full px-3 py-2 rounded-md"
             />
-          </div>
-          <div>
+          </div> */}
+          {/* <div>
             <BsThreeDotsVertical
               className="text-black hover:text-black cursor-pointer text-lg"
               title="More Options"
             />
-          </div>
+          </div> */}
         </div>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse  border-gray-300 ">
@@ -113,20 +113,20 @@ export default function ProductTree() {
                   Part Number
                 </th>
                 <th className="border p-2 font-semibold text-gray-600">
-                  Part Description
-                </th>
-                <th className="border p-2 font-semibold text-gray-600">
                   Process
                 </th>
                 <th className="border p-2 font-semibold text-gray-600">
-                  LeadTimeDays
+                  Part Family
                 </th>
                 <th className="border p-2 font-semibold text-gray-600">
+                  Cycle Time
+                </th>
+                {/* <th className="border p-2 font-semibold text-gray-600">
                   Availble stock
                 </th>
                 <th className="border p-2 font-semibold text-gray-600">
                   order qty.
-                </th>
+                </th> */}
                 <th className="border p-2 font-semibold text-gray-600"></th>
               </tr>
             </thead>
@@ -144,32 +144,35 @@ export default function ProductTree() {
                       {part.partNumber}
                     </td>
                     <td className="border-b border-dashed p-2">
-                      {part.partFamily || "-"}
+                      {part.partFamily || "Not Available"}
                     </td>
-                    <td className="border-b border-dashed p-2">
-                      {part.cost ? `$${part.cost}` : "-"}
-                    </td>
+
                     <td className="border-b border-dashed p-2">
                       {part.process?.processName
                         ? `${part.process.processName} `
-                        : "-"}
+                        : "Not Available"}
                     </td>
                     <td className="border-b border-dashed p-2">
-                      {part.availStock || "-"}
+                      {part.process.cycleTime
+                        ? `$${part.process.cycleTime}`
+                        : "Not Available"}
+                    </td>
+                    {/* <td className="border-b border-dashed p-2">
+                      {product.availStock || "Not Available"}
                     </td>
                     <td className="border-b border-dashed p-2">
-                      {part.orderQty || "-"}
-                    </td>
+                      {product.supplierOrderQty || "Not Available"}
+                    </td> */}
                     <td className="flex items-center gap-4 border-b border-dashed p-2">
                       <FiEdit2
                         className="text-black cursor-pointer text-lg"
                         title="Quick Edit"
-                        onClick={() => handleClick(part.part_id)}
+                        onClick={() => handleClick(product.product_id)}
                       />
-                      <BsThreeDotsVertical
+                      {/* <BsThreeDotsVertical
                         className="text-black hover:text-black cursor-pointer text-lg"
                         title="More Options"
-                      />
+                      /> */}
                     </td>
                   </tr>
                 ))

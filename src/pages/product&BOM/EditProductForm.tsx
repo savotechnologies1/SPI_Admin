@@ -1,506 +1,601 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate, NavLink, useParams } from "react-router-dom";
 import { FaCircle } from "react-icons/fa";
-import { NavLink, useNavigate } from "react-router-dom";
-import { PartContext } from "../../components/Context/PartContext";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import edit from "../../assets/edit.png";
-import more from "../../assets/more.png";
-const data = [
-  {
-    process: "Cut Trim",
-    partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 min",
-    totalCycle: "54252 min",
-  },
-  {
-    process: "Cut Trim",
-    partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 min",
-    totalCycle: "54252 min",
-  },
-  {
-    process: "Cut Trim",
-    partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 min",
-    totalCycle: "54252 min",
-  },
-  {
-    process: "Cut Trim",
-    partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 min",
-    totalCycle: "54252 min",
-  },
-  {
-    process: "Cut Trim",
-    partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 min",
-    totalCycle: "54252 min",
-  },
-  {
-    process: "Cut Trim",
-    partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 min",
-    totalCycle: "54252 min",
-  },
-];
+import { PartContext } from "../../components/Context/PartContext";
+import { Plus } from "lucide-react";
+import {
+  getPartDetail,
+  getProductNumberDetail,
+  selectPartNamber,
+  selectProcess,
+  updateProductNumber,
+} from "./https/partProductApis";
 
 const EditProductForm = () => {
+  const partContext = useContext(PartContext);
   const [searchTerm, setSearchTerm] = useState("");
-  const context = useContext(PartContext);
-
-  if (!context) {
-    throw new Error("PartContext must be used within a PartProvider");
-  }
-
-  const { addPart } = context;
+  const [bomError, setBomError] = useState("");
   const navigate = useNavigate();
 
-  const [partFormData, setPartFormData] = useState<{
+  if (!partContext) {
+    throw new Error("PartContext is undefined. Ensure the provider is set.");
+  }
+
+  const inputRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  interface Part {
     partFamily: string;
+    productNumber: string;
+    partDescription: string;
+    cost: number;
+    leadTime: number;
+    availStock: string;
+    supplierOrderQty: number;
+    cycleTime: number;
+    companyName?: string;
+    minStock?: number;
+    image?: File;
+    productNumber1: number;
+    qty: number;
+    process: string;
+    workInstruction: string;
     partNumber: string;
-    description: string;
-    cost: string;
-    leadTime: string;
-    orderQty: string;
-    company: string;
-    minStock: string;
-    availableStock: string;
-    cycleTime: string;
-    processOrder: string;
-    image: File | null;
-  }>({
-    partFamily: "",
-    partNumber: "",
-    description: "",
-    cost: "",
-    leadTime: "",
-    orderQty: "",
-    company: "",
-    minStock: "",
-    availableStock: "",
-    cycleTime: "",
-    processOrder: "Yes",
-    image: null,
-  });
+  }
 
-  const [processStepFormData, setProcessStepFormData] = useState({
-    process: "",
-    cycleTime: "",
-    description: "",
-    totalCycleTime: "",
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<Part>();
+  const [processData, setProcessData] = useState([]);
+  const [bomEntries, setBomEntries] = useState([
+    {
+      productNumber: "",
+      qty: "",
+      process: "",
+      cycleTime: "",
+      workInstruction: "",
+    },
+  ]);
+  const [savedBOMs, setSavedBOMs] = useState<any[]>([]);
 
-  const handlePartFormChange = (e: any) => {
-    const { name, value } = e.target;
-    setPartFormData({ ...partFormData, [name]: value });
+  const { id } = useParams();
+  // const handleBOMChange = (index: number, field: string, value: string) => {
+  //   const updated = [...bomEntries];
+  //   updated[index][field] = value;
+  //   setBomEntries(updated);
+  // };
+
+  const handleAddBOMRow = () => {
+    setBomEntries([
+      ...bomEntries,
+      {
+        partNumber: "",
+        qty: "",
+        process: "",
+        cycleTime: "",
+        workInstruction: "",
+      },
+    ]);
   };
 
-  const handleProcessStepChange = (e: any) => {
-    const { name, value } = e.target;
-    setProcessStepFormData({ ...processStepFormData, [name]: value });
+  const handleSaveBOMs = () => {
+    const validEntries = bomEntries.filter(
+      (entry) =>
+        entry.partNumber.trim() !== "" &&
+        entry.qty !== "" &&
+        entry.process.trim() !== ""
+    );
+
+    if (validEntries.length === 0) {
+      setBomError("At least one complete BOM part is required.");
+      return;
+    }
+
+    setSavedBOMs([...savedBOMs, ...validEntries]);
+    setBomEntries([
+      {
+        partNumber: "",
+        qty: "",
+        process: "",
+        processId: "",
+        cycleTime: "",
+        workInstruction: "",
+      },
+    ]);
+    setBomError("");
   };
 
-  const handleSubmitPartForm = (e: any) => {
-    e.preventDefault();
+  const handleDeleteBOM = (index: number) => {
+    const updated = [...savedBOMs];
+    updated.splice(index, 1);
+    setSavedBOMs(updated);
+  };
+  const [existingImages, setExistingImages] = useState<string[]>([]);
 
-    addPart({
-      ...partFormData,
-      cost: parseFloat(partFormData.cost),
-      leadTime: parseInt(partFormData.leadTime, 10),
-      orderQty: parseInt(partFormData.orderQty, 10),
-      cycleTime: parseInt(partFormData.cycleTime, 10),
-    });
-    navigate("/part-table");
+  const onSubmitProduct = async (data: any) => {
+    if (savedBOMs.length === 0) {
+      setBomError("At least one BOM part is required before submitting.");
+      return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("partFamily", data.partFamily);
+    formData.append("productNumber", data.productNumber);
+    formData.append("partDescription", data.partDescription);
+    formData.append("cost", data.cost);
+    formData.append("leadTime", data.leadTime);
+    formData.append("supplierOrderQty", data.supplierOrderQty);
+    formData.append("companyName", data.companyName);
+    formData.append("minStock", data.minStock);
+    formData.append("availStock", data.availStock);
+    formData.append("cycleTime", data.cycleTime);
+    for (let file of data.image) {
+      formData.append("partImages", file);
+    }
+
+    // Append parts array (convert to JSON string)
+    formData.append("parts", JSON.stringify(savedBOMs));
+
+    // ✅ Append selected images
+    if (data.image?.length) {
+      for (let file of data.image) {
+        formData.append("partImages", file);
+      }
+    }
+
+    try {
+      const response = await updateProductNumber(formData, id); // replace with your actual update API
+      console.log("Product updated", response.data);
+    } catch (err) {
+      console.error("Error updating product", err);
+    }
   };
 
-  const handleSubmitProcessStep = (e: any) => {
-    e.preventDefault();
-    // Add your own logic here
+  const fetchProductDetail = async () => {
+    try {
+      const response = await getProductNumberDetail(id);
+      const data = response.data;
+      console.log("datadatadata", data);
+
+      // Reset form fields
+      reset({
+        partFamily: data.partFamily || "",
+        productNumber: data.productNumber || "",
+        partDescription: data.partDescription || "",
+        cost: data.cost || "",
+        leadTime: data.leadTime || "",
+        orderQty: data.orderQty || "",
+        companyName: data.companyName || "",
+        minStock: data.minStock || "",
+        availStock: data.availStock || "",
+        cycleTime: data.cycleTime || "",
+        supplierOrderQty: data.supplierOrderQty,
+      });
+      if (data.productImages?.length) {
+        setExistingImages(data.productImages.map((img) => img.imageUrl));
+      }
+
+      // ✅ Pre-fill BOM entries if `parts` exist
+      if (data.parts) {
+        const bomItem = {
+          partNumber: data.parts.partNumber || "",
+          qty: "", // you can map it from other field if needed
+          process: data.parts.process?.processName || "",
+          processId: data.parts.process?.id || "",
+          cycleTime: data.parts.process?.cycleTime?.toString() || "",
+          workInstruction: "", // default or map if available
+          part_id: data.part_id || "",
+        };
+
+        setBomEntries([bomItem]);
+        setSavedBOMs([bomItem]); // optional, if you want to auto-save it
+      }
+    } catch (error) {
+      console.log("Error fetching product detail", error);
+    }
   };
 
-  const filteredData = data.filter((item) =>
-    item.partDesc.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    fetchProductDetail();
+  }, [id]);
+  const fetchProcessList = async (page = 1) => {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const response = await selectProcess();
+      setProcessData(response);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    fetchProcessList();
+  }, []);
+  const [partData, setPartData] = useState<any[]>([]);
+
+  const fetchPartNumber = async () => {
+    try {
+      const response = await selectPartNamber();
+      setPartData(response?.data || []);
+    } catch (error) {
+      console.error("Error fetching part numbers:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProcessList();
+    fetchPartNumber();
+  }, []);
+  const [suggestions, setSuggestions] = useState<{ [index: number]: string[] }>(
+    {}
   );
-  const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 4; // Change this as needed
 
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
-  const paginatedData = filteredData.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  const handleBOMChange = (index: number, field: string, value: string) => {
+    const updated = [...bomEntries];
+    updated[index][field] = value;
+
+    if (field === "partNumber") {
+      const filtered = partData
+        .filter((item) =>
+          item.partNumber.toLowerCase().includes(value.toLowerCase())
+        )
+        .map((item) => item.partNumber);
+
+      setSuggestions((prev) => ({ ...prev, [index]: filtered }));
+    }
+
+    setBomEntries(updated);
+  };
+  const handleSuggestionClick = async (index: number, value: string) => {
+    const updated = [...bomEntries];
+    updated[index].partNumber = value;
+
+    try {
+      const response = await getPartDetail(value);
+      const partDetail = response.data;
+      console.log("partDetailpartDetail", partDetail);
+
+      updated[index].part_id = partDetail.part_id || "";
+      updated[index].process = partDetail.process?.processName || "";
+      updated[index].processId =
+        partDetail.processId || partDetail.process?.id || "";
+      updated[index].cycleTime = partDetail.cycleTime?.toString() || "";
+      updated[index].supplierOrderQty =
+        partDetail.supplierOrderQty?.toString() || "";
+
+      setBomEntries(updated);
+      setSuggestions((prev) => ({ ...prev, [index]: [] }));
+    } catch (error) {
+      console.error("Failed to fetch part details", error);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      inputRefs.current.forEach((ref, index) => {
+        if (ref && !ref.contains(event.target as Node)) {
+          setSuggestions((prev) => ({ ...prev, [index]: [] }));
+        }
+      });
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="p-4 md:p-7">
-      <div>
-        <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-black">
-          Edit Product Number
-        </h1>
+      <h1 className="font-bold text-[20px] md:text-[24px] text-black">
+        Product Number
+      </h1>
+
+      {/* Breadcrumb */}
+      <div className="flex gap-4 items-center mt-2 text-sm text-gray-700">
+        <NavLink to="/dashboardDetailes" className="hover:underline">
+          Dashboard
+        </NavLink>
+        <FaCircle className="text-[6px]" />
+        <span>Product and BOM</span>
+        <FaCircle className="text-[6px]" />
+        <span>Product Number</span>
       </div>
 
-      <div className="flex flex-wrap items-center mt-2 gap-1 md:gap-2">
-        <p className="text-xs sm:text-sm md:text-base text-black">
-          <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
-        </p>
-        <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
-        <span className="text-xs sm:text-sm md:text-base hover:cursor-pointer">
-          product and Bom
-        </span>
-        <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
-        <span className="text-xs sm:text-sm md:text-base hover:cursor-pointer">
-          Edit Part Number
-        </span>
-      </div>
-
-      <div className="mt-6 bg-white p-6 w-full rounded-2xl shadow-md">
+      {/* Form Start */}
+      <div className="mt-6 bg-white p-6 rounded-2xl shadow-md">
         <form
-          onSubmit={handleSubmitPartForm}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+          onSubmit={handleSubmit(onSubmitProduct)}
+          className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4"
         >
-          {/* Part Family */}
+          {/* Product Fields */}
           <label className="block col-span-4 md:col-span-2">
             Part Family
             <select
-              name="partFamily"
-              value={partFormData.partFamily}
-              onChange={handlePartFormChange}
+              {...register("partFamily")}
               className="border p-2 rounded w-full"
             >
               <option value="">Select Part Family</option>
-              <option value="Cut Trim">Cut Trim</option>
-              <option value="Metal">Metal</option>
-              <option value="Plastic">Plastic</option>
+              {processData.map((item) => (
+                <option key={item.id} value={item.partFamily}>
+                  {item.partFamily}
+                </option>
+              ))}
             </select>
           </label>
 
-          {/* Part Number */}
-          <label className="block col-span-4 md:col-span-2">
+          <label className="col-span-2">
             Product Number
             <input
               type="text"
-              name="partNumber"
-              placeholder="Enter Part Number"
-              value={partFormData.partNumber}
-              onChange={handlePartFormChange}
+              {...register("productNumber", {
+                required: "Product Number is required",
+              })}
+              placeholder="Enter Product Number"
               className="border p-2 rounded w-full"
             />
+            {errors.productNumber && (
+              <p className="text-red-500 text-xs">
+                {errors.productNumber.message}
+              </p>
+            )}
           </label>
 
-          {/* Description */}
-          <label className="block col-span-4">
-            Product Description
+          <label className="col-span-4">
+            Description
             <textarea
-              name="description"
-              placeholder="Product Description"
-              value={partFormData.description}
-              onChange={handlePartFormChange}
+              {...register("partDescription", {
+                required: "Description is required",
+              })}
               className="border p-2 rounded w-full"
-            ></textarea>
+              placeholder="Product Description"
+            />
+            {errors.partDescription && (
+              <p className="text-red-500 text-xs">
+                {errors.partDescription.message}
+              </p>
+            )}
           </label>
-
-          {/* Cost */}
           <div className="col-span-4 md:col-span-1">
-            <label className="block text-sm md:text-base mb-1">Cost ($)</label>
+            <label>Cost ($)</label>
             <input
               type="number"
-              name="cost"
-              placeholder="Enter Cost"
-              value={partFormData.cost}
-              onChange={handlePartFormChange}
-              className="border p-2 rounded w-full text-sm md:text-base"
+              step="0.01"
+              {...register("cost", { valueAsNumber: true })}
+              placeholder="Cost ($)"
+              className="border p-2 rounded w-full"
             />
           </div>
-
-          {/* Lead Time */}
           <div className="col-span-4 md:col-span-1">
-            <label className="block text-sm md:text-base mb-1">
-              Lead Time (Days)
-            </label>
+            <label>Lead Time (Days)</label>
             <input
               type="number"
-              name="leadTime"
-              placeholder="Lead Time Days"
-              value={partFormData.leadTime}
-              onChange={handlePartFormChange}
-              className="border p-2 rounded w-full text-sm md:text-base"
+              step="1" // ensures only integer input
+              {...register("leadTime", { valueAsNumber: true })}
+              placeholder="Lead Time (Days)"
+              className="border p-2 rounded w-full"
             />
           </div>
-
-          {/* Order Qty */}
           <div className="col-span-4 md:col-span-1">
-            <label className="block text-sm md:text-base mb-1">
-              Order Quantity
-            </label>
+            <label> Order Quantity by Supplier</label>
             <input
               type="number"
-              name="orderQty"
+              {...register("supplierOrderQty")}
               placeholder="Order Qty"
-              value={partFormData.orderQty}
-              onChange={handlePartFormChange}
-              className="border p-2 rounded w-full text-sm md:text-base"
+              className="border p-2 rounded w-full"
             />
           </div>
-
-          {/* Company */}
           <div className="col-span-4 md:col-span-1">
-            <label className="block text-sm md:text-base mb-1">
-              Company Name
-            </label>
+            <label>Company Name</label>
             <input
               type="text"
-              name="company"
+              {...register("companyName")}
               placeholder="Company"
-              value={partFormData.company}
-              onChange={handlePartFormChange}
-              className="border p-2 rounded w-full text-sm md:text-base"
+              className="border p-2 rounded w-full"
             />
           </div>
-
-          {/* Minimum Stock */}
           <div className="col-span-4 md:col-span-1">
-            <label className="block text-sm md:text-base mb-1">
-              Minimum Stock
-            </label>
+            <label>Minimum Stock</label>
             <input
               type="number"
-              name="minStock"
+              step="1" // ensures only integer input
+              {...register("minStock", { valueAsNumber: true })}
               placeholder="Minimum Stock"
-              value={partFormData.minStock}
-              onChange={handlePartFormChange}
-              className="border p-2 rounded w-full text-sm md:text-base"
+              className="border p-2 rounded w-full"
             />
           </div>
-
-          {/* Available Stock */}
           <div className="col-span-4 md:col-span-1">
-            <label className="block text-sm md:text-base mb-1">
-              Available Stock
-            </label>
+            <label>Available Stock</label>
             <input
               type="number"
-              name="availableStock"
+              step="1" // ensures only integer input
+              {...register("availStock", { valueAsNumber: true })}
               placeholder="Available Stock"
-              value={partFormData.availableStock}
-              onChange={handlePartFormChange}
-              className="border p-2 rounded w-full text-sm md:text-base"
+              className="border p-2 rounded w-full"
             />
           </div>
-
-          {/* Cycle Time */}
           <div className="col-span-4 md:col-span-1">
-            <label className="block text-sm md:text-base mb-1">
-              Cycle Time
-            </label>
+            <label>Cycle Time</label>
             <input
               type="number"
-              name="cycleTime"
+              step="1"
+              {...register("cycleTime", { valueAsNumber: true })}
               placeholder="Cycle Time"
-              value={partFormData.cycleTime}
-              onChange={handlePartFormChange}
-              className="border p-2 rounded w-full text-sm md:text-base"
+              className="border p-2 rounded w-full"
             />
           </div>
-
-          {/* Availability (Yes/No) */}
-          <div className="col-span-4 md:col-span-1">
-            <label className="block text-sm md:text-base mb-1">
-              Process order required
+          <div className="col-span-4">
+            <label className="block font-medium mb-2">
+              Uploaded Product Images
             </label>
-            <select
-              name="processOrder"
-              value={partFormData.processOrder}
-              onChange={handlePartFormChange}
-              className="border p-2 rounded w-full text-sm md:text-base"
-            >
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
+            <div className="flex gap-2 flex-wrap">
+              {existingImages.map((img, i) => (
+                <img
+                  key={i}
+                  src={`http://localhost:8080/uploads/partImages/${img}`}
+                  alt={`Uploaded ${i}`}
+                  className="w-20 h-20 object-cover border rounded"
+                />
+              ))}
+            </div>
           </div>
 
-          <label className="border bg-gray-100 rounded p-4 text-sm cursor-pointer block text-center">
-            {partFormData.image ? (
-              <span className="text-gray-700">{partFormData.image.name}</span>
-            ) : (
-              "Tap or Click to Add Picture"
-            )}
+          {/* ✅ Upload new images */}
+          <label className="col-span-4 cursor-pointer bg-gray-100 border rounded p-4 text-center">
             <input
               type="file"
+              {...register("image")}
+              multiple
               className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  setPartFormData((prev: any) => ({ ...prev, image: file }));
-                }
-              }}
             />
+            Tap or Click to Upload Product Images
           </label>
 
-          <div className="flex justify-between items-center col-span-4">
+          {/* BOM Section */}
+          <div className="col-span-4 mt-4">
+            <p className="font-semibold text-lg mb-2">Bill of Material (BOM)</p>
+            {bomEntries.map((entry, index) => (
+              <div key={index} className="bg-gray-50 border p-4 rounded mb-4">
+                <p className="font-semibold mb-2">Part #{index + 1}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={entry.partNumber}
+                      onChange={(e) =>
+                        handleBOMChange(index, "partNumber", e.target.value)
+                      }
+                      placeholder="Part Number"
+                      className="border p-2 rounded w-full"
+                    />
+                    {suggestions[index]?.length > 0 && (
+                      <ul className="absolute z-10 bg-white border rounded w-full max-h-40 overflow-y-auto shadow-md">
+                        {suggestions[index].map((item, i) => (
+                          <li
+                            key={i}
+                            className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                            onClick={() => handleSuggestionClick(index, item)}
+                          >
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+
+                  <input
+                    type="number"
+                    value={entry.qty}
+                    onChange={(e) =>
+                      handleBOMChange(index, "qty", e.target.value)
+                    }
+                    placeholder="Qty"
+                    className="border p-2 rounded w-full"
+                  />
+                  <input
+                    type="text"
+                    value={entry.process}
+                    onChange={(e) =>
+                      handleBOMChange(index, "process", e.target.value)
+                    }
+                    placeholder="Process"
+                    className="border p-2 rounded w-full"
+                  />
+                  <input
+                    type="number"
+                    value={entry.cycleTime}
+                    onChange={(e) =>
+                      handleBOMChange(index, "cycleTime", e.target.value)
+                    }
+                    placeholder="Cycle Time"
+                    className="border p-2 rounded w-full"
+                  />
+                  <select
+                    value={entry.workInstruction}
+                    onChange={(e) =>
+                      handleBOMChange(index, "workInstruction", e.target.value)
+                    }
+                    className="border p-2 rounded w-full"
+                  >
+                    <option value="">Work Instruction</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+              </div>
+            ))}
+
+            {/* BOM Actions */}
+            <div className="flex gap-3 mt-2">
+              <button
+                type="button"
+                onClick={handleAddBOMRow}
+                className="bg-blue-800 text-white px-4 py-2 rounded flex"
+              >
+                <Plus fontSize={16} /> Add More
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveBOMs}
+                className="bg-green-600 text-white px-4 py-2 rounded flex"
+              >
+                Save BOM
+              </button>
+            </div>
+            {bomError && <p className="text-red-500 mt-2">{bomError}</p>}
+          </div>
+          <div className="col-span-4 mt-4">
+            {savedBOMs.length > 0 && (
+              <div className="mt-6 bg-white p-6 rounded-2xl shadow-md">
+                <h2 className="font-semibold mb-4">Saved BOM Entries</h2>
+                <table className="w-full text-sm border">
+                  <thead className="bg-gray-100 text-gray-700">
+                    <tr>
+                      <th className="p-2">Process</th>
+                      <th className="p-2">Part Number</th>
+                      <th className="p-2">Cycle Time</th>
+                      <th className="p-2">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {savedBOMs.map((row, index) => (
+                      <tr key={index} className="border-t text-center">
+                        <td className="p-2">{row.process}</td>
+                        <td className="p-2">{row.partNumber}</td>
+                        <td className="p-2">{row.cycleTime} sec</td>
+                        <td className="p-2">
+                          <button
+                            onClick={() => handleDeleteBOM(index)}
+                            className="text-red-600"
+                          >
+                            <RiDeleteBin6Line size={18} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+          {/* Final Submit */}
+          <div className="col-span-4 flex justify-end">
             <button
               type="submit"
-              className="bg-brand text-white py-2 rounded px-4"
+              className="mt-6 bg-brand text-white py-2 px-6 rounded"
             >
-              Save
+              Add Product Number
             </button>
-
-            <div className="bg-[#FF5630] p-3 rounded-full cursor-pointer">
-              <RiDeleteBin6Line color="white " fontSize={18} />
-            </div>
           </div>
         </form>
       </div>
 
-      <div>
-        <h1 className="font-bold text-lg mt-6">Process step table</h1>
-        <div className="mt-6 bg-white p-6 w-full rounded-2xl shadow-md">
-          <form
-            onSubmit={handleSubmitProcessStep}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-          >
-            {/* Process */}
-            <label className="block col-span-4 md:col-span-2">
-              Process
-              <select
-                name="process"
-                value={processStepFormData.process}
-                onChange={handleProcessStepChange}
-                className="border p-2 rounded w-full"
-              >
-                <option value="">Select Process</option>
-                <option value="Cutting">Cutting</option>
-                <option value="Molding">Molding</option>
-                <option value="Assembly">Assembly</option>
-              </select>
-            </label>
-
-            {/* Cycle Time */}
-            <label className="block col-span-4 md:col-span-2">
-              Cycle Time
-              <input
-                type="number"
-                name="cycleTime"
-                placeholder="Cycle Time"
-                value={processStepFormData.cycleTime}
-                onChange={handleProcessStepChange}
-                className="border p-2 rounded w-full"
-              />
-            </label>
-
-            {/* Description */}
-            <label className="block col-span-4">
-              Process Description
-              <textarea
-                name="description"
-                placeholder="Process Description"
-                value={processStepFormData.description}
-                onChange={handleProcessStepChange}
-                className="border p-2 rounded w-full"
-              ></textarea>
-            </label>
-
-            {/* Total Cycle Time */}
-            <label className="block col-span-4">
-              Total Cycle Time
-              <input
-                type="number"
-                name="totalCycleTime"
-                placeholder="Enter Total Cycle Time"
-                value={processStepFormData.totalCycleTime}
-                onChange={handleProcessStepChange}
-                className="border p-2 rounded w-full"
-              />
-            </label>
-
-            <div className="flex justify-between items-center col-span-4">
-              <button
-                type="submit"
-                className="bg-brand text-white py-2 rounded px-4"
-              >
-                Save Process
-              </button>
-
-              <div className="bg-[#FF5630] p-3 rounded-full cursor-pointer">
-                <RiDeleteBin6Line color="white " fontSize={18} />
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <div className="mt-6 bg-white p-6 rounded-2xl shadow-md">
-        {/* Search bar */}
-        {/* <div className="flex justify-between items-center mb-4">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-full px-4 py-2 border border-gray-300 rounded-md "
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <img src={more} alt="" />
-        </div> */}
-
-        {/* Table */}
-        <table className="text-sm w-full">
-          <thead className="bg-[#F4F6F8] text-left text-gray-500">
-            <tr>
-              <th className="px-4 py-3 font-medium">Process</th>
-              <th className="px-4 py-3 font-medium">Part Description</th>
-              <th className="px-4 py-3 font-medium">Cycle Time</th>
-              <th className="px-4 py-3 font-medium"></th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-800">
-            {paginatedData.map((item, index) => (
-              <tr
-                key={index}
-                className="border-b border-dashed border-gray-200"
-              >
-                <td className="px-4 py-4">{item.process}</td>
-                <td className="px-4 py-4">
-                  {item.partDesc.split("/")[0]} <br />/
-                  {item.partDesc.split("/")[1]}
-                </td>
-                <td className="px-4 py-4">{item.cycleTime}</td>
-                <td className="px-4 py-4">{item.totalCycle}</td>
-                <td className="px-4 py-4 flex items-center gap-4">
-                  <button>
-                    <img className="" src={edit} alt="Edit" />
-                  </button>
-                  <button>
-                    <img src={more} alt="More" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="flex justify-end items-center py-4 gap-4">
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className={`px-3 py-1 border rounded ${
-              currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            Prev
-          </button>
-
-          <span className="text-sm text-gray-600">
-            Page {currentPage} of {totalPages}
-          </span>
-
-          <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-            className={`px-3 py-1 border rounded ${
-              currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            Next
-          </button>
-        </div>
-      </div>
+      {/* BOM Table Preview */}
     </div>
   );
 };

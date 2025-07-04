@@ -5,7 +5,53 @@ import { data } from "react-router-dom";
 export const createPartNumber = async (apiData: object) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const response = await axiosInstance.post("/create-part-number", apiData);
+    const response = await axiosInstance.post("/create-part-number", apiData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    if (response.status === 201) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
+};
+
+export const updatePartNumber = async (id: string, apiData: object) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await axiosInstance.put(
+      `/update-part-number/${id}`,
+      apiData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    if (response.status === 201) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
+};
+
+export const updateProductNumber = async (apiData: object, id: string) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await axiosInstance.put(
+      `/update-product-number/${id}`,
+      apiData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
     if (response.status === 201) {
       toast.success(response.data.message);
     }
@@ -52,7 +98,12 @@ export const createProductNumber = async (apiData: object) => {
   try {
     const response = await axiosInstance.post(
       "/create-product-number",
-      apiData
+      apiData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     if (response.status === 201) {
       toast.success(response.data.message);
@@ -68,9 +119,7 @@ export const getPartDetail = async (id: string) => {
     const response = await axiosInstance.get(`/part-number-detail/${id}`);
 
     return response.data;
-  } catch (error) {
-    toast.error(error.response.data.message);
-  }
+  } catch (error) {}
 };
 
 export const bomList = async (page = 1, limit = 5, searchVal: string) => {
@@ -95,4 +144,36 @@ export const productTree = async (page = 1, limit = 5, searchVal: string) => {
   } catch (error) {
     throw error;
   }
+};
+
+export const getPartNumberDetail = async (id: string) => {
+  try {
+    const response = await axiosInstance.get(`/get-part-detail/${id}`);
+
+    return response.data;
+  } catch (error) {}
+};
+
+export const getProductNumberDetail = async (id: string) => {
+  try {
+    const response = await axiosInstance.get(`/get-product-detail/${id}`);
+
+    return response.data;
+  } catch (error) {}
+};
+
+export const getProcessDetail = async (id: string) => {
+  try {
+    const response = await axiosInstance.get(`/get-process-detail/${id}`);
+
+    return response.data;
+  } catch (error) {}
+};
+
+export const deletePartNumber = async (id: string) => {
+  try {
+    const response = await axiosInstance.patch(`/delete-part-number/${id}`);
+
+    return response.data;
+  } catch (error) {}
 };
