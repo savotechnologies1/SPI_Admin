@@ -15,7 +15,7 @@ import {
   selectProcess,
   updatePartNumber,
 } from "./https/partProductApis";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+const BASE_URL = import.meta.env.VITE_SERVER_URL;
 const data = [
   {
     process: "Cut Trim",
@@ -338,7 +338,7 @@ const EditPartForm = () => {
               {existingImages.map((img, i) => (
                 <img
                   key={i}
-                  src={`http://localhost:8080/uploads/partImages/${img}`} // or use S3/CDN path if hosted
+                  src={`${BASE_URL}/uploads/partImages/${img}`} // or use S3/CDN path if hosted
                   alt={`Uploaded ${i}`}
                   className="w-20 h-20 object-cover border rounded"
                 />

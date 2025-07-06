@@ -12,6 +12,7 @@ import {
   selectProcess,
   updateProductNumber,
 } from "./https/partProductApis";
+const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 const EditProductForm = () => {
   const partContext = useContext(PartContext);
@@ -437,7 +438,7 @@ const EditProductForm = () => {
               {existingImages.map((img, i) => (
                 <img
                   key={i}
-                  src={`http://localhost:8080/uploads/partImages/${img}`}
+                  src={`${BASE_URL}/uploads/partImages/${img}`}
                   alt={`Uploaded ${i}`}
                   className="w-20 h-20 object-cover border rounded"
                 />
