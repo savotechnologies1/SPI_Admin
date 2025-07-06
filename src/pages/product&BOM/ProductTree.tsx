@@ -42,7 +42,7 @@ export default function ProductTree() {
   useEffect(() => {
     fetchCustomerList(currentPage);
   }, [currentPage, searchVal]);
-
+ 
   return (
     <div className="p-4 mt-4">
       <div className="flex flex-col sm:flex-row justify-between gap-4">

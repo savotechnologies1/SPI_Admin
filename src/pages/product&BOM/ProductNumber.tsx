@@ -254,7 +254,7 @@ const ProductNumber = () => {
             </p>
           )}
         </label>
-        <label className="col-span-2">
+        <label className="col-span-4 md:col-span-1">
           Cost
           <input
             type="number"
@@ -264,7 +264,7 @@ const ProductNumber = () => {
             className="border p-2 rounded w-full"
           />
         </label>
-        <label className="col-span-2">
+        <label className="col-span-4 md:col-span-1">
           Lead Time (Days)
           <input
             type="number"
@@ -273,7 +273,7 @@ const ProductNumber = () => {
             className="border p-2 rounded w-full"
           />
         </label>
-        <label className="col-span-2">
+        <label className="col-span-4 md:col-span-1">
           Order Quantity by Supplier
           <input
             type="number"
@@ -282,7 +282,7 @@ const ProductNumber = () => {
             className="border p-2 rounded w-full"
           />
         </label>
-        <label className="col-span-2">
+        <label className="col-span-4 md:col-span-1">
           Company Name
           <input
             type="text"
@@ -291,7 +291,7 @@ const ProductNumber = () => {
             className="border p-2 rounded w-full"
           />
         </label>
-        <label className="col-span-2">
+        <label className="col-span-4 md:col-span-1">
           Minimum Stock
           <input
             type="number"
@@ -300,7 +300,7 @@ const ProductNumber = () => {
             className="border p-2 rounded w-full"
           />
         </label>
-        <label className="col-span-2">
+        <label className="col-span-4 md:col-span-1">
           Available Stock
           <input
             type="number"
@@ -309,7 +309,7 @@ const ProductNumber = () => {
             className="border p-2 rounded w-full"
           />
         </label>
-        <label className="col-span-2">
+        <label className="col-span-4 md:col-span-1">
           Cycle Time
           <input
             type="number"
@@ -318,7 +318,7 @@ const ProductNumber = () => {
             className="border p-2 rounded w-full"
           />
         </label>
-        <label className="col-span-4 cursor-pointer bg-gray-100 border rounded p-4 text-center">
+        <label className="block col-span-4 md:col-span-2 cursor-pointer border bg-gray-100 p-4 rounded text-center">
           <input
             type="file"
             className="hidden"

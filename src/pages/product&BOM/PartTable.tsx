@@ -59,10 +59,11 @@ export default function PartTable() {
   useEffect(() => {
     fetchCustomerList(currentPage);
   }, [currentPage, searchVal]);
-  const handleDelete = (id: string) => {
+  const handleDelete = async(id: string) => {
     // eslint-disable-next-line no-useless-catch
     try {
       deletePartNumber(id).then();
+     await fetchCustomerList(currentPage);
     } catch (error: unknown) {
       throw error;
     }
@@ -191,7 +192,7 @@ export default function PartTable() {
                               Are you sure?
                             </h2>
                             <p className="mb-4">
-                              Do you really want to delete this process ?
+                              Do you really want to delete this part ?
                             </p>
                             <div className="flex justify-end space-x-3">
                               <button
@@ -203,7 +204,7 @@ export default function PartTable() {
                               <button
                                 className="px-4 py-2 bg-red-500 text-white rounded"
                                 onClick={() => {
-                                  handleDelete(item.part_id);
+                                  handleDelete(part.part_id);
                                   setShowConfirm(false);
                                 }}
                               >

@@ -104,8 +104,11 @@ const PartForm = () => {
       const fetchProcessDetail = async () => {
         try {
           const res = await getProcessDetail(processId);
-
+          console.log(res);
+          
           const desc = res.data?.processDesc || "";
+          console.log('descdesc',desc);
+          
           setValue("processDesc", desc);
         } catch (error) {
           console.error("Failed to fetch process description", error);
@@ -274,20 +277,20 @@ const PartForm = () => {
             </select>
           </div>
 
-          <label className="block col-span-4 md:col-span-2">
-            Process
-            <select
-              {...register("processId")}
-              className="border p-2 rounded w-full"
-            >
-              <option value="">Select Process</option>
-              {processData.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </label>
+        <label className="block col-span-4 md:col-span-2">
+  Process
+  <select
+    {...register("processId")}
+    className="border p-2 rounded w-full"
+  >
+    <option value="">Select Process</option>
+    {processData.map((item) => (
+      <option key={item.id} value={item.id}>
+        {item.name}
+      </option>
+    ))}
+  </select>
+</label>
 
           <label className="block col-span-4 md:col-span-2">
             Process Description
