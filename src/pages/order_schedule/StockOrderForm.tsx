@@ -20,7 +20,6 @@ const StockOrderForm = () => {
     getProductNumber();
   }, []);
 
-
   const getCustomer = async () => {
     try {
       const response: CustomerInterface[] = await selectCustomer();

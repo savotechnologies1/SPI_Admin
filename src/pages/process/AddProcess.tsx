@@ -90,6 +90,18 @@ const AddProcess = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 mt-2 mb-6">
             <div className="sm:w-1/2">
+              <label className="font-semibold">Process Description</label>
+              <input
+                {...register("processDesc", {})}
+                type="string"
+                placeholder="Enter your cycle time"
+                className="border py-4 px-4 rounded-md w-full"
+              />
+              {errors.processDesc && (
+                <p className="text-red-500 text-sm">This field is required</p>
+              )}
+            </div>
+            <div className="sm:w-1/2">
               <label className="font-semibold">Cycle Time</label>
               <input
                 {...register("cycleTime", {})}
@@ -163,10 +175,6 @@ const AddProcess = () => {
               >
                 Add/Edit Process
               </button>
-            </div>
-
-            <div className="bg-[#FF5630] rounded-full p-2 cursor-pointer">
-              <img className="w-[20px]" src={delete_img} alt="delete" />
             </div>
           </div>
         </div>

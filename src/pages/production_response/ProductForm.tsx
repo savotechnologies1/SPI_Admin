@@ -46,36 +46,6 @@ const ProductForm = () => {
 
         {/* Part Family, Part, and Supplier */}
         <div className="grid grid-cols-1 gap-4 bg-white p-4 ">
-          {/* <div>
-            <label className="block font-semibold mb-1">
-              Select Part Family
-            </label>
-            <select
-              {...register("partFamily")}
-              className="border py-3 px-4 rounded-md w-full text-gray-600"
-            >
-              <option value="" disabled selected>
-                Select Part Family
-              </option>
-              <option value="family1">Family 1</option>
-              <option value="family2">Family 2</option>
-              <option value="family3">Family 3</option>
-            </select>
-          </div>
-          <div>
-            <label className="block font-semibold mb-1">Select Part</label>
-            <select
-              {...register("part")}
-              className="border py-3 px-4 rounded-md w-full text-gray-600"
-            >
-              <option value="" disabled selected>
-                Select Part
-              </option>
-              <option value="part1">Part 1</option>
-              <option value="part2">Part 2</option>
-              <option value="part3">Part 3</option>
-            </select>
-          </div> */}
           <div>
             <label className="block font-semibold mb-1">Supplier</label>
             <input

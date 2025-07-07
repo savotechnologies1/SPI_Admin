@@ -117,6 +117,9 @@ const ProcessList = () => {
                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
                   Part Family
                 </th>
+                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
+                  Process Description
+                </th>
                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
                   Cycle Time
                 </th>
@@ -141,6 +144,7 @@ const ProcessList = () => {
                   <td className="px-3 py-4">{item.processName}</td>
                   <td className="px-3 py-4">{item.machineName}</td>
                   <td className="px-3 py-4">{item.partFamily}</td>
+                  <td className="px-3 py-4">{item.processDesc}</td>
                   <td className="px-3 py-4">{item.cycleTime}</td>
                   <td className="px-3 py-4">{item.ratePerHour}</td>
                   {item.orderNeeded === true ? (
