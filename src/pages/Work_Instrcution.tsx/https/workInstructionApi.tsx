@@ -1,7 +1,6 @@
 import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
 
-
 export const workInstructionApi = async () => {
   // eslint-disable-next-line no-useless-catch
   try {
@@ -12,9 +11,9 @@ export const workInstructionApi = async () => {
   }
 };
 
-export const addWork = async (data: object) => {
+export const addWorkInstruction = async (data: object) => {
   try {
-    const response = await axiosInstance.post("/add-work", data);
+    const response = await axiosInstance.post("/create-work-instruction", data);
     localStorage.setItem("instructionId", response.data.instructionId);
     if (response.status === 201) {
       toast.success(response.data.message);
@@ -25,14 +24,18 @@ export const addWork = async (data: object) => {
   }
 };
 
-export const addWorkinstruction = async (data: object) => {
+export const addWorkinstructionInfo = async (data: object) => {
   try {
-    const response = await axiosInstance.post("/add-work-instruction", data, {
-      headers: {
-        // 'Content-Type': 'application/json',
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await axiosInstance.post(
+      "/create-work-instruction-detail",
+      data,
+      {
+        headers: {
+          // 'Content-Type': 'application/json',
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
     if (response.status === 201) {
       toast.success(response.data.message);
     }
@@ -42,7 +45,12 @@ export const addWorkinstruction = async (data: object) => {
   }
 };
 
-export const workInstructionList = async (page = 1, limit = 5, process, searchVal) => {
+export const workInstructionList = async (
+  page = 1,
+  limit = 5,
+  process,
+  searchVal
+) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
@@ -75,7 +83,6 @@ export const editWorkInstruction = async (data: object, id) => {
   }
 };
 
-
 export const workInstructionDetail = async (id: string) => {
   // eslint-disable-next-line no-useless-catch
   try {
@@ -85,7 +92,6 @@ export const workInstructionDetail = async (id: string) => {
     throw error;
   }
 };
-
 
 export const deleteWorkInstruction = async (id: string) => {
   try {
@@ -99,28 +105,35 @@ export const deleteWorkInstruction = async (id: string) => {
   }
 };
 
-
 export const selectProcessApi = async () => {
   try {
-    const response = await axiosInstance.get(`/select-process`)
+    const response = await axiosInstance.get(`/select-instruction-process`);
     if (response.status === 200) {
-      toast.success(response.data.message)
+      toast.success(response.data.message);
     }
     return response.data;
   } catch (error: any) {
     toast.error(error.response.data.message);
   }
-}
-
+};
 
 export const selectProductApi = async () => {
   try {
-    const response = await axiosInstance.get(`/select-product-number`)
+    const response = await axiosInstance.get(`/select-product-number`);
     if (response.status === 200) {
-      toast.success(response.data.message)
+      toast.success(response.data.message);
     }
     return response.data;
   } catch (error: any) {
     toast.error(error.response.data.message);
   }
-}
+};
+export const selectProductRelatedPartsApi = async () => {
+  try {
+    const response = await axiosInstance.get(`/product-related-parts`);
+
+    return response.data;
+  } catch (error: any) {
+    toast.error(error.response.data.message);
+  }
+};

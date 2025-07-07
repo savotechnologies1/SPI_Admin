@@ -102,8 +102,6 @@ const EditPartForm = () => {
 
     try {
       const response = await updatePartNumber(id, formData);
-
-      console.log("Part updated", response.data);
     } catch (err) {
       console.error("Error updating part", err);
     }
@@ -127,7 +125,6 @@ const EditPartForm = () => {
       throw error;
     }
   };
-  console.log("partDatapartData", partData);
 
   const [existingImages, setExistingImages] = useState<string[]>([]);
 

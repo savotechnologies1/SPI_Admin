@@ -7,12 +7,12 @@ const ApplyWorkInstruction = () => {
     workInstruction: "",
     process: "",
     product: "",
-    part: ""
+    part: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { id, value } = e.target;
-    setFormData(prev => ({ ...prev, [id]: value }));
+    setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
   const handleSubmit = () => {
@@ -22,7 +22,7 @@ const ApplyWorkInstruction = () => {
   const breadcrumbs = [
     { path: "/dashboardDetailes", label: "Dashboard" },
     { label: "Work Instruction" },
-    { label: "Apply work instruction to different product/process" }
+    { label: "Apply work instruction to different product/process" },
   ];
 
   return (
@@ -32,14 +32,14 @@ const ApplyWorkInstruction = () => {
           Add Work Instruction
         </h1>
       </div>
-      
+
       {/* Breadcrumbs */}
       <div className="flex items-center mt-2 gap-2">
         {breadcrumbs.map((item, index) => (
           <div key={index} className="flex items-center gap-2">
             {item.path ? (
-              <NavLink 
-                to={item.path} 
+              <NavLink
+                to={item.path}
                 className="text-xs sm:text-sm text-black hover:underline"
               >
                 {item.label}
@@ -57,11 +57,14 @@ const ApplyWorkInstruction = () => {
       </div>
 
       {/* Form */}
-      <div className="mt-4 bg-white p-4 sm:p-6 rounded-xl shadow-sm"> 
+      <div className="mt-4 bg-white p-4 sm:p-6 rounded-xl shadow-sm">
         {/* First Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
-            <label className="block font-semibold mb-2" htmlFor="workInstruction">
+            <label
+              className="block font-semibold mb-2"
+              htmlFor="workInstruction"
+            >
               Select Work Instruction
             </label>
             <select
@@ -71,7 +74,7 @@ const ApplyWorkInstruction = () => {
               className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Work Instruction</option>
-              {[1, 2, 3].map(num => (
+              {[1, 2, 3].map((num) => (
                 <option key={num} value={`Work Instruction ${num}`}>
                   Work Instruction {num}
                 </option>
@@ -90,7 +93,7 @@ const ApplyWorkInstruction = () => {
               className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Process</option>
-              {[1, 2, 3].map(num => (
+              {[1, 2, 3].map((num) => (
                 <option key={num} value={`Process ${num}`}>
                   Process {num}
                 </option>
@@ -112,7 +115,7 @@ const ApplyWorkInstruction = () => {
               className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Product</option>
-              {[1, 2, 3].map(num => (
+              {[1, 2, 3].map((num) => (
                 <option key={num} value={`Product ${num}`}>
                   Product {num}
                 </option>
@@ -131,7 +134,7 @@ const ApplyWorkInstruction = () => {
               className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Select Part</option>
-              {[1, 2, 3].map(num => (
+              {[1, 2, 3].map((num) => (
                 <option key={num} value={`Part ${num}`}>
                   Part {num}
                 </option>
@@ -153,4 +156,3 @@ const ApplyWorkInstruction = () => {
 };
 
 export default ApplyWorkInstruction;
-

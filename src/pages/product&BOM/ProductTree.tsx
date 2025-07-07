@@ -24,7 +24,7 @@ export default function ProductTree() {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
-  const rowsPerPage = 5;
+  const rowsPerPage = 15;
 
   const fetchCustomerList = async (page = 1) => {
     // eslint-disable-next-line no-useless-catch
@@ -42,7 +42,7 @@ export default function ProductTree() {
   useEffect(() => {
     fetchCustomerList(currentPage);
   }, [currentPage, searchVal]);
- 
+
   return (
     <div className="p-4 mt-4">
       <div className="flex flex-col sm:flex-row justify-between gap-4">
@@ -153,8 +153,8 @@ export default function ProductTree() {
                         : "Not Available"}
                     </td>
                     <td className="border-b border-dashed p-2">
-                      {part.process.cycleTime
-                        ? `$${part.process.cycleTime}`
+                      {part.process?.cycleTime
+                        ? `${part.process?.cycleTime} sec`
                         : "Not Available"}
                     </td>
                     {/* <td className="border-b border-dashed p-2">

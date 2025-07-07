@@ -151,7 +151,6 @@ const EditProductForm = () => {
 
     try {
       const response = await updateProductNumber(formData, id); // replace with your actual update API
-      console.log("Product updated", response.data);
     } catch (err) {
       console.error("Error updating product", err);
     }

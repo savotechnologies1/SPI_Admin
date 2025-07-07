@@ -104,10 +104,8 @@ const PartForm = () => {
       const fetchProcessDetail = async () => {
         try {
           const res = await getProcessDetail(processId);
-          console.log(res);
 
           const desc = res.data?.processDesc || "";
-          console.log('descdesc', desc);
 
           setValue("processDesc", desc);
         } catch (error) {
@@ -122,8 +120,6 @@ const PartForm = () => {
     }
   }, [processId]);
   const handleDeletePart = async (id) => {
-    console.log("idid", id);
-
     await deletePartNumber(id);
   };
 
@@ -402,18 +398,20 @@ const PartForm = () => {
             <button
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
-              className={`p-1 md:p-2 rounded ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+              className={`p-1 md:p-2 rounded ${
+                currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               <FontAwesomeIcon icon={faArrowLeft} />
             </button>
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
-              className={`p-1 md:p-2 rounded ${currentPage === totalPages
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-gray-300"
-                }`}
+              className={`p-1 md:p-2 rounded ${
+                currentPage === totalPages
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-gray-300"
+              }`}
             >
               <FontAwesomeIcon icon={faArrowRight} />
             </button>
