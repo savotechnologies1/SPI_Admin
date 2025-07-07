@@ -537,12 +537,25 @@ const data = [
 // export default PartForm;
 
 const PartForm = () => {
-  const { register, handleSubmit, setValue, watch } = useForm();
-  const context = useContext(PartContext);
-  const navigate = useNavigate();
-  const [totalPages, setTotalPages] = useState(1);
 
+  const context = useContext(PartContext);
+  const { addPart } = context;
+  const navigate = useNavigate();
+
+  const [processData, setProcessData] = useState([]);
+  const [partData, setPartData] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const { register, handleSubmit, setValue, watch } = useForm();
+
+
+  useEffect(() => {
+    fetchProcessList();
+    getAllPartList();
+  }, []);
+
+
   if (!context)
     throw new Error("PartContext must be used within a PartProvider");
   const rowsPerPage = 5;
@@ -555,7 +568,6 @@ const PartForm = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-  const { addPart } = context;
 
   const onSubmit = async (data: any) => {
     const parsedData = {
@@ -573,14 +585,12 @@ const PartForm = () => {
     // navigate("/part-table");
   };
 
-  const [processData, setProcessData] = useState([]);
-  const [partData, setPartData] = useState([]);
   const getAllPartList = async (page = 1) => {
     try {
       const response = await partNumberList(page, rowsPerPage);
       setPartData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
-    } catch (error) {}
+    } catch (error) { }
   };
   const fetchProcessList = async (page = 1) => {
     // eslint-disable-next-line no-useless-catch
@@ -591,12 +601,8 @@ const PartForm = () => {
       throw error;
     }
   };
-  console.log("partDatapartData", partData);
 
-  useEffect(() => {
-    fetchProcessList();
-    getAllPartList();
-  }, []);
+
 
   return (
     <div className="p-4 md:p-7">
@@ -710,7 +716,7 @@ const PartForm = () => {
             <label>Available Stock</label>
             <input
               type="number"
-              {...register("availStock")}
+              {...register("availableStock")}
               placeholder="Available Stock"
               className="border p-2 rounded w-full"
             />
@@ -840,9 +846,8 @@ const PartForm = () => {
             <button
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
-              className={`p-1 md:p-2 rounded ${
-                currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className={`p-1 md:p-2 rounded ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
             >
               <FontAwesomeIcon icon={faArrowLeft} />
             </button>
@@ -850,11 +855,10 @@ const PartForm = () => {
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
-              className={`p-1 md:p-2 rounded ${
-                currentPage === totalPages
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-gray-300"
-              }`}
+              className={`p-1 md:p-2 rounded ${currentPage === totalPages
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-gray-300"
+                }`}
             >
               <FontAwesomeIcon icon={faArrowRight} />
             </button>

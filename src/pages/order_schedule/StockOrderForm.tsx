@@ -1,643 +1,405 @@
-// import { useForm } from "react-hook-form";
-// import { addStockOrder, selectCustomer } from "./https/schedulingApis";
-// import { useEffect, useState } from "react";
-// import { customerDetail } from "../customerInfo/https/customersApi";
-// import { v4 as uuidv4 } from "uuid";
-// import del_img from "../../assets/delete_1.png";
-
-// const StockOrderForm = () => {
-//   const [supplierData, setSupplierData] = useState([]);
-//   const [selectedCustomer, setSelectedCustomer] = useState("");
-//   const [orderNumber, setOrderNumber] = useState("");
-//   const [showFields, setShowFields] = useState(false);
-
-//   const {
-//     register,
-//     handleSubmit,
-//     setValue,
-//     watch,
-//     formState: { errors },
-//     reset,
-//   } = useForm();
-
-//   const productNumber = watch("productNumber");
-//   const today = new Date().toISOString().split("T")[0];
-
-//   // Fetch customer list
-//   const fetchCustomerList = async () => {
-//     try {
-//       const response = await selectCustomer();
-//       setSupplierData(response);
-//     } catch (error) {
-//       console.error("Failed to fetch customer list", error);
-//     }
-//   };
-
-//   const [customerId, setCustomerId] = useState("");
-//   const handleClick = () => {
-//     setShowFields(true);
-//     setSelectedCustomer("");
-
-//     const newId = uuidv4().slice(0, 6);
-//     setCustomerId(newId);
-//     setValue("customerId", newId);
-//   };
-//   // Handle customer selection from dropdown
-//   const handleCustomers = async (e) => {
-//     const customerId = e.target.value;
-//     setSelectedCustomer(customerId);
-
-//     try {
-//       const response = await customerDetail(customerId);
-//       setValue("customerName", response.data.firstName);
-//       setValue("customerEmail", response.data.email);
-//       setValue("customerPhone", response.data.customerPhone);
-//       setValue("customerId", response.data.id || "");
-//     } catch (error) {
-//       console.error("Error loading customer details", error);
-//     }
-//   };
-
-//   // Generate order number once on mount
-//   useEffect(() => {
-//     const randomOrder = Math.floor(10000 + Math.random() * 90000).toString();
-//     setOrderNumber(randomOrder);
-//     setValue("orderNumber", randomOrder);
-//   }, []);
-
-//   // Fetch customers on mount
-//   useEffect(() => {
-//     fetchCustomerList();
-//   }, []);
-
-//   // Auto-fill productQuantity & productDescription if productNumber is matched
-//   const productData = {
-//     "1001": { quantity: 50, description: "Steel Bolts - Pack of 100" },
-//     "1002": { quantity: 30, description: "Copper Nuts - Box of 50" },
-//   };
-
-//   console.log("productDataproductData", productData[productNumber]);
-
-//   useEffect(() => {
-//     if ("1002" && productData["1002"]) {
-//       setValue("productQuantity", productData["1002"].quantity);
-//       setValue("productDescription", productData["1002"].description);
-//     } else {
-//       setValue("productQuantity", "");
-//       setValue("productDescription", "");
-//     }
-//   }, ["1002"]);
-
-//   const onSubmit = async (data) => {
-//     try {
-//       const response = await addStockOrder(data);
-//       if (response.status === 201) {
-//         reset();
-//       }
-//     } catch (error) {
-//       console.error("Submit Error:", error);
-//     }
-//   };
-
-//   return (
-//     <div className="p-6 bg-white rounded-xl shadow-md ">
-//       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-//         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-//           <div>
-//             <label className="font-semibold">Order Number</label>
-//             <input
-//               className="border py-3 px-4 rounded-md w-full bg-gray-100"
-//               disabled
-//               {...register("orderNumber")}
-//             />
-//           </div>
-
-//           <div>
-//             <label className="font-semibold">Order Date</label>
-//             <input
-//               type="date"
-//               defaultValue={today}
-//               {...register("orderDate", { required: "Order Date is required" })}
-//               className="border py-3 px-4 rounded-md w-full"
-//             />
-//           </div>
-
-//           <div>
-//             <label className="font-semibold">Ship Date</label>
-//             <input
-//               type="date"
-//               {...register("shipDate", { required: "Ship Date is required" })}
-//               className="border py-3 px-4 rounded-md w-full"
-//             />
-//           </div>
-//         </div>
-
-//         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-//           <div>
-//             <label className="font-semibold">Select Customer</label>
-//             <select
-//               className="border px-3 py-2 rounded w-full"
-//               value={selectedCustomer}
-//               onChange={handleCustomers}
-//             >
-//               <option value="">Select Customer</option>
-//               {supplierData.map((c) => (
-//                 <option key={c.id} value={c.id}>
-//                   {c.name}
-//                 </option>
-//               ))}
-//             </select>
-//           </div>
-
-//           <div>
-//             <label className="font-semibold">Customer Name</label>
-//             <input
-//               {...register("customerName", { required: true })}
-//               type="text"
-//               placeholder="Enter Customer Name"
-//               className="border py-3 px-4 rounded-md w-full"
-//             />
-//           </div>
-
-//           <div>
-//             <label className="font-semibold">Customer Email</label>
-//             <input
-//               {...register("customerEmail", { required: true })}
-//               type="email"
-//               placeholder="Enter Customer Email"
-//               className="border py-3 px-4 rounded-md w-full"
-//             />
-//           </div>
-
-//           <div>
-//             <label className="font-semibold">Customer Phone</label>
-//             <input
-//               {...register("customerPhone", { required: true })}
-//               type="tel"
-//               placeholder="Enter Phone Number"
-//               className="border py-3 px-4 rounded-md w-full"
-//             />
-//           </div>
-//         </div>
-//         {showFields && (
-//           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  bg-white p-4  ">
-//             <div>
-//               <label className="font-semibold">Customer Name</label>
-//               <input
-//                 {...register("customerName", {
-//                   required: "Customer name required",
-//                 })}
-//                 type="text"
-//                 placeholder="Enter Customer Name"
-//                 className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
-//               />
-//             </div>
-//             <div>
-//               <label className="font-semibold">Customer Email</label>
-//               <input
-//                 {...register("customerEmail", {
-//                   required: "Customer Email  required",
-//                 })}
-//                 type="email"
-//                 placeholder="Enter Customer Email"
-//                 className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
-//               />
-//             </div>
-//             <div className="flex items-center gap-4">
-//               <div>
-//                 <label className="font-semibold">Customer Phone</label>
-//                 <input
-//                   {...register("customerPhone", {
-//                     required: "Customer number  required",
-//                   })}
-//                   type="number"
-//                   placeholder="Enter Customer Phone"
-//                   className="border py-3 px-4 rounded-md w-full  placeholder-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-//                 />
-//               </div>
-//               <div
-//                 onClick={() => setShowFields(false)}
-//                 className="bg-red-600 p-2 rounded-full cursor-pointer"
-//               >
-//                 <img src={del_img} alt="" />
-//               </div>
-//             </div>
-//           </div>
-//         )}
-
-//         {/* Add New Customer Fields (Optional) */}
-//         {/* {showFields && (
-//           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-//             <input
-//               {...register("customerName")}
-//               placeholder="New Customer Name"
-//               className="border py-3 px-4 rounded-md w-full"
-//             />
-//             <input
-//               {...register("customerEmail")}
-//               placeholder="New Customer Email"
-//               className="border py-3 px-4 rounded-md w-full"
-//             />
-//             <input
-//               {...register("customerPhone")}
-//               placeholder="New Customer Phone"
-//               className="border py-3 px-4 rounded-md w-full"
-//             />
-//             <div
-//               onClick={() => setShowFields(false)}
-//               className="bg-red-600 p-2 rounded-full cursor-pointer"
-//             >
-//               <img src={del_img} alt="" />
-//             </div>
-//           </div>
-//         )} */}
-
-//         <span
-//           className="text-blue-500 text-sm cursor-pointer"
-//           onClick={handleClick}
-//         >
-//           + Add New Customer
-//         </span>
-
-//         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
-//           <div>
-//             <label className="font-semibold">Product Number</label>
-//             <input
-//               {...register("productNumber")}
-//               type="text"
-//               placeholder="Enter Product No."
-//               className="border py-3 px-4 rounded-md w-full"
-//             />
-//           </div>
-//           <div>
-//             <label className="font-semibold">Cost</label>
-//             <input
-//               {...register("cost", { required: true })}
-//               type="number"
-//               placeholder="Enter Cost"
-//               className="border py-3 px-4 rounded-md w-full"
-//             />
-//           </div>
-//           <div>
-//             <label className="font-semibold">Quantity</label>
-//             <input
-//               {...register("productQuantity", { required: true })}
-//               type="number"
-//               placeholder="Enter Quantity"
-//               className="border py-3 px-4 rounded-md w-full"
-//             />
-//           </div>
-//         </div>
-
-//         <div className="mb-6">
-//           <label className="font-semibold">Product Description</label>
-//           <input
-//             {...register("productDescription")}
-//             type="text"
-//             placeholder="Enter Product Description"
-//             className="border py-3 px-4 rounded-md w-full"
-//           />
-//         </div>
-
-//         <button className="px-6 py-2 bg-brand text-white text-md  hover:bg-[#1a2e57] transition ml-6 ">
-//           Create Stock Order
-//         </button>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default StockOrderForm;
-
-import { useForm } from "react-hook-form";
-import { addStockOrder } from "./https/schedulingApis";
 import { useEffect, useState } from "react";
-import { selectPartNamber } from "../product&BOM/https/partProductApis";
-// import del_img from "../../assets/delete_1.png";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { addStockOrder, selectCustomer, selectProductNumber } from "./https/schedulingApis";
+import { stockOrderValidation } from "../../utils/validation";
+import { CustomerInterface, ProductNumberInterface } from "../../utils/Interfaces";
+import { toast } from "react-toastify";
 
-const productData: Record<string, { quantity: number; description: string }> = {
-  "1001": {
-    quantity: 5,
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-  },
-  "1002": {
-    quantity: 10,
-    description: "Sed do eiusmod tempor incididunt ut labore et dolore magna ",
-  },
-  "1003": {
-    quantity: 3,
-    description: "Ut enim ad minim veniam, quis nostrud exercitation ullamco",
-  },
-};
+const generateNewOrderNumber = () => Date.now().toString();
 
 const StockOrderForm = () => {
-  // const [formData, setFormData] = useState({
-  //   orderNumber: "",
-  //   orderDate: "2025-02-26",
-  //   shipDate: "2025-02-26",
-  //   customer: "Cortez Herring",
-  //   customerName: "",
-  //   customerEmail: "",
-  //   customerPhone: "",
-  //   productNumber: "",
-  //   cost: "",
-  //   quantity: "",
-  //   description: "",
-  //   file: null,
-  //   partFamily: "Cortez Herring",
-  //   partNumber: "",
-  //   partDesc: "",
-  //   partQuantity: "",
-  //   partCost: "",
-  //   time: "09:33 AM",
-  //   process: "Cortez Herring",
-  //   assignTo: "Cortez Herring",
-  // });
 
-  // const [file, setFile] = useState<File | null>(null);
+  const [customerList, setCustomerList] = useState<CustomerInterface[]>([]);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
+  const [productNumberList, setProductNumberList] = useState<ProductNumberInterface[]>([]);
+  const [singleUnitCost, setSingleUnitCost] = useState<number | null>(null);
 
-  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const files = event.target.files;
-  //   if (files && files.length > 0) {
-  //     setFile(files[0]);
-  //   }
-  // };
-
-  const customers = [
-    { id: 1, name: "John Doe", email: "john@example.com", phone: "1234567890" },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane@example.com",
-      phone: "9876543210",
-    },
-    { id: 3, name: "Mike Lee", email: "mike@example.com", phone: "9988776655" },
-  ];
-
-  const [showFields, setShowFields] = useState(false);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(
-    null
-  );
-  const [partData, setPartData] = useState<any[]>([]);
-
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
-
-  const handleClick = () => {
-    setShowFields(true);
-  };
-
-  const [orderNumber, setOrderNumber] = useState("");
-
-  const { register, handleSubmit, watch, setValue } = useForm();
 
   useEffect(() => {
-    const randomOrder = +Math.floor(10000 + Math.random() * 90000);
-    setOrderNumber(randomOrder.toString());
+    getCustomer();
+    getProductNumber();
   }, []);
 
-  const onSubmit = (data: object) => {
-    console.log("Form Data:", data);
 
+  const getCustomer = async () => {
     try {
-      addStockOrder(data).then();
-    } catch (error: unknown) {
-      throw error;
-    }
-  };
-  const fetchPartNumber = async () => {
-    try {
-      const response = await selectPartNamber();
-      setPartData(response?.data || []);
+      const response: CustomerInterface[] = await selectCustomer();
+      setCustomerList(response || []);
+      // toast.success("Stock order fetch successfully!");
     } catch (error) {
-      console.error("Error fetching part numbers:", error);
+      console.error("Error fetching customer:", error);
+      toast.error("Failed to fetch stock order. Please try again.");
+      setCustomerList([]);
     }
   };
 
-  useEffect(() => {
-    fetchPartNumber();
-  }, []);
-  const productNumber = watch("productNumber");
-  useEffect(() => {
-    if (productNumber) {
-      const filtered = Object.keys(productData).filter((key) =>
-        key.startsWith(productNumber.toString())
-      );
-      setSuggestions(filtered);
-    } else {
-      setSuggestions([]);
+  const getProductNumber = async () => {
+    try {
+      const response: ProductNumberInterface[] = await selectProductNumber();
+      console.log("getProductNumber", response);
+      setProductNumberList(response || []);
+      // toast.success("Product Number fetch successfully!");
+    } catch (error) {
+      console.error("Error fetching product number:", error);
+      toast.error("Failed to fetch product number. Please try again.");
     }
-  }, [productNumber]);
-  useEffect(() => {
-    if (productNumber && productData[productNumber]) {
-      setValue("productQuantity", productData[productNumber].quantity);
-      setValue("productDesc", productData[productNumber].description);
-    } else {
-      setValue("productQuantity", "");
-      setValue("productDesc", "");
-    }
-  }, [productNumber, setValue]);
+  }
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setValue("productNumber", suggestion);
-    setSuggestions([]);
-  };
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-
-    if (value === "new") {
-      setShowFields(true);
-      setSelectedCustomerId(null);
-      setFormData({ name: "", email: "", phone: "" });
-      return;
-    }
-
-    const customerId = Number(value);
-    setSelectedCustomerId(customerId);
-    setShowFields(false);
-
-    const selectedCustomer = customers.find((c) => c.id === customerId);
-    if (selectedCustomer) {
-      setFormData({
-        name: selectedCustomer.name,
-        email: selectedCustomer.email,
-        phone: selectedCustomer.phone,
-      });
-    }
-  };
-
-  const today = new Date().toISOString().split("T")[0];
+  function setFieldValue(arg0: string, arg1: string) {
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <div className="p-4 bg-white rounded-2xl border shadow-md">
-      <form onSubmit={handleSubmit(onSubmit)} className="">
-        {/* Channel & Platform */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-6 ">
-          <div>
-            <label className="font-semibold">Order Number</label>
-            <p
-              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600 bg-gray-100"
-              {...register("orderNumber", {
-                required: "Order Number required",
-              })}
-            >
-              {" "}
-              {orderNumber}
-            </p>
-          </div>
-          <div>
-            <label className="font-semibold">Order Date</label>
-            <input
-              {...register("orderDate", { required: "Order Date is required" })}
-              type="date"
-              value={today}
-              placeholder=""
-              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
-            />
-          </div>
-          <div>
-            <label className="font-semibold">Ship Date </label>
-            <input
-              {...register("shipDate", { required: "Ship Date  is required" })}
-              type="date"
-              placeholder=""
-              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
-            />
-          </div>
-        </div>
+      <Formik
+        initialValues={{
+          orderNumber: generateNewOrderNumber(),
+          orderDate: new Date().toISOString().split("T")[0],
+          shipDate: "",
+          customerId: "",
+          customerName: "",
+          customerEmail: "",
+          customerPhone: "",
+          productNumber: "",
+          cost: "",
+          totalCost: "",
+          productQuantity: "",
+          productDescription: "",
+        }}
+        validationSchema={stockOrderValidation}
+        onSubmit={async (values, { setSubmitting, resetForm }) => {
+          try {
+            console.log("values", values);
 
-        {/* Personal Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-4 mt-4 bg-white px-6 ">
-          <div className="flex flex-col ">
-            <label className="font-semibold">Select Customer</label>
-
-            <select
-              onChange={handleSelectChange}
-              value={selectedCustomerId ?? ""}
-              className="border px-2 py-1 rounded"
-            >
-              <option value="">Select Customer </option>
-              <option value="new">➕ Add New Customer</option>
-              {customers.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="font-semibold">Customer Name</label>
-            <input
-              {...register("customerName")}
-              type="text"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, name: e.target.value }))
+            await addStockOrder(values);
+            resetForm({
+              values: {
+                orderNumber: generateNewOrderNumber(),
+                orderDate: new Date().toISOString().split("T")[0],
+                shipDate: "",
+                customerId: "",
+                customerName: "",
+                customerEmail: "",
+                customerPhone: "",
+                productNumber: "",
+                cost: "",
+                totalCost: "",
+                productQuantity: "",
+                productDescription: "",
               }
-              readOnly={selectedCustomerId !== null}
-              placeholder="Enter Customer Name"
-              className="border py-3 px-4 rounded-md w-full placeholder-gray-600"
-            />
-          </div>
-          <div className="col-span-">
-            <label className="font-semibold">Customer Email</label>
-            <input
-              {...register("customerEmail")}
-              type="email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, email: e.target.value }))
-              }
-              readOnly={selectedCustomerId !== null}
-              placeholder="Enter Customer Email"
-              className="border py-3 px-4 rounded-md w-full placeholder-gray-600"
-            />
-          </div>
-          <div className="col-span-">
-            <label className="font-semibold">Customer Phone</label>
-            <input
-              {...register("customerPhoneNum")}
-              type="number"
-              value={formData.phone}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, phone: e.target.value }))
-              }
-              readOnly={selectedCustomerId !== null}
-              placeholder="Enter Customer Phone"
-              className="border py-3 px-4 rounded-md w-full placeholder-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-            />
-          </div>
-        </div>
+            });
+            setSelectedCustomerId(null);
+            setSingleUnitCost(null);
+          } catch (error) {
+            console.error("Submission error:", error);
+            toast.error("Failed to create order. A new Order ID has been generated. Please try again.");
+            setFieldValue('orderNumber', generateNewOrderNumber());
+          } finally {
+            setSubmitting(false);
+          }
+        }}
+      >
+        {({ values, setFieldValue, errors, touched, isSubmitting, handleBlur }) => {
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 bg-white px-6 ">
-          <div>
-            <label className="font-semibold">Product Number</label>
-            <input
-              {...register("productNumber")}
-              type="number"
-              placeholder="Enter Product No..."
-              className="border py-3 px-4 rounded-md w-full  placeholder-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-            />
-            {suggestions.length > 0 && (
-              <ul className="absolute bg-white border w-40 mt-1 rounded shadow z-10">
-                {suggestions.map((item) => (
-                  <li
-                    key={item}
-                    onClick={() => handleSuggestionClick(item)}
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+          const handleSelectChange = (
+            e: React.ChangeEvent<HTMLSelectElement>
+          ) => {
+            const value = e.target.value;
+
+            if (value === "new") {
+              const newCustomerId = crypto.randomUUID();
+              setFieldValue("customerId", newCustomerId);
+              setSelectedCustomerId(null);
+              setFieldValue("customerName", "");
+              setFieldValue("customerEmail", "");
+              setFieldValue("customerPhone", "");
+            } else if (value) {
+              setFieldValue("customerId", value);
+              setSelectedCustomerId(value);
+              const selectedCustomer = customerList.find(
+                (c) => c.id === value
+              );
+
+              if (selectedCustomer) {
+                setFieldValue("customerName", selectedCustomer.name);
+                setFieldValue("customerEmail", selectedCustomer.email);
+                setFieldValue(
+                  "customerPhone",
+                  selectedCustomer.customerPhone
+                );
+              }
+            } else {
+              // This handles clearing the fields if "Select a customer" is re-selected.
+              setFieldValue("customerId", "");
+              setSelectedCustomerId(null);
+              setFieldValue("customerName", "");
+              setFieldValue("customerEmail", "");
+              setFieldValue("customerPhone", "");
+            }
+          };
+
+          const handleProductSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+            const selectedPartNumber = e.target.value;
+            setFieldValue("productNumber", selectedPartNumber);
+
+            if (selectedPartNumber) {
+              const selectedProduct = productNumberList.find(p => p.partNumber === selectedPartNumber);
+              if (selectedProduct) {
+                const unitCost = selectedProduct.cost;
+                const quantity = 1; // Default quantity
+
+                setSingleUnitCost(unitCost); // For display and recalculation
+                setFieldValue("cost", unitCost.toFixed(2)); // CHANGED: Set UNIT cost in the 'cost' field
+                setFieldValue("productQuantity", quantity);
+                setFieldValue("productDescription", selectedProduct.partDescription);
+                setFieldValue("totalCost", (unitCost * quantity).toFixed(2)); // ADDED: Set initial TOTAL cost
+              }
+            } else {
+              setSingleUnitCost(null);
+              setFieldValue("cost", "");
+              setFieldValue("productQuantity", "");
+              setFieldValue("productDescription", "");
+              setFieldValue("totalCost", ""); // ADDED: Clear total cost
+            }
+          };
+
+          const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            const quantityValue = e.target.value;
+            let newQuantity = Number(quantityValue);
+
+            setFieldValue("productQuantity", quantityValue); // Set the raw value to allow clearing the input
+
+            if (newQuantity < 1 && quantityValue !== "") {
+              newQuantity = 1;
+            }
+
+            // Recalculate total cost if we have a unit cost and a valid quantity
+            if (singleUnitCost !== null && newQuantity >= 1) {
+              const totalCost = singleUnitCost * newQuantity;
+              // CHANGED: Update the 'totalCost' field, not the 'cost' field
+              setFieldValue("totalCost", totalCost.toFixed(2));
+            } else {
+              // If quantity is cleared or invalid, clear the total cost
+              // CHANGED: Update the 'totalCost' field
+              setFieldValue("totalCost", "");
+            }
+          };
+          // const handleProductSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+          //   const selectedPartNumber = e.target.value;
+          //   setFieldValue("productNumber", selectedPartNumber);
+
+          //   if (selectedPartNumber) {
+          //     const selectedProduct = productNumberList.find(p => p.partNumber === selectedPartNumber);
+          //     if (selectedProduct) {
+          //       // Store the single unit cost in our state
+          //       setSingleUnitCost(selectedProduct.cost);
+          //       // Set the form's total cost field
+          //       setFieldValue("cost", selectedProduct.cost);
+          //       // Set the default quantity to 1
+          //       setFieldValue("productQuantity", 1);
+          //       setFieldValue("productDescription", selectedProduct.partDescription);
+          //     }
+          //   } else {
+          //     // If deselected, clear all related fields
+          //     setSingleUnitCost(null);
+          //     setFieldValue("cost", "");
+          //     setFieldValue("productQuantity", "");
+          //     setFieldValue("productDescription", "");
+          //   }
+          // };
+
+          // const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+          //   let newQuantity = Number(e.target.value);
+
+          //   // Prevent quantity from being less than 1 during calculation
+          //   if (newQuantity < 1 && e.target.value !== "") {
+          //     newQuantity = 1;
+          //   }
+
+          //   setFieldValue("productQuantity", e.target.value === "" ? "" : newQuantity);
+
+          //   // Recalculate total cost if we have a unit cost and a valid quantity
+          //   if (singleUnitCost !== null && newQuantity >= 1) {
+          //     const totalCost = singleUnitCost * newQuantity;
+          //     setFieldValue("cost", totalCost.toFixed(2));
+          //   } else {
+          //     // If quantity is cleared or invalid, clear the total cost
+          //     setFieldValue("cost", "");
+          //   }
+          // };
+
+          return (
+            <Form>
+              {/* Channel & Platform */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-6 ">
+                <div>
+                  <label className="font-semibold">Order Number</label>
+                  <Field
+                    name="orderNumber"
+                    type="text"
+                    readOnly
+                    className="border py-3 px-4 rounded-md w-full placeholder-gray-600 bg-gray-100"
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold">Order Date</label>
+                  <Field
+                    name="orderDate"
+                    type="date"
+                    className="border py-3 px-4 rounded-md w-full placeholder-gray-600"
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold">Ship Date</label>
+                  <Field
+                    name="shipDate"
+                    type="date"
+                    className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 ${touched.shipDate && errors.shipDate ? 'border-red-500' : ''}`}
+                  />
+                  <ErrorMessage name="shipDate" component="div" className="text-red-500 text-sm mt-1" />
+                </div>
+              </div>
+
+              {/* Personal Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 bg-white px-6 ">
+                <div className="flex flex-col ">
+                  <label className="font-semibold">Select Customer</label>
+                  <select
+                    name="customerId"
+                    value={values.customerId}
+                    onChange={handleSelectChange}
+                    className={`border px-2 py-3 rounded-md ${touched.customerId && errors.customerId ? 'border-red-500' : ''}`}
                   >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-          <div>
-            <label className="font-semibold">Cost</label>
+                    <option value="" label="Select a customer" />
+                    <option value="new">➕ Add New Customer</option>
+                    {customerList.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ErrorMessage name="customerId" component="div" className="text-red-500 text-sm mt-1" />
+                </div>
 
-            <input
-              type="number"
-              className="border py-3 px-4 rounded-md w-full  [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              {...register("cost")}
-              placeholder="Enter Cost"
-            ></input>
-          </div>
+                <div>
+                  <label className="font-semibold">Customer Name</label>
+                  <Field
+                    name="customerName"
+                    type="text"
+                    readOnly={selectedCustomerId !== null}
+                    placeholder="Enter Customer Name"
+                    className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 ${selectedCustomerId !== null ? 'bg-gray-100' : ''} ${touched.customerName && errors.customerName ? 'border-red-500' : ''}`}
+                  />
+                  <ErrorMessage name="customerName" component="div" className="text-red-500 text-sm mt-1" />
+                </div>
+                <div>
+                  <label className="font-semibold">Customer Email</label>
+                  <Field
+                    name="customerEmail"
+                    type="email"
+                    readOnly={selectedCustomerId !== null}
+                    placeholder="Enter Customer Email"
+                    className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 ${selectedCustomerId !== null ? 'bg-gray-100' : ''} ${touched.customerEmail && errors.customerEmail ? 'border-red-500' : ''}`}
+                  />
+                  <ErrorMessage name="customerEmail" component="div" className="text-red-500 text-sm mt-1" />
+                </div>
+                <div>
+                  <label className="font-semibold">Customer Phone</label>
+                  <Field
+                    name="customerPhone"
+                    type="text"
+                    readOnly={selectedCustomerId !== null}
+                    placeholder="Enter Customer Phone"
+                    className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 ${selectedCustomerId !== null ? 'bg-gray-100' : ''} ${touched.customerPhone && errors.customerPhone ? 'border-red-500' : ''}`}
+                  />
+                  <ErrorMessage name="customerPhone" component="div" className="text-red-500 text-sm mt-1" />
+                </div>
+              </div>
 
-          <div>
-            <label className="font-semibold">Product Quantity</label>
-            <input
-              {...register("productQuantity", {})}
-              type="number"
-              placeholder="Enter Quantity"
-              className="border py-3 px-4 rounded-md w-full  text-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 bg-white px-6 ">
-          <div className="col-span-2">
-            <label className="font-semibold">Product Description</label>
-            <input
-              {...register("productDesc")}
-              type="text"
-              placeholder="Product Description"
-              className="border py-6 px-4 rounded-md w-full  placeholder-gray-600"
-            />
-          </div>
-        </div>
+              {/* Product Details */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 bg-white px-6 ">
+                <div className="md:col-span-1">
+                  <label className="font-semibold">Product Number</label>
+                  <select
+                    name="productNumber"
+                    value={values.productNumber}
+                    onChange={handleProductSelectChange}
+                    onBlur={handleBlur}
+                    className={`border px-2 py-3 rounded-md w-full placeholder-gray-600 ${touched.productNumber && errors.productNumber ? 'border-red-500' : ''}`}
+                  >
+                    <option value="" label="Select a product" />
+                    {productNumberList.map((product) => (
+                      <option key={product.part_id} value={product.partNumber}>
+                        {product.partNumber}
+                      </option>
+                    ))}
+                  </select>
+                  <ErrorMessage name="productNumber" component="div" className="text-red-500 text-sm mt-1" />
+                </div>
 
-        {/* Submit Button */}
-        <div className=" mt-6">
-          <button className="px-6 py-2 bg-brand text-white text-md  hover:bg-[#1a2e57] transition ml-6 ">
-            Create Stock Order
-          </button>
-        </div>
-      </form>
+                {/* Unit Cost */}
+                <div>
+                  <label className="font-semibold">Unit Cost</label>
+                  <p className="border py-3 px-4 rounded-md w-full bg-gray-100 min-h-[48px] flex items-center">
+                    {singleUnitCost !== null ? `$${singleUnitCost.toFixed(2)}` : ''}
+                  </p>
+                </div>
+
+                <div>
+                  <label className="font-semibold">Product Quantity</label>
+                  <Field
+                    name="productQuantity"
+                    type="number"
+                    placeholder="Quantity"
+                    onChange={handleQuantityChange}
+                    min="1"
+                    className={`border py-3 px-4 rounded-md w-full text-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${touched.productQuantity && errors.productQuantity ? 'border-red-500' : ''}`}
+                  />
+                  <ErrorMessage name="productQuantity" component="div" className="text-red-500 text-sm mt-1" />
+                </div>
+
+                <div>
+                  <label className="font-semibold">Total Cost</label>
+                  {/* CHANGED: This field is now bound to 'totalCost' */}
+                  <Field
+                    name="totalCost"
+                    type="number"
+                    placeholder="Total Cost"
+                    readOnly
+                    className={`border py-3 px-4 rounded-md w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-gray-100 ${touched.totalCost && errors.totalCost ? 'border-red-500' : ''}`}
+                  />
+                  <ErrorMessage name="totalCost" component="div" className="text-red-500 text-sm mt-1" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 mt-4 bg-white px-6 ">
+              </div>
+
+              <div className="grid grid-cols-1 mt-4 bg-white px-6 ">
+                <div className="col-span-2">
+                  <label className="font-semibold">Product Description</label>
+                  <Field
+                    name="productDescription"
+                    as="textarea"
+                    rows="4"
+                    placeholder="Description"
+                    className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 bg-gray-100 ${touched.productDescription && errors.productDescription ? 'border-red-500' : ''}`}
+                  />
+                  <ErrorMessage name="productDescription" component="div" className="text-red-500 text-sm mt-1" />
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div className="mt-6">
+                <button type="submit" className="px-6 py-2 bg-brand text-white text-md hover:bg-[#1a2e57] transition ml-6" disabled={isSubmitting}>
+                  {isSubmitting ? 'Creating...' : 'Create Stock Order'}
+                </button>
+              </div>
+            </Form>
+          );
+        }}
+      </Formik>
     </div>
   );
 };
