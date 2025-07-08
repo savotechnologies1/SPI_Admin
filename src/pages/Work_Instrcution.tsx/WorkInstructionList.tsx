@@ -190,7 +190,7 @@ const WorkInstructionList: React.FC = () => {
                   <td className="px-4 py-3 flex items-center gap-2">
                     {item.InstructionImage.length > 0 ? (
                       <img
-                        src={`http://localhost:8080/uploads/workInstructionImg/${item.InstructionImage[0].imagePath}`}
+                        src={`http://82.25.110.131:8080/uploads/workInstructionImg/${item.InstructionImage[0].imagePath}`}
                         alt={`Uploaded ${item.id}`}
                         className="w-20 h-20 object-cover border rounded"
                       />
