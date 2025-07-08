@@ -545,7 +545,6 @@ const AddWorkInstruction = () => {
 
       <FormikProvider value={formik}>
         <Form>
-          {/* ✅ Common Fields */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="w-full sm:w-1/2">
               <label className="font-semibold">Select Process</label>
@@ -580,7 +579,6 @@ const AddWorkInstruction = () => {
             </div>
           </div>
 
-          {/* ✅ Steps FieldArray */}
           <FieldArray
             name="steps"
             render={(arrayHelpers) => (
@@ -590,7 +588,6 @@ const AddWorkInstruction = () => {
                     key={index}
                     className="mt-4 bg-white p-6 w-full rounded-2xl"
                   >
-                    {/* Title, Step Number */}
                     <div className="flex flex-col md:flex-row gap-4 mb-6">
                       <div className="w-full md:w-1/2">
                         <label className="font-semibold">
@@ -615,24 +612,6 @@ const AddWorkInstruction = () => {
                       </div>
                     </div>
 
-                    {/* Select Part */}
-                    {/* <div className="mb-6">
-                      <label className="font-semibold">Select Part</label>
-                      <Field
-                        as="select"
-                        name={`steps.${index}.part`}
-                        className="border py-3 px-4 rounded-md w-full mt-2"
-                      >
-                        <option value="">-- Select Part --</option>
-                        {partData.map((part) => (
-                          <option key={part.id} value={part.id}>
-                            {part.name}
-                          </option>
-                        ))}
-                      </Field>
-                    </div> */}
-
-                    {/* Work Instruction Text */}
                     <div className="mb-6">
                       <label className="font-semibold">Work Instruction</label>
                       <Field
@@ -644,7 +623,6 @@ const AddWorkInstruction = () => {
                       />
                     </div>
 
-                    {/* Image Upload */}
                     <div className="mb-4">
                       <label className="font-semibold block mb-2">
                         Work Instruction Images (multiple)
@@ -676,7 +654,6 @@ const AddWorkInstruction = () => {
                       </div>
                     </div>
 
-                    {/* Video Upload */}
                     <div className="mb-6">
                       <label className="font-semibold block mb-2">
                         Upload Video
@@ -703,7 +680,6 @@ const AddWorkInstruction = () => {
                   </div>
                 ))}
 
-                {/* Add / Submit Buttons */}
                 <div className="mt-6 flex gap-4">
                   <button
                     type="button"
