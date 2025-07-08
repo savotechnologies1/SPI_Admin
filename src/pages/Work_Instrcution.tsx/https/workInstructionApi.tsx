@@ -45,16 +45,11 @@ export const addWorkinstructionInfo = async (data: object) => {
   }
 };
 
-export const workInstructionList = async (
-  page = 1,
-  limit = 5,
-  process,
-  searchVal
-) => {
+export const workInstructionList = async (page = 1, limit = 5) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/work-instruction-list?page=${page}&limit=${limit}&process=${process}&search=${searchVal}`
+      `/all-work-instructions?page=${page}&limit=${limit}`
     );
     return response.data;
   } catch (error) {
@@ -119,7 +114,7 @@ export const selectProcessApi = async () => {
 
 export const selectProductApi = async () => {
   try {
-    const response = await axiosInstance.get(`/select-product-number`);
+    const response = await axiosInstance.get(`/get-instructin-parts`);
     if (response.status === 200) {
       toast.success(response.data.message);
     }

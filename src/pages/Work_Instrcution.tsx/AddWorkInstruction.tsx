@@ -217,9 +217,11 @@ import { useEffect, useState } from "react";
 import { selectPartNamber } from "../product&BOM/https/partProductApis";
 import {
   addWorkinstructionInfo,
+  selectProcessApi,
+  selectProductApi,
   selectProductRelatedPartsApi,
 } from "./https/workInstructionApi";
-import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 
 // export default function AddWorkInstruction() {
 //   const instructionId = localStorage.getItem("instructionId") || "";
@@ -446,17 +448,45 @@ const AddWorkInstruction = () => {
   const instructionId = localStorage.getItem("instructionId") || "";
   const [dataFromChild, setDataFromChild] = useState("");
   const [partData, setPartData] = useState([]);
+  const [processData, setProcessData] = useState([]);
+  const [productData, setProductData] = useState([]);
+
+  useEffect(() => {
+    fetchProcess();
+    selectProduct();
+    // you can fetch processData and productData here if needed
+  }, []);
+  const fetchProcess = async () => {
+    try {
+      const response = await selectProcessApi();
+      setProcessData(response || []);
+    } catch (error) {
+      console.error("Failed to fetch process:", error);
+    }
+  };
+  console.log("productDataproductDataproductData", productData);
+
   const handleChildData = (data: string) => {
     setDataFromChild(data);
   };
+  const selectProduct = async () => {
+    try {
+      const response = await selectProductApi();
+      console.log("099009responseresponse", response.data);
 
-  useEffect(() => {
-    selectPart();
-  }, []);
-  const formik = useFormik<FormValues>({
+      setProductData(response.data || []);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const formik = useFormik({
     initialValues: {
+      processId: "",
+      part_id: "",
       steps: [
         {
+          title: "",
           part: "",
           stepNumber: "",
           workInstruction: "",
@@ -467,38 +497,32 @@ const AddWorkInstruction = () => {
     },
     onSubmit: async (values) => {
       try {
+        console.log("valuesvalues", values);
+
+        const workInstructionId = uuidv4().slice(0, 6);
+
         for (const step of values.steps) {
           const formData = new FormData();
-          console.log("dataFromChilddataFromChild", dataFromChild);
 
+          formData.append("workInstructionId", workInstructionId);
+          formData.append("processId", values.processId);
+          formData.append("part_id", values.part_id);
           formData.append("stepNumber", step.stepNumber);
-          // formData.append("processId", "yourProcessId"); // You can pull it from state or pass it
-          formData.append("workInstructionId", dataFromChild);
-          formData.append("partId", step.part);
-          formData.append("title", "Step Title"); // If you have a title field
+          formData.append("title", step.title);
           formData.append("instruction", step.workInstruction);
-          // ✅ Append images (multiple)
+
           step.workInstructionImg.forEach((file) => {
             formData.append("workInstructionImg", file);
           });
 
-          // ✅ Append video
-
           if (step.workInstructionVideo) {
-            console.log(
-              "step.workInstructionVideo)step.workInstructionVideo)",
-              step.workInstructionVideo
-            );
             formData.append("workInstructionVideo", step.workInstructionVideo);
           }
-          await addWorkinstructionInfo(formData);
-          // ✅ Axios call
-        }
 
-        alert("✅ All steps submitted successfully!");
+          await addWorkinstructionInfo(formData);
+        }
       } catch (error) {
         console.error("❌ Error submitting steps:", error);
-        alert("Failed to submit steps. Please try again.");
       }
     },
   });
@@ -512,28 +536,51 @@ const AddWorkInstruction = () => {
     const files = Array.from(e.target.files || []);
     setFieldValue(`steps.${index}.workInstructionImg`, files);
   };
-  console.log("dataFromChilddataFromChild", dataFromChild);
-
-  const selectPart = async () => {
-    try {
-      const response = await selectProductRelatedPartsApi();
-      setPartData(response.data || []);
-    } catch (error) {
-      throw error;
-    }
-  };
 
   return (
     <div className="p-4 sm:p-6">
-      <WorkInstruction sendDataToParent={handleChildData} />
-      {/* Heading and Breadcrumb */}
       <h1 className="font-bold text-xl sm:text-2xl text-black">
-        Add Work Instruction
+        Work Instruction One
       </h1>
 
-      {/* FormikProvider */}
       <FormikProvider value={formik}>
         <Form>
+          {/* ✅ Common Fields */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <div className="w-full sm:w-1/2">
+              <label className="font-semibold">Select Process</label>
+              <Field
+                as="select"
+                name="processId"
+                className="border py-3 px-4 rounded-md w-full mt-2"
+              >
+                <option value="">Select Process</option>
+                {processData.map((item: any) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </Field>
+            </div>
+
+            <div className="w-full sm:w-1/2">
+              <label className="font-semibold">Select Product</label>
+              <Field
+                as="select"
+                name="part_id"
+                className="border py-3 px-4 rounded-md w-full mt-2"
+              >
+                <option value="">Select Product</option>
+                {productData.map((item: any) => (
+                  <option key={item.value} value={item.id}>
+                    {item.partNumber}
+                  </option>
+                ))}
+              </Field>
+            </div>
+          </div>
+
+          {/* ✅ Steps FieldArray */}
           <FieldArray
             name="steps"
             render={(arrayHelpers) => (
@@ -543,64 +590,57 @@ const AddWorkInstruction = () => {
                     key={index}
                     className="mt-4 bg-white p-6 w-full rounded-2xl"
                   >
-                    {/* Part and Step Number */}
+                    {/* Title, Step Number */}
                     <div className="flex flex-col md:flex-row gap-4 mb-6">
                       <div className="w-full md:w-1/2">
-                        <label className="font-semibold" htmlFor="product">
-                          Select Product
-                        </label>
-                        <Field
-                          as="select"
-                          name={`steps.${index}.part`}
-                          className="border py-4 px-4 rounded-md w-full mt-2"
-                        >
-                          <option value="">Select Product</option>
-                          {partData.map((item: any) => (
-                            <option key={item.value} value={item.value}>
-                              {item.part.partNumber}
-                            </option>
-                          ))}
-                        </Field>
-                        {/* {errors.product && touched.product && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.product}
-                          </p>
-                        )} */}
-                      </div>
-                      {/* <div className="w-full md:w-1/2">
                         <label className="font-semibold">
-                          Part Description
+                          Work Instruction Title
                         </label>
                         <Field
-                          as="select"
-                          name={`steps.${index}.part`}
-                          className="border py-4 px-4 rounded-md w-full mt-2"
-                        >
-                          <option value="">Select Part</option>
-                          <option value="Part 1">Part 1</option>
-                          <option value="Part 2">Part 2</option>
-                        </Field>
-                      </div> */}
+                          type="text"
+                          name={`steps.${index}.title`}
+                          className="border py-3 px-4 rounded-md w-full mt-2"
+                          placeholder="Enter title"
+                        />
+                      </div>
+
                       <div className="w-full md:w-1/2">
                         <label className="font-semibold">Step No.</label>
                         <Field
                           type="number"
                           name={`steps.${index}.stepNumber`}
-                          className="border py-4 px-4 rounded-md w-full mt-2"
+                          className="border py-3 px-4 rounded-md w-full mt-2"
                           placeholder="Enter step number"
                         />
                       </div>
                     </div>
 
-                    {/* Instruction */}
+                    {/* Select Part */}
+                    {/* <div className="mb-6">
+                      <label className="font-semibold">Select Part</label>
+                      <Field
+                        as="select"
+                        name={`steps.${index}.part`}
+                        className="border py-3 px-4 rounded-md w-full mt-2"
+                      >
+                        <option value="">-- Select Part --</option>
+                        {partData.map((part) => (
+                          <option key={part.id} value={part.id}>
+                            {part.name}
+                          </option>
+                        ))}
+                      </Field>
+                    </div> */}
+
+                    {/* Work Instruction Text */}
                     <div className="mb-6">
                       <label className="font-semibold">Work Instruction</label>
                       <Field
                         as="textarea"
                         name={`steps.${index}.workInstruction`}
                         rows={4}
-                        className="border py-4 px-4 rounded-md w-full mt-2"
-                        placeholder="Describe the work instruction here..."
+                        className="border py-3 px-4 rounded-md w-full mt-2"
+                        placeholder="Describe the instruction..."
                       />
                     </div>
 
@@ -613,7 +653,7 @@ const AddWorkInstruction = () => {
                         htmlFor={`steps.${index}.workInstructionImg`}
                         className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm bg-[#919EAB33]"
                       >
-                        Click to select multiple images
+                        Click to select images
                       </label>
                       <input
                         id={`steps.${index}.workInstructionImg`}
@@ -624,17 +664,15 @@ const AddWorkInstruction = () => {
                         onChange={(e) => handleMultipleImageChange(e, index)}
                       />
 
-                      {/* Image Preview */}
                       <div className="mt-2 flex flex-wrap gap-2">
-                        {step.workInstructionImg &&
-                          step.workInstructionImg.map((file, idx) => (
-                            <img
-                              key={idx}
-                              src={URL.createObjectURL(file)}
-                              alt={`Preview ${idx}`}
-                              className="w-20 h-20 object-cover rounded-md border"
-                            />
-                          ))}
+                        {step.workInstructionImg?.map((file, idx) => (
+                          <img
+                            key={idx}
+                            src={URL.createObjectURL(file)}
+                            alt={`Preview ${idx}`}
+                            className="w-20 h-20 object-cover rounded-md border"
+                          />
+                        ))}
                       </div>
                     </div>
 
@@ -652,7 +690,7 @@ const AddWorkInstruction = () => {
                       <input
                         id={`steps.${index}.workInstructionVideo`}
                         type="file"
-                        accept="video/mp4,video/mkv,video/mpeg4"
+                        accept="video/*"
                         className="hidden"
                         onChange={(e) =>
                           setFieldValue(
@@ -665,12 +703,13 @@ const AddWorkInstruction = () => {
                   </div>
                 ))}
 
-                {/* Buttons */}
+                {/* Add / Submit Buttons */}
                 <div className="mt-6 flex gap-4">
                   <button
                     type="button"
                     onClick={() =>
                       arrayHelpers.push({
+                        title: "",
                         part: "",
                         stepNumber: "",
                         workInstruction: "",

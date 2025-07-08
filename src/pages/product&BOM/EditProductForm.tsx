@@ -6,6 +6,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { PartContext } from "../../components/Context/PartContext";
 import { Plus } from "lucide-react";
 import {
+  deleteProductPartNumber,
   getPartDetail,
   getProductNumberDetail,
   selectPartNamber,
@@ -96,7 +97,21 @@ const EditProductForm = () => {
       return;
     }
 
-    setSavedBOMs([...savedBOMs, ...validEntries]);
+    // Check for duplicates before adding
+    const newEntries = validEntries.filter((newEntry) => {
+      return !savedBOMs.some(
+        (saved) =>
+          saved.partNumber === newEntry.partNumber &&
+          saved.process === newEntry.process
+      );
+    });
+
+    if (newEntries.length === 0) {
+      setBomError("This BOM part already exists in the list.");
+      return;
+    }
+
+    setSavedBOMs((prev) => [...prev, ...newEntries]);
     setBomEntries([
       {
         partNumber: "",
@@ -109,12 +124,19 @@ const EditProductForm = () => {
     ]);
     setBomError("");
   };
-
-  const handleDeleteBOM = (index: number) => {
+  const handleDeleteBOM = async (index: number, partId: string) => {
     const updated = [...savedBOMs];
     updated.splice(index, 1);
     setSavedBOMs(updated);
+    console.log("partId", partId);
+
+    try {
+      await deleteProductPartNumber(partId, id); // id is product_id here
+    } catch (error) {
+      console.error("Failed to delete BOM", error);
+    }
   };
+
   const [existingImages, setExistingImages] = useState<string[]>([]);
 
   const onSubmitProduct = async (data: any) => {
@@ -156,6 +178,8 @@ const EditProductForm = () => {
     }
   };
 
+  console.log("savedBOMssavedBOMs", savedBOMs);
+
   const fetchProductDetail = async () => {
     try {
       const response = await getProductNumberDetail(id);
@@ -181,19 +205,19 @@ const EditProductForm = () => {
       }
 
       // ✅ Pre-fill BOM entries if `parts` exist
-      if (data.parts) {
-        const bomItem = {
-          partNumber: data.parts.partNumber || "",
-          qty: "", // you can map it from other field if needed
-          process: data.parts.process?.processName || "",
-          processId: data.parts.process?.id || "",
-          cycleTime: data.parts.process?.cycleTime?.toString() || "",
-          workInstruction: "", // default or map if available
-          part_id: data.part_id || "",
-        };
+      if (Array.isArray(data.parts)) {
+        const preFilledBOMs = data.parts.map((part) => ({
+          partNumber: part.partNumber || "",
+          qty: "", // optional: you can map partQuantity if available
+          process: part.process?.processName || "",
+          processId: part.process?.id || "",
+          cycleTime: part.process?.cycleTime?.toString() || "",
+          workInstruction: "", // map if exists
+          part_id: part.part_id || "",
+        }));
 
-        setBomEntries([bomItem]);
-        setSavedBOMs([bomItem]); // optional, if you want to auto-save it
+        setBomEntries(preFilledBOMs);
+        setSavedBOMs(preFilledBOMs);
       }
     } catch (error) {
       console.log("Error fetching product detail", error);
@@ -570,7 +594,7 @@ const EditProductForm = () => {
                         <td className="p-2">{row.cycleTime} sec</td>
                         <td className="p-2">
                           <button
-                            onClick={() => handleDeleteBOM(index)}
+                            onClick={() => handleDeleteBOM(index, row.part_id)}
                             className="text-red-600"
                           >
                             <RiDeleteBin6Line size={18} />

@@ -131,7 +131,7 @@ export default function ProductTree() {
               </tr>
             </thead>
             <tbody>
-              {customerData.flatMap((product, productIndex) =>
+              {customerData?.flatMap((product, productIndex) =>
                 product.parts.map((part, partIndex) => (
                   <tr
                     key={`${productIndex}-${partIndex}`}

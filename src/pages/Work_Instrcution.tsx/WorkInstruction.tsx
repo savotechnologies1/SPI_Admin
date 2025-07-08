@@ -237,36 +237,25 @@ const WorkInstruction = ({ sendDataToParent }) => {
             return errors;
           }}
           onSubmit={async (values, { setSubmitting }) => {
-            try {
-              console.log("valllllllllllueeeeeeeeee", values);
-
-              const response: any = await addWorkInstruction({
-                processId: values.process,
-                productId: values.product,
-              });
-              console.log("responseresponse", response.data.data.processId);
-
-              sendDataToParent(response.data.data.processId);
-
-              if (response.status === 201) {
-                navigate("/add-work-instruction");
-              }
-            } catch (error) {
-              console.error("Error adding instruction:", error);
-            } finally {
-              setSubmitting(false);
-            }
+            // try {
+            //   console.log("valllllllllllueeeeeeeeee", values);
+            //   const response: any = await addWorkInstruction({
+            //     processId: values.process,
+            //     productId: values.product,
+            //   });
+            //   console.log("responseresponse", response.data.data.processId);
+            //   if (response.status === 201) {
+            //     navigate("/add-work-instruction");
+            //   }
+            // } catch (error) {
+            //   console.error("Error adding instruction:", error);
+            // } finally {
+            //   setSubmitting(false);
+            // }
           }}
         >
-          {({
-            handleChange,
-            handleSubmit,
-            values,
-            isSubmitting,
-            errors,
-            touched,
-          }) => (
-            <Form onSubmit={handleSubmit}>
+          {({ errors, touched }) => (
+            <Form>
               <div className="flex flex-col md:flex-row gap-4 mb-6">
                 {/* Select Process */}
                 <div className="w-full md:w-1/2">
@@ -315,17 +304,6 @@ const WorkInstruction = ({ sendDataToParent }) => {
                     </p>
                   )}
                 </div>
-              </div>
-
-              {/* Add Work Instruction Button */}
-              <div className="mt-6">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="bg-brand text-white px-5 py-3 rounded-lg"
-                >
-                  {isSubmitting ? "Please wait..." : "Add Work Instruction"}
-                </button>
               </div>
             </Form>
           )}

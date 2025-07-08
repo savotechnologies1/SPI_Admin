@@ -36,7 +36,6 @@ const StockOrderForm = () => {
       // toast.success("Stock order fetch successfully!");
     } catch (error) {
       console.error("Error fetching customer:", error);
-      toast.error("Failed to fetch stock order. Please try again.");
       setCustomerList([]);
     }
   };
