@@ -59,16 +59,12 @@ export const workInstructionList = async (page = 1, limit = 5) => {
 
 export const editWorkInstruction = async (data: object, id) => {
   try {
-    const response = await axiosInstance.put(
-      `/update-work-instruction/${id}`,
-      data,
-      {
-        headers: {
-          // 'Content-Type': 'application/json',
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const response = await axiosInstance.put(`/update-work-instruction`, data, {
+      headers: {
+        // 'Content-Type': 'application/json',
+        "Content-Type": "multipart/form-data",
+      },
+    });
     if (response.status === 201) {
       toast.success(response.data.message);
     }
@@ -81,7 +77,7 @@ export const editWorkInstruction = async (data: object, id) => {
 export const workInstructionDetail = async (id: string) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const response = await axiosInstance.get(`/get-work-detail/${id}`);
+    const response = await axiosInstance.get(`/work-instruction-detail/${id}`);
     return response.data;
   } catch (error) {
     throw error;

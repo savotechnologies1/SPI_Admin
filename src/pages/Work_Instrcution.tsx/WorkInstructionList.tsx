@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import edit from "../../assets/edit_icon.png";
 import { FaCircle, FaTrash } from "react-icons/fa";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import add from "../../assets/add.png";
 import { Trash2 } from "lucide-react";
-import { workInstructionList } from "./https/workInstructionApi";
+import {
+  deleteWorkInstruction,
+  workInstructionList,
+} from "./https/workInstructionApi";
 
 interface WorkInstructionItem {
   id: string;
@@ -80,6 +83,8 @@ const WorkInstructionList: React.FC = () => {
     setOpenOptionsIndex((prev) => (prev === index ? null : index));
   };
 
+  const { id } = useParams();
+
   const getColorClass = (color: string) => {
     switch (color) {
       case "green":
@@ -124,12 +129,20 @@ const WorkInstructionList: React.FC = () => {
     fetchCustomerList(currentPage);
   }, [currentPage, searchVal]);
 
-  console.log(
-    "workDataworkData",
-    workData.map((item) =>
-      console.log("InstructionImageInstructionImage", item)
-    )
-  );
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await deleteWorkInstruction(id);
+
+      if (response?.status === 200) {
+        await fetchCustomerList(currentPage);
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+  const editWorkInstruction = (id) => {
+    navigate(`/edit-work-instruction/${id}`);
+  };
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between">
@@ -218,7 +231,9 @@ const WorkInstructionList: React.FC = () => {
                   <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
                     <button
                       className="text-brand hover:underline"
-                      // onClick={() => editProcess(item.id)}
+                      onClick={() =>
+                        editWorkInstruction(item.workInstructionId)
+                      }
                     >
                       <img
                         src={edit}
@@ -254,6 +269,7 @@ const WorkInstructionList: React.FC = () => {
                               <button
                                 className="px-4 py-2 bg-red-500 text-white rounded"
                                 onClick={() => {
+                                  handleDelete(item.workInstructionId);
                                   setShowConfirm(false);
                                 }}
                               >
