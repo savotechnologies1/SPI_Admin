@@ -45,8 +45,10 @@ const ProductNumber = () => {
       process: "",
       cycleTime: "",
       workInstruction: "",
+      isSaved: false, // NEW
     },
   ]);
+
   const [suggestions, setSuggestions] = useState<{ [index: number]: string[] }>(
     {}
   );
@@ -132,36 +134,48 @@ const ProductNumber = () => {
       },
     ]);
   };
-
   const handleSaveBOMs = () => {
-    const valid = bomEntries.filter((e) => e.partNumber && e.qty && e.process);
-    if (valid.length === 0) {
-      setBomError("At least one complete BOM part is required.");
+    const updated = [...bomEntries];
+    let saved = false;
+
+    const validated = updated.map((entry) => {
+      if (!entry.isSaved && entry.partNumber && entry.qty && entry.process) {
+        saved = true;
+        return { ...entry, isSaved: true };
+      }
+      return entry;
+    });
+
+    if (!saved) {
+      setBomError("Please fill in at least one valid BOM part to save.");
       return;
     }
 
-    setSavedBOMs([...savedBOMs, ...valid]);
-    setBomEntries([
-      {
-        partNumber: "",
-        qty: "",
-        process: "",
-        cycleTime: "",
-        workInstruction: "",
-      },
-    ]);
+    // Add empty new entry after saving
+    validated.push({
+      partNumber: "",
+      qty: "",
+      process: "",
+      cycleTime: "",
+      workInstruction: "",
+      isSaved: false,
+    });
+
+    setBomEntries(validated);
     setBomError("");
   };
 
   const handleDeleteBOM = (index: number) => {
-    const updated = [...savedBOMs];
+    const updated = [...bomEntries];
     updated.splice(index, 1);
-    setSavedBOMs(updated);
+    setBomEntries(updated);
   };
 
   const onSubmitProduct = async (data: Part) => {
+    const savedBOMs = bomEntries.filter((entry) => entry.isSaved);
+
     if (savedBOMs.length === 0) {
-      setBomError("At least one BOM part is required before submitting.");
+      setBomError("Please save at least one BOM part before submitting.");
       return;
     }
 
@@ -345,13 +359,14 @@ const ProductNumber = () => {
                   <input
                     type="text"
                     value={entry.partNumber}
+                    disabled={entry.isSaved}
                     onChange={(e) =>
                       handleBOMChange(index, "partNumber", e.target.value)
                     }
                     className="border p-2 rounded w-full"
                     placeholder="Part Number"
                   />
-                  {suggestions[index]?.length > 0 && (
+                  {!entry.isSaved && suggestions[index]?.length > 0 && (
                     <ul className="absolute z-10 bg-white border rounded w-full max-h-40 overflow-y-auto shadow-md">
                       {suggestions[index].map((item, i) => (
                         <li
@@ -365,35 +380,43 @@ const ProductNumber = () => {
                     </ul>
                   )}
                 </div>
+
                 <input
                   type="number"
                   value={entry.qty}
+                  disabled={entry.isSaved}
                   onChange={(e) =>
                     handleBOMChange(index, "qty", e.target.value)
                   }
                   placeholder="Qty"
                   className="border p-2 rounded w-full"
                 />
+
                 <input
                   type="text"
                   value={entry.process}
+                  disabled={entry.isSaved}
                   onChange={(e) =>
                     handleBOMChange(index, "process", e.target.value)
                   }
                   placeholder="Process"
                   className="border p-2 rounded w-full"
                 />
+
                 <input
                   type="number"
                   value={entry.cycleTime}
+                  disabled={entry.isSaved}
                   onChange={(e) =>
                     handleBOMChange(index, "cycleTime", e.target.value)
                   }
                   placeholder="Cycle Time"
                   className="border p-2 rounded w-full"
                 />
+
                 <select
                   value={entry.workInstruction}
+                  disabled={entry.isSaved}
                   onChange={(e) =>
                     handleBOMChange(index, "workInstruction", e.target.value)
                   }
@@ -404,8 +427,21 @@ const ProductNumber = () => {
                   <option value="No">No</option>
                 </select>
               </div>
+
+              {entry.isSaved && (
+                <div className="mt-2 text-right">
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteBOM(index)}
+                    className="text-red-600 text-sm flex items-center gap-1"
+                  >
+                    <RiDeleteBin6Line size={16} /> Delete
+                  </button>
+                </div>
+              )}
             </div>
           ))}
+
           <div className="flex gap-3 mt-2">
             <button
               type="button"
@@ -424,8 +460,7 @@ const ProductNumber = () => {
           </div>
           {bomError && <p className="text-red-500 mt-2">{bomError}</p>}
         </div>
-
-        {savedBOMs.length > 0 && (
+        {bomEntries.filter((row) => row.isSaved).length > 0 && (
           <div className="col-span-4 mt-4 bg-white p-6 rounded-2xl shadow-md">
             <h2 className="font-semibold mb-4">Saved BOM Entries</h2>
             <table className="w-full text-sm border">
@@ -438,21 +473,24 @@ const ProductNumber = () => {
                 </tr>
               </thead>
               <tbody>
-                {savedBOMs.map((row, index) => (
-                  <tr key={index} className="border-t text-center">
-                    <td className="p-2">{row.process}</td>
-                    <td className="p-2">{row.partNumber}</td>
-                    <td className="p-2">{row.cycleTime}</td>
-                    <td className="p-2">
-                      <button
-                        onClick={() => handleDeleteBOM(index)}
-                        className="text-red-600"
-                      >
-                        <RiDeleteBin6Line size={18} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {bomEntries
+                  .map((row, index) => ({ ...row, index }))
+                  .filter((row) => row.isSaved)
+                  .map((row) => (
+                    <tr key={row.index} className="border-t text-center">
+                      <td className="p-2">{row.process}</td>
+                      <td className="p-2">{row.partNumber}</td>
+                      <td className="p-2">{row.cycleTime}</td>
+                      <td className="p-2">
+                        <button
+                          onClick={() => handleDeleteBOM(row.index)}
+                          className="text-red-600"
+                        >
+                          <RiDeleteBin6Line size={18} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

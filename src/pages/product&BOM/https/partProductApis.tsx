@@ -31,7 +31,7 @@ export const updatePartNumber = async (id: string, apiData: object) => {
         },
       }
     );
-    if (response.status === 201) {
+    if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response;
@@ -176,4 +176,19 @@ export const deletePartNumber = async (id: string) => {
 
     return response.data;
   } catch (error) {}
+};
+export const deleteProductPartNumber = async (
+  id: string,
+  product_id: string
+) => {
+  try {
+    const response = await axiosInstance.delete(`/product-part-deleted/${id}`, {
+      data: { product_id }, // 👈 DELETE with body requires this
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting product part number", error);
+    throw error;
+  }
 };

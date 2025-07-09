@@ -294,11 +294,11 @@ const sections: Section[] = [
             label: "All work Instruction",
             path: "work-instructions-list",
           },
-          {
-            key: "select process & product",
-            label: "select process & product",
-            path: "/work-instruction",
-          },
+          // {
+          //   key: "select process & product",
+          //   label: "select process & product",
+          //   path: "/work-instruction",
+          // },
           {
             key: "Add & Edit work Instruction",
             label: "Add & Edit work Instruction ",
@@ -334,7 +334,6 @@ const sections: Section[] = [
             label: "Add & Edit Employee",
             path: "/add-employee",
           },
-         
         ],
       },
 
@@ -354,23 +353,22 @@ const sections: Section[] = [
             label: "Vacation Request",
             path: "/vaction-request",
           },
-           {
+          {
             key: "Vacation Request approval",
             label: "Vacation Request approval",
             path: "/vacation-list",
           },
-          
+
           {
             key: "Time Clock approval",
             label: "Time Clock approval",
             path: "/time-clock",
           },
-           {
+          {
             key: "Time_Sheet",
             label: "Time Sheet",
             path: "/time-sheet",
           },
-         
         ],
       },
     ],

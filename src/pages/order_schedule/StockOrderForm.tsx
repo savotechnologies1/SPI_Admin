@@ -1,19 +1,28 @@
 import { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { addStockOrder, selectCustomer, selectProductNumber } from "./https/schedulingApis";
+import {
+  addStockOrder,
+  selectCustomer,
+  selectProductNumber,
+} from "./https/schedulingApis";
 import { stockOrderValidation } from "../../utils/validation";
-import { CustomerInterface, ProductNumberInterface } from "../../utils/Interfaces";
+import {
+  CustomerInterface,
+  ProductNumberInterface,
+} from "../../utils/Interfaces";
 import { toast } from "react-toastify";
 
 const generateNewOrderNumber = () => Date.now().toString();
 
 const StockOrderForm = () => {
-
   const [customerList, setCustomerList] = useState<CustomerInterface[]>([]);
-  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
-  const [productNumberList, setProductNumberList] = useState<ProductNumberInterface[]>([]);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(
+    null
+  );
+  const [productNumberList, setProductNumberList] = useState<
+    ProductNumberInterface[]
+  >([]);
   const [singleUnitCost, setSingleUnitCost] = useState<number | null>(null);
-
 
   useEffect(() => {
     getCustomer();
@@ -27,7 +36,6 @@ const StockOrderForm = () => {
       // toast.success("Stock order fetch successfully!");
     } catch (error) {
       console.error("Error fetching customer:", error);
-      toast.error("Failed to fetch stock order. Please try again.");
       setCustomerList([]);
     }
   };
@@ -42,8 +50,7 @@ const StockOrderForm = () => {
       console.error("Error fetching product number:", error);
       toast.error("Failed to fetch product number. Please try again.");
     }
-  }
-
+  };
 
   function setFieldValue(arg0: string, arg1: string) {
     throw new Error("Function not implemented.");
@@ -86,21 +93,29 @@ const StockOrderForm = () => {
                 totalCost: "",
                 productQuantity: "",
                 productDescription: "",
-              }
+              },
             });
             setSelectedCustomerId(null);
             setSingleUnitCost(null);
           } catch (error) {
             console.error("Submission error:", error);
-            toast.error("Failed to create order. A new Order ID has been generated. Please try again.");
-            setFieldValue('orderNumber', generateNewOrderNumber());
+            toast.error(
+              "Failed to create order. A new Order ID has been generated. Please try again."
+            );
+            setFieldValue("orderNumber", generateNewOrderNumber());
           } finally {
             setSubmitting(false);
           }
         }}
       >
-        {({ values, setFieldValue, errors, touched, isSubmitting, handleBlur }) => {
-
+        {({
+          values,
+          setFieldValue,
+          errors,
+          touched,
+          isSubmitting,
+          handleBlur,
+        }) => {
           const handleSelectChange = (
             e: React.ChangeEvent<HTMLSelectElement>
           ) => {
@@ -116,17 +131,12 @@ const StockOrderForm = () => {
             } else if (value) {
               setFieldValue("customerId", value);
               setSelectedCustomerId(value);
-              const selectedCustomer = customerList.find(
-                (c) => c.id === value
-              );
+              const selectedCustomer = customerList.find((c) => c.id === value);
 
               if (selectedCustomer) {
                 setFieldValue("customerName", selectedCustomer.name);
                 setFieldValue("customerEmail", selectedCustomer.email);
-                setFieldValue(
-                  "customerPhone",
-                  selectedCustomer.customerPhone
-                );
+                setFieldValue("customerPhone", selectedCustomer.customerPhone);
               }
             } else {
               // This handles clearing the fields if "Select a customer" is re-selected.
@@ -138,12 +148,16 @@ const StockOrderForm = () => {
             }
           };
 
-          const handleProductSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+          const handleProductSelectChange = (
+            e: React.ChangeEvent<HTMLSelectElement>
+          ) => {
             const selectedPartNumber = e.target.value;
             setFieldValue("productNumber", selectedPartNumber);
 
             if (selectedPartNumber) {
-              const selectedProduct = productNumberList.find(p => p.partNumber === selectedPartNumber);
+              const selectedProduct = productNumberList.find(
+                (p) => p.partNumber === selectedPartNumber
+              );
               if (selectedProduct) {
                 const unitCost = selectedProduct.cost;
                 const quantity = 1; // Default quantity
@@ -151,7 +165,10 @@ const StockOrderForm = () => {
                 setSingleUnitCost(unitCost); // For display and recalculation
                 setFieldValue("cost", unitCost.toFixed(2)); // CHANGED: Set UNIT cost in the 'cost' field
                 setFieldValue("productQuantity", quantity);
-                setFieldValue("productDescription", selectedProduct.partDescription);
+                setFieldValue(
+                  "productDescription",
+                  selectedProduct.partDescription
+                );
                 setFieldValue("totalCost", (unitCost * quantity).toFixed(2)); // ADDED: Set initial TOTAL cost
               }
             } else {
@@ -163,7 +180,9 @@ const StockOrderForm = () => {
             }
           };
 
-          const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+          const handleQuantityChange = (
+            e: React.ChangeEvent<HTMLInputElement>
+          ) => {
             const quantityValue = e.target.value;
             let newQuantity = Number(quantityValue);
 
@@ -254,9 +273,17 @@ const StockOrderForm = () => {
                   <Field
                     name="shipDate"
                     type="date"
-                    className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 ${touched.shipDate && errors.shipDate ? 'border-red-500' : ''}`}
+                    className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 ${
+                      touched.shipDate && errors.shipDate
+                        ? "border-red-500"
+                        : ""
+                    }`}
                   />
-                  <ErrorMessage name="shipDate" component="div" className="text-red-500 text-sm mt-1" />
+                  <ErrorMessage
+                    name="shipDate"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
                 </div>
               </div>
 
@@ -268,7 +295,11 @@ const StockOrderForm = () => {
                     name="customerId"
                     value={values.customerId}
                     onChange={handleSelectChange}
-                    className={`border px-2 py-3 rounded-md ${touched.customerId && errors.customerId ? 'border-red-500' : ''}`}
+                    className={`border px-2 py-3 rounded-md ${
+                      touched.customerId && errors.customerId
+                        ? "border-red-500"
+                        : ""
+                    }`}
                   >
                     <option value="" label="Select a customer" />
                     <option value="new">➕ Add New Customer</option>
@@ -278,7 +309,11 @@ const StockOrderForm = () => {
                       </option>
                     ))}
                   </select>
-                  <ErrorMessage name="customerId" component="div" className="text-red-500 text-sm mt-1" />
+                  <ErrorMessage
+                    name="customerId"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
                 </div>
 
                 <div>
@@ -288,9 +323,19 @@ const StockOrderForm = () => {
                     type="text"
                     readOnly={selectedCustomerId !== null}
                     placeholder="Enter Customer Name"
-                    className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 ${selectedCustomerId !== null ? 'bg-gray-100' : ''} ${touched.customerName && errors.customerName ? 'border-red-500' : ''}`}
+                    className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 ${
+                      selectedCustomerId !== null ? "bg-gray-100" : ""
+                    } ${
+                      touched.customerName && errors.customerName
+                        ? "border-red-500"
+                        : ""
+                    }`}
                   />
-                  <ErrorMessage name="customerName" component="div" className="text-red-500 text-sm mt-1" />
+                  <ErrorMessage
+                    name="customerName"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
                 </div>
                 <div>
                   <label className="font-semibold">Customer Email</label>
@@ -299,9 +344,19 @@ const StockOrderForm = () => {
                     type="email"
                     readOnly={selectedCustomerId !== null}
                     placeholder="Enter Customer Email"
-                    className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 ${selectedCustomerId !== null ? 'bg-gray-100' : ''} ${touched.customerEmail && errors.customerEmail ? 'border-red-500' : ''}`}
+                    className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 ${
+                      selectedCustomerId !== null ? "bg-gray-100" : ""
+                    } ${
+                      touched.customerEmail && errors.customerEmail
+                        ? "border-red-500"
+                        : ""
+                    }`}
                   />
-                  <ErrorMessage name="customerEmail" component="div" className="text-red-500 text-sm mt-1" />
+                  <ErrorMessage
+                    name="customerEmail"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
                 </div>
                 <div>
                   <label className="font-semibold">Customer Phone</label>
@@ -310,9 +365,19 @@ const StockOrderForm = () => {
                     type="text"
                     readOnly={selectedCustomerId !== null}
                     placeholder="Enter Customer Phone"
-                    className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 ${selectedCustomerId !== null ? 'bg-gray-100' : ''} ${touched.customerPhone && errors.customerPhone ? 'border-red-500' : ''}`}
+                    className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 ${
+                      selectedCustomerId !== null ? "bg-gray-100" : ""
+                    } ${
+                      touched.customerPhone && errors.customerPhone
+                        ? "border-red-500"
+                        : ""
+                    }`}
                   />
-                  <ErrorMessage name="customerPhone" component="div" className="text-red-500 text-sm mt-1" />
+                  <ErrorMessage
+                    name="customerPhone"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
                 </div>
               </div>
 
@@ -325,7 +390,11 @@ const StockOrderForm = () => {
                     value={values.productNumber}
                     onChange={handleProductSelectChange}
                     onBlur={handleBlur}
-                    className={`border px-2 py-3 rounded-md w-full placeholder-gray-600 ${touched.productNumber && errors.productNumber ? 'border-red-500' : ''}`}
+                    className={`border px-2 py-3 rounded-md w-full placeholder-gray-600 ${
+                      touched.productNumber && errors.productNumber
+                        ? "border-red-500"
+                        : ""
+                    }`}
                   >
                     <option value="" label="Select a product" />
                     {productNumberList.map((product) => (
@@ -334,14 +403,20 @@ const StockOrderForm = () => {
                       </option>
                     ))}
                   </select>
-                  <ErrorMessage name="productNumber" component="div" className="text-red-500 text-sm mt-1" />
+                  <ErrorMessage
+                    name="productNumber"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
                 </div>
 
                 {/* Unit Cost */}
                 <div>
                   <label className="font-semibold">Unit Cost</label>
                   <p className="border py-3 px-4 rounded-md w-full bg-gray-100 min-h-[48px] flex items-center">
-                    {singleUnitCost !== null ? `$${singleUnitCost.toFixed(2)}` : ''}
+                    {singleUnitCost !== null
+                      ? `$${singleUnitCost.toFixed(2)}`
+                      : ""}
                   </p>
                 </div>
 
@@ -353,9 +428,17 @@ const StockOrderForm = () => {
                     placeholder="Quantity"
                     onChange={handleQuantityChange}
                     min="1"
-                    className={`border py-3 px-4 rounded-md w-full text-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${touched.productQuantity && errors.productQuantity ? 'border-red-500' : ''}`}
+                    className={`border py-3 px-4 rounded-md w-full text-gray-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                      touched.productQuantity && errors.productQuantity
+                        ? "border-red-500"
+                        : ""
+                    }`}
                   />
-                  <ErrorMessage name="productQuantity" component="div" className="text-red-500 text-sm mt-1" />
+                  <ErrorMessage
+                    name="productQuantity"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
                 </div>
 
                 <div>
@@ -366,14 +449,21 @@ const StockOrderForm = () => {
                     type="number"
                     placeholder="Total Cost"
                     readOnly
-                    className={`border py-3 px-4 rounded-md w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-gray-100 ${touched.totalCost && errors.totalCost ? 'border-red-500' : ''}`}
+                    className={`border py-3 px-4 rounded-md w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-gray-100 ${
+                      touched.totalCost && errors.totalCost
+                        ? "border-red-500"
+                        : ""
+                    }`}
                   />
-                  <ErrorMessage name="totalCost" component="div" className="text-red-500 text-sm mt-1" />
+                  <ErrorMessage
+                    name="totalCost"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 mt-4 bg-white px-6 ">
-              </div>
+              <div className="grid grid-cols-1 mt-4 bg-white px-6 "></div>
 
               <div className="grid grid-cols-1 mt-4 bg-white px-6 ">
                 <div className="col-span-2">
@@ -383,16 +473,28 @@ const StockOrderForm = () => {
                     as="textarea"
                     rows="4"
                     placeholder="Description"
-                    className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 bg-gray-100 ${touched.productDescription && errors.productDescription ? 'border-red-500' : ''}`}
+                    className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 bg-gray-100 ${
+                      touched.productDescription && errors.productDescription
+                        ? "border-red-500"
+                        : ""
+                    }`}
                   />
-                  <ErrorMessage name="productDescription" component="div" className="text-red-500 text-sm mt-1" />
+                  <ErrorMessage
+                    name="productDescription"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
                 </div>
               </div>
 
               {/* Submit Button */}
               <div className="mt-6">
-                <button type="submit" className="px-6 py-2 bg-brand text-white text-md hover:bg-[#1a2e57] transition ml-6" disabled={isSubmitting}>
-                  {isSubmitting ? 'Creating...' : 'Create Stock Order'}
+                <button
+                  type="submit"
+                  className="px-6 py-2 bg-brand text-white text-md hover:bg-[#1a2e57] transition ml-6"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Creating..." : "Create Stock Order"}
                 </button>
               </div>
             </Form>

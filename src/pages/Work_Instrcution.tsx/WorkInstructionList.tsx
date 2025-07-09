@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import edit from "../../assets/edit_icon.png";
 import { FaCircle, FaTrash } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import add from "../../assets/add.png";
 import { Trash2 } from "lucide-react";
+import { workInstructionList } from "./https/workInstructionApi";
 
 interface WorkInstructionItem {
   id: string;
@@ -72,8 +73,8 @@ const mockData: WorkInstructionItem[] = [
 const WorkInstructionList: React.FC = () => {
   const [openOptionsIndex, setOpenOptionsIndex] = useState<number | null>(null);
   const rowsPerPage = 4;
-  const currentPage = 2;
   const [showConfirm, setShowConfirm] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const toggleOptions = (index: number) => {
     setOpenOptionsIndex((prev) => (prev === index ? null : index));
@@ -96,7 +97,39 @@ const WorkInstructionList: React.FC = () => {
   const handleEdit = (id: string) => {
     navigate(`/edit-work-instruction/${id}`);
   };
+  const [workData, setWorkData] = useState<[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchVal, setSearchVal] = useState("");
+  const [showConfirmId, setShowConfirmId] = useState(null);
 
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+  const fetchCustomerList = async (page = 1) => {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const response = await workInstructionList(page, rowsPerPage);
+      setWorkData(response.data);
+      setTotalPages(response.pagination?.totalPages || 1);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomerList(currentPage);
+  }, [currentPage, searchVal]);
+
+  console.log(
+    "workDataworkData",
+    workData.map((item) =>
+      console.log("InstructionImageInstructionImage", item)
+    )
+  );
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between">
@@ -140,61 +173,48 @@ const WorkInstructionList: React.FC = () => {
           <table className="w-full text-sm text-left">
             <thead className="bg-gray-100">
               <tr>
-                <th className="px-4 py-3">Name & Email</th>
-                <th className="px-4 py-3">Part Desc</th>
-                <th className="px-4 py-3">Steps Numbers</th>
-                <th className="px-4 py-3">Work Instruction Description</th>
+                <th className="px-4 py-3">Work Image</th>
+
+                <th className="px-4 py-3">Process</th>
+                <th className="px-4 py-3">Product/Part Number</th>
+                <th className="px-4 py-3">Title</th>
+                <th className="px-4 py-3">Step Number</th>
+                <th className="px-4 py-3">Decription</th>
                 <th className="px-4 py-3">Submit Date</th>
                 <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {mockData.map((item, index) => (
+              {workData.map((item, index) => (
                 <tr key={item.id} className="border-b hover:bg-gray-50">
                   <td className="px-4 py-3 flex items-center gap-2">
-                    <img
-                      src={item.imageUrl}
-                      alt="avatar"
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <span>{item.name}</span>
+                    {item.InstructionImage.length > 0 ? (
+                      <img
+                        src={`http://82.25.110.131:8080/uploads/workInstructionImg/${item.InstructionImage[0].imagePath}`}
+                        alt={`Uploaded ${item.id}`}
+                        className="w-20 h-20 object-cover border rounded"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 border rounded bg-gray-100 flex items-center justify-center text-sm text-gray-500">
+                        No Image
+                      </div>
+                    )}
                   </td>
-                  <td className="px-4 py-3">{item.partDesc}</td>
+                  <td className="px-4 py-3">{item.title}</td>
+                  <td className="px-4 py-3">{item.process.processName}</td>
+                  <td className="px-4 py-3">{item.PartNumber.partNumber}</td>
                   <td className="px-4 py-3">{item.stepNumber}</td>
-                  <td className="px-4 py-3">{item.description}</td>
+                  <td className="px-4 py-3">{item.instruction}</td>
                   <td className="px-4 py-3">
                     <span
                       className={`px-2 py-1 rounded text-xs font-semibold ${getColorClass(
                         item.statusColor
                       )}`}
                     >
-                      {item.submitDate}
+                      {item.createdAt}
                     </span>
                   </td>
-                  {/* <td className="px-4 py-3 relative flex items-center gap-4">
-                    <FiEdit2
 
-                        onClick={()=>handleEdit(item.id)}
-
-                      className="cursor-pointer text-lg"
-                      title="Quick edit"
-                    />
-                    <BsThreeDotsVertical
-                      className="cursor-pointer text-lg"
-                      onClick={() => toggleOptions(index)}
-                    />
-                    {openOptionsIndex === index && (
-                      <div className="absolute right-0 mt-8 w-32 bg-white border border-gray-200 rounded shadow-md z-10">
-                        <button 
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          Edit
-                        </button>
-                        <button className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100">
-                          Delete
-                        </button>
-                      </div>
-                    )}
-                  </td> */}
                   <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
                     <button
                       className="text-brand hover:underline"
