@@ -246,7 +246,7 @@ const PartForm = () => {
             <label>Available Stock</label>
             <input
               type="number"
-              {...register("availableStock")}
+              {...register("availStock")}
               placeholder="Available Stock"
               className="border p-2 rounded w-full"
             />
