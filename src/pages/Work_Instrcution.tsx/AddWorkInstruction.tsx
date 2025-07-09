@@ -216,7 +216,43 @@ const AddWorkInstruction = () => {
                     </h2>
 
                     {/* Title & Step Number */}
+
                     <div className="flex flex-col md:flex-row gap-4 mb-6">
+                      <div className="w-full sm:w-1/2">
+                        <label className="font-semibold">Select Part</label>
+                        <Select
+                          options={productData.map((item) => ({
+                            value: item.id,
+                            label: item.partNumber,
+                          }))}
+                          name="part_id"
+                          className="mt-2"
+                          onChange={(selectedOption) =>
+                            setFieldValue("part_id", selectedOption?.value)
+                          }
+                          value={
+                            productData
+                              .map((item) => ({
+                                value: item.id,
+                                label: item.partNumber,
+                              }))
+                              .find((opt) => opt.value === values.part_id) ||
+                            null
+                          }
+                          isClearable
+                          styles={{
+                            dropdownIndicator: (base) => ({
+                              ...base,
+                              display: "none",
+                            }),
+                          }}
+                        />
+                        {touched.part_id && errors.part_id && (
+                          <div className="text-red-500 text-sm mt-1">
+                            {errors.part_id}
+                          </div>
+                        )}
+                      </div>
                       <div className="w-full md:w-1/2">
                         <label className="font-semibold">
                           Work Instruction Title

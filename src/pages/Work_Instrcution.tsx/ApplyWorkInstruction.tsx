@@ -56,8 +56,10 @@ const ApplyWorkInstruction = () => {
         ))}
       </div>
 
+      {/* Form */}
       <div className="mt-4 bg-white p-4 sm:p-6 rounded-xl shadow-sm">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        {/* First Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
             <label
               className="block font-semibold mb-2"
@@ -98,28 +100,10 @@ const ApplyWorkInstruction = () => {
               ))}
             </select>
           </div>
-          <div>
-            <label className="block font-semibold mb-2" htmlFor="product">
-              Select Product
-            </label>
-            <select
-              id="product"
-              value={formData.product}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">Select Product</option>
-              {[1, 2, 3].map((num) => (
-                <option key={num} value={`Product ${num}`}>
-                  Product {num}
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
 
         {/* Second Row */}
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
             <label className="block font-semibold mb-2" htmlFor="product">
               Select Product
@@ -157,7 +141,7 @@ const ApplyWorkInstruction = () => {
               ))}
             </select>
           </div>
-        </div> */}
+        </div>
 
         {/* Submit Button */}
         <button
