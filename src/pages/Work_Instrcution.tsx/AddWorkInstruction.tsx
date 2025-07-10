@@ -724,20 +724,28 @@ const AddWorkInstruction = () => {
 
                     {/* Images */}
                     <div className="flex flex-col md:flex-row gap-4 mb-6">
+                      {/* Images Upload */}
                       <div className="w-full sm:w-1/2">
                         <label className="font-semibold block mb-2">
                           Upload Images
                         </label>
-                        <label className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm bg-white hover:bg-gray-50">
+
+                        <label
+                          htmlFor={`steps.${index}.workInstructionImg`}
+                          className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm bg-white hover:bg-gray-50"
+                        >
                           Upload Images
                         </label>
+
                         <input
+                          id={`steps.${index}.workInstructionImg`}
                           type="file"
                           multiple
                           accept="image/*"
-                          className="block mt-2 hidden"
+                          className="hidden"
                           onChange={(e) => handleMultipleImageChange(e, index)}
                         />
+
                         <div className="flex gap-2 mt-2">
                           {step.workInstructionImg?.map((file, idx) => (
                             <img
@@ -749,20 +757,25 @@ const AddWorkInstruction = () => {
                           ))}
                         </div>
                       </div>
+
+                      {/* Video Upload */}
                       <div className="w-full sm:w-1/2">
                         <label className="font-semibold block mb-2">
                           Upload Video
                         </label>
+
                         <label
                           htmlFor={`steps.${index}.workInstructionVideo`}
                           className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm bg-white hover:bg-gray-50"
                         >
                           {step.workInstructionVideo?.name || "Upload Video"}
                         </label>
+
                         <input
+                          id={`steps.${index}.workInstructionVideo`}
                           type="file"
                           accept="video/*"
-                          className="block mt- hidden"
+                          className="hidden"
                           onChange={(e) =>
                             setFieldValue(
                               `steps.${index}.workInstructionVideo`,
