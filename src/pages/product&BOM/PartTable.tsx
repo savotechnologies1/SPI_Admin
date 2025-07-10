@@ -36,7 +36,7 @@ export default function PartTable() {
   const [searchVal, setSearchVal] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const rowsPerPage = 5;
+  const rowsPerPage = 25;
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -59,11 +59,11 @@ export default function PartTable() {
   useEffect(() => {
     fetchCustomerList(currentPage);
   }, [currentPage, searchVal]);
-  const handleDelete = async(id: string) => {
+  const handleDelete = async (id: string) => {
     // eslint-disable-next-line no-useless-catch
     try {
       deletePartNumber(id).then();
-     await fetchCustomerList(currentPage);
+      await fetchCustomerList(currentPage);
     } catch (error: unknown) {
       throw error;
     }

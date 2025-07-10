@@ -306,6 +306,7 @@ const PartForm = () => {
               multiple
               {...register("image")}
               className="hidden"
+              accept="image/*"
             />
           </label>
 

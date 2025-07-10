@@ -119,12 +119,37 @@ export const selectProductApi = async () => {
     toast.error(error.response.data.message);
   }
 };
-export const selectProductRelatedPartsApi = async () => {
+
+export const selectProductRelatedPartsApi = async (productId) => {
   try {
-    const response = await axiosInstance.get(`/product-related-parts`);
+    const response = await axiosInstance.get(
+      `/product-related-parts?productId=${productId}`
+    );
 
     return response.data;
   } catch (error: any) {
+    toast.error(error.response.data.message);
+  }
+};
+
+export const getAllWorkInstructionApi = async () => {
+  try {
+    const response = await axiosInstance.get(`/select-work-instruction-title`);
+
+    return response.data;
+  } catch (error: any) {
+    toast.error(error.response.data.message);
+  }
+};
+
+export const applyWorkInstructionApi = async (data: object) => {
+  try {
+    const response = await axiosInstance.post("/apply-work-instruction", data);
+    if (response.status === 201) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error: unknown) {
     toast.error(error.response.data.message);
   }
 };
