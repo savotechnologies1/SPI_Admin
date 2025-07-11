@@ -106,6 +106,7 @@ const WorkInstructionList: React.FC = () => {
   const [workData, setWorkData] = useState<[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [searchVal, setSearchVal] = useState("");
+  const [showConfirmId, setShowConfirmId] = useState(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const handleNextPage = () => {
@@ -231,41 +232,36 @@ const WorkInstructionList: React.FC = () => {
                         className="w-4 h-4 md:w-5 md:h-5"
                       />
                     </button>
-                    <button className="text-brand hover:underline">
-                      <FaTrash
-                        className="text-red-500 cursor-pointer h-7"
-                        onClick={() => setShowConfirm(true)}
-                      />
-                      {showConfirm && (
-                        <div
-                          className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
-                                    flex items-center justify-center z-50"
-                        >
-                          <div className="bg-white p-6 rounded-xl shadow-lg">
-                            <h2 className="text-lg font-semibold mb-4">
-                              Are you sure?
-                            </h2>
-                            <p className="mb-4">
-                              Do you really want to delete this work instruction
-                              . ?
-                            </p>
-                            <div className="flex justify-end space-x-3">
-                              <button
-                                className="px-4 py-2 bg-gray-300 rounded"
-                                onClick={() => setShowConfirm(false)}
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                className="px-4 py-2 bg-red-500 text-white rounded"
-                                onClick={() => {
-                                  handleDelete(item.id);
-                                  setShowConfirm(false);
-                                }}
-                              >
-                                Delete
-                              </button>
-                            </div>
+                    <FaTrash
+                      className="text-red-500 cursor-pointer h-7"
+                      onClick={() => setSelectedId(item.id)}
+                    />
+
+                    {selectedId === item.id && (
+                      <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+                        <div className="bg-white p-6 rounded-xl shadow-lg">
+                          <h2 className="text-lg font-semibold mb-4">
+                            Are you sure?
+                          </h2>
+                          <p className="mb-4">
+                            Do you really want to delete this work instruction?
+                          </p>
+                          <div className="flex justify-end space-x-3">
+                            <button
+                              className="px-4 py-2 bg-gray-300 rounded"
+                              onClick={() => setSelectedId(null)}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              className="px-4 py-2 bg-red-500 text-white rounded"
+                              onClick={() => {
+                                handleDelete(selectedId); // use selectedId here
+                                setSelectedId(null);
+                              }}
+                            >
+                              Delete
+                            </button>
                           </div>
                         </div>
                       </div>
