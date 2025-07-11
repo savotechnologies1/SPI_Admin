@@ -1579,14 +1579,26 @@ const EditWorkInstruction = () => {
                         )}
                     </div>
                     <div className="flex flex-col md:flex-row gap-4 mb-6">
+                      {/* Upload Images */}
                       <div className="w-full sm:w-1/2">
                         <label className="font-semibold">Upload Images</label>
+
                         <label
-                          htmlFor={`steps.${index}.workInstructionImg`}
+                          htmlFor={`images-${index}`}
                           className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm bg-[#919EAB33]"
                         >
                           Click to select images
                         </label>
+
+                        <input
+                          id={`images-${index}`}
+                          type="file"
+                          multiple
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => handleMultipleImageChange(e, index)}
+                        />
+
                         <div className="flex gap-2 mt-2 flex-wrap">
                           {step.workInstructionImg?.map((img, idx) => {
                             const src =
@@ -1605,31 +1617,26 @@ const EditWorkInstruction = () => {
                             );
                           })}
                         </div>
-                        <input
-                          type="file"
-                          multiple
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => handleMultipleImageChange(e, index)}
-                        />
                       </div>
 
-                      {/* Video Upload */}
+                      {/* Upload Video */}
                       <div className="w-full sm:w-1/2">
                         <label className="font-semibold block mb-2">
                           Upload Video
                         </label>
 
                         <label
-                          htmlFor={`steps.${index}.workInstructionVideo`}
+                          htmlFor={`video-${index}`}
                           className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm bg-white hover:bg-gray-50"
                         >
                           {step.workInstructionVideo?.name || "Upload Video"}
                         </label>
+
                         <input
+                          id={`video-${index}`}
                           type="file"
                           accept="video/*"
-                          className="block mt-2 hidden"
+                          className="hidden"
                           onChange={(e) =>
                             setFieldValue(
                               `steps.${index}.workInstructionVideo`,

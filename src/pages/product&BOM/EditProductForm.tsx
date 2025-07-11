@@ -40,7 +40,7 @@ const EditProductForm = () => {
     productNumber1: number;
     qty: number;
     process: string;
-    workInstruction: string;
+    instructionRequired: string;
     partNumber: string;
   }
 
@@ -57,7 +57,7 @@ const EditProductForm = () => {
       qty: "",
       process: "",
       cycleTime: "",
-      workInstruction: "",
+      instructionRequired: "",
     },
   ]);
   const [savedBOMs, setSavedBOMs] = useState<any[]>([]);
@@ -72,7 +72,7 @@ const EditProductForm = () => {
         qty: "",
         process: "",
         cycleTime: "",
-        workInstruction: "",
+        instructionRequired: "",
       },
     ]);
   };
@@ -102,7 +102,7 @@ const EditProductForm = () => {
         process: "",
         processId: "",
         cycleTime: "",
-        workInstruction: "",
+        instructionRequired: "",
       },
     ]);
   };
@@ -184,11 +184,11 @@ const EditProductForm = () => {
         const preFilledBOMs = data.parts.map((part) => ({
           id: part.id || "",
           partNumber: part.partNumber || "",
-          qty: "", // optional: you can map partQuantity if available
+          qty: part.partQuantity || "",
           process: part.process?.processName || "",
           processId: part.process?.id || "",
           cycleTime: part.process?.cycleTime?.toString() || "",
-          workInstruction: "", // map if exists
+          instructionRequired: part.instructionRequired ? "Yes" : "No", // ✅ convert to string
           part_id: part.part_id || "",
         }));
 
@@ -297,7 +297,6 @@ const EditProductForm = () => {
         Product Number
       </h1>
 
-      {/* Breadcrumb */}
       <div className="flex gap-4 items-center mt-2 text-sm text-gray-700">
         <NavLink to="/dashboardDetailes" className="hover:underline">
           Dashboard
@@ -308,13 +307,11 @@ const EditProductForm = () => {
         <span>Product Number</span>
       </div>
 
-      {/* Form Start */}
       <div className="mt-6 bg-white p-6 rounded-2xl shadow-md">
         <form
           onSubmit={handleSubmit(onSubmitProduct)}
           className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4"
         >
-          {/* Product Fields */}
           <label className="block col-span-4 md:col-span-2">
             Part Family
             <select
@@ -404,7 +401,7 @@ const EditProductForm = () => {
             <label>Minimum Stock</label>
             <input
               type="number"
-              step="1" // ensures only integer input
+              step="1"
               {...register("minStock", { valueAsNumber: true })}
               placeholder="Minimum Stock"
               className="border p-2 rounded w-full"
@@ -414,7 +411,7 @@ const EditProductForm = () => {
             <label>Available Stock</label>
             <input
               type="number"
-              step="1" // ensures only integer input
+              step="1"
               {...register("availStock", { valueAsNumber: true })}
               placeholder="Available Stock"
               className="border p-2 rounded w-full"
@@ -446,7 +443,6 @@ const EditProductForm = () => {
             </div>
           </div>
 
-          {/* ✅ Upload new images */}
           <label className="col-span-4 cursor-pointer bg-gray-100 border rounded p-4 text-center">
             <input
               type="file"
@@ -457,7 +453,6 @@ const EditProductForm = () => {
             Tap or Click to Upload Product Images
           </label>
 
-          {/* BOM Section */}
           <div className="col-span-4 mt-4">
             <p className="font-semibold text-lg mb-2">Bill of Material (BOM)</p>
             {bomEntries.map((entry, index) => (
@@ -517,11 +512,14 @@ const EditProductForm = () => {
                     className="border p-2 rounded w-full"
                   />
                   <select
-                    value={entry.workInstruction}
+                    value={entry.instructionRequired}
                     onChange={(e) =>
-                      handleBOMChange(index, "workInstruction", e.target.value)
+                      handleBOMChange(
+                        index,
+                        "instructionRequired",
+                        e.target.value
+                      )
                     }
-                    className="border p-2 rounded w-full"
                   >
                     <option value="">Work Instruction</option>
                     <option value="Yes">Yes</option>
