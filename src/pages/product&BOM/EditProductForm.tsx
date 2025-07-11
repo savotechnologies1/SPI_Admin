@@ -17,8 +17,6 @@ const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 const EditProductForm = () => {
   const partContext = useContext(PartContext);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [bomError, setBomError] = useState("");
   const navigate = useNavigate();
 
   if (!partContext) {
@@ -65,11 +63,6 @@ const EditProductForm = () => {
   const [savedBOMs, setSavedBOMs] = useState<any[]>([]);
 
   const { id } = useParams();
-  // const handleBOMChange = (index: number, field: string, value: string) => {
-  //   const updated = [...bomEntries];
-  //   updated[index][field] = value;
-  //   setBomEntries(updated);
-  // };
 
   const handleAddBOMRow = () => {
     setBomEntries([
@@ -92,11 +85,6 @@ const EditProductForm = () => {
         entry.process.trim() !== ""
     );
 
-    if (validEntries.length === 0) {
-      setBomError("At least one complete BOM part is required.");
-      return;
-    }
-
     // Check for duplicates before adding
     const newEntries = validEntries.filter((newEntry) => {
       return !savedBOMs.some(
@@ -105,11 +93,6 @@ const EditProductForm = () => {
           saved.process === newEntry.process
       );
     });
-
-    if (newEntries.length === 0) {
-      setBomError("This BOM part already exists in the list.");
-      return;
-    }
 
     setSavedBOMs((prev) => [...prev, ...newEntries]);
     setBomEntries([
@@ -122,16 +105,13 @@ const EditProductForm = () => {
         workInstruction: "",
       },
     ]);
-    setBomError("");
   };
-  const handleDeleteBOM = async (index: number, partId: string) => {
-    const updated = [...savedBOMs];
-    updated.splice(index, 1);
-    setSavedBOMs(updated);
-    console.log("partId", partId);
-
+  const handleDeleteBOM = async (id: string, index: number) => {
     try {
-      await deleteProductPartNumber(partId, id); // id is product_id here
+      await deleteProductPartNumber(id); // ✅ API call first
+      const updated = [...savedBOMs];
+      updated.splice(index, 1); // ✅ Remove from UI state
+      setSavedBOMs(updated);
     } catch (error) {
       console.error("Failed to delete BOM", error);
     }
@@ -140,11 +120,6 @@ const EditProductForm = () => {
   const [existingImages, setExistingImages] = useState<string[]>([]);
 
   const onSubmitProduct = async (data: any) => {
-    if (savedBOMs.length === 0) {
-      setBomError("At least one BOM part is required before submitting.");
-      return;
-    }
-
     const formData = new FormData();
 
     formData.append("partFamily", data.partFamily);
@@ -207,6 +182,7 @@ const EditProductForm = () => {
       // ✅ Pre-fill BOM entries if `parts` exist
       if (Array.isArray(data.parts)) {
         const preFilledBOMs = data.parts.map((part) => ({
+          id: part.id || "",
           partNumber: part.partNumber || "",
           qty: "", // optional: you can map partQuantity if available
           process: part.process?.processName || "",
@@ -313,6 +289,7 @@ const EditProductForm = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  console.log("11", savedBOMs);
 
   return (
     <div className="p-4 md:p-7">
@@ -571,7 +548,6 @@ const EditProductForm = () => {
                 Save BOM
               </button>
             </div>
-            {bomError && <p className="text-red-500 mt-2">{bomError}</p>}
           </div>
           <div className="col-span-4 mt-4">
             {savedBOMs.length > 0 && (
@@ -591,10 +567,12 @@ const EditProductForm = () => {
                       <tr key={index} className="border-t text-center">
                         <td className="p-2">{row.process}</td>
                         <td className="p-2">{row.partNumber}</td>
-                        <td className="p-2">{row.cycleTime} sec</td>
+                        <td className="p-2">{row.cycleTime}</td>
                         <td className="p-2">
+                          {" "}
                           <button
-                            onClick={() => handleDeleteBOM(index, row.part_id)}
+                            type="button" // ❗ prevent form submission
+                            onClick={() => handleDeleteBOM(row.id, index)}
                             className="text-red-600"
                           >
                             <RiDeleteBin6Line size={18} />
