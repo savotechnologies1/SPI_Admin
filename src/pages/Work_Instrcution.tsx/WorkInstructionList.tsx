@@ -231,38 +231,6 @@ const WorkInstructionList: React.FC = () => {
                         className="w-4 h-4 md:w-5 md:h-5"
                       />
                     </button>
-<<<<<<< HEAD
-                    <FaTrash
-                      className="text-red-500 cursor-pointer h-7"
-                      onClick={() => setSelectedId(item.id)}
-                    />
-
-                    {selectedId === item.id && (
-                      <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-                        <div className="bg-white p-6 rounded-xl shadow-lg">
-                          <h2 className="text-lg font-semibold mb-4">
-                            Are you sure?
-                          </h2>
-                          <p className="mb-4">
-                            Do you really want to delete this work instruction?
-                          </p>
-                          <div className="flex justify-end space-x-3">
-                            <button
-                              className="px-4 py-2 bg-gray-300 rounded"
-                              onClick={() => setSelectedId(null)}
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              className="px-4 py-2 bg-red-500 text-white rounded"
-                              onClick={() => {
-                                handleDelete(selectedId); // use selectedId here
-                                setSelectedId(null);
-                              }}
-                            >
-                              Delete
-                            </button>
-=======
                     <button className="text-brand hover:underline">
                       <FaTrash
                         className="text-red-500 cursor-pointer h-7"
@@ -298,7 +266,6 @@ const WorkInstructionList: React.FC = () => {
                                 Delete
                               </button>
                             </div>
->>>>>>> c7e8cfd68a8568a73633f737cb371b9203511e07
                           </div>
                         </div>
                       </div>
