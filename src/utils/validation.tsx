@@ -41,3 +41,10 @@ export const customOrderValidation = Yup.object().shape({
         })
     ).min(1, 'At least one process is required'),
 });
+
+
+export const stockOrderShedule = Yup.object().shape({
+    customerName: Yup.string().required("Customer name is required"),
+    shipDate: Yup.date().required("Ship date is required").nullable(),
+    partNumber: Yup.string(),
+});

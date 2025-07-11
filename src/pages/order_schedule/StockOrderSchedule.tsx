@@ -20,8 +20,8 @@ const StockOrderSchedule = () => {
 
         <div className="flex gap-4 justify-center items-center">
           <div className="bg-white p-2 rounded-3xl">
-        <FontAwesomeIcon icon={faCartShopping} />
-        </div>
+            <FontAwesomeIcon icon={faCartShopping} />
+          </div>
           <div className="flex relative  ">
             <button className="py-2 px-10  border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer">
               <NavLink to="/dashboard/addEmployees"> Schedule Order</NavLink>

@@ -46,7 +46,7 @@ const CustomOrderForm = () => {
       const response: ProductNumberInterface[] = await selectProductNumber();
       setProductList(response || []);
       // setProductsOnlyList(response);
-      toast.success("Product Number fetch successfully!");
+      // toast.success("Product Number fetch successfully!");
     } catch (error) {
       console.error("Error fetching product number:", error);
       toast.error("Failed to fetch product number. Please try again.");
@@ -58,7 +58,7 @@ const CustomOrderForm = () => {
     try {
       const response: PartNumberInterface[] = await selectPartNumber();
       setPartList(response || []);
-      toast.success("Part Number fetch successfully!");
+      // toast.success("Part Number fetch successfully!");
 
     } catch (error) {
       console.error("Error fetching part number:", error);
@@ -70,7 +70,7 @@ const CustomOrderForm = () => {
     try {
       const response: processInterface[] = await selectProcess();
       setProcessList(response || []);
-      toast.success("Part Number fetch successfully!");
+      // toast.success("Part Number fetch successfully!");
     } catch (error) {
       console.error("Error fetching part number:", error);
       toast.error("Failed to fetch part number. Please try again.");
@@ -102,7 +102,7 @@ const CustomOrderForm = () => {
           try {
             console.log("Values", values);
 
-            // await addCustomOrder(values);
+            await addCustomOrder(values);
             resetForm({ values: { ...initialFormValues, orderNumber: generateNewOrderNumber() } });
             setSelectedCustomerId(null);
             setSingleUnitCost(null);
