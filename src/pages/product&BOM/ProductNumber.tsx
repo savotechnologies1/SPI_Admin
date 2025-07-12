@@ -52,7 +52,6 @@ const ProductNumber = () => {
   const [suggestions, setSuggestions] = useState<{ [index: number]: string[] }>(
     {}
   );
-  const [bomError, setBomError] = useState("");
   const inputRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [selectedImages, setSelectedImages] = useState<FileList | null>(null);
 
@@ -97,8 +96,6 @@ const ProductNumber = () => {
         .map((item) => item.partNumber);
       setSuggestions((prev) => ({ ...prev, [index]: filtered }));
     }
-
-    setBomEntries(updated);
   };
 
   const handleSuggestionClick = async (index: number, value: string) => {
@@ -130,7 +127,7 @@ const ProductNumber = () => {
         qty: "",
         process: "",
         cycleTime: "",
-        workInstruction: "",
+        workInstruction: false,
       },
     ]);
   };
@@ -146,23 +143,17 @@ const ProductNumber = () => {
       return entry;
     });
 
-    if (!saved) {
-      setBomError("Please fill in at least one valid BOM part to save.");
-      return;
-    }
-
     // Add empty new entry after saving
     validated.push({
       partNumber: "",
       qty: "",
       process: "",
       cycleTime: "",
-      workInstruction: "",
+      workInstruction: false,
       isSaved: false,
     });
 
     setBomEntries(validated);
-    setBomError("");
   };
 
   const handleDeleteBOM = (index: number) => {
@@ -173,11 +164,6 @@ const ProductNumber = () => {
 
   const onSubmitProduct = async (data: Part) => {
     const savedBOMs = bomEntries.filter((entry) => entry.isSaved);
-
-    if (savedBOMs.length === 0) {
-      setBomError("Please save at least one BOM part before submitting.");
-      return;
-    }
 
     const formData = new FormData();
 
@@ -458,7 +444,6 @@ const ProductNumber = () => {
               Save BOM
             </button>
           </div>
-          {bomError && <p className="text-red-500 mt-2">{bomError}</p>}
         </div>
         {bomEntries.filter((row) => row.isSaved).length > 0 && (
           <div className="col-span-4 mt-4 bg-white p-6 rounded-2xl shadow-md">

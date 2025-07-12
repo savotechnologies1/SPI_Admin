@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { PartContext } from "../../components/Context/PartContext";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaCircle, FaTrash } from "react-icons/fa";
-import { FiEdit2 } from "react-icons/fi";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import { FaCircle, FaEdit, FaTrash } from "react-icons/fa";
+import edit from "../../assets/edit_icon.png";
 import add from "../../assets/add.png";
 import { bomList, deletePartNumber } from "./https/partProductApis";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 export default function PartTable() {
   const partContext = useContext(PartContext);
 
@@ -16,8 +16,6 @@ export default function PartTable() {
     );
   }
   const navigate = useNavigate();
-
-  const { parts } = partContext;
 
   const handleClick = (id, type) => {
     if (type === "part") {
@@ -59,11 +57,11 @@ export default function PartTable() {
   useEffect(() => {
     fetchCustomerList(currentPage);
   }, [currentPage, searchVal]);
-  const handleDelete = async(id: string) => {
+  const handleDelete = async (id: string) => {
     // eslint-disable-next-line no-useless-catch
     try {
       deletePartNumber(id).then();
-     await fetchCustomerList(currentPage);
+      await fetchCustomerList(currentPage);
     } catch (error: unknown) {
       throw error;
     }
@@ -107,21 +105,6 @@ export default function PartTable() {
         </div>
       </div>
       <div className=" mx-auto p-6 bg-white shadow-lg rounded-lg mt-4">
-        {/* <div className="flex justify-between gap-4 items-center mb-6">
-          <div className="w-full">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="border w-full px-3 py-2 rounded-md"
-            />
-          </div>
-          <div>
-            <BsThreeDotsVertical
-              className="text-black hover:text-black cursor-pointer text-lg"
-              title="More Options"
-            />
-          </div>
-        </div> */}
         <div className="overflow-x-auto">
           <table className="w-full border-collapse  border-gray-300">
             <thead className="bg-gray-200">
@@ -171,12 +154,13 @@ export default function PartTable() {
                     {part.supplierOrderQty}
                   </td>
                   <td className="flex items-center gap-4 border-b border-dashed p-2">
-                    {/* Edit Icon */}
-                    <FiEdit2
-                      className="text-black  cursor-pointer text-lg"
-                      title="Quick Edit"
+                    <img
+                      src={edit}
+                      alt="Edit"
                       onClick={() => handleClick(part.part_id, part.type)}
+                      className="w-4 h-4 md:w-5 md:h-5"
                     />
+
                     <button className="text-brand hover:underline">
                       <FaTrash
                         className="text-red-500 cursor-pointer"
@@ -220,6 +204,36 @@ export default function PartTable() {
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <div className="flex flex-row justify-between items-center bg-white py-2 px-2 md:px-4 gap-2 ">
+        <p className="text-xs md:text-sm text-gray-600">
+          Page {currentPage} of {totalPages}
+        </p>
+
+        <div className="flex gap-2">
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            className={`p-1 md:p-2 rounded ${
+              currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} />
+          </button>
+
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            className={`p-1 md:p-2 rounded ${
+              currentPage === totalPages
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-gray-300"
+            }`}
+          >
+            <FontAwesomeIcon icon={faArrowRight} />
+          </button>
         </div>
       </div>
     </div>

@@ -177,14 +177,9 @@ export const deletePartNumber = async (id: string) => {
     return response.data;
   } catch (error) {}
 };
-export const deleteProductPartNumber = async (
-  id: string,
-  product_id: string
-) => {
+export const deleteProductPartNumber = async (id: string) => {
   try {
-    const response = await axiosInstance.delete(`/product-part-deleted/${id}`, {
-      data: { product_id }, // 👈 DELETE with body requires this
-    });
+    const response = await axiosInstance.put(`/delete-product-part/${id}`);
 
     return response.data;
   } catch (error) {

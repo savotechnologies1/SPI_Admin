@@ -30,7 +30,9 @@ export default function ProductTree() {
     // eslint-disable-next-line no-useless-catch
     try {
       const response = await productTree(page, rowsPerPage, searchVal);
-      setCustomerData(response.result);
+      console.log("responseresponse", response);
+
+      setCustomerData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
       throw error;
@@ -110,16 +112,20 @@ export default function ProductTree() {
                   Product Number
                 </th>
                 <th className="border p-2 font-semibold text-gray-600">
-                  Part Number
+                  Product Number
                 </th>
                 <th className="border p-2 font-semibold text-gray-600">
-                  Process
+                  Description
                 </th>
-                <th className="border p-2 font-semibold text-gray-600">
-                  Part Family
-                </th>
+                <th className="border p-2 font-semibold text-gray-600">Cost</th>
                 <th className="border p-2 font-semibold text-gray-600">
                   Cycle Time
+                </th>
+                <th className="border p-2 font-semibold text-gray-600">
+                  Minimum Stock
+                </th>
+                <th className="border p-2 font-semibold text-gray-600">
+                  Available Stock
                 </th>
                 {/* <th className="border p-2 font-semibold text-gray-600">
                   Availble stock
@@ -127,56 +133,64 @@ export default function ProductTree() {
                 <th className="border p-2 font-semibold text-gray-600">
                   order qty.
                 </th> */}
-                <th className="border p-2 font-semibold text-gray-600"></th>
+                <th className="border p-2 font-semibold text-gray-600">
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody>
-              {customerData?.flatMap((product, productIndex) =>
-                product.parts.map((part, partIndex) => (
-                  <tr
-                    key={`${productIndex}-${partIndex}`}
-                    className="hover:bg-gray-100 text-center"
-                  >
-                    <td className="border-b border-dashed p-2">
-                      {product.productNumber}
-                    </td>
-                    <td className="border-b border-dashed p-2">
-                      {part.partNumber}
-                    </td>
-                    <td className="border-b border-dashed p-2">
-                      {part.partFamily || "Not Available"}
-                    </td>
+              {customerData?.map((product, productIndex) => (
+                <tr
+                  key={`${productIndex}-${product}`}
+                  className="hover:bg-gray-100 text-center"
+                >
+                  <td className="border-b border-dashed p-2">
+                    {product.partNumber}
+                  </td>
+                  <td className="border-b border-dashed p-2">
+                    {product.partDescription}
+                  </td>
+                  <td className="border-b border-dashed p-2">
+                    {product.partDescription || "Not Available"}
+                  </td>
 
-                    <td className="border-b border-dashed p-2">
-                      {part.process?.processName
-                        ? `${part.process.processName} `
-                        : "Not Available"}
-                    </td>
-                    <td className="border-b border-dashed p-2">
-                      {part.process?.cycleTime
-                        ? `${part.process?.cycleTime} sec`
-                        : "Not Available"}
-                    </td>
-                    {/* <td className="border-b border-dashed p-2">
+                  <td className="border-b border-dashed p-2">
+                    $ {product.cost ? `${product.cost} ` : "Not Available"}
+                  </td>
+                  <td className="border-b border-dashed p-2">
+                    {product.leadTime
+                      ? `${product?.leadTime} days`
+                      : "Not Available"}
+                  </td>
+                  <td className="border-b border-dashed p-2">
+                    {product.minStock
+                      ? `${product?.minStock} `
+                      : "Not Available"}
+                  </td>
+                  <td className="border-b border-dashed p-2">
+                    {product.availStock
+                      ? `${product?.availStock} `
+                      : "Not Available"}
+                  </td>
+                  {/* <td className="border-b border-dashed p-2">
                       {product.availStock || "Not Available"}
                     </td>
                     <td className="border-b border-dashed p-2">
                       {product.supplierOrderQty || "Not Available"}
                     </td> */}
-                    <td className="flex items-center gap-4 border-b border-dashed p-2">
-                      <FiEdit2
-                        className="text-black cursor-pointer text-lg"
-                        title="Quick Edit"
-                        onClick={() => handleClick(product.product_id)}
-                      />
-                      {/* <BsThreeDotsVertical
+                  <td className="flex items-center gap-4 border-b border-dashed p-2">
+                    <FiEdit2
+                      className="text-black cursor-pointer text-lg"
+                      title="Quick Edit"
+                      onClick={() => handleClick(product.part_id)}
+                    />
+                    {/* <BsThreeDotsVertical
                         className="text-black hover:text-black cursor-pointer text-lg"
                         title="More Options"
                       /> */}
-                    </td>
-                  </tr>
-                ))
-              )}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

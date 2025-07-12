@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import edit from "../../assets/edit_icon.png";
 import { FaCircle, FaTrash } from "react-icons/fa";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import add from "../../assets/add.png";
 import { Trash2 } from "lucide-react";
-import { workInstructionList } from "./https/workInstructionApi";
-
+import {
+  deleteWorkInstruction,
+  workInstructionList,
+} from "./https/workInstructionApi";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 interface WorkInstructionItem {
   id: string;
   imageUrl: string;
@@ -72,13 +76,15 @@ const mockData: WorkInstructionItem[] = [
 
 const WorkInstructionList: React.FC = () => {
   const [openOptionsIndex, setOpenOptionsIndex] = useState<number | null>(null);
-  const rowsPerPage = 4;
+  const rowsPerPage = 5;
   const [showConfirm, setShowConfirm] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
   const toggleOptions = (index: number) => {
     setOpenOptionsIndex((prev) => (prev === index ? null : index));
   };
+
+  const { id } = useParams();
 
   const getColorClass = (color: string) => {
     switch (color) {
@@ -101,6 +107,7 @@ const WorkInstructionList: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [searchVal, setSearchVal] = useState("");
   const [showConfirmId, setShowConfirmId] = useState(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -110,7 +117,6 @@ const WorkInstructionList: React.FC = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
   const fetchCustomerList = async (page = 1) => {
-    // eslint-disable-next-line no-useless-catch
     try {
       const response = await workInstructionList(page, rowsPerPage);
       setWorkData(response.data);
@@ -124,10 +130,30 @@ const WorkInstructionList: React.FC = () => {
     fetchCustomerList(currentPage);
   }, [currentPage, searchVal]);
 
+  const handleDelete = async (id: string | null) => {
+    if (!id) return;
+    try {
+      const response = await deleteWorkInstruction(id);
+      if (response?.status === 200) {
+        await fetchCustomerList(currentPage);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const editWorkInstruction = (id) => {
+    navigate(`/edit-work-instruction/${id}`);
+  };
   console.log(
-    "workDataworkData",
+    "dd",
     workData.map((item) =>
-      console.log("InstructionImageInstructionImage", item)
+      console.log(
+        "2222",
+        item.steps.map((item) =>
+          console.log("222211", item.images[0]?.imagePath)
+        )
+      )
     )
   );
   return (
@@ -173,13 +199,10 @@ const WorkInstructionList: React.FC = () => {
           <table className="w-full text-sm text-left">
             <thead className="bg-gray-100">
               <tr>
-                <th className="px-4 py-3">Work Image</th>
-
-                <th className="px-4 py-3">Process</th>
-                <th className="px-4 py-3">Product/Part Number</th>
                 <th className="px-4 py-3">Title</th>
-                <th className="px-4 py-3">Step Number</th>
-                <th className="px-4 py-3">Decription</th>
+                <th className="px-4 py-3">Process</th>
+                <th className="px-4 py-3">Product Number</th>
+                <th className="px-4 py-3">Available Steps</th>
                 <th className="px-4 py-3">Submit Date</th>
                 <th className="px-4 py-3">Actions</th>
               </tr>
@@ -187,38 +210,21 @@ const WorkInstructionList: React.FC = () => {
             <tbody>
               {workData.map((item, index) => (
                 <tr key={item.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3 flex items-center gap-2">
-                    {item.InstructionImage.length > 0 ? (
-                      <img
-                        src={`http://82.25.110.131:8080/uploads/workInstructionImg/${item.InstructionImage[0].imagePath}`}
-                        alt={`Uploaded ${item.id}`}
-                        className="w-20 h-20 object-cover border rounded"
-                      />
-                    ) : (
-                      <div className="w-20 h-20 border rounded bg-gray-100 flex items-center justify-center text-sm text-gray-500">
-                        No Image
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">{item.title}</td>
+                  <td className="px-4 py-3">{item.instructionTitle}</td>
                   <td className="px-4 py-3">{item.process.processName}</td>
                   <td className="px-4 py-3">{item.PartNumber.partNumber}</td>
-                  <td className="px-4 py-3">{item.stepNumber}</td>
-                  <td className="px-4 py-3">{item.instruction}</td>
+                  <td className="px-4 py-3">{item.steps.length}</td>
+
                   <td className="px-4 py-3">
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-semibold ${getColorClass(
-                        item.statusColor
-                      )}`}
-                    >
-                      {item.createdAt}
+                    <span className="px-2 py-1 rounded text-xs font-semibold bg-gray-200 text-gray-600">
+                      {new Date(item.createdAt).toLocaleDateString()}
                     </span>
                   </td>
 
                   <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
                     <button
                       className="text-brand hover:underline"
-                      // onClick={() => editProcess(item.id)}
+                      onClick={() => editWorkInstruction(item.id)}
                     >
                       <img
                         src={edit}
@@ -226,44 +232,40 @@ const WorkInstructionList: React.FC = () => {
                         className="w-4 h-4 md:w-5 md:h-5"
                       />
                     </button>
-                    <button className="text-brand hover:underline">
-                      <FaTrash
-                        className="text-red-500 cursor-pointer h-7"
-                        onClick={() => setShowConfirm(true)}
-                      />
-                      {showConfirm && (
-                        <div
-                          className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
-                                    flex items-center justify-center z-50"
-                        >
-                          <div className="bg-white p-6 rounded-xl shadow-lg">
-                            <h2 className="text-lg font-semibold mb-4">
-                              Are you sure?
-                            </h2>
-                            <p className="mb-4">
-                              Do you really want to delete this work instruction
-                              . ?
-                            </p>
-                            <div className="flex justify-end space-x-3">
-                              <button
-                                className="px-4 py-2 bg-gray-300 rounded"
-                                onClick={() => setShowConfirm(false)}
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                className="px-4 py-2 bg-red-500 text-white rounded"
-                                onClick={() => {
-                                  setShowConfirm(false);
-                                }}
-                              >
-                                Delete
-                              </button>
-                            </div>
+                    <FaTrash
+                      className="text-red-500 cursor-pointer h-7"
+                      onClick={() => setSelectedId(item.id)}
+                    />
+
+                    {selectedId === item.id && (
+                      <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+                        <div className="bg-white p-6 rounded-xl shadow-lg">
+                          <h2 className="text-lg font-semibold mb-4">
+                            Are you sure?
+                          </h2>
+                          <p className="mb-4">
+                            Do you really want to delete this work instruction?
+                          </p>
+                          <div className="flex justify-end space-x-3">
+                            <button
+                              className="px-4 py-2 bg-gray-300 rounded"
+                              onClick={() => setSelectedId(null)}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              className="px-4 py-2 bg-red-500 text-white rounded"
+                              onClick={() => {
+                                handleDelete(selectedId); // use selectedId here
+                                setSelectedId(null);
+                              }}
+                            >
+                              Delete
+                            </button>
                           </div>
                         </div>
-                      )}
-                    </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -271,12 +273,34 @@ const WorkInstructionList: React.FC = () => {
           </table>
         </div>
 
-        <div className="flex justify-between items-center mt-4 text-sm">
-          <span>Rows per page: 5</span>
-          <span>
-            {rowsPerPage * (currentPage - 1) + 1} - {rowsPerPage * currentPage}{" "}
-            of 11
-          </span>
+        <div className="flex flex-row justify-between items-center bg-white py-2 px-2 md:px-4 gap-2 ">
+          <p className="text-xs md:text-sm text-gray-600">
+            Page {currentPage} of {totalPages}
+          </p>
+
+          <div className="flex gap-2">
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className={`p-1 md:p-2 rounded ${
+                currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </button>
+
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className={`p-1 md:p-2 rounded ${
+                currentPage === totalPages
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-gray-300"
+              }`}
+            >
+              <FontAwesomeIcon icon={faArrowRight} />
+            </button>
+          </div>
         </div>
       </div>
     </div>

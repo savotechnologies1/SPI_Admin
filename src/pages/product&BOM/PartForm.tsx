@@ -1,8 +1,144 @@
+// import { useContext, useEffect, useState } from "react";
+// import { FaCircle, FaTrash } from "react-icons/fa";
+// import { NavLink, useNavigate } from "react-router-dom";
+// import { PartContext } from "../../components/Context/PartContext";
+// import { RiDeleteBin6Line } from "react-icons/ri";
+// import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+// import { useForm } from "react-hook-form";
+// import {
+//   createPartNumber,
+//   deletePartNumber,
+//   getProcessDetail,
+//   partNumberList,
+//   selectProcess,
+// } from "./https/partProductApis";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { toast } from "react-toastify";
+
+// const PartForm = () => {
+//   const {
+//     register,
+//     handleSubmit,
+//     watch,
+//     reset,
+//     setValue,
+//     formState: { errors },
+//   } = useForm();
+
+//   const context = useContext(PartContext);
+//   const navigate = useNavigate();
+
+//   const [processData, setProcessData] = useState([]);
+//   const [partData, setPartData] = useState([]);
+//   const [totalPages, setTotalPages] = useState(1);
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const rowsPerPage = 5;
+//   const [showConfirm, setShowConfirm] = useState(false);
+//   const processId = watch("processId");
+//   if (!context)
+//     throw new Error("PartContext must be used within a PartProvider");
+//   const { addPart } = context;
+
+//   const fetchProcessList = async () => {
+//     try {
+//       const response = await selectProcess();
+//       setProcessData(response);
+//     } catch (error) {
+//       toast.error("Failed to fetch process list");
+//     }
+//   };
+
+//   const getAllPartList = async (page = 1) => {
+//     try {
+//       const response = await partNumberList(page, rowsPerPage);
+//       setPartData(response.data);
+//       setTotalPages(response.pagination?.totalPages || 1);
+//     } catch (error) {
+//       toast.error("Failed to fetch part data");
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchProcessList();
+//     getAllPartList();
+//   }, [currentPage]);
+
+//   const handleNextPage = () => {
+//     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+//   };
+
+//   const handlePreviousPage = () => {
+//     if (currentPage > 1) setCurrentPage(currentPage - 1);
+//   };
+
+//   const onSubmit = async (data: any) => {
+//     const formData = new FormData();
+
+//     formData.append("partFamily", data.partFamily);
+//     formData.append("partNumber", data.partNumber);
+//     formData.append("partDescription", data.partDescription);
+//     formData.append("cost", data.cost);
+//     formData.append("leadTime", data.leadTime);
+//     formData.append("supplierOrderQty", data.supplierOrderQty);
+//     formData.append("cycleTime", data.cycleTime);
+//     formData.append("companyName", data.companyName);
+//     formData.append("minStock", data.minStock);
+//     formData.append("availStock", data.availStock);
+//     formData.append("processOrderRequired", data.processOrderRequired);
+//     formData.append("processId", data.processId);
+//     formData.append("processDesc", data.processDesc);
+
+//     if (data.image && data.image.length > 0) {
+//       Array.from(data.image).forEach((file: File) => {
+//         formData.append("partImages", file);
+//       });
+//     }
+
+//     try {
+//       const response = await createPartNumber(formData);
+//       console.log("response.statusresponse.status", response.status);
+
+//       if (response.status === 201) {
+//         toast.success(response.data.message);
+//         navigate("/part-table");
+//         getAllPartList(currentPage);
+//       }
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+//   useEffect(() => {
+//     if (processId) {
+//       const fetchProcessDetail = async () => {
+//         try {
+//           const res = await getProcessDetail(processId);
+
+//           const desc = res.data?.processDesc || "";
+
+//           setValue("processDesc", desc);
+//         } catch (error) {
+//           console.error("Failed to fetch process description", error);
+//           setValue("processDesc", "");
+//         }
+//       };
+
+//       fetchProcessDetail();
+//     } else {
+//       setValue("processDesc", "");
+//     }
+//   }, [processId]);
+
+//   const handleDelete = (id: string) => {
+//     try {
+//       deletePartNumber(id).then();
+//     } catch (error: unknown) {
+//       throw error;
+//     }
+//   };
 import { useContext, useEffect, useState } from "react";
 import { FaCircle, FaTrash } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import { PartContext } from "../../components/Context/PartContext";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 import {
@@ -14,30 +150,99 @@ import {
 } from "./https/partProductApis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
-import { Trash, Trash2 } from "lucide-react";
+
+interface FormDataType {
+  partFamily: string;
+  partNumber: string;
+  partDescription: string;
+  cost: number;
+  leadTime: number;
+  supplierOrderQty: number;
+  companyName: string;
+  minStock: number;
+  availStock: number;
+  cycleTime: number;
+  processOrderRequired: string;
+  processId: string;
+  processDesc: string;
+  image: FileList;
+}
 
 const PartForm = () => {
-  const { register, handleSubmit, watch, reset, setValue } = useForm();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<FormDataType>();
+
   const context = useContext(PartContext);
   const navigate = useNavigate();
 
-  const [processData, setProcessData] = useState([]);
-  const [partData, setPartData] = useState([]);
+  const [processData, setProcessData] = useState<any[]>([]);
+  const [partData, setPartData] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 5;
   const [showConfirm, setShowConfirm] = useState(false);
+  const rowsPerPage = 5;
   const processId = watch("processId");
+
   if (!context)
     throw new Error("PartContext must be used within a PartProvider");
   const { addPart } = context;
 
-  const fetchProcessList = async () => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [processList, partList] = await Promise.all([
+          selectProcess(),
+          partNumberList(currentPage, rowsPerPage),
+        ]);
+        setProcessData(processList);
+        setPartData(partList.data);
+        setTotalPages(partList.pagination?.totalPages || 1);
+      } catch (error) {
+        toast.error("Failed to fetch data");
+      }
+    };
+    fetchData();
+  }, [currentPage]);
+
+  useEffect(() => {
+    const fetchProcessDetail = async () => {
+      if (!processId) return setValue("processDesc", "");
+      try {
+        const res = await getProcessDetail(processId);
+        setValue("processDesc", res.data?.processDesc || "");
+      } catch (err) {
+        setValue("processDesc", "");
+        toast.error("Failed to fetch process description");
+      }
+    };
+    fetchProcessDetail();
+  }, [processId, setValue]);
+
+  const onSubmit = async (data: FormDataType) => {
     try {
-      const response = await selectProcess();
-      setProcessData(response);
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        if (key === "image") {
+          Array.from(value).forEach((file) =>
+            formData.append("partImages", file)
+          );
+        } else {
+          formData.append(key, value as string);
+        }
+      });
+      const response = await createPartNumber(formData);
+      if (response.status === 201) {
+        navigate("/part-table");
+        getAllPartList(currentPage);
+      }
     } catch (error) {
-      toast.error("Failed to fetch process list");
+      console.error(error);
     }
   };
 
@@ -51,85 +256,21 @@ const PartForm = () => {
     }
   };
 
-  useEffect(() => {
-    fetchProcessList();
-    getAllPartList();
-  }, [currentPage]);
+  const handleDelete = async (id: string) => {
+    try {
+      await deletePartNumber(id);
+      getAllPartList(currentPage);
+    } catch (error) {
+      toast.error("Failed to delete part");
+    }
+  };
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
   };
 
   const handlePreviousPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
-
-  const onSubmit = async (data: any) => {
-    const formData = new FormData();
-
-    // Append all fields
-    formData.append("partFamily", data.partFamily);
-    formData.append("partNumber", data.partNumber);
-    formData.append("partDescription", data.partDescription);
-    formData.append("cost", data.cost);
-    formData.append("leadTime", data.leadTime);
-    formData.append("supplierOrderQty", data.supplierOrderQty);
-    formData.append("cycleTime", data.cycleTime);
-    formData.append("companyName", data.companyName);
-    formData.append("minStock", data.minStock);
-    formData.append("availStock", data.availStock);
-    formData.append("processOrderRequired", data.processOrderRequired);
-    formData.append("processId", data.processId);
-    formData.append("processDesc", data.processDesc);
-
-    // Append multiple images
-    if (data.image && data.image.length > 0) {
-      Array.from(data.image).forEach((file: File) => {
-        formData.append("partImages", file); // name must match multer config
-      });
-    }
-
-    try {
-      await createPartNumber(formData);
-      addPart(data);
-      // reset();
-      getAllPartList(currentPage);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  useEffect(() => {
-    if (processId) {
-      // Call API when processId changes
-      const fetchProcessDetail = async () => {
-        try {
-          const res = await getProcessDetail(processId);
-
-          const desc = res.data?.processDesc || "";
-
-          setValue("processDesc", desc);
-        } catch (error) {
-          console.error("Failed to fetch process description", error);
-          setValue("processDesc", "");
-        }
-      };
-
-      fetchProcessDetail();
-    } else {
-      setValue("processDesc", "");
-    }
-  }, [processId]);
-  const handleDeletePart = async (id) => {
-    await deletePartNumber(id);
-  };
-
-  const handleDelete = (id: string) => {
-    // eslint-disable-next-line no-useless-catch
-    try {
-      deletePartNumber(id).then();
-    } catch (error: unknown) {
-      throw error;
-    }
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
   return (
     <div className="p-4 md:p-7">
@@ -162,7 +303,9 @@ const PartForm = () => {
           <label className="block col-span-4 md:col-span-2">
             Part Family
             <select
-              {...register("partFamily")}
+              {...register("partFamily", {
+                required: "Part Family is required",
+              })}
               className="border p-2 rounded w-full"
             >
               <option value="">Select Part Family</option>
@@ -172,25 +315,44 @@ const PartForm = () => {
                 </option>
               ))}
             </select>
+            {errors.partFamily && (
+              <p className="text-red-500 text-sm">
+                {errors.partFamily.message}
+              </p>
+            )}
           </label>
 
           <label className="block col-span-4 md:col-span-2">
             Part Number
             <input
               type="text"
-              {...register("partNumber")}
+              {...register("partNumber", {
+                required: "Part Number is required",
+              })}
               placeholder="Enter Part Number"
               className="border p-2 rounded w-full"
             />
+            {errors.partNumber && (
+              <p className="text-red-500 text-sm">
+                {errors.partNumber.message}
+              </p>
+            )}
           </label>
 
           <label className="block col-span-4">
             Part Description
             <textarea
-              {...register("partDescription")}
+              {...register("partDescription", {
+                required: "Part Description is required",
+              })}
               placeholder="Part Description"
               className="border p-2 rounded w-full"
             />
+            {errors.partDescription && (
+              <p className="text-red-500 text-sm">
+                {errors.partDescription.message}
+              </p>
+            )}
           </label>
           <div className="col-span-4 md:col-span-1">
             <label>Cost</label>
@@ -246,7 +408,7 @@ const PartForm = () => {
             <label>Available Stock</label>
             <input
               type="number"
-              {...register("availableStock")}
+              {...register("availStock")}
               placeholder="Available Stock"
               className="border p-2 rounded w-full"
             />
@@ -261,22 +423,28 @@ const PartForm = () => {
               className="border p-2 rounded w-full"
             />
           </div>
-
           <div className="col-span-4 md:col-span-1">
             <label>Process Order Required</label>
             <select
-              {...register("processOrderRequired")}
+              {...register("processOrderRequired", {
+                required: "Please select Yes or No",
+              })}
               className="border p-2 rounded w-full"
             >
+              <option value="">Select</option>
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
+            {errors.processOrderRequired && (
+              <p className="text-red-500 text-sm">
+                {errors.processOrderRequired.message}
+              </p>
+            )}
           </div>
-
-          <label className="block col-span-4 md:col-span-2">
-            Process
+          <div className="col-span-4 md:col-span-2">
+            <label>Process</label>
             <select
-              {...register("processId")}
+              {...register("processId", { required: "Process is required" })}
               className="border p-2 rounded w-full"
             >
               <option value="">Select Process</option>
@@ -286,7 +454,12 @@ const PartForm = () => {
                 </option>
               ))}
             </select>
-          </label>
+            {errors.processId && (
+              <p className="text-red-500 text-sm">{errors.processId.message}</p>
+            )}
+          </div>
+
+          {/* Process Order Required */}
 
           <label className="block col-span-4 md:col-span-2">
             Process Description
@@ -306,6 +479,7 @@ const PartForm = () => {
               multiple
               {...register("image")}
               className="hidden"
+              accept="image/*"
             />
           </label>
 
