@@ -9,6 +9,7 @@ import {
   selectProductApi,
   selectProductRelatedPartsApi,
 } from "./https/workInstructionApi";
+import { useNavigate } from "react-router-dom";
 
 // const AddWorkInstruction = () => {
 //   const [productData, setProductData] = useState<any[]>([]);
@@ -469,6 +470,7 @@ const AddWorkInstruction = () => {
     ),
   });
 
+  const navigate = useNavigate();
   const formik = useFormik<FormValues>({
     initialValues: {
       processId: "",
@@ -516,8 +518,11 @@ const AddWorkInstruction = () => {
           }
         });
 
-        await addWorkinstructionInfo(formData);
-        console.log("✅ Final Payload:", formData);
+        const response = await addWorkinstructionInfo(formData);
+        if (response.status === 200) {
+          navigate("/work-instructions-list");
+          console.log("✅ Final Payload:", formData);
+        }
       } catch (error) {
         console.error("❌ Error while creating payload:", error);
       }
@@ -638,8 +643,8 @@ const AddWorkInstruction = () => {
                         <label className="font-semibold">Select Part</label>
                         <Select
                           options={partData.map((item) => ({
-                            value: item.part.part_id,
-                            label: item.part.partNumber,
+                            value: item.part?.part_id,
+                            label: item.part?.partNumber,
                           }))}
                           name={`steps.${index}.part_id`}
                           className="mt-2"
@@ -652,8 +657,8 @@ const AddWorkInstruction = () => {
                           value={
                             partData
                               .map((item) => ({
-                                value: item.part.part_id,
-                                label: item.part.partNumber,
+                                value: item.part?.part_id,
+                                label: item.part?.partNumber,
                               }))
                               .find(
                                 (opt) =>

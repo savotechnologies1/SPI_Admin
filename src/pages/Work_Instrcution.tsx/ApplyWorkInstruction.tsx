@@ -387,8 +387,8 @@ const ApplyWorkInstruction = () => {
             <label className="font-semibold block mb-1">Select Part</label>
             <Select
               options={partData.map((item) => ({
-                value: item.part.part_id,
-                label: item.part.partNumber,
+                value: item.part?.part_id,
+                label: item.part?.partNumber,
               }))}
               onChange={(opt) => handleSelectChange(opt, "partId")}
               isClearable

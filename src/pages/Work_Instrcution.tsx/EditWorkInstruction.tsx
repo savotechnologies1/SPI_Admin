@@ -239,7 +239,7 @@
 // export default EditWorkInstruction;
 
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FormikProvider, useFormik, Field, FieldArray, Form } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
@@ -1308,7 +1308,7 @@ const EditWorkInstruction = () => {
   };
 
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const formik = useFormik<FormValues>({
     enableReinitialize: true,
     initialValues: initialValues || {
@@ -1362,7 +1362,10 @@ const EditWorkInstruction = () => {
         }
       });
 
-      await editWorkInstruction(formData);
+      const response = await editWorkInstruction(formData);
+      if (response.status === 200) {
+        navigate("/work-instructions-list");
+      }
       console.log("✅ Final Payload:", formData);
     },
   });

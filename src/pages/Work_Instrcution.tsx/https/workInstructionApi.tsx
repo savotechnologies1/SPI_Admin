@@ -36,7 +36,9 @@ export const addWorkinstructionInfo = async (data: object) => {
         },
       }
     );
-    if (response.status === 201) {
+    console.log("87878", response);
+
+    if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response;
