@@ -1,156 +1,116 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import ItemSelected from "./ItemSelected";
+import { searchStockOrder } from "./https/schedulingApis";
+import { stockOrderShedule } from "../../utils/validation";
+import { SearchResultItem, StockOrderScheduleInterface } from "../../utils/Interfaces"
+
 
 const StockOrderScheduleForm = () => {
-  // const [formData, setFormData] = useState({
-  //   orderNumber: "",
-  //   orderDate: "2025-02-26",
-  //   shipDate: "2025-02-26",
-  //   customer: "Cortez Herring",
-  //   customerName: "",
-  //   customerEmail: "",
-  //   customerPhone: "",
-  //   productNumber: "",
-  //   cost: "",
-  //   quantity: "",
-  //   description: "",
-  //   file: null,
-  //   partFamily: "Cortez Herring",
-  //   partNumber: "",
-  //   partDesc: "",
-  //   partQuantity: "",
-  //   partCost: "",
-  //   time: "09:33 AM",
-  //   process: "Cortez Herring",
-  //   assignTo: "Cortez Herring",
-  // });
+  const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [file, setFile] = useState<File | null>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      setFile(files[0]);
+  const handleSearchSubmit = async (
+    values: StockOrderScheduleInterface,
+    { setSubmitting }: FormikHelpers<StockOrderScheduleInterface>
+  ) => {
+    setIsLoading(true);
+    try {
+      const response = await searchStockOrder(values);
+      setSearchResults(response.data || []);
+    } catch (error) {
+      console.error("Failed to search stock orders:", error);
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
+      setSubmitting(false);
     }
   };
 
-  const { register, handleSubmit } = useForm();
-
-  const onSubmit = (data: unknown) => {};
 
   return (
     <>
       <div className="p-4 bg-white rounded-2xl border shadow-md mb-6">
-        <form onSubmit={handleSubmit(onSubmit)} className="">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-6 ">
-            <div>
-              <label className="font-semibold">Customer Name</label>
-              <input
-                {...register("CustomerName", {
-                  required: "Customer Name required",
-                })}
-                type="text"
-                placeholder="Enter Customer Name"
-                className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
-              />
-            </div>
+        <Formik
+          initialValues={{
+            customerName: "",
+            shipDate: "",
+            partNumber: "",
+          }}
+          validationSchema={stockOrderShedule}
+          onSubmit={handleSearchSubmit}
+        >
+          {({ isSubmitting, resetForm }) => (
+            <Form>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-6 ">
+                <div>
+                  <label className="font-semibold">Customer Name</label>
+                  <Field
+                    name="customerName"
+                    type="text"
+                    placeholder="Enter Customer Name"
+                    className="border py-3 px-4 rounded-md w-full placeholder-gray-600"
+                  />
+                  <ErrorMessage
+                    name="customerName"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div>
 
-            {/* <div>
-              <label className="font-semibold">Customer Email</label>
-              <input
-                {...register("CustomerEmail", {
-                  required: "Customer Email required",
-                })}
-                type="email"
-                placeholder="Enter Customer Email"
-                className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
-              />
-            </div> */}
-            {/* <div>
-              <label className="font-semibold">Customer Phone</label>
-              <input
-                {...register("CustomerPhone", {
-                  required: " Phone number is required",
-                })}
-                type="date"
-                placeholder="number"
-                className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
-              />
-            </div> */}
-            <div>
-              <label className="font-semibold">Ship Date </label>
-              <input
-                {...register("ShipDate", {
-                  required: "Ship Date  is required",
-                })}
-                type="date"
-                placeholder=""
-                className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
-              />
-            </div>
-            <div>
-              <label className="font-semibold">Part Number</label>
-              <input
-                {...register("ProductDescription")}
-                type="text"
-                placeholder="Meta description
-"
-                className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
-              />
-            </div>
-          </div>
+                <div>
+                  <label className="font-semibold">Ship Date</label>
+                  <Field
+                    name="shipDate"
+                    type="date"
+                    className="border py-3 px-4 rounded-md w-full placeholder-gray-600"
+                  />
+                  <ErrorMessage
+                    name="shipDate"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div>
 
-          {/* <div className="grid grid-cols-1  gap-4  bg-white px-6 ">
-            <div>
-              <label className="font-semibold">Product Description</label>
-              <input
-                {...register("ProductDescription")}
-                type="text"
-                placeholder="Meta description
-"
-                className="border py-3 px-4 rounded-md w-full  placeholder-gray-600"
-              />
-            </div>
-          </div> */}
-          <div className="flex flex-col sm:flex-row  gap-4 mt-4 bg-white px-6 justify-between md;items-center  ">
-            {/* <div className="md:w-1/2">
-              <label className="block border py-2 px-4 rounded-md w-full bg-[#919EAB33] text-center cursor-pointer hover:bg-gray-200 shadow-sm items-center">
-                <input
-                  {...register("file")}
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-                {file ? (
-                  <span className="">{file.name}</span>
-                ) : (
-                  <span className="text-sm">Tap or Click to Add Picture</span>
-                )}
-              </label>
-            </div> */}
+                <div>
+                  <label className="font-semibold">Part Number</label>
+                  <Field
+                    name="partNumber"
+                    type="text"
+                    placeholder="Enter Part Number"
+                    className="border py-3 px-4 rounded-md w-full placeholder-gray-600"
+                  />
+                </div>
+              </div>
 
-            <button
-              type="submit"
-              className="px-6 py-2 bg-brand text-white text-md  hover:bg-[#1a2e57] transition ml-6 "
-            >
-              Search Stock Orders
-            </button>
-            <div>
-              <span></span> <p className="text-[#B71D18] text-sm">Clear Cart</p>
-            </div>
-          </div>
+              <div className="flex flex-col sm:flex-row gap-4 mt-4 bg-white px-6 justify-between items-center">
+                <button
+                  type="submit"
+                  className="px-6 py-2 bg-blue-800 text-white text-md hover:bg-blue-900 transition disabled:opacity-50"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Searching..." : "Search Stock Orders"}
+                </button>
 
-          {/* Submit Button */}
-          {/* <div className=" mt-6">
-          <button className="px-6 py-2 bg-brand text-white text-md  hover:bg-[#1a2e57] transition ml-6 ">
-             Order
-          </button>
-        </div> */}
-        </form>
+                <button
+                  type="button"
+                  className="text-[#B71D18] text-sm hover:underline cursor-pointer"
+                  onClick={() => {
+                    resetForm();
+                    setSearchResults([]);
+                  }}
+                >
+                  Clear All
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
 
-      <ItemSelected />
+      {/* Pass the search results to the ItemSelected component */}
+      <ItemSelected availableItems={searchResults} isLoading={isLoading} />
     </>
   );
 };

@@ -56,6 +56,7 @@ const CustomOrderForm = () => {
       const response: ProductNumberInterface[] = await selectProductNumber();
       setProductList(response || []);
       // setProductsOnlyList(response);
+      // toast.success("Product Number fetch successfully!");
     } catch (error) {
       console.error("Error fetching product number:", error);
       toast.error("Failed to fetch product number. Please try again.");
@@ -67,6 +68,8 @@ const CustomOrderForm = () => {
     try {
       const response: PartNumberInterface[] = await selectPartNumber();
       setPartList(response || []);
+      // toast.success("Part Number fetch successfully!");
+
     } catch (error) {
       console.error("Error fetching part number:", error);
       toast.error("Failed to fetch part number. Please try again.");
@@ -77,6 +80,7 @@ const CustomOrderForm = () => {
     try {
       const response: processInterface[] = await selectProcess();
       setProcessList(response || []);
+      // toast.success("Part Number fetch successfully!");
     } catch (error) {
       console.error("Error fetching part number:", error);
       toast.error("Failed to fetch part number. Please try again.");
@@ -108,13 +112,8 @@ const CustomOrderForm = () => {
           try {
             console.log("Values", values);
 
-            // await addCustomOrder(values);
-            resetForm({
-              values: {
-                ...initialFormValues,
-                orderNumber: generateNewOrderNumber(),
-              },
-            });
+            await addCustomOrder(values);
+            resetForm({ values: { ...initialFormValues, orderNumber: generateNewOrderNumber() } });
             setSelectedCustomerId(null);
             setSingleUnitCost(null);
           } catch (error) {
@@ -230,11 +229,10 @@ const CustomOrderForm = () => {
                   <Field
                     name="shipDate"
                     type="date"
-                    className={`border py-3 px-4 rounded-md w-full ${
-                      touched.shipDate && errors.shipDate
-                        ? "border-red-500"
-                        : ""
-                    }`}
+                    className={`border py-3 px-4 rounded-md w-full ${touched.shipDate && errors.shipDate
+                      ? "border-red-500"
+                      : ""
+                      }`}
                   />
                   <ErrorMessage
                     name="shipDate"
@@ -252,11 +250,10 @@ const CustomOrderForm = () => {
                     name="customerId"
                     value={values.customerId}
                     onChange={handleCustomerSelectChange}
-                    className={`border px-2 py-3 rounded-md w-full ${
-                      touched.customerId && errors.customerId
-                        ? "border-red-500"
-                        : ""
-                    }`}
+                    className={`border px-2 py-3 rounded-md w-full ${touched.customerId && errors.customerId
+                      ? "border-red-500"
+                      : ""
+                      }`}
                   >
                     <option value="">Select a customer</option>
                     <option value="new">➕ Add New Customer</option>
@@ -278,13 +275,11 @@ const CustomOrderForm = () => {
                     name="customerName"
                     readOnly={selectedCustomerId !== null}
                     placeholder="Enter Customer Name"
-                    className={`border py-3 px-4 rounded-md w-full ${
-                      selectedCustomerId !== null ? "bg-gray-100" : ""
-                    } ${
-                      touched.customerName && errors.customerName
+                    className={`border py-3 px-4 rounded-md w-full ${selectedCustomerId !== null ? "bg-gray-100" : ""
+                      } ${touched.customerName && errors.customerName
                         ? "border-red-500"
                         : ""
-                    }`}
+                      }`}
                   />
                   <ErrorMessage
                     name="customerName"
@@ -299,13 +294,11 @@ const CustomOrderForm = () => {
                     type="email"
                     readOnly={selectedCustomerId !== null}
                     placeholder="Enter Customer Email"
-                    className={`border py-3 px-4 rounded-md w-full ${
-                      selectedCustomerId !== null ? "bg-gray-100" : ""
-                    } ${
-                      touched.customerEmail && errors.customerEmail
+                    className={`border py-3 px-4 rounded-md w-full ${selectedCustomerId !== null ? "bg-gray-100" : ""
+                      } ${touched.customerEmail && errors.customerEmail
                         ? "border-red-500"
                         : ""
-                    }`}
+                      }`}
                   />
                   <ErrorMessage
                     name="customerEmail"
@@ -319,13 +312,11 @@ const CustomOrderForm = () => {
                     name="customerPhone"
                     readOnly={selectedCustomerId !== null}
                     placeholder="Enter Customer Phone"
-                    className={`border py-3 px-4 rounded-md w-full ${
-                      selectedCustomerId !== null ? "bg-gray-100" : ""
-                    } ${
-                      touched.customerPhone && errors.customerPhone
+                    className={`border py-3 px-4 rounded-md w-full ${selectedCustomerId !== null ? "bg-gray-100" : ""
+                      } ${touched.customerPhone && errors.customerPhone
                         ? "border-red-500"
                         : ""
-                    }`}
+                      }`}
                   />
                   <ErrorMessage
                     name="customerPhone"
@@ -344,11 +335,10 @@ const CustomOrderForm = () => {
                     value={values.productNumber}
                     onChange={handleProductSelectChange}
                     className={`border px-2 py-3 rounded-md w-full 
-                    ${
-                      touched.productNumber && errors.productNumber
+                    ${touched.productNumber && errors.productNumber
                         ? "border-red-500"
                         : ""
-                    }`}
+                      }`}
                   >
                     <option value="">Select a product</option>
                     {productList.map((p) => (
@@ -380,11 +370,10 @@ const CustomOrderForm = () => {
                     placeholder="Quantity"
                     onChange={handleQuantityChange}
                     min="1"
-                    className={`border py-3 px-4 rounded-md w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-                      touched.productQuantity && errors.productQuantity
-                        ? "border-red-500"
-                        : ""
-                    }`}
+                    className={`border py-3 px-4 rounded-md w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${touched.productQuantity && errors.productQuantity
+                      ? "border-red-500"
+                      : ""
+                      }`}
                   />
                   <ErrorMessage
                     name="productQuantity"
@@ -417,11 +406,10 @@ const CustomOrderForm = () => {
                     value={values.partNumber}
                     onChange={handlePartSelectChange}
                     className={`border px-2 py-3 rounded-md w-full 
-                    ${
-                      touched.partNumber && errors.partNumber
+                    ${touched.partNumber && errors.partNumber
                         ? "border-red-500"
                         : ""
-                    }`}
+                      }`}
                   >
                     <option value="">Select a part number</option>
                     {partList.map((p) => (
