@@ -1470,8 +1470,8 @@ const EditWorkInstruction = () => {
                 value={
                   productData
                     .map((item) => ({
-                      value: item.id,
-                      label: item.partNumber,
+                      value: item?.id,
+                      label: item?.partNumber,
                     }))
                     .find((opt) => opt.value === values.productId) || null
                 }
@@ -1500,8 +1500,8 @@ const EditWorkInstruction = () => {
                         <label className="font-semibold">Select Part</label>
                         <Select
                           options={partData.map((item) => ({
-                            value: item.part.part_id,
-                            label: item.part.partNumber,
+                            value: item.part?.part_id,
+                            label: item.part?.partNumber,
                           }))}
                           name={`steps.${index}.part_id`}
                           className="mt-2"
@@ -1514,8 +1514,8 @@ const EditWorkInstruction = () => {
                           value={
                             partData
                               .map((item) => ({
-                                value: item.part.part_id,
-                                label: item.part.partNumber,
+                                value: item.part?.part_id,
+                                label: item.part?.partNumber,
                               }))
                               .find(
                                 (opt) =>
