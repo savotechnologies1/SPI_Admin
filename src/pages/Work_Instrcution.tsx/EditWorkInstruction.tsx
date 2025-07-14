@@ -1271,11 +1271,12 @@ const EditWorkInstruction = () => {
       })
     ),
   });
-
+  const [type, setType] = useState("");
   const fetchWorkInstructionDetail = async () => {
     try {
       const response = await workInstructionDetail(id);
       console.log("responseresponse", response);
+      setType(response.type);
 
       const formattedSteps = response.steps.map((step) => ({
         part_id: step.part_id || "",
@@ -1295,7 +1296,6 @@ const EditWorkInstruction = () => {
             }
           : null,
       }));
-
       setInitialValues({
         processId: response.processId,
         productId: response.productId,
@@ -1308,6 +1308,7 @@ const EditWorkInstruction = () => {
   };
 
   const { id } = useParams();
+
   const formik = useFormik<FormValues>({
     enableReinitialize: true,
     initialValues: initialValues || {
@@ -1332,6 +1333,7 @@ const EditWorkInstruction = () => {
       formData.append("productId", values.productId);
       formData.append("instructionTitle", values.instructionTitle);
       formData.append("workInstructionId", id);
+      formData.append("type", type);
 
       const instructionSteps = values.steps.map((step) => ({
         stepNumber: step.stepNumber,

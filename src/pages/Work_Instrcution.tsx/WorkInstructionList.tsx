@@ -130,10 +130,10 @@ const WorkInstructionList: React.FC = () => {
     fetchCustomerList(currentPage);
   }, [currentPage, searchVal]);
 
-  const handleDelete = async (id: string | null) => {
+  const handleDelete = async (id: string | null, type: string) => {
     if (!id) return;
     try {
-      const response = await deleteWorkInstruction(id);
+      const response = await deleteWorkInstruction(id, type);
       if (response?.status === 200) {
         await fetchCustomerList(currentPage);
       }
@@ -256,7 +256,7 @@ const WorkInstructionList: React.FC = () => {
                             <button
                               className="px-4 py-2 bg-red-500 text-white rounded"
                               onClick={() => {
-                                handleDelete(selectedId); // use selectedId here
+                                handleDelete(selectedId, item.type); // use selectedId here
                                 setSelectedId(null);
                               }}
                             >
