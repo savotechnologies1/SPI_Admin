@@ -223,22 +223,197 @@
 // };
 
 // export default ApplyWorkInstruction;
+
+// const ApplyWorkInstruction = () => {
+//   const [workInstructions, setWorkInstructions] = useState([]);
+//   const [productData, setProductData] = useState([]);
+//   const [processData, setProcessData] = useState([]);
+//   const [partData, setPartData] = useState([]);
+
+//   const [formData, setFormData] = useState({
+//     workInstructionId: "",
+//     processId: "",
+//     productId: "",
+//     partId: "",
+//   });
+
+//   useEffect(() => {
+//     fetchProcess();
+//     fetchProducts();
+//     fetchWorkInstructions();
+//   }, []);
+
+//   useEffect(() => {
+//     if (formData.productId) {
+//       fetchParts(formData.productId);
+//     }
+//   }, [formData.productId]);
+
+//   const fetchProcess = async () => {
+//     const res = await selectProcessApi();
+//     setProcessData(res || []);
+//   };
+
+//   const fetchProducts = async () => {
+//     const res = await selectProductApi();
+//     setProductData(res?.data || []);
+//   };
+
+//   const fetchParts = async (productId) => {
+//     const res = await selectProductRelatedPartsApi(productId);
+//     setPartData(res?.data || []);
+//   };
+
+//   const fetchWorkInstructions = async () => {
+//     const res = await getAllWorkInstructionApi();
+//     setWorkInstructions(res?.data || []);
+//   };
+
+//   const handleSelectChange = (selectedOption, field) => {
+//     setFormData((prev) => ({
+//       ...prev,
+//       [field]: selectedOption?.value || "",
+//     }));
+//   };
+
+//   const handleSubmit = async () => {
+//     try {
+//       const payload = {
+//         workInstructionId: formData.workInstructionId,
+//         processId: formData.processId,
+//         productId: formData.productId,
+//         partId: formData.partId,
+//       };
+
+//       await applyWorkInstructionApi(payload);
+//     } catch (error) {
+//       console.error("Error submitting:", error);
+//     }
+//   };
+
+//   const breadcrumbs = [
+//     { path: "/dashboardDetailes", label: "Dashboard" },
+//     { label: "Work Instruction" },
+//     { label: "Apply work instruction to different product/process" },
+//   ];
+
+//   return (
+//     <div className="p-4 sm:p-6">
+//       <h1 className="font-bold text-xl sm:text-2xl text-black mb-2">
+//         Apply Work Instruction
+//       </h1>
+
+//       {/* Breadcrumbs */}
+//       <div className="flex items-center gap-2 mb-4">
+//         {breadcrumbs.map((item, index) => (
+//           <div key={index} className="flex items-center gap-2">
+//             {item.path ? (
+//               <NavLink
+//                 to={item.path}
+//                 className="text-xs sm:text-sm text-black hover:underline"
+//               >
+//                 {item.label}
+//               </NavLink>
+//             ) : (
+//               <span className="text-xs sm:text-sm cursor-default">
+//                 {item.label}
+//               </span>
+//             )}
+//             {index < breadcrumbs.length - 1 && (
+//               <FaCircle className="text-[6px] text-gray-500" />
+//             )}
+//           </div>
+//         ))}
+//       </div>
+
+//       {/* Form */}
+//       <div className="bg-white p-6 rounded-xl shadow-sm space-y-6">
+//         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+//           {/* Work Instruction */}
+//           <div>
+//             <label className="font-semibold block mb-1">
+//               Select Work Instruction
+//             </label>
+//             <Select
+//               options={workInstructions.map((item) => ({
+//                 value: item.id,
+//                 label: item.title,
+//               }))}
+//               onChange={(opt) => handleSelectChange(opt, "workInstructionId")}
+//               isClearable
+//             />
+//           </div>
+
+//           {/* Process */}
+//           <div>
+//             <label className="font-semibold block mb-1">Select Process</label>
+//             <Select
+//               options={processData.map((item) => ({
+//                 value: item.id,
+//                 label: item.name,
+//               }))}
+//               onChange={(opt) => handleSelectChange(opt, "processId")}
+//               isClearable
+//             />
+//           </div>
+
+//           {/* Product */}
+//           <div>
+//             <label className="font-semibold block mb-1">
+//               Select Product / Part description or number
+//             </label>
+//             <Select
+//               options={productData.map((item) => ({
+//                 value: item.id,
+//                 label: item.partNumber,
+//               }))}
+//               onChange={(opt) => handleSelectChange(opt, "productId")}
+//               isClearable
+//             />
+//           </div>
+
+//           {/* Part */}
+//           {/* <div>
+//             <label className="font-semibold block mb-1">Select Part</label>
+//             <Select
+//               options={partData.map((item) => ({
+//                 value: item.part?.part_id,
+//                 label: item.part?.partNumber,
+//               }))}
+//               onChange={(opt) => handleSelectChange(opt, "partId")}
+//               isClearable
+//             />
+//           </div> */}
+//         </div>
+
+//         <div>
+//           <button
+//             onClick={handleSubmit}
+//             className="bg-brand text-white px-5 py-3 rounded-lg"
+//           >
+//             Apply Work Instruction
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
 import { useEffect, useState } from "react";
 import { FaCircle } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import Select from "react-select";
 import {
   selectProcessApi,
-  selectProductApi,
   selectProductRelatedPartsApi,
   getAllWorkInstructionApi,
   applyWorkInstructionApi,
-  // applyWorkInstructionApi,
+  selectProductInfoApi,
 } from "./https/workInstructionApi";
+import AsyncSelect from "react-select/async";
 
 const ApplyWorkInstruction = () => {
   const [workInstructions, setWorkInstructions] = useState([]);
-  const [productData, setProductData] = useState([]);
   const [processData, setProcessData] = useState([]);
   const [partData, setPartData] = useState([]);
 
@@ -246,32 +421,22 @@ const ApplyWorkInstruction = () => {
     workInstructionId: "",
     processId: "",
     productId: "",
-    partId: "",
   });
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     fetchProcess();
-    fetchProducts();
     fetchWorkInstructions();
   }, []);
 
-  useEffect(() => {
-    if (formData.productId) {
-      fetchParts(formData.productId);
-    }
-  }, [formData.productId]);
+  console.log("formDataformData", formData);
 
   const fetchProcess = async () => {
     const res = await selectProcessApi();
     setProcessData(res || []);
   };
 
-  const fetchProducts = async () => {
-    const res = await selectProductApi();
-    setProductData(res?.data || []);
-  };
-
-  const fetchParts = async (productId) => {
+  const fetchParts = async (productId: string) => {
     const res = await selectProductRelatedPartsApi(productId);
     setPartData(res?.data || []);
   };
@@ -294,7 +459,6 @@ const ApplyWorkInstruction = () => {
         workInstructionId: formData.workInstructionId,
         processId: formData.processId,
         productId: formData.productId,
-        partId: formData.partId,
       };
 
       await applyWorkInstructionApi(payload);
@@ -308,14 +472,35 @@ const ApplyWorkInstruction = () => {
     { label: "Work Instruction" },
     { label: "Apply work instruction to different product/process" },
   ];
+  const loadProductOptions = async (inputValue) => {
+    if (!inputValue || inputValue.length < 2) {
+      return [];
+    }
+
+    try {
+      const response = await selectProductInfoApi(inputValue);
+      return response.data.map((item) => ({
+        value: item.id,
+        label: `${item.partNumber} - ${item.partDescription}`,
+      }));
+    } catch (error) {
+      console.error("Failed to load product options:", error);
+      return []; // Return empty array on error
+    }
+  };
+  const handleProductChange = (selectedOption) => {
+    setSelectedProduct(selectedOption);
+    setFormData((prev) => ({
+      ...prev,
+      productId: selectedOption ? selectedOption.value : "",
+    }));
+  };
 
   return (
     <div className="p-4 sm:p-6">
       <h1 className="font-bold text-xl sm:text-2xl text-black mb-2">
         Apply Work Instruction
       </h1>
-
-      {/* Breadcrumbs */}
       <div className="flex items-center gap-2 mb-4">
         {breadcrumbs.map((item, index) => (
           <div key={index} className="flex items-center gap-2">
@@ -338,10 +523,8 @@ const ApplyWorkInstruction = () => {
         ))}
       </div>
 
-      {/* Form */}
       <div className="bg-white p-6 rounded-xl shadow-sm space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {/* Work Instruction */}
           <div>
             <label className="font-semibold block mb-1">
               Select Work Instruction
@@ -356,7 +539,6 @@ const ApplyWorkInstruction = () => {
             />
           </div>
 
-          {/* Process */}
           <div>
             <label className="font-semibold block mb-1">Select Process</label>
             <Select
@@ -369,29 +551,24 @@ const ApplyWorkInstruction = () => {
             />
           </div>
 
-          {/* Product */}
           <div>
-            <label className="font-semibold block mb-1">Select Product</label>
-            <Select
-              options={productData.map((item) => ({
-                value: item.id,
-                label: item.partNumber,
-              }))}
-              onChange={(opt) => handleSelectChange(opt, "productId")}
+            <label className="font-semibold block mb-1">
+              Search Product by Number or Description
+            </label>
+            <AsyncSelect
+              cacheOptions
+              defaultOptions
+              value={selectedProduct}
+              loadOptions={loadProductOptions}
+              onChange={handleProductChange}
+              placeholder="Type 2+ characters to search..."
               isClearable
-            />
-          </div>
-
-          {/* Part */}
-          <div>
-            <label className="font-semibold block mb-1">Select Part</label>
-            <Select
-              options={partData.map((item) => ({
-                value: item.part?.part_id,
-                label: item.part?.partNumber,
-              }))}
-              onChange={(opt) => handleSelectChange(opt, "partId")}
-              isClearable
+              loadingMessage={() => "Searching..."}
+              noOptionsMessage={({ inputValue }) =>
+                inputValue.length < 2
+                  ? "Please enter 2 or more characters"
+                  : "No products found"
+              }
             />
           </div>
         </div>

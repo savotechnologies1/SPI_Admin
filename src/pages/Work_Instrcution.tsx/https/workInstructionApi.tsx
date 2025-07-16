@@ -2,7 +2,6 @@ import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
 
 export const workInstructionApi = async () => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(`/work-process`);
     return response.data;
@@ -19,7 +18,7 @@ export const addWorkInstruction = async (data: object) => {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: unknown) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };
@@ -31,27 +30,30 @@ export const addWorkinstructionInfo = async (data: object) => {
       data,
       {
         headers: {
-          // 'Content-Type': 'application/json',
           "Content-Type": "multipart/form-data",
         },
       }
     );
-    console.log("87878", response);
 
     if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: unknown) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };
 
-export const workInstructionList = async (page = 1, limit = 5) => {
-  // eslint-disable-next-line no-useless-catch
+export const workInstructionList = async (
+  page = 1,
+  limit = 5,
+  selectedValue: string,
+  search: string,
+  type: string
+) => {
   try {
     const response = await axiosInstance.get(
-      `/all-work-instructions?page=${page}&limit=${limit}`
+      `/all-work-instructions?page=${page}&limit=${limit}&type=${selectedValue}&search=${search}`
     );
     return response.data;
   } catch (error) {
@@ -59,25 +61,23 @@ export const workInstructionList = async (page = 1, limit = 5) => {
   }
 };
 
-export const editWorkInstruction = async (data: object, id) => {
+export const editWorkInstruction = async (data: object) => {
   try {
     const response = await axiosInstance.put(`/update-work-instruction`, data, {
       headers: {
-        // 'Content-Type': 'application/json',
         "Content-Type": "multipart/form-data",
       },
     });
-    if (response.status === 201) {
+    if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: unknown) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };
 
 export const workInstructionDetail = async (id: string) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(`/work-instruction-detail/${id}`);
     return response.data;
@@ -94,8 +94,22 @@ export const deleteWorkInstruction = async (id: string, type: string) => {
     if (response.status === 200) {
       toast.success(response.data.message);
     }
-    return response.data;
-  } catch (error: unknown) {
+    return response;
+  } catch (error: any) {
+    toast.error(error.response.data.message);
+  }
+};
+
+export const deleteWorkInstructionImage = async (id: string) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/delete-work-instruction-image/${id}`
+    );
+    if (response.status === 200) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };
@@ -124,7 +138,19 @@ export const selectProductApi = async () => {
   }
 };
 
-export const selectProductRelatedPartsApi = async (productId) => {
+export const selectProductInfoApi = async () => {
+  try {
+    const response = await axiosInstance.get(`/select-product-info`);
+    if (response.status === 200) {
+      toast.success(response.data.message);
+    }
+    return response.data;
+  } catch (error: any) {
+    toast.error(error.response.data.message);
+  }
+};
+
+export const selectProductRelatedPartsApi = async (productId: string) => {
   try {
     const response = await axiosInstance.get(
       `/product-related-parts?productId=${productId}`
@@ -153,7 +179,7 @@ export const applyWorkInstructionApi = async (data: object) => {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: unknown) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };

@@ -108,6 +108,38 @@ const WorkInstructionList: React.FC = () => {
   const [searchVal, setSearchVal] = useState("");
   const [showConfirmId, setShowConfirmId] = useState(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedValue, setSelectedValue] = useState("all");
+  const debouncedSearchVal = useDebounce(searchVal, 500);
+  function useDebounce(value, delay) {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+
+    useEffect(() => {
+      const handler = setTimeout(() => {
+        setDebouncedValue(value);
+      }, delay);
+
+      return () => {
+        clearTimeout(handler);
+      };
+    }, [value, delay]);
+
+    return debouncedValue;
+  }
+  const handleChange = (e) => {
+    try {
+      setSearchVal(e.target.value);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const handleSelectChange = (event) => {
+    const newValue = event.target.value;
+    setSelectedValue(newValue);
+
+    console.log("A new option was selected:", newValue);
+  };
+  console.log("searchValsearchVal", searchVal);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -116,26 +148,35 @@ const WorkInstructionList: React.FC = () => {
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
-  const fetchCustomerList = async (page = 1) => {
+  const fetchWorkInstructionList = async (
+    page = 1,
+    searchTerm = "",
+    type = ""
+  ) => {
     try {
-      const response = await workInstructionList(page, rowsPerPage);
+      const response = await workInstructionList(
+        page,
+        rowsPerPage,
+        searchTerm,
+        type
+      );
       setWorkData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
-      throw error;
+      console.error("Failed to fetch work instructions:", error);
     }
   };
 
   useEffect(() => {
-    fetchCustomerList(currentPage);
-  }, [currentPage, searchVal]);
+    fetchWorkInstructionList(currentPage, selectedValue, debouncedSearchVal);
+  }, [currentPage, selectedValue, debouncedSearchVal]);
 
   const handleDelete = async (id: string | null, type: string) => {
     if (!id) return;
     try {
       const response = await deleteWorkInstruction(id, type);
       if (response?.status === 200) {
-        await fetchCustomerList(currentPage);
+        await fetchWorkInstructionList(currentPage);
       }
     } catch (error) {
       console.error(error);
@@ -145,17 +186,7 @@ const WorkInstructionList: React.FC = () => {
   const editWorkInstruction = (id) => {
     navigate(`/edit-work-instruction/${id}`);
   };
-  console.log(
-    "dd",
-    workData.map((item) =>
-      console.log(
-        "2222",
-        item.steps.map((item) =>
-          console.log("222211", item.images[0]?.imagePath)
-        )
-      )
-    )
-  );
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between">
@@ -184,14 +215,22 @@ const WorkInstructionList: React.FC = () => {
 
       <div className="bg-white p-4 mt-6 rounded-lg">
         <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
-          <select className="border w-full md:w-1/3 px-3 py-2 rounded-md">
-            <option>Project Cordinator</option>
+          <select
+            id="work-instruction-filter"
+            className="border w-full md:w-1/3 px-3 py-2 rounded-md"
+            value={selectedValue}
+            onChange={handleSelectChange}
+          >
+            <option value="all">All</option>
+            <option value="original">Original work instructions</option>
+            <option value="applied">Applied work instructions</option>
           </select>
-
           <input
             type="text"
             placeholder="Search..."
             className="border w-full md:w-2/3 px-3 py-2 rounded-md"
+            value={searchVal}
+            onChange={(e) => handleChange(e)}
           />
         </div>
 

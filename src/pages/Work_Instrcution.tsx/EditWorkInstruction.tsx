@@ -244,13 +244,15 @@ import { FormikProvider, useFormik, Field, FieldArray, Form } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
 import {
+  deleteWorkInstructionImage,
   editWorkInstruction,
   selectProcessApi,
   selectProductApi,
   selectProductRelatedPartsApi,
   workInstructionDetail,
 } from "./https/workInstructionApi";
-
+import { MdCancel } from "react-icons/md";
+import ReactPlayer from "react-player";
 interface Step {
   title: string;
   part: string;
@@ -1218,16 +1220,447 @@ interface FormValues {
 
 // export default EditWorkInstruction;
 
+// const EditWorkInstruction = () => {
+//   const [productData, setProductData] = useState<any[]>([]);
+//   const [processData, setProcessData] = useState<any[]>([]);
+//   const [partData, setPartData] = useState<any[]>([]);
+//   const [initialValues, setInitialValues] = useState<any>(null);
+//   useEffect(() => {
+//     fetchProcess();
+//     selectProduct();
+//     fetchWorkInstructionDetail();
+//   }, []);
+
+//   const fetchProcess = async () => {
+//     try {
+//       const response = await selectProcessApi();
+//       setProcessData(response || []);
+//     } catch (error) {
+//       console.error("Failed to fetch process:", error);
+//     }
+//   };
+
+//   const selectProduct = async () => {
+//     try {
+//       const response = await selectProductApi();
+//       setProductData(response.data || []);
+//     } catch (error) {
+//       console.error("Failed to fetch product:", error);
+//     }
+//   };
+
+//   const validationSchema = Yup.object().shape({
+//     processId: Yup.string().required("Process is required"),
+//     productId: Yup.string().required("Product is required"),
+//     steps: Yup.array().of(
+//       Yup.object().shape({
+//         title: Yup.string().required("Title is required"),
+//         stepNumber: Yup.string().required("Step Number is required"),
+//         workInstruction: Yup.string().required("Instruction is required"),
+//       })
+//     ),
+//   });
+//   const [type, setType] = useState("");
+//   const fetchWorkInstructionDetail = async () => {
+//     try {
+//       const response = await workInstructionDetail(id);
+//       console.log("responseresponse", response);
+//       setType(response.type);
+
+//       const formattedSteps = response.steps.map((step) => ({
+//         part_id: step.part_id || "",
+//         title: step.title || "",
+//         stepNumber: step.stepNumber?.toString() || "",
+//         workInstruction: step.instruction || "",
+//         workInstructionImg: step.workInstructionImg.map((img) => ({
+//           name: img,
+//           type: "image",
+//           preview: `http://82.25.110.131:8080/uploads/partImages/${img}`,
+//         })),
+//         workInstructionVideo: step.workInstructionVideo.length
+//           ? {
+//               name: step.workInstructionVideo[0],
+//               preview: `http://82.25.110.131:8080/uploads/partVideos/${step.workInstructionVideo[0]}`,
+//               type: "video",
+//             }
+//           : null,
+//       }));
+//       setInitialValues({
+//         processId: response.processId,
+//         productId: response.productId,
+//         instructionTitle: response.instructionTitle,
+//         steps: formattedSteps,
+//       });
+//     } catch (error) {
+//       console.error("Failed to fetch instruction:", error);
+//     }
+//   };
+
+//   const { id } = useParams();
+//   const navigate = useNavigate();
+//   const formik = useFormik<FormValues>({
+//     enableReinitialize: true,
+//     initialValues: initialValues || {
+//       processId: "",
+//       productId: "",
+//       instructionTitle: "",
+//       steps: [
+//         {
+//           title: "",
+//           stepNumber: "",
+//           workInstruction: "",
+//           workInstructionImg: [],
+//           workInstructionVideo: null,
+//         },
+//       ],
+//     },
+//     validationSchema,
+//     onSubmit: async (values) => {
+//       console.log("valuesvaluesvalues", values);
+//       const formData = new FormData();
+//       formData.append("processId", values.processId);
+//       formData.append("productId", values.productId);
+//       formData.append("instructionTitle", values.instructionTitle);
+//       formData.append("workInstructionId", id);
+//       formData.append("type", type);
+
+//       const instructionSteps = values.steps.map((step) => ({
+//         stepNumber: step.stepNumber,
+//         title: step.title,
+//         workInstruction: step.workInstruction,
+//       }));
+
+//       formData.append("instructionSteps", JSON.stringify(instructionSteps));
+
+//       values.steps.forEach((step, i) => {
+//         step.workInstructionImg.forEach((img) => {
+//           if (img instanceof File) {
+//             formData.append(`instructionSteps[${i}][workInstructionImgs]`, img);
+//           }
+//         });
+
+//         if (
+//           step.workInstructionVideo &&
+//           step.workInstructionVideo instanceof File
+//         ) {
+//           formData.append(
+//             `instructionSteps[${i}][workInstructionVideo]`,
+//             step.workInstructionVideo
+//           );
+//         }
+//       });
+
+//       const response = await editWorkInstruction(formData);
+//       if (response.status === 200) {
+//         navigate("/work-instructions-list");
+//       }
+//       console.log("✅ Final Payload:", formData);
+//     },
+//   });
+
+//   const { values, setFieldValue, errors, touched } = formik;
+
+//   const handleMultipleImageChange = (
+//     e: React.ChangeEvent<HTMLInputElement>,
+//     index: number
+//   ) => {
+//     const files = Array.from(e.target.files || []);
+
+//     const existingImgs = values.steps[index].workInstructionImg.filter(
+//       (img) => !(img instanceof File)
+//     );
+
+//     const newImgs = files.map((file) => file);
+
+//     setFieldValue(`steps.${index}.workInstructionImg`, [
+//       ...existingImgs,
+//       ...newImgs,
+//     ]);
+//   };
+//   const handleDeleteImg = async (id: string) => {
+//     try {
+//       console.log("9890898", id);
+//       await deleteWorkInstructionImage(id);
+//     } catch (error) {
+//       throw error;
+//     }
+//   };
+
+//   return (
+//     <div className="p-4 sm:p-6">
+//       <h1 className="font-bold text-xl sm:text-2xl text-black mb-4">
+//         Add Work Instruction
+//       </h1>
+
+//       <FormikProvider value={formik}>
+//         <Form onSubmit={formik.handleSubmit}>
+//           <div className="flex flex-col sm:flex-row gap-4 mb-6">
+//             <div className="w-full sm:w-1/2">
+//               <label className="font-semibold">Work Instruction Title</label>
+//               <Field
+//                 name={`instructionTitle`}
+//                 className="border p-3 w-full rounded-md mt-1"
+//                 placeholder="Enter instructionTitle"
+//               />
+//               {touched.instructionTitle && errors.instructionTitle && (
+//                 <div className="text-red-500 text-sm mt-1">
+//                   {errors.instructionTitle}
+//                 </div>
+//               )}
+//             </div>
+
+//             <div className="w-full sm:w-1/2">
+//               <label className="font-semibold">Select Process</label>
+//               <Select
+//                 options={processData.map((item) => ({
+//                   value: item.id,
+//                   label: item.name,
+//                 }))}
+//                 name="processId"
+//                 onChange={(selectedOption) =>
+//                   setFieldValue("processId", selectedOption?.value || "")
+//                 }
+//                 value={
+//                   processData
+//                     .map((item) => ({
+//                       value: item.id,
+//                       label: item.name,
+//                     }))
+//                     .find((opt) => opt.value === values.processId) || null
+//                 }
+//                 isClearable
+//               />
+//               {touched.processId && errors.processId && (
+//                 <div className="text-red-500 text-sm mt-1">
+//                   {errors.processId}
+//                 </div>
+//               )}
+//             </div>
+
+//             <div className="w-full sm:w-1/2">
+//               <label className="font-semibold">Select Product</label>
+//               <Select
+//                 options={productData.map((item) => ({
+//                   value: item.id,
+//                   label: item.partNumber,
+//                 }))}
+//                 name="productId"
+//                 onChange={(selectedOption) =>
+//                   setFieldValue("productId", selectedOption?.value || "")
+//                 }
+//                 value={
+//                   productData
+//                     .map((item) => ({
+//                       value: item?.id,
+//                       label: item?.partNumber,
+//                     }))
+//                     .find((opt) => opt.value === values.productId) || null
+//                 }
+//                 isClearable
+//               />
+//               {touched.productId && errors.productId && (
+//                 <div className="text-red-500 text-sm mt-1">
+//                   {errors.productId}
+//                 </div>
+//               )}
+//             </div>
+//           </div>
+
+//           <FieldArray
+//             name="steps"
+//             render={(arrayHelpers) => (
+//               <>
+//                 {values.steps.map((step, index) => (
+//                   <div key={index} className="bg-white p-6 mb-6 rounded-xl">
+//                     <h2 className="font-bold text-lg mb-4 text-black">
+//                       Work Instruction {index + 1}
+//                     </h2>
+//                     <div className="flex flex-col md:flex-row gap-4 mb-6">
+//                       <div className="w-full sm:w-1/2">
+//                         <label className="font-semibold">Title</label>
+//                         <Field
+//                           name={`steps.${index}.title`}
+//                           className="border p-3 w-full rounded-md mt-1"
+//                           placeholder="Enter title"
+//                         />
+//                         {touched.steps?.[index]?.title &&
+//                           errors.steps?.[index]?.title && (
+//                             <div className="text-red-500 text-sm mt-1">
+//                               {errors.steps[index].title}
+//                             </div>
+//                           )}
+//                       </div>
+//                       <div className="w-full sm:w-1/2">
+//                         <label className="font-semibold">Step Number</label>
+//                         <Field
+//                           name={`steps.${index}.stepNumber`}
+//                           type="number"
+//                           className="border p-3 w-full rounded-md mt-1"
+//                           placeholder="Enter step number"
+//                         />
+//                         {touched.steps?.[index]?.stepNumber &&
+//                           errors.steps?.[index]?.stepNumber && (
+//                             <div className="text-red-500 text-sm mt-1">
+//                               {errors.steps[index].stepNumber}
+//                             </div>
+//                           )}
+//                       </div>
+//                     </div>
+//                     <div className="mb-4">
+//                       <label className="font-semibold">Work Instruction</label>
+//                       <Field
+//                         as="textarea"
+//                         name={`steps.${index}.workInstruction`}
+//                         className="border p-3 w-full rounded-md mt-1"
+//                         placeholder="Write instruction"
+//                         rows={4}
+//                       />
+//                       {touched.steps?.[index]?.workInstruction &&
+//                         errors.steps?.[index]?.workInstruction && (
+//                           <div className="text-red-500 text-sm mt-1">
+//                             {errors.steps[index].workInstruction}
+//                           </div>
+//                         )}
+//                     </div>
+//                     <div className="flex flex-col md:flex-row gap-4 mb-6">
+//                       <div className="w-full sm:w-1/2">
+//                         <label className="font-semibold">Upload Images</label>
+
+//                         <label
+//                           htmlFor={`images-${index}`}
+//                           className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm bg-[#919EAB33]"
+//                         >
+//                           Click to select images
+//                         </label>
+
+//                         <input
+//                           id={`images-${index}`}
+//                           type="file"
+//                           multiple
+//                           accept="image/*"
+//                           className="hidden"
+//                           onChange={(e) => handleMultipleImageChange(e, index)}
+//                         />
+
+//                         <div className="flex gap-2 mt-2 flex-wrap">
+//                           {step.workInstructionImg?.map((img, idx) => {
+//                             const src =
+//                               img instanceof File
+//                                 ? URL.createObjectURL(img)
+//                                 : img.preview ||
+//                                   `http://82.25.110.131:8080/uploads/partImages/${img.name.name}`;
+
+//                             return (
+//                               <div className="relative">
+//                                 <img
+//                                   key={idx}
+//                                   src={src}
+//                                   alt={`step-img-${idx}`}
+//                                   className="w-20 h-20 object-cover rounded-md border"
+//                                 />
+//                                 <MdCancel
+//                                   className="absolute top-0 right-0"
+//                                   onClick={() => handleDeleteImg(img.name.id)}
+//                                 />
+//                               </div>
+//                             );
+//                           })}
+//                         </div>
+//                       </div>
+
+//                       <div className="w-full sm:w-1/2">
+//                         <label className="font-semibold block mb-2">
+//                           Upload Video
+//                         </label>
+
+//                         <label
+//                           htmlFor={`video-${index}`}
+//                           className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm bg-white hover:bg-gray-50"
+//                         >
+//                           {step.workInstructionVideo?.name || "Upload Video"}
+//                         </label>
+
+//                         <input
+//                           id={`video-${index}`}
+//                           type="file"
+//                           accept="video/*"
+//                           className="hidden"
+//                           onChange={(e) =>
+//                             setFieldValue(
+//                               `steps.${index}.workInstructionVideo`,
+//                               e.target.files?.[0] || null
+//                             )
+//                           }
+//                         />
+//                       </div>
+//                     </div>
+//                   </div>
+//                 ))}
+
+//                 <div className="flex justify-end gap-4">
+//                   <button
+//                     type="button"
+//                     onClick={() =>
+//                       arrayHelpers.push({
+//                         part_id: "",
+//                         title: "",
+//                         stepNumber: "",
+//                         workInstruction: "",
+//                         workInstructionImg: [],
+//                         workInstructionVideo: null,
+//                       })
+//                     }
+//                     className="bg-brand text-white px-5 py-3 rounded-lg"
+//                   >
+//                     + Add Step
+//                   </button>
+
+//                   <button
+//                     type="submit"
+//                     className="bg-brand text-white px-5 py-3 rounded-lg"
+//                   >
+//                     Save Instructions
+//                   </button>
+//                 </div>
+//               </>
+//             )}
+//           />
+//         </Form>
+//       </FormikProvider>
+//     </div>
+//   );
+// };
+
+// export default EditWorkInstruction;
+
+interface FormValues {
+  processId: string;
+  productId: string;
+  instructionTitle: string;
+  steps: Array<{
+    title: string;
+    stepNumber: string;
+    workInstruction: string;
+    workInstructionImg: any[];
+    workInstructionVideo: any;
+  }>;
+}
+
 const EditWorkInstruction = () => {
   const [productData, setProductData] = useState<any[]>([]);
   const [processData, setProcessData] = useState<any[]>([]);
-  const [partData, setPartData] = useState<any[]>([]);
   const [initialValues, setInitialValues] = useState<any>(null);
+  const [type, setType] = useState("");
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+
   useEffect(() => {
-    fetchProcess();
-    selectProduct();
-    fetchWorkInstructionDetail();
-  }, []);
+    if (id) {
+      fetchProcess();
+      selectProduct();
+      fetchWorkInstructionDetail();
+    }
+  }, [id]);
 
   const fetchProcess = async () => {
     try {
@@ -1246,52 +1679,27 @@ const EditWorkInstruction = () => {
       console.error("Failed to fetch product:", error);
     }
   };
-  const selectPart = async () => {
-    try {
-      console.log("Fetching parts for product:", formik.values.productId);
-      const response = await selectProductRelatedPartsApi(
-        formik.values.productId
-      );
-      console.log("Parts response:", response.data);
-      setPartData(response.data || []);
-    } catch (error) {
-      console.error("Failed to fetch parts:", error);
-    }
-  };
 
-  const validationSchema = Yup.object().shape({
-    processId: Yup.string().required("Process is required"),
-    productId: Yup.string().required("Product is required"),
-    steps: Yup.array().of(
-      Yup.object().shape({
-        part_id: Yup.string().required("Part is required"),
-        title: Yup.string().required("Title is required"),
-        stepNumber: Yup.string().required("Step Number is required"),
-        workInstruction: Yup.string().required("Instruction is required"),
-      })
-    ),
-  });
-  const [type, setType] = useState("");
   const fetchWorkInstructionDetail = async () => {
     try {
       const response = await workInstructionDetail(id);
-      console.log("responseresponse", response);
       setType(response.type);
 
-      const formattedSteps = response.steps.map((step) => ({
+      const formattedSteps = response.steps.map((step: any) => ({
         part_id: step.part_id || "",
         title: step.title || "",
         stepNumber: step.stepNumber?.toString() || "",
         workInstruction: step.instruction || "",
-        workInstructionImg: step.workInstructionImg.map((img) => ({
-          name: img,
+        workInstructionImg: step.workInstructionImg.map((img: any) => ({
+          name: img.name,
+          id: img.id,
           type: "image",
-          preview: `http://82.25.110.131:8080/uploads/partImages/${img}`,
+          preview: `http://82.25.110.131:8080/uploads/workInstructionImg/${img.name}`,
         })),
         workInstructionVideo: step.workInstructionVideo.length
           ? {
               name: step.workInstructionVideo[0],
-              preview: `http://82.25.110.131:8080/uploads/partVideos/${step.workInstructionVideo[0]}`,
+              preview: `http://82.25.110.131:8080/uploads/workInstructionVideo/${step.workInstructionVideo[0]}`,
               type: "video",
             }
           : null,
@@ -1307,8 +1715,18 @@ const EditWorkInstruction = () => {
     }
   };
 
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const validationSchema = Yup.object().shape({
+    processId: Yup.string().required("Process is required"),
+    productId: Yup.string().required("Product is required"),
+    steps: Yup.array().of(
+      Yup.object().shape({
+        title: Yup.string().required("Title is required"),
+        stepNumber: Yup.string().required("Step Number is required"),
+        workInstruction: Yup.string().required("Instruction is required"),
+      })
+    ),
+  });
+
   const formik = useFormik<FormValues>({
     enableReinitialize: true,
     initialValues: initialValues || {
@@ -1317,7 +1735,6 @@ const EditWorkInstruction = () => {
       instructionTitle: "",
       steps: [
         {
-          part_id: "",
           title: "",
           stepNumber: "",
           workInstruction: "",
@@ -1332,13 +1749,12 @@ const EditWorkInstruction = () => {
       formData.append("processId", values.processId);
       formData.append("productId", values.productId);
       formData.append("instructionTitle", values.instructionTitle);
-      formData.append("workInstructionId", id);
+      formData.append("workInstructionId", id!);
       formData.append("type", type);
 
       const instructionSteps = values.steps.map((step) => ({
         stepNumber: step.stepNumber,
         title: step.title,
-        partId: step.part_id,
         workInstruction: step.workInstruction,
       }));
 
@@ -1372,44 +1788,48 @@ const EditWorkInstruction = () => {
 
   const { values, setFieldValue, errors, touched } = formik;
 
-  useEffect(() => {
-    if (values.productId) {
-      selectPart();
-    }
-  }, [values.productId]);
-
-  // 🧠 Image src helper
-  const getImagePreviewSrc = (img: File | string) => {
-    return typeof img === "string"
-      ? `http://82.25.110.131:8080/uploads/partImages/${img}`
-      : URL.createObjectURL(img);
-  };
   const handleMultipleImageChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
     const files = Array.from(e.target.files || []);
-
     const existingImgs = values.steps[index].workInstructionImg.filter(
-      (img) => !(img instanceof File) // Keep only previously fetched images
+      (img) => !(img instanceof File)
     );
-
-    const newImgs = files.map((file) => file); // Just store File directly
-
+    const newImgs = files.map((file) => file);
     setFieldValue(`steps.${index}.workInstructionImg`, [
       ...existingImgs,
       ...newImgs,
     ]);
   };
 
+  const handleDeleteImg = async (imageId: string, stepIndex: number) => {
+    try {
+      // You might need an API call here to delete from the server
+      await deleteWorkInstructionImage(imageId);
+      // Then remove from local state
+      const updatedImgs = values.steps[stepIndex].workInstructionImg.filter(
+        (img) => img.id !== imageId
+      );
+      setFieldValue(`steps.${stepIndex}.workInstructionImg`, updatedImgs);
+    } catch (error) {
+      console.error("Failed to delete image:", error);
+    }
+  };
+
+  if (!initialValues) {
+    return <div>Loading...</div>; // Show a loader while fetching initial data
+  }
+
   return (
     <div className="p-4 sm:p-6">
       <h1 className="font-bold text-xl sm:text-2xl text-black mb-4">
-        Add Work Instruction
+        Edit Work Instruction
       </h1>
 
       <FormikProvider value={formik}>
         <Form onSubmit={formik.handleSubmit}>
+          {/* ... Top form fields for Title, Process, Product ... */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="w-full sm:w-1/2">
               <label className="font-semibold">Work Instruction Title</label>
@@ -1420,13 +1840,11 @@ const EditWorkInstruction = () => {
               />
               {touched.instructionTitle && errors.instructionTitle && (
                 <div className="text-red-500 text-sm mt-1">
-                  {errors.instructionTitle}
+                  {" "}
+                  {errors.instructionTitle}{" "}
                 </div>
               )}
             </div>
-
-            {/* Select Process */}
-
             <div className="w-full sm:w-1/2">
               <label className="font-semibold">Select Process</label>
               <Select
@@ -1440,22 +1858,18 @@ const EditWorkInstruction = () => {
                 }
                 value={
                   processData
-                    .map((item) => ({
-                      value: item.id,
-                      label: item.name,
-                    }))
+                    .map((item) => ({ value: item.id, label: item.name }))
                     .find((opt) => opt.value === values.processId) || null
                 }
                 isClearable
               />
               {touched.processId && errors.processId && (
                 <div className="text-red-500 text-sm mt-1">
-                  {errors.processId}
+                  {" "}
+                  {errors.processId}{" "}
                 </div>
               )}
             </div>
-
-            {/* Select Product */}
             <div className="w-full sm:w-1/2">
               <label className="font-semibold">Select Product</label>
               <Select
@@ -1479,7 +1893,8 @@ const EditWorkInstruction = () => {
               />
               {touched.productId && errors.productId && (
                 <div className="text-red-500 text-sm mt-1">
-                  {errors.productId}
+                  {" "}
+                  {errors.productId}{" "}
                 </div>
               )}
             </div>
@@ -1489,170 +1904,170 @@ const EditWorkInstruction = () => {
             name="steps"
             render={(arrayHelpers) => (
               <>
-                {values.steps.map((step, index) => (
-                  <div key={index} className="bg-white p-6 mb-6 rounded-xl">
-                    <h2 className="font-bold text-lg mb-4 text-black">
-                      Work Instruction {index + 1}
-                    </h2>
-                    <div className="flex flex-col md:flex-row gap-4 mb-6">
-                      {/* Part Select */}
-                      <div className="w-full sm:w-1/2">
-                        <label className="font-semibold">Select Part</label>
-                        <Select
-                          options={partData.map((item) => ({
-                            value: item.part?.part_id,
-                            label: item.part?.partNumber,
-                          }))}
-                          name={`steps.${index}.part_id`}
-                          className="mt-2"
-                          onChange={(selectedOption) =>
-                            setFieldValue(
-                              `steps.${index}.part_id`,
-                              selectedOption?.value || ""
-                            )
-                          }
-                          value={
-                            partData
-                              .map((item) => ({
-                                value: item.part?.part_id,
-                                label: item.part?.partNumber,
-                              }))
-                              .find(
-                                (opt) =>
-                                  opt.value === values.steps[index].part_id
-                              ) || null
-                          }
-                          isClearable
-                        />
+                {values.steps.map((step, index) => {
+                  // <-- 2. ADD LOGIC TO DETERMINE VIDEO SOURCE
+                  let videoSrc = null;
+                  if (step.workInstructionVideo) {
+                    if (step.workInstructionVideo instanceof File) {
+                      // If it's a new file, create a temporary URL
+                      videoSrc = URL.createObjectURL(step.workInstructionVideo);
+                    } else if (step.workInstructionVideo.preview) {
+                      // If it's from the API, use the preview URL
+                      videoSrc = step.workInstructionVideo.preview;
+                    }
+                  }
 
-                        {touched.steps?.[index]?.part_id &&
-                          errors.steps?.[index]?.part_id && (
-                            <div className="text-red-500 text-sm mt-1">
-                              {errors.steps[index].part_id}
-                            </div>
-                          )}
-                      </div>
-
-                      {/* Title */}
-                      <div className="w-full sm:w-1/2">
-                        <label className="font-semibold">Title</label>
-                        <Field
-                          name={`steps.${index}.title`}
-                          className="border p-3 w-full rounded-md mt-1"
-                          placeholder="Enter title"
-                        />
-                        {touched.steps?.[index]?.title &&
-                          errors.steps?.[index]?.title && (
-                            <div className="text-red-500 text-sm mt-1">
-                              {errors.steps[index].title}
-                            </div>
-                          )}
-                      </div>
-
-                      {/* Step Number */}
-                      <div className="w-full sm:w-1/2">
-                        <label className="font-semibold">Step Number</label>
-                        <Field
-                          name={`steps.${index}.stepNumber`}
-                          type="number"
-                          className="border p-3 w-full rounded-md mt-1"
-                          placeholder="Enter step number"
-                        />
-                        {touched.steps?.[index]?.stepNumber &&
-                          errors.steps?.[index]?.stepNumber && (
-                            <div className="text-red-500 text-sm mt-1">
-                              {errors.steps[index].stepNumber}
-                            </div>
-                          )}
-                      </div>
-                    </div>
-                    {/* Instruction */}
-                    <div className="mb-4">
-                      <label className="font-semibold">Work Instruction</label>
-                      <Field
-                        as="textarea"
-                        name={`steps.${index}.workInstruction`}
-                        className="border p-3 w-full rounded-md mt-1"
-                        placeholder="Write instruction"
-                        rows={4}
-                      />
-                      {touched.steps?.[index]?.workInstruction &&
-                        errors.steps?.[index]?.workInstruction && (
-                          <div className="text-red-500 text-sm mt-1">
-                            {errors.steps[index].workInstruction}
-                          </div>
-                        )}
-                    </div>
-                    <div className="flex flex-col md:flex-row gap-4 mb-6">
-                      {/* Upload Images */}
-                      <div className="w-full sm:w-1/2">
-                        <label className="font-semibold">Upload Images</label>
-
-                        <label
-                          htmlFor={`images-${index}`}
-                          className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm bg-[#919EAB33]"
-                        >
-                          Click to select images
-                        </label>
-
-                        <input
-                          id={`images-${index}`}
-                          type="file"
-                          multiple
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => handleMultipleImageChange(e, index)}
-                        />
-
-                        <div className="flex gap-2 mt-2 flex-wrap">
-                          {step.workInstructionImg?.map((img, idx) => {
-                            const src =
-                              img instanceof File
-                                ? URL.createObjectURL(img)
-                                : img.preview ||
-                                  `http://82.25.110.131:8080/uploads/partImages/${img.name}`;
-
-                            return (
-                              <img
-                                key={idx}
-                                src={src}
-                                alt={`step-img-${idx}`}
-                                className="w-20 h-20 object-cover rounded-md border"
-                              />
-                            );
-                          })}
+                  return (
+                    <div key={index} className="bg-white p-6 mb-6 rounded-xl">
+                      {/* ... other step fields ... */}
+                      <h2 className="font-bold text-lg mb-4 text-black">
+                        {" "}
+                        Work Instruction {index + 1}{" "}
+                      </h2>
+                      <div className="flex flex-col md:flex-row gap-4 mb-6">
+                        <div className="w-full sm:w-1/2">
+                          <label className="font-semibold">Title</label>
+                          <Field
+                            name={`steps.${index}.title`}
+                            className="border p-3 w-full rounded-md mt-1"
+                            placeholder="Enter title"
+                          />
+                          {touched.steps?.[index]?.title &&
+                            errors.steps?.[index]?.title && (
+                              <div className="text-red-500 text-sm mt-1">
+                                {" "}
+                                {errors.steps[index].title as string}{" "}
+                              </div>
+                            )}
+                        </div>
+                        <div className="w-full sm:w-1/2">
+                          <label className="font-semibold">Step Number</label>
+                          <Field
+                            name={`steps.${index}.stepNumber`}
+                            type="number"
+                            className="border p-3 w-full rounded-md mt-1"
+                            placeholder="Enter step number"
+                          />
+                          {touched.steps?.[index]?.stepNumber &&
+                            errors.steps?.[index]?.stepNumber && (
+                              <div className="text-red-500 text-sm mt-1">
+                                {" "}
+                                {errors.steps[index].stepNumber as string}{" "}
+                              </div>
+                            )}
                         </div>
                       </div>
-
-                      {/* Upload Video */}
-                      <div className="w-full sm:w-1/2">
-                        <label className="font-semibold block mb-2">
-                          Upload Video
+                      <div className="mb-4">
+                        <label className="font-semibold">
+                          Work Instruction
                         </label>
-
-                        <label
-                          htmlFor={`video-${index}`}
-                          className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm bg-white hover:bg-gray-50"
-                        >
-                          {step.workInstructionVideo?.name || "Upload Video"}
-                        </label>
-
-                        <input
-                          id={`video-${index}`}
-                          type="file"
-                          accept="video/*"
-                          className="hidden"
-                          onChange={(e) =>
-                            setFieldValue(
-                              `steps.${index}.workInstructionVideo`,
-                              e.target.files?.[0] || null
-                            )
-                          }
+                        <Field
+                          as="textarea"
+                          name={`steps.${index}.workInstruction`}
+                          className="border p-3 w-full rounded-md mt-1"
+                          placeholder="Write instruction"
+                          rows={4}
                         />
+                        {touched.steps?.[index]?.workInstruction &&
+                          errors.steps?.[index]?.workInstruction && (
+                            <div className="text-red-500 text-sm mt-1">
+                              {" "}
+                              {
+                                errors.steps[index].workInstruction as string
+                              }{" "}
+                            </div>
+                          )}
+                      </div>
+
+                      <div className="flex flex-col md:flex-row gap-4 mb-6">
+                        <div className="w-full sm:w-1/2">
+                          <label className="font-semibold">Upload Images</label>
+                          <label
+                            htmlFor={`images-${index}`}
+                            className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm bg-[#919EAB33]"
+                          >
+                            {" "}
+                            Click to select images{" "}
+                          </label>
+                          <input
+                            id={`images-${index}`}
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) =>
+                              handleMultipleImageChange(e, index)
+                            }
+                          />
+                          <div className="flex gap-2 mt-2 flex-wrap">
+                            {step.workInstructionImg?.map((img, idx) => {
+                              const src =
+                                img instanceof File
+                                  ? URL.createObjectURL(img)
+                                  : img.preview;
+                              return (
+                                <div key={img.id || idx} className="relative">
+                                  <img
+                                    src={src}
+                                    alt={`step-img-${idx}`}
+                                    className="w-20 h-20 object-cover rounded-md border"
+                                  />
+                                  {!(img instanceof File) && (
+                                    <MdCancel
+                                      className="absolute -top-2 -right-2 cursor-pointer text-red-600 bg-white rounded-full"
+                                      size={20}
+                                      onClick={() =>
+                                        handleDeleteImg(img.id, index)
+                                      }
+                                    />
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        <div className="w-full sm:w-1/2">
+                          <label className="font-semibold block mb-2">
+                            {" "}
+                            Upload Video{" "}
+                          </label>
+
+                          <label
+                            htmlFor={`video-${index}`}
+                            className="block w-full cursor-pointer border rounded-md p-3 text-center text-sm bg-white hover:bg-gray-50"
+                          >
+                            {step.workInstructionVideo?.name ||
+                              "Upload or Replace Video"}
+                          </label>
+                          <input
+                            id={`video-${index}`}
+                            type="file"
+                            accept="video/*"
+                            className="hidden"
+                            onChange={(e) =>
+                              setFieldValue(
+                                `steps.${index}.workInstructionVideo`,
+                                e.target.files?.[0] || null
+                              )
+                            }
+                          />
+                          {videoSrc && (
+                            <div className="player-wrapper mb-4">
+                              <ReactPlayer
+                                className="react-player"
+                                url={videoSrc}
+                                width="100%"
+                                height="100%"
+                                controls={true}
+                              />
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
 
                 <div className="flex justify-end gap-4">
                   <button
@@ -1671,7 +2086,6 @@ const EditWorkInstruction = () => {
                   >
                     + Add Step
                   </button>
-
                   <button
                     type="submit"
                     className="bg-brand text-white px-5 py-3 rounded-lg"
