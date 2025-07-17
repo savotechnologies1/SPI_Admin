@@ -96,12 +96,15 @@ const EditPartForm = () => {
 
     if (data.image?.length) {
       for (let file of data.image) {
-        formData.append("partImages", file); // name must match multer field
+        formData.append("partImages", file);
       }
     }
 
     try {
       const response = await updatePartNumber(id, formData);
+      if (response.status === 200) {
+        navigate("/part-table");
+      }
     } catch (err) {
       console.error("Error updating part", err);
     }

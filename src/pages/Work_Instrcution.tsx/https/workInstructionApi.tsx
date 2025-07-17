@@ -100,6 +100,19 @@ export const deleteWorkInstruction = async (id: string, type: string) => {
   }
 };
 
+export const deleteWorkInstructionSteps = async (id: string) => {
+  try {
+    const response = await axiosInstance.put(
+      `/delete-work-instruction-step/${id}`
+    );
+    if (response.status === 200) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error: any) {
+    toast.error(error.response.data.message);
+  }
+};
 export const deleteWorkInstructionImage = async (id: string) => {
   try {
     const response = await axiosInstance.delete(

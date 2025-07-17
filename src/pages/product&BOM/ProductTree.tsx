@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { PartContext } from "../../components/Context/PartContext";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaCircle } from "react-icons/fa";
+import { FaCircle, FaTrash } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import add from "../../assets/add.png";
-import { productTree } from "./https/partProductApis";
+import { deleteProductNumber, productTree } from "./https/partProductApis";
 
 export default function ProductTree() {
   const partContext = useContext(PartContext);
@@ -25,7 +25,14 @@ export default function ProductTree() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
   const rowsPerPage = 15;
-
+  const [showConfirm, setShowConfirm] = useState(false);
+  const handleChange = (e) => {
+    try {
+      setSearchVal(e.target.value);
+    } catch (error) {
+      throw error;
+    }
+  };
   const fetchCustomerList = async (page = 1) => {
     // eslint-disable-next-line no-useless-catch
     try {
@@ -40,7 +47,15 @@ export default function ProductTree() {
   };
 
   console.log("customerDatacustomerData", customerData);
-
+  const handleDelete = async (id: string) => {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      deleteProductNumber(id).then();
+      await fetchCustomerList(currentPage);
+    } catch (error: unknown) {
+      throw error;
+    }
+  };
   useEffect(() => {
     fetchCustomerList(currentPage);
   }, [currentPage, searchVal]);
@@ -88,6 +103,15 @@ export default function ProductTree() {
           </span>
         </div>
       </div>
+      <div className="flex justify-end">
+        <input
+          type="text"
+          placeholder="Search by product number..."
+          className="border w-full md:w-1/3 px-3 py-2 rounded-md flex justify-end"
+          value={searchVal}
+          onChange={(e) => handleChange(e)}
+        />
+      </div>
       <div className=" mx-auto p-6 bg-white shadow-lg rounded-lg mt-4">
         <div className="flex justify-between gap-4 items-center mb-6">
           {/* <div className="w-full">
@@ -111,9 +135,7 @@ export default function ProductTree() {
                 <th className="border p-2 font-semibold text-gray-600">
                   Product Number
                 </th>
-                <th className="border p-2 font-semibold text-gray-600">
-                  Product Number
-                </th>
+
                 <th className="border p-2 font-semibold text-gray-600">
                   Description
                 </th>
@@ -147,9 +169,7 @@ export default function ProductTree() {
                   <td className="border-b border-dashed p-2">
                     {product.partNumber}
                   </td>
-                  <td className="border-b border-dashed p-2">
-                    {product.partDescription}
-                  </td>
+
                   <td className="border-b border-dashed p-2">
                     {product.partDescription || "Not Available"}
                   </td>
@@ -172,22 +192,51 @@ export default function ProductTree() {
                       ? `${product?.availStock} `
                       : "Not Available"}
                   </td>
-                  {/* <td className="border-b border-dashed p-2">
-                      {product.availStock || "Not Available"}
-                    </td>
-                    <td className="border-b border-dashed p-2">
-                      {product.supplierOrderQty || "Not Available"}
-                    </td> */}
+
                   <td className="flex items-center gap-4 border-b border-dashed p-2">
                     <FiEdit2
                       className="text-black cursor-pointer text-lg"
                       title="Quick Edit"
                       onClick={() => handleClick(product.part_id)}
                     />
-                    {/* <BsThreeDotsVertical
-                        className="text-black hover:text-black cursor-pointer text-lg"
-                        title="More Options"
-                      /> */}
+                    <button className="text-brand hover:underline">
+                      <FaTrash
+                        className="text-red-500 cursor-pointer"
+                        onClick={() => setShowConfirm(true)}
+                      />
+                      {showConfirm && (
+                        <div
+                          className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
+                                                flex items-center justify-center z-50"
+                        >
+                          <div className="bg-white p-6 rounded-xl shadow-lg">
+                            <h2 className="text-lg font-semibold mb-4">
+                              Are you sure?
+                            </h2>
+                            <p className="mb-4">
+                              Do you really want to delete this part ?
+                            </p>
+                            <div className="flex justify-end space-x-3">
+                              <button
+                                className="px-4 py-2 bg-gray-300 rounded"
+                                onClick={() => setShowConfirm(false)}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                className="px-4 py-2 bg-red-500 text-white rounded"
+                                onClick={() => {
+                                  handleDelete(product.part_id);
+                                  setShowConfirm(false);
+                                }}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </button>
                   </td>
                 </tr>
               ))}

@@ -14,7 +14,12 @@ const EditProcess = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<ProcessFormData>();
+  } = useForm<ProcessFormData>({
+    defaultValues: {
+      orderNeeded: "false", // 👈 fallback string
+    },
+  });
+
   const navigate = useNavigate();
 
   const { id } = useParams<{ id: string }>();
@@ -36,11 +41,8 @@ const EditProcess = () => {
       const data = response.data;
       setProcessData(data);
       reset({
-        processName: data.processName,
-        machineName: data.machineName,
-        cycleTime: data.cycleTime,
-        ratePerHour: data.ratePerHour,
-        orderNeeded: data.orderNeeded,
+        ...data,
+        orderNeeded: data.orderNeeded === true ? "true" : "false",
       });
     } catch (error) {
       throw error;
@@ -59,6 +61,12 @@ const EditProcess = () => {
       throw error;
     }
   };
+
+  const orderNeededRegister = register("orderNeeded", {
+    required: true,
+    setValueAs: (v) => v === "true",
+  });
+
   return (
     <div className="p-7">
       <div>
@@ -90,6 +98,18 @@ const EditProcess = () => {
               <label className="font-semibold">Process Name</label>
               <input
                 {...register("processName")}
+                type="text"
+                placeholder="Enter your process name"
+                className="border py-4 px-4 rounded-md w-full"
+              />
+              {errors.processName && (
+                <p className="text-red-500 text-sm">This field is required</p>
+              )}
+            </div>
+            <div className="sm:w-1/2">
+              <label className="font-semibold">Part Family</label>
+              <input
+                {...register("partFamily")}
                 type="text"
                 placeholder="Enter your process name"
                 className="border py-4 px-4 rounded-md w-full"
@@ -149,11 +169,10 @@ const EditProcess = () => {
           <div className="mt-2 mb-6 flex gap-6">
             <div className="flex items-center">
               <input
-                {...register("orderNeeded", { required: true })}
                 type="radio"
+                value="true"
+                {...orderNeededRegister}
                 id="yes"
-                value="yes"
-                className="border py-4 px-4 rounded-md"
               />
               <label htmlFor="yes" className="ml-2">
                 Yes
@@ -162,22 +181,22 @@ const EditProcess = () => {
 
             <div className="flex items-center">
               <input
-                {...register("orderNeeded", { required: true })}
                 type="radio"
+                value="false"
+                {...orderNeededRegister}
                 id="no"
-                value="no"
-                className="border py-4 px-4 rounded-md"
               />
               <label htmlFor="no" className="ml-2">
                 No
               </label>
             </div>
           </div>
+
           {errors.orderNeeded && (
             <p className="text-red-500 text-sm">Please select an option</p>
           )}
 
-          <div className="flex justify-between items-end">
+          <div className="flex justify-end items-end">
             <div className="mt-6">
               <button
                 type="submit"
@@ -185,15 +204,6 @@ const EditProcess = () => {
               >
                 Save
               </button>
-            </div>
-
-            <div className="bg-[#FF5630] rounded-full p-2 cursor-pointer">
-              <img
-                className="w-[20px]"
-                src={delete_img}
-                alt="delete"
-                onClick={handleDelete}
-              />
             </div>
           </div>
         </div>

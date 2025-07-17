@@ -122,11 +122,16 @@ export const getPartDetail = async (id: string) => {
   } catch (error) {}
 };
 
-export const bomList = async (page = 1, limit = 5, searchVal: string) => {
+export const bomList = async (
+  page = 1,
+  limit = 5,
+  searchVal: string,
+  selectedValue: string
+) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/bom-data-list?page=${page}&limit=${limit}`
+      `/bom-data-list?page=${page}&limit=${limit}&search=${searchVal}&type=${selectedValue}`
     );
     return response.data;
   } catch (error) {
@@ -138,7 +143,7 @@ export const productTree = async (page = 1, limit = 5, searchVal: string) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/get-product-tree?page=${page}&limit=${limit}`
+      `/get-product-tree?page=${page}&limit=${limit}&search=${searchVal}`
     );
     return response.data;
   } catch (error) {
@@ -173,6 +178,14 @@ export const getProcessDetail = async (id: string) => {
 export const deletePartNumber = async (id: string) => {
   try {
     const response = await axiosInstance.patch(`/delete-part-number/${id}`);
+
+    return response.data;
+  } catch (error) {}
+};
+
+export const deleteProductNumber = async (id: string) => {
+  try {
+    const response = await axiosInstance.patch(`/delete-product-number/${id}`);
 
     return response.data;
   } catch (error) {}

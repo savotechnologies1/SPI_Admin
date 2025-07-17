@@ -583,13 +583,12 @@ const EditProductForm = () => {
               </div>
             )}
           </div>
-          {/* Final Submit */}
           <div className="col-span-4 flex justify-end">
             <button
               type="submit"
               className="mt-6 bg-brand text-white py-2 px-6 rounded"
             >
-              Add Product Number
+              Edit Product Number
             </button>
           </div>
         </form>

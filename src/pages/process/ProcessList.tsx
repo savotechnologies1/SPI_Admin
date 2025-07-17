@@ -29,7 +29,15 @@ const ProcessList = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
   const [openOptionsIndex, setOpenOptionsIndex] = useState<number | null>(null);
+  const [searchVal, setSearchVal] = useState("");
 
+  const handleChange = (e) => {
+    try {
+      setSearchVal(e.target.value);
+    } catch (error) {
+      throw error;
+    }
+  };
   const toggleOptions = (index: number) => {
     setOpenOptionsIndex((prevIndex) => (prevIndex === index ? null : index));
   };
@@ -42,7 +50,7 @@ const ProcessList = () => {
   const fetchProcessList = async (page = 1) => {
     // eslint-disable-next-line no-useless-catch
     try {
-      const response = await processList(page, rowsPerPage);
+      const response = await processList(page, rowsPerPage, searchVal);
       setProcessData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
@@ -52,7 +60,7 @@ const ProcessList = () => {
 
   useEffect(() => {
     fetchProcessList(currentPage);
-  }, [currentPage]);
+  }, [currentPage, searchVal]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
@@ -103,7 +111,15 @@ const ProcessList = () => {
             </span>
           </div>
         </div>
-
+        <div className="flex justify-end">
+          <input
+            type="text"
+            placeholder="Search by process name..."
+            className="border w-full md:w-1/3 px-3 py-2 rounded-md flex justify-end"
+            value={searchVal}
+            onChange={(e) => handleChange(e)}
+          />
+        </div>
         <div className="overflow-x-auto mt-6 bg-white rounded">
           <table className="w-full bg-white">
             <thead className="bg-[#F4F6F8]">
@@ -117,7 +133,7 @@ const ProcessList = () => {
                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
                   Part Family
                 </th>
-                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
+                <th className="px-3 py-3 text-left text-gray-400 font-medium">
                   Process Description
                 </th>
                 <th className="px-3 py-3 text-left text-gray-400 font-medium">

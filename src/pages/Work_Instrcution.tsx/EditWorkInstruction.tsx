@@ -245,14 +245,15 @@ import * as Yup from "yup";
 import Select from "react-select";
 import {
   deleteWorkInstructionImage,
+  deleteWorkInstructionSteps,
   editWorkInstruction,
   selectProcessApi,
   selectProductApi,
-  selectProductRelatedPartsApi,
   workInstructionDetail,
 } from "./https/workInstructionApi";
 import { MdCancel } from "react-icons/md";
 import ReactPlayer from "react-player";
+import { FaTrash } from "react-icons/fa";
 interface Step {
   title: string;
   part: string;
@@ -1686,6 +1687,7 @@ const EditWorkInstruction = () => {
       setType(response.type);
 
       const formattedSteps = response.steps.map((step: any) => ({
+        id: step.id || "",
         part_id: step.part_id || "",
         title: step.title || "",
         stepNumber: step.stepNumber?.toString() || "",
@@ -1751,12 +1753,24 @@ const EditWorkInstruction = () => {
       formData.append("instructionTitle", values.instructionTitle);
       formData.append("workInstructionId", id!);
       formData.append("type", type);
+      console.log(
+        " values.steps.map((step) => ({ values.steps.map((step) => ({",
+        values.steps
+      );
 
-      const instructionSteps = values.steps.map((step) => ({
-        stepNumber: step.stepNumber,
-        title: step.title,
-        workInstruction: step.workInstruction,
-      }));
+      const instructionSteps = values.steps.map((step) => {
+        const existingImageIds = step.workInstructionImg
+          .filter((img) => !(img instanceof File))
+          .map((img) => img.id);
+        console.log("existingImageIdsexistingImageIds", existingImageIds);
+
+        return {
+          stepNumber: step.stepNumber,
+          title: step.title,
+          workInstruction: step.workInstruction,
+          existingImageIds,
+        };
+      });
 
       formData.append("instructionSteps", JSON.stringify(instructionSteps));
 
@@ -1816,9 +1830,19 @@ const EditWorkInstruction = () => {
       console.error("Failed to delete image:", error);
     }
   };
+  const handleDeleteStep = async (id: string) => {
+    console.log("0990909", id);
+
+    if (!id) return;
+    try {
+      await deleteWorkInstructionSteps(id);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   if (!initialValues) {
-    return <div>Loading...</div>; // Show a loader while fetching initial data
+    return <div>Loading...</div>;
   }
 
   return (
@@ -1829,7 +1853,6 @@ const EditWorkInstruction = () => {
 
       <FormikProvider value={formik}>
         <Form onSubmit={formik.handleSubmit}>
-          {/* ... Top form fields for Title, Process, Product ... */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="w-full sm:w-1/2">
               <label className="font-semibold">Work Instruction Title</label>
@@ -1840,8 +1863,7 @@ const EditWorkInstruction = () => {
               />
               {touched.instructionTitle && errors.instructionTitle && (
                 <div className="text-red-500 text-sm mt-1">
-                  {" "}
-                  {errors.instructionTitle}{" "}
+                  {errors.instructionTitle}
                 </div>
               )}
             </div>
@@ -1865,8 +1887,7 @@ const EditWorkInstruction = () => {
               />
               {touched.processId && errors.processId && (
                 <div className="text-red-500 text-sm mt-1">
-                  {" "}
-                  {errors.processId}{" "}
+                  {errors.processId}
                 </div>
               )}
             </div>
@@ -1893,8 +1914,7 @@ const EditWorkInstruction = () => {
               />
               {touched.productId && errors.productId && (
                 <div className="text-red-500 text-sm mt-1">
-                  {" "}
-                  {errors.productId}{" "}
+                  {errors.productId}
                 </div>
               )}
             </div>
@@ -1905,21 +1925,21 @@ const EditWorkInstruction = () => {
             render={(arrayHelpers) => (
               <>
                 {values.steps.map((step, index) => {
-                  // <-- 2. ADD LOGIC TO DETERMINE VIDEO SOURCE
                   let videoSrc = null;
+                  let stepId = null;
                   if (step.workInstructionVideo) {
                     if (step.workInstructionVideo instanceof File) {
-                      // If it's a new file, create a temporary URL
                       videoSrc = URL.createObjectURL(step.workInstructionVideo);
                     } else if (step.workInstructionVideo.preview) {
-                      // If it's from the API, use the preview URL
                       videoSrc = step.workInstructionVideo.preview;
                     }
+                  }
+                  console.log("22222", values);
+                  if (step.id) {
                   }
 
                   return (
                     <div key={index} className="bg-white p-6 mb-6 rounded-xl">
-                      {/* ... other step fields ... */}
                       <h2 className="font-bold text-lg mb-4 text-black">
                         {" "}
                         Work Instruction {index + 1}{" "}
@@ -1951,8 +1971,7 @@ const EditWorkInstruction = () => {
                           {touched.steps?.[index]?.stepNumber &&
                             errors.steps?.[index]?.stepNumber && (
                               <div className="text-red-500 text-sm mt-1">
-                                {" "}
-                                {errors.steps[index].stepNumber as string}{" "}
+                                {errors.steps[index].stepNumber as string}
                               </div>
                             )}
                         </div>
@@ -2006,11 +2025,14 @@ const EditWorkInstruction = () => {
                                   ? URL.createObjectURL(img)
                                   : img.preview;
                               return (
-                                <div key={img.id || idx} className="relative">
+                                <div
+                                  key={img.id || idx}
+                                  className="relative w-20 h-20"
+                                >
                                   <img
                                     src={src}
                                     alt={`step-img-${idx}`}
-                                    className="w-20 h-20 object-cover rounded-md border"
+                                    className=" object-cover rounded-md border"
                                   />
                                   {!(img instanceof File) && (
                                     <MdCancel
@@ -2065,6 +2087,11 @@ const EditWorkInstruction = () => {
                           )}
                         </div>
                       </div>
+                      <p>{step.id}</p>
+                      <FaTrash
+                        className="text-red-500 cursor-pointer h-7"
+                        onClick={() => handleDeleteStep(step.id)}
+                      />
                     </div>
                   );
                 })}
@@ -2074,6 +2101,7 @@ const EditWorkInstruction = () => {
                     type="button"
                     onClick={() =>
                       arrayHelpers.push({
+                        id: "",
                         part_id: "",
                         title: "",
                         stepNumber: "",

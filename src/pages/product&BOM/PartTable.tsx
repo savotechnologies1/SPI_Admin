@@ -7,6 +7,7 @@ import add from "../../assets/add.png";
 import { bomList, deletePartNumber } from "./https/partProductApis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+
 export default function PartTable() {
   const partContext = useContext(PartContext);
 
@@ -33,7 +34,16 @@ export default function PartTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
+  const [selectedValue, setSelectedValue] = useState("all");
+  const handleChange = (e) => {
+    try {
+      setSearchVal(e.target.value);
+    } catch (error) {
+      throw error;
+    }
+  };
   const rowsPerPage = 5;
 
   const handleNextPage = () => {
@@ -44,9 +54,13 @@ export default function PartTable() {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
   const fetchCustomerList = async (page = 1) => {
-    // eslint-disable-next-line no-useless-catch
     try {
-      const response = await bomList(page, rowsPerPage, searchVal);
+      const response = await bomList(
+        page,
+        rowsPerPage,
+        searchVal,
+        selectedValue
+      );
       setCustomerData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
@@ -56,15 +70,21 @@ export default function PartTable() {
 
   useEffect(() => {
     fetchCustomerList(currentPage);
-  }, [currentPage, searchVal]);
+  }, [currentPage, searchVal, selectedValue]);
   const handleDelete = async (id: string) => {
-    // eslint-disable-next-line no-useless-catch
     try {
       deletePartNumber(id).then();
       await fetchCustomerList(currentPage);
     } catch (error: unknown) {
       throw error;
     }
+  };
+
+  const handleSelectChange = (event) => {
+    const newValue = event.target.value;
+    setSelectedValue(newValue);
+
+    console.log("A new option was selected:", selectedValue);
   };
   return (
     <div className="p-4">
@@ -102,6 +122,27 @@ export default function PartTable() {
             <FaCircle className="text-[6px] text-gray-500" />
           </span>
           <span className="text-[14px] hover:cursor-pointer"> Browse bom</span>
+        </div>
+      </div>
+      <div className="flex justify-end">
+        <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
+          <select
+            id="work-instruction-filter"
+            className="border w-full md:w-2/3 px-3 py-2 rounded-md"
+            value={selectedValue}
+            onChange={handleSelectChange}
+          >
+            <option value="">All</option>
+            <option value="part">All parts</option>
+            <option value="product">All products</option>
+          </select>
+          <input
+            type="text"
+            placeholder="Search by part number..."
+            className="border w-full md:w-3/3 px-3 py-2 rounded-md"
+            value={searchVal}
+            onChange={(e) => handleChange(e)}
+          />
         </div>
       </div>
       <div className=" mx-auto p-6 bg-white shadow-lg rounded-lg mt-4">
@@ -164,32 +205,29 @@ export default function PartTable() {
                     <button className="text-brand hover:underline">
                       <FaTrash
                         className="text-red-500 cursor-pointer"
-                        onClick={() => setShowConfirm(true)}
+                        onClick={() => setConfirmDeleteId(part.part_id)}
                       />
-                      {showConfirm && (
-                        <div
-                          className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
-                                                flex items-center justify-center z-50"
-                        >
+                      {confirmDeleteId === part.part_id && (
+                        <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
                           <div className="bg-white p-6 rounded-xl shadow-lg">
                             <h2 className="text-lg font-semibold mb-4">
                               Are you sure?
                             </h2>
                             <p className="mb-4">
-                              Do you really want to delete this part ?
+                              Do you really want to delete this part?
                             </p>
                             <div className="flex justify-end space-x-3">
                               <button
                                 className="px-4 py-2 bg-gray-300 rounded"
-                                onClick={() => setShowConfirm(false)}
+                                onClick={() => setConfirmDeleteId(null)}
                               >
                                 Cancel
                               </button>
                               <button
                                 className="px-4 py-2 bg-red-500 text-white rounded"
-                                onClick={() => {
-                                  handleDelete(part.part_id);
-                                  setShowConfirm(false);
+                                onClick={async () => {
+                                  await handleDelete(confirmDeleteId);
+                                  setConfirmDeleteId(null);
                                 }}
                               >
                                 Delete
