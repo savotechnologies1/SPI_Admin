@@ -1926,7 +1926,6 @@ const EditWorkInstruction = () => {
               <>
                 {values.steps.map((step, index) => {
                   let videoSrc = null;
-                  let stepId = null;
                   if (step.workInstructionVideo) {
                     if (step.workInstructionVideo instanceof File) {
                       videoSrc = URL.createObjectURL(step.workInstructionVideo);
@@ -2075,19 +2074,12 @@ const EditWorkInstruction = () => {
                             }
                           />
                           {videoSrc && (
-                            <div className="player-wrapper mb-4">
-                              <ReactPlayer
-                                className="react-player"
-                                url={videoSrc}
-                                width="100%"
-                                height="100%"
-                                controls={true}
-                              />
-                            </div>
+                            <video width="100%" height="auto" controls>
+                              <source src={videoSrc} type="video/mp4" />
+                            </video>
                           )}
                         </div>
                       </div>
-                      <p>{step.id}</p>
                       <FaTrash
                         className="text-red-500 cursor-pointer h-7"
                         onClick={() => handleDeleteStep(step.id)}
