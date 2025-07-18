@@ -2,8 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { PartContext } from "../../components/Context/PartContext";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaCircle, FaTrash } from "react-icons/fa";
-import { FiEdit2 } from "react-icons/fi";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import edit from "../../assets/edit_icon.png";
 import add from "../../assets/add.png";
 import { deleteProductNumber, productTree } from "./https/partProductApis";
 
@@ -13,8 +12,6 @@ export default function ProductTree() {
   if (!partContext) {
     throw new Error("PartContext is not provided.");
   }
-
-  const { parts } = partContext;
 
   const navigate = useNavigate();
   const handleClick = (id: string) => {
@@ -34,11 +31,8 @@ export default function ProductTree() {
     }
   };
   const fetchCustomerList = async (page = 1) => {
-    // eslint-disable-next-line no-useless-catch
     try {
       const response = await productTree(page, rowsPerPage, searchVal);
-      console.log("responseresponse", response);
-
       setCustomerData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
@@ -46,9 +40,7 @@ export default function ProductTree() {
     }
   };
 
-  console.log("customerDatacustomerData", customerData);
   const handleDelete = async (id: string) => {
-    // eslint-disable-next-line no-useless-catch
     try {
       deleteProductNumber(id).then();
       await fetchCustomerList(currentPage);
@@ -194,10 +186,11 @@ export default function ProductTree() {
                   </td>
 
                   <td className="flex items-center gap-4 border-b border-dashed p-2">
-                    <FiEdit2
-                      className="text-black cursor-pointer text-lg"
-                      title="Quick Edit"
+                    <img
+                      src={edit}
+                      alt="Edit"
                       onClick={() => handleClick(product.part_id)}
+                      className="w-4 h-4 md:w-5 md:h-5"
                     />
                     <button className="text-brand hover:underline">
                       <FaTrash

@@ -47,8 +47,7 @@ const Employees = () => {
     navigate(`/edit-employee/${id}`);
   };
 
-  const fetchCustomerList = async (page = 1) => {
-    // eslint-disable-next-line no-useless-catch
+  const fetchEmployeeList = async (page = 1) => {
     try {
       const response = await employeeList(page, rowsPerPage, searchVal);
       setCustomerData(response.data);
@@ -59,8 +58,9 @@ const Employees = () => {
   };
 
   useEffect(() => {
-    fetchCustomerList(currentPage);
+    fetchEmployeeList(currentPage);
   }, [currentPage, searchVal]);
+
   const normalizedTab = activeTab?.trim().toLowerCase();
   const statusCounts = customerData.reduce(
     (acc, item) => {
@@ -82,7 +82,7 @@ const Employees = () => {
     try {
       const response = await deleteEmployee(id);
       if (response?.status == 200) {
-        fetchCustomerList(currentPage);
+        await fetchEmployeeList(currentPage);
         navigate("/employees");
       }
     } catch (error: unknown) {
@@ -348,7 +348,7 @@ const Employees = () => {
                                     Are you sure?
                                   </h2>
                                   <p className="mb-4">
-                                    Do you really want to delete this supplier?
+                                    Do you really want to delete this employee?
                                   </p>
                                   <div className="flex justify-end space-x-3">
                                     <button

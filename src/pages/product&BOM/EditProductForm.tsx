@@ -42,6 +42,7 @@ const EditProductForm = () => {
     process: string;
     instructionRequired: string;
     partNumber: string;
+    partImages: string;
   }
 
   const {
@@ -61,7 +62,8 @@ const EditProductForm = () => {
     },
   ]);
   const [savedBOMs, setSavedBOMs] = useState<any[]>([]);
-
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const { id } = useParams();
 
   const handleAddBOMRow = () => {
@@ -85,7 +87,6 @@ const EditProductForm = () => {
         entry.process.trim() !== ""
     );
 
-    // Check for duplicates before adding
     const newEntries = validEntries.filter((newEntry) => {
       return !savedBOMs.some(
         (saved) =>
@@ -108,9 +109,9 @@ const EditProductForm = () => {
   };
   const handleDeleteBOM = async (id: string, index: number) => {
     try {
-      await deleteProductPartNumber(id); // ✅ API call first
+      await deleteProductPartNumber(id);
       const updated = [...savedBOMs];
-      updated.splice(index, 1); // ✅ Remove from UI state
+      updated.splice(index, 1);
       setSavedBOMs(updated);
     } catch (error) {
       console.error("Failed to delete BOM", error);
@@ -121,7 +122,6 @@ const EditProductForm = () => {
 
   const onSubmitProduct = async (data: any) => {
     const formData = new FormData();
-
     formData.append("partFamily", data.partFamily);
     formData.append("productNumber", data.productNumber);
     formData.append("partDescription", data.partDescription);
@@ -132,36 +132,34 @@ const EditProductForm = () => {
     formData.append("minStock", data.minStock);
     formData.append("availStock", data.availStock);
     formData.append("cycleTime", data.cycleTime);
-    for (let file of data.image) {
-      formData.append("partImages", file);
-    }
 
-    // Append parts array (convert to JSON string)
-    formData.append("parts", JSON.stringify(savedBOMs));
+    console.log("data.imagedata.image", data.image);
 
-    // ✅ Append selected images
     if (data.image?.length) {
       for (let file of data.image) {
         formData.append("partImages", file);
       }
     }
+    if (imageFiles.length > 0) {
+      for (let file of imageFiles) {
+        formData.append("partImages", file);
+      }
+    }
+
+    formData.append("parts", JSON.stringify(savedBOMs));
 
     try {
-      const response = await updateProductNumber(formData, id); // replace with your actual update API
+      const response = await updateProductNumber(formData, id);
+      console.log("Updated Successfully", response);
     } catch (err) {
       console.error("Error updating product", err);
     }
   };
 
-  console.log("savedBOMssavedBOMs", savedBOMs);
-
   const fetchProductDetail = async () => {
     try {
       const response = await getProductNumberDetail(id);
       const data = response.data;
-      console.log("datadatadata", data);
-
-      // Reset form fields
       reset({
         partFamily: data.partFamily || "",
         productNumber: data.productNumber || "",
@@ -179,7 +177,6 @@ const EditProductForm = () => {
         setExistingImages(data.productImages.map((img) => img.imageUrl));
       }
 
-      // ✅ Pre-fill BOM entries if `parts` exist
       if (Array.isArray(data.parts)) {
         const preFilledBOMs = data.parts.map((part) => ({
           id: part.id || "",
@@ -188,7 +185,7 @@ const EditProductForm = () => {
           process: part.process?.processName || "",
           processId: part.process?.id || "",
           cycleTime: part.process?.cycleTime?.toString() || "",
-          instructionRequired: part.instructionRequired ? "Yes" : "No", // ✅ convert to string
+          instructionRequired: part.instructionRequired ? "Yes" : "No",
           part_id: part.part_id || "",
         }));
 
@@ -203,8 +200,7 @@ const EditProductForm = () => {
   useEffect(() => {
     fetchProductDetail();
   }, [id]);
-  const fetchProcessList = async (page = 1) => {
-    // eslint-disable-next-line no-useless-catch
+  const fetchProcessList = async () => {
     try {
       const response = await selectProcess();
       setProcessData(response);
@@ -290,6 +286,11 @@ const EditProductForm = () => {
     };
   }, []);
   console.log("11", savedBOMs);
+  useEffect(() => {
+    return () => {
+      selectedImages.forEach((img) => URL.revokeObjectURL(img));
+    };
+  }, [selectedImages]);
 
   return (
     <div className="p-4 md:p-7">
@@ -326,7 +327,6 @@ const EditProductForm = () => {
               ))}
             </select>
           </label>
-
           <label className="col-span-2">
             Product Number
             <input
@@ -343,7 +343,6 @@ const EditProductForm = () => {
               </p>
             )}
           </label>
-
           <label className="col-span-4">
             Description
             <textarea
@@ -431,7 +430,28 @@ const EditProductForm = () => {
             <label className="block font-medium mb-2">
               Uploaded Product Images
             </label>
+          </div>
+          <label className="col-span-4 cursor-pointer bg-gray-100 border rounded p-4 text-center">
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={(e) => {
+                const files = Array.from(e.target.files || []);
+                setImageFiles(files); // Store actual files for FormData
+                const imageUrls = files.map((file) =>
+                  URL.createObjectURL(file)
+                );
+                setSelectedImages(imageUrls); // For preview
+              }}
+              className="hidden"
+            />
+            Tap or Click to Upload Product Images
+          </label>
+
+          <div className="col-span-4">
             <div className="flex gap-2 flex-wrap">
+              {/* Existing from server */}
               {existingImages.map((img, i) => (
                 <img
                   key={i}
@@ -440,19 +460,18 @@ const EditProductForm = () => {
                   className="w-20 h-20 object-cover border rounded"
                 />
               ))}
+
+              {/* Preview of newly selected files */}
+              {selectedImages.map((img, i) => (
+                <img
+                  key={`new-${i}`}
+                  src={img}
+                  alt={`Selected ${i}`}
+                  className="w-20 h-20 object-cover border rounded"
+                />
+              ))}
             </div>
           </div>
-
-          <label className="col-span-4 cursor-pointer bg-gray-100 border rounded p-4 text-center">
-            <input
-              type="file"
-              {...register("image")}
-              multiple
-              className="hidden"
-            />
-            Tap or Click to Upload Product Images
-          </label>
-
           <div className="col-span-4 mt-4">
             <p className="font-semibold text-lg mb-2">Bill of Material (BOM)</p>
             {bomEntries.map((entry, index) => (
@@ -486,7 +505,7 @@ const EditProductForm = () => {
 
                   <input
                     type="number"
-                    value={entry.qty}
+                    value={entry.supplierOrderQty}
                     onChange={(e) =>
                       handleBOMChange(index, "qty", e.target.value)
                     }

@@ -209,21 +209,13 @@ const EditEmployee = () => {
             <option value="rejected">Rejected</option>
           </select>
         </div>
-        <div className="flex justify-between pt-2">
+        <div className="flex justify-end pt-2">
           <button
             type="submit"
             className="bg-brand text-white px-4 py-2 rounded-md"
           >
             Save
           </button>
-          <div className="bg-[#FF5630] rounded-full py-2 px-2 cursor-pointer">
-            <img
-              className="w-[20px]"
-              src={delete_img}
-              alt="delete"
-              onClick={handleDelete}
-            />
-          </div>
         </div>
       </form>
     </div>

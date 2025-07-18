@@ -47,13 +47,12 @@ export const addWorkinstructionInfo = async (data: object) => {
 export const workInstructionList = async (
   page = 1,
   limit = 5,
-  selectedValue: string,
   search: string,
   type: string
 ) => {
   try {
     const response = await axiosInstance.get(
-      `/all-work-instructions?page=${page}&limit=${limit}&type=${selectedValue}&search=${search}`
+      `/all-work-instructions?page=${page}&limit=${limit}&type=${type}&search=${search}`
     );
     return response.data;
   } catch (error) {
