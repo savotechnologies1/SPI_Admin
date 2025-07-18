@@ -10,13 +10,27 @@ import {
 } from "./https/workInstructionApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+interface WorkInstructionItem {
+  id: string;
+  imageUrl: string;
+  name: string;
+  partDesc: string;
+  stepNumber: string;
+  description: string;
+  submitDate: string;
+  statusColor: string;
+}
 
 const WorkInstructionList: React.FC = () => {
   const rowsPerPage = 5;
-  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
+
+  const navigate = useNavigate();
+
+  const [workData, setWorkData] = useState<[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [searchVal, setSearchVal] = useState("");
+  const [showConfirmId, setShowConfirmId] = useState(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedValue, setSelectedValue] = useState("all");
   const debouncedSearchVal = useDebounce(searchVal, 500);
@@ -49,6 +63,7 @@ const WorkInstructionList: React.FC = () => {
 
     console.log("A new option was selected:", newValue);
   };
+  console.log("searchValsearchVal", searchVal);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -204,7 +219,7 @@ const WorkInstructionList: React.FC = () => {
                             <button
                               className="px-4 py-2 bg-red-500 text-white rounded"
                               onClick={() => {
-                                handleDelete(selectedId, item.type);
+                                handleDelete(selectedId, item.type); // use selectedId here
                                 setSelectedId(null);
                               }}
                             >
