@@ -81,8 +81,8 @@ const WorkInstructionList: React.FC = () => {
       const response = await workInstructionList(
         page,
         rowsPerPage,
-        searchTerm,
-        type
+        type,
+        searchTerm
       );
       setWorkData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);

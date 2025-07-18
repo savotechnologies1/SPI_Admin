@@ -47,8 +47,8 @@ export const addWorkinstructionInfo = async (data: object) => {
 export const workInstructionList = async (
   page = 1,
   limit = 5,
-  search: string,
-  type: string
+  type: string,
+  search: string
 ) => {
   try {
     const response = await axiosInstance.get(
