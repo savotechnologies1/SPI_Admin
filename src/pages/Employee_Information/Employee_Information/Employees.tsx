@@ -20,6 +20,7 @@ const Employees = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedValue, setSelectedValue] = useState("");
 
   // const rowsPerPage = 5;
   // const totalPages = Math.ceil(data.length / rowsPerPage);
@@ -49,7 +50,12 @@ const Employees = () => {
 
   const fetchEmployeeList = async (page = 1) => {
     try {
-      const response = await employeeList(page, rowsPerPage, searchVal);
+      const response = await employeeList(
+        page,
+        rowsPerPage,
+        selectedValue,
+        searchVal
+      );
       setCustomerData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
@@ -59,7 +65,7 @@ const Employees = () => {
 
   useEffect(() => {
     fetchEmployeeList(currentPage);
-  }, [currentPage, searchVal]);
+  }, [currentPage, selectedValue, searchVal]);
 
   const normalizedTab = activeTab?.trim().toLowerCase();
   const statusCounts = customerData.reduce(
@@ -88,6 +94,13 @@ const Employees = () => {
     } catch (error: unknown) {
       console.log("errorerror", error);
     }
+  };
+
+  const handleSelectChange = (event) => {
+    const newValue = event.target.value;
+    setSelectedValue(newValue);
+
+    console.log("A new option was selected:", newValue);
   };
   return (
     <div className="p-4 md:p-7">
@@ -174,22 +187,24 @@ const Employees = () => {
               {/* Filters */}
               <div className="p-2 md:p-4">
                 <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 p-2 md:p-4">
-                  <div className="flex flex-col w-full sm:w-auto">
-                    <label
-                      htmlFor="role"
-                      className="text-xs md:text-sm font-medium text-gray-500"
-                    >
-                      Role
-                    </label>
+                  <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
                     <select
-                      id="role"
-                      className="mt-1 block w-full sm:w-40 md:w-52 rounded-md border-gray-300 text-sm md:text-base"
-                      defaultValue="Project Coordinator"
+                      id="work-instruction-filter"
+                      className="border w-full md:w-1/2 px-3 py-2 rounded-md"
+                      value={selectedValue}
+                      onChange={handleSelectChange}
                     >
-                      <option>Newly added</option>
-                      <option>Developer</option>
-                      <option>Designer</option>
+                      <option value="all">Filter By Shop Floor</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
                     </select>
+                    <input
+                      type="text"
+                      placeholder="Search..."
+                      className="border w-full md:w-2/3 px-3 py-2 rounded-md"
+                      value={searchVal}
+                      onChange={(e) => handleChange(e)}
+                    />
                   </div>
 
                   <div className="flex-1 w-full relative border p-2 md:p-3 rounded-md">

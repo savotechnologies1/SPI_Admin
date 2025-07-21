@@ -6,6 +6,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { PartContext } from "../../components/Context/PartContext";
 import { Plus } from "lucide-react";
 import {
+  deleteProductImage,
   deleteProductPartNumber,
   getPartDetail,
   getProductNumberDetail,
@@ -13,6 +14,7 @@ import {
   selectProcess,
   updateProductNumber,
 } from "./https/partProductApis";
+import { MdCancel } from "react-icons/md";
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 const EditProductForm = () => {
@@ -38,7 +40,7 @@ const EditProductForm = () => {
     minStock?: number;
     image?: File;
     productNumber1: number;
-    qty: number;
+    partQuantity: number;
     process: string;
     instructionRequired: string;
     partNumber: string;
@@ -55,7 +57,7 @@ const EditProductForm = () => {
   const [bomEntries, setBomEntries] = useState([
     {
       productNumber: "",
-      qty: "",
+      partQuantity: "",
       process: "",
       cycleTime: "",
       instructionRequired: "",
@@ -71,7 +73,7 @@ const EditProductForm = () => {
       ...bomEntries,
       {
         partNumber: "",
-        qty: "",
+        partQuantity: "",
         process: "",
         cycleTime: "",
         instructionRequired: "",
@@ -83,7 +85,7 @@ const EditProductForm = () => {
     const validEntries = bomEntries.filter(
       (entry) =>
         entry.partNumber.trim() !== "" &&
-        entry.qty !== "" &&
+        entry.partQuantity !== "" &&
         entry.process.trim() !== ""
     );
 
@@ -99,7 +101,7 @@ const EditProductForm = () => {
     setBomEntries([
       {
         partNumber: "",
-        qty: "",
+        partQuantity: "",
         process: "",
         processId: "",
         cycleTime: "",
@@ -151,8 +153,11 @@ const EditProductForm = () => {
     try {
       const response = await updateProductNumber(formData, id);
       console.log("Updated Successfully", response);
+      if (response.status === 200) {
+        navigate("/product-tree");
+      }
     } catch (err) {
-      console.error("Error updating product", err);
+      throw err;
     }
   };
 
@@ -174,14 +179,14 @@ const EditProductForm = () => {
         supplierOrderQty: data.supplierOrderQty,
       });
       if (data.productImages?.length) {
-        setExistingImages(data.productImages.map((img) => img.imageUrl));
+        setExistingImages(data.productImages.map((img) => img));
       }
 
       if (Array.isArray(data.parts)) {
         const preFilledBOMs = data.parts.map((part) => ({
           id: part.id || "",
           partNumber: part.partNumber || "",
-          qty: part.partQuantity || "",
+          partQuantity: part.partQuantity || "",
           process: part.process?.processName || "",
           processId: part.process?.id || "",
           cycleTime: part.process?.cycleTime?.toString() || "",
@@ -193,7 +198,7 @@ const EditProductForm = () => {
         setSavedBOMs(preFilledBOMs);
       }
     } catch (error) {
-      console.log("Error fetching product detail", error);
+      throw error;
     }
   };
 
@@ -292,10 +297,24 @@ const EditProductForm = () => {
     };
   }, [selectedImages]);
 
+  const handleDeleteImg = async (imageId: string, stepIndex: number) => {
+    try {
+      console.log("imageIdimageId", imageId);
+
+      await deleteProductImage(imageId);
+      await fetchProductDetail(id);
+      // const updatedImgs = values.steps[stepIndex].workInstructionImg.filter(
+      //   (img) => img.id !== imageId
+      // );
+      // setFieldValue(`steps.${stepIndex}.workInstructionImg`, updatedImgs);
+    } catch (error) {
+      console.error("Failed to delete image:", error);
+    }
+  };
   return (
     <div className="p-4 md:p-7">
       <h1 className="font-bold text-[20px] md:text-[24px] text-black">
-        Product Number
+        Edit Product Number
       </h1>
 
       <div className="flex gap-4 items-center mt-2 text-sm text-gray-700">
@@ -305,7 +324,7 @@ const EditProductForm = () => {
         <FaCircle className="text-[6px]" />
         <span>Product and BOM</span>
         <FaCircle className="text-[6px]" />
-        <span>Product Number</span>
+        <span> Edit Product Number</span>
       </div>
 
       <div className="mt-6 bg-white p-6 rounded-2xl shadow-md">
@@ -372,7 +391,7 @@ const EditProductForm = () => {
             <label>Lead Time (Days)</label>
             <input
               type="number"
-              step="1" // ensures only integer input
+              step="1"
               {...register("leadTime", { valueAsNumber: true })}
               placeholder="Lead Time (Days)"
               className="border p-2 rounded w-full"
@@ -453,22 +472,29 @@ const EditProductForm = () => {
             <div className="flex gap-2 flex-wrap">
               {/* Existing from server */}
               {existingImages.map((img, i) => (
-                <img
-                  key={i}
-                  src={`${BASE_URL}/uploads/partImages/${img}`}
-                  alt={`Uploaded ${i}`}
-                  className="w-20 h-20 object-cover border rounded"
-                />
+                <div className="relative">
+                  <img
+                    key={i}
+                    src={`${BASE_URL}/uploads/partImages/${img.imageUrl}`}
+                    alt={`Uploaded ${i}`}
+                    className="w-20 h-20 object-cover border rounded"
+                  />
+                  <MdCancel
+                    className="absolute -top-2 -right-2 cursor-pointer text-red-600 bg-white rounded-full"
+                    size={20}
+                    onClick={() => handleDeleteImg(img.id, i)}
+                  />
+                </div>
               ))}
-
-              {/* Preview of newly selected files */}
               {selectedImages.map((img, i) => (
-                <img
-                  key={`new-${i}`}
-                  src={img}
-                  alt={`Selected ${i}`}
-                  className="w-20 h-20 object-cover border rounded"
-                />
+                <div>
+                  <img
+                    key={`new-${i}`}
+                    src={img}
+                    alt={`Selected ${i}`}
+                    className="w-20 h-20 object-cover border rounded"
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -505,9 +531,10 @@ const EditProductForm = () => {
 
                   <input
                     type="number"
-                    value={entry.supplierOrderQty}
+                    step="1"
+                    value={entry.partQuantity}
                     onChange={(e) =>
-                      handleBOMChange(index, "qty", e.target.value)
+                      handleBOMChange(index, "partQuantity", e.target.value)
                     }
                     placeholder="Qty"
                     className="border p-2 rounded w-full"
@@ -586,9 +613,8 @@ const EditProductForm = () => {
                         <td className="p-2">{row.partNumber}</td>
                         <td className="p-2">{row.cycleTime}</td>
                         <td className="p-2">
-                          {" "}
                           <button
-                            type="button" // ❗ prevent form submission
+                            type="button"
                             onClick={() => handleDeleteBOM(row.id, index)}
                             className="text-red-600"
                           >
@@ -607,7 +633,7 @@ const EditProductForm = () => {
               type="submit"
               className="mt-6 bg-brand text-white py-2 px-6 rounded"
             >
-              Edit Product Number
+              Save
             </button>
           </div>
         </form>

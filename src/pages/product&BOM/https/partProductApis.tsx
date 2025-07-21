@@ -200,3 +200,16 @@ export const deleteProductPartNumber = async (id: string) => {
     throw error;
   }
 };
+
+export const deleteProductImage = async (id: string) => {
+  try {
+    const response = await axiosInstance.delete(`/delete-part-image/${id}`);
+    if (response.status === 200) {
+      toast.success(response.data.message);
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting product part number", error);
+    throw error;
+  }
+};

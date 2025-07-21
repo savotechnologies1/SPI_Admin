@@ -8,7 +8,6 @@ export const updateProfile = async (
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
- 
     const response = await axiosInstance.put(
       "/profile-update",
       {
@@ -28,7 +27,7 @@ export const updateProfile = async (
             },
           }
     );
-    if (response.status === 201) {
+    if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response.data;
@@ -41,23 +40,22 @@ export const getProfile = async () => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get("/profile-detail");
-   
+
     return response.data;
   } catch (error) {
-    throw error
+    throw error;
   }
 };
 
 export const deleteProfile = async () => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const response = await axiosInstance.put("/profile-delete");
-      if (response.status === 200) {
+    const response = await axiosInstance.put("/delete-profile-image");
+    if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response.data;
   } catch (error) {
     toast.error(error.response.data.message);
-    
   }
 };

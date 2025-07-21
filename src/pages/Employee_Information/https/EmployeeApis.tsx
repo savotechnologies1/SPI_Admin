@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
 
-export const addEmployee= async (apiData:object) => {
+export const addEmployee = async (apiData: object) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.post("/create-employee", apiData);
@@ -10,26 +10,29 @@ export const addEmployee= async (apiData:object) => {
     }
     return response;
   } catch (error) {
-     toast.error(error.response.data.message);
-
+    toast.error(error.response.data.message);
   }
 };
 
-
-export const employeeList = async (page = 1, limit = 5,searchVal: string) => {
+export const employeeList = async (
+  page = 1,
+  limit = 5,
+  isShopFloor: string,
+  searchVal: string
+) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/all-employee?page=${page}&limit=${limit}&search=${searchVal}`
+      `/all-employee?page=${page}&limit=${limit}&isShopFloor=${isShopFloor}&search=${searchVal}`
     );
-    console.log('response.dataresponse.data',response.data)
+    console.log("response.dataresponse.data", response.data);
     return response.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const employeeDetail = async (id:string) => {
+export const employeeDetail = async (id: string) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(`/employee-detail/${id}`);
@@ -51,7 +54,6 @@ export const editEmployee = async (data: object, id: string) => {
     toast.error(error.response.data.message);
   }
 };
-
 
 export const deleteEmployee = async (id: string) => {
   try {

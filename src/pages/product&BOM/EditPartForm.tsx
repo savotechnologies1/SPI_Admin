@@ -9,12 +9,14 @@ import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 import {
   createPartNumber,
+  deleteProductImage,
   getPartDetail,
   getPartNumberDetail,
   partNumberList,
   selectProcess,
   updatePartNumber,
 } from "./https/partProductApis";
+import { MdCancel } from "react-icons/md";
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 const data = [
   {
@@ -141,7 +143,7 @@ const EditPartForm = () => {
         processOrderRequired: data.processOrderRequired ? "true" : "false",
       });
 
-      setExistingImages(data.partImages.map((img) => img.imageUrl));
+      setExistingImages(data.partImages.map((img) => img));
     } catch (error) {
       console.log(error);
     }
@@ -155,10 +157,24 @@ const EditPartForm = () => {
     fetchProcessList();
     getAllPartList();
   }, []);
+  const handleDeleteImg = async (imageId: string, stepIndex: number) => {
+    try {
+      console.log("imageIdimageId", imageId);
+
+      await deleteProductImage(imageId);
+      await fetchProcessDetail(id);
+      // const updatedImgs = values.steps[stepIndex].workInstructionImg.filter(
+      //   (img) => img.id !== imageId
+      // );
+      // setFieldValue(`steps.${stepIndex}.workInstructionImg`, updatedImgs);
+    } catch (error) {
+      console.error("Failed to delete image:", error);
+    }
+  };
   return (
     <div className="p-4 md:p-7">
       <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-black">
-        Part Number
+        Edit Part Number
       </h1>
       <div className="flex flex-wrap items-center mt-2 gap-1 md:gap-2">
         <NavLink
@@ -336,19 +352,31 @@ const EditPartForm = () => {
             <label className="block font-medium mb-2">Uploaded Images</label>
             <div className="flex gap-2 flex-wrap">
               {existingImages.map((img, i) => (
-                <img
-                  key={i}
-                  src={`${BASE_URL}/uploads/partImages/${img}`} // or use S3/CDN path if hosted
-                  alt={`Uploaded ${i}`}
-                  className="w-20 h-20 object-cover border rounded"
-                />
+                <div className="relative">
+                  <img
+                    key={i}
+                    src={`${BASE_URL}/uploads/partImages/${img.imageUrl}`}
+                    alt={`Uploaded ${i}`}
+                    className="w-20 h-20 object-cover border rounded"
+                  />
+                  <MdCancel
+                    className="absolute -top-2 -right-2 cursor-pointer text-red-600 bg-white rounded-full"
+                    size={20}
+                    onClick={() => handleDeleteImg(img.id, i)}
+                  />
+                </div>
               ))}
             </div>
           </div>
 
           <label className="block col-span-4 md:col-span-2 cursor-pointer border bg-gray-100 p-4 rounded text-center">
             {watch("image")?.[0]?.name || "Tap or Click to Add Picture"}
-            <input type="file" {...register("image")} className="hidden" />
+            <input
+              type="file"
+              {...register("image")}
+              className="hidden"
+              accept="image/*"
+            />
           </label>
 
           <div className="flex justify-end items-center col-span-4">
@@ -356,7 +384,7 @@ const EditPartForm = () => {
               type="submit"
               className="bg-brand text-white py-2 rounded px-4"
             >
-              Add/Edit Part Number
+              Save
             </button>
           </div>
         </form>
