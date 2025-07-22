@@ -3,6 +3,7 @@ import { FaCircle } from "react-icons/fa";
 
 import SupplierOrdersForm from "./SupplierOrdersForm";
 import { useState } from "react";
+import SupplierOrderList from "./supplierOrderList";
 
 const orders = ["12345", "23456", "34567", "45678", "56789", "67890", "78901"];
 const SupplierOrders = () => {
@@ -64,7 +65,7 @@ const SupplierOrders = () => {
                     setFilteredOrders([]);
                   }}
                 >
-                   {order}
+                  {order}
                 </li>
               ))}
             </ul>
@@ -94,7 +95,7 @@ const SupplierOrders = () => {
       </div>
 
       <div className="py-6">
-        <SupplierOrdersForm />{" "}
+        <SupplierOrdersForm /> <SupplierOrderList query={query} />
       </div>
     </div>
   );

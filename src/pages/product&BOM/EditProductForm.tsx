@@ -457,11 +457,11 @@ const EditProductForm = () => {
               accept="image/*"
               onChange={(e) => {
                 const files = Array.from(e.target.files || []);
-                setImageFiles(files); // Store actual files for FormData
+                setImageFiles(files);
                 const imageUrls = files.map((file) =>
                   URL.createObjectURL(file)
                 );
-                setSelectedImages(imageUrls); // For preview
+                setSelectedImages(imageUrls);
               }}
               className="hidden"
             />

@@ -466,7 +466,7 @@ const EditWorkInstruction = () => {
                           />
                           {videoSrc && (
                             <video width="100%" height="auto" controls>
-                              <source src={videoSrc} type="video/mp4" />
+                              <source src={`videoSrc`} type="video/mp4" />
                             </video>
                           )}
                         </div>

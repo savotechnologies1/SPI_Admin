@@ -376,6 +376,7 @@ const EditPartForm = () => {
               {...register("image")}
               className="hidden"
               accept="image/*"
+              multiple
             />
           </label>
 

@@ -103,3 +103,50 @@ export const addSupplierOrder = async (apiData: object) => {
     }
   }
 };
+
+export const supplierOrderListApi = async (
+  page = 1,
+  limit = 5,
+  searchVal: string
+) => {
+  try {
+    const response = await axiosInstance.get(
+      `/supplier-order-list?page=${page}&limit=${limit}&search=${searchVal}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const editSupplierOrder = async (id: string, data: object) => {
+  try {
+    const response = await axiosInstance.put(
+      `/update-supplier-order/${id}`,
+      data
+    );
+    if (response.status === 201) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError<{ message: string }>;
+    if (axiosError.response?.data?.message) {
+      toast.error(axiosError.response.data.message);
+    } else {
+      toast.error("Something went wrong");
+    }
+  }
+};
+
+export const deleteSupplierOrder = async (id: string) => {
+  try {
+    const response = await axiosInstance.put(`/delete-supplier-order/${id}`);
+    if (response.status === 200) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error: any) {
+    toast.error(error.response.data.message);
+  }
+};

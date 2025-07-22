@@ -202,11 +202,16 @@ const SupplierPartList: React.FC = () => {
 
                   {editingRow === actualIndex && (
                     <tr className="bg-gray-50">
-                      <td colSpan={3} className="p-3 font-semibold text-gray-600">
+                      <td
+                        colSpan={3}
+                        className="p-3 font-semibold text-gray-600"
+                      >
                         {item.desc}
                       </td>
                       <td className="p-3">
-                        <label className="text-xs font-semibold">Qty Avail</label>
+                        <label className="text-xs font-semibold">
+                          Qty Avail
+                        </label>
                         <input
                           type="number"
                           name="qty"
@@ -216,7 +221,9 @@ const SupplierPartList: React.FC = () => {
                         />
                       </td>
                       <td className="p-3">
-                        <label className="text-xs font-semibold">Safety Stock</label>
+                        <label className="text-xs font-semibold">
+                          Safety Stock
+                        </label>
                         <input
                           type="number"
                           name="stock"
@@ -226,7 +233,9 @@ const SupplierPartList: React.FC = () => {
                         />
                       </td>
                       <td className="p-3">
-                        <label className="text-xs font-semibold">Current Cost</label>
+                        <label className="text-xs font-semibold">
+                          Current Cost
+                        </label>
                         <input
                           type="number"
                           name="cost"
