@@ -309,7 +309,7 @@ const Employees = () => {
                           {item.pin}
                         </td>
                         <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
-                          {item.shopFloorLogin}
+                          {item.shopFloorLogin === true ? "yes" : "no"}
                         </td>
                         <td className="px-2 py-3 md:px-3 md:py-4">
                           <span
