@@ -13,7 +13,7 @@ type FormData = {
   status: string;
   startDate: string;
   pin: string;
-  shopFloorLogin: string;
+  shopFloorLogin: boolean;
   termsAccepted: boolean;
 };
 
@@ -154,8 +154,8 @@ const AddEmployee = () => {
             className="w-full border px-4 py-2 rounded-md text-gray-600"
           >
             <option value="">Require Shop Floor Login</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
           </select>
         </div>
         <div>
