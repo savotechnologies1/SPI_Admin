@@ -3,13 +3,14 @@ import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import ItemSelected from "./ItemSelected";
 import { searchStockOrder } from "./https/schedulingApis";
 import { stockOrderShedule } from "../../utils/validation";
-import { SearchResultItem, StockOrderScheduleInterface } from "../../utils/Interfaces"
-
+import {
+  SearchResultItem,
+  StockOrderScheduleInterface,
+} from "../../utils/Interfaces";
 
 const StockOrderScheduleForm = () => {
   const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
 
   const handleSearchSubmit = async (
     values: StockOrderScheduleInterface,
@@ -27,7 +28,7 @@ const StockOrderScheduleForm = () => {
       setSubmitting(false);
     }
   };
-
+  console.log("searchResultssearchResults", searchResults);
 
   return (
     <>

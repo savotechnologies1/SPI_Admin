@@ -13,7 +13,7 @@ import {
   employeeList,
   sendEmailToTheEmployeeApi,
 } from "../https/EmployeeApis";
-import { Mail, Trash2 } from "lucide-react";
+import { Mail } from "lucide-react";
 import EmailPasswordModal from "./EmailPasswordModal";
 
 const Employees = () => {
@@ -210,8 +210,8 @@ const Employees = () => {
                     onChange={handleSelectChange}
                   >
                     <option value="all">All</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
                   </select>
 
                   <div className="flex-1 w-full relative border p-2 md:p-3 rounded-md">

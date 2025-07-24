@@ -17,7 +17,7 @@ export const addEmployee = async (apiData: object) => {
 export const employeeList = async (
   page = 1,
   limit = 5,
-  isShopFloor: string,
+  isShopFloor: boolean,
   searchVal: string
 ) => {
   // eslint-disable-next-line no-useless-catch
