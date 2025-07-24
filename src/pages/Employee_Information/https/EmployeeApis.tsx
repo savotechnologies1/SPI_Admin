@@ -67,3 +67,19 @@ export const deleteEmployee = async (id: string) => {
     toast.error(error.response.data.message);
   }
 };
+
+export const sendEmailToTheEmployeeApi = async (apiData: object) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await axiosInstance.post(
+      "/send-email-to-employee",
+      apiData
+    );
+    if (response.status === 201) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
+};

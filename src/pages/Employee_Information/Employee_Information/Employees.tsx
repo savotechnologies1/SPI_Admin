@@ -8,8 +8,13 @@ import add from "../../../assets/add.png";
 import back from "../../../assets/back.png";
 import next from "../../../assets/next.png";
 import data from "../../../components/Data/employeeData";
-import { deleteEmployee, employeeList } from "../https/EmployeeApis";
-import { Trash2 } from "lucide-react";
+import {
+  deleteEmployee,
+  employeeList,
+  sendEmailToTheEmployeeApi,
+} from "../https/EmployeeApis";
+import { Mail, Trash2 } from "lucide-react";
+import EmailPasswordModal from "./EmailPasswordModal";
 
 const Employees = () => {
   const [activeTab, setActiveTab] = useState("All ");
@@ -21,7 +26,8 @@ const Employees = () => {
   const [searchVal, setSearchVal] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
-
+  const [showModal, setShowModal] = useState(false);
+  const [employeeId, setEmployeeId] = useState("");
   // const rowsPerPage = 5;
   // const totalPages = Math.ceil(data.length / rowsPerPage);
 
@@ -46,6 +52,12 @@ const Employees = () => {
 
   const handleEdit = (id) => {
     navigate(`/edit-employee/${id}`);
+  };
+  const sendEmailToTheEmployee = async (id) => {
+    try {
+      const response = await sendEmailToTheEmployeeApi(id);
+    } catch (error) {}
+    console.log("heree iss the edididid", id);
   };
 
   const fetchEmployeeList = async (page = 1) => {
@@ -101,6 +113,10 @@ const Employees = () => {
     setSelectedValue(newValue);
 
     console.log("A new option was selected:", newValue);
+  };
+  const handleMailClick = (id) => {
+    setEmployeeId(id);
+    setShowModal(true);
   };
   return (
     <div className="p-4 md:p-7">
@@ -187,25 +203,16 @@ const Employees = () => {
               {/* Filters */}
               <div className="p-2 md:p-4">
                 <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 p-2 md:p-4">
-                  <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
-                    <select
-                      id="work-instruction-filter"
-                      className="border w-full md:w-1/2 px-3 py-2 rounded-md"
-                      value={selectedValue}
-                      onChange={handleSelectChange}
-                    >
-                      <option value="all">Filter By Shop Floor</option>
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
-                    </select>
-                    <input
-                      type="text"
-                      placeholder="Search..."
-                      className="border w-full md:w-2/3 px-3 py-2 rounded-md"
-                      value={searchVal}
-                      onChange={(e) => handleChange(e)}
-                    />
-                  </div>
+                  <select
+                    id="work-instruction-filter"
+                    className="border w-full md:w-1/4 px-3 py-2 rounded-md"
+                    value={selectedValue}
+                    onChange={handleSelectChange}
+                  >
+                    <option value="all">All</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
 
                   <div className="flex-1 w-full relative border p-2 md:p-3 rounded-md">
                     <input
@@ -229,19 +236,11 @@ const Employees = () => {
                 </div>
               </div>
             </div>
-
-            {/* Table */}
             <div className="overflow-x-auto">
               <table className="w-full bg-white">
                 <thead>
                   <tr className="bg-[#F4F6F8]">
-                    <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
-                      <input
-                        type="checkbox"
-                        className="w-3 h-3 md:w-4 md:h-4"
-                      />
-                    </th>
-                    <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
+                    <th className="px-4 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
                       Name
                     </th>
                     <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium hidden sm:table-cell">
@@ -282,12 +281,6 @@ const Employees = () => {
                         key={index}
                         className="border-b border-dashed border-gray-200"
                       >
-                        <td className="px-2 py-2">
-                          <input
-                            type="checkbox"
-                            className="w-3 h-3 md:w-4 md:h-4"
-                          />
-                        </td>
                         <td className="px-2 py-3 md:px-3 md:py-4">
                           <div className="flex items-center">
                             <div>
@@ -336,6 +329,11 @@ const Employees = () => {
                           </span>
                         </td>
                         <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
+                          <Mail
+                            onClick={() => handleMailClick(item.id)}
+                            className="text-brand"
+                          />
+
                           <button
                             onClick={() => {
                               handleEdit(item.id);
@@ -392,6 +390,13 @@ const Employees = () => {
                 </tbody>
               </table>
 
+              {showModal && (
+                <EmailPasswordModal
+                  employeeId={employeeId}
+                  isOpen={showModal}
+                  onClose={() => setShowModal(false)}
+                />
+              )}
               {/* Pagination */}
               <div className="flex flex-row justify-between items-center bg-white py-2 px-2 md:px-4 gap-2 ">
                 <p className="text-xs md:text-sm text-gray-600">
