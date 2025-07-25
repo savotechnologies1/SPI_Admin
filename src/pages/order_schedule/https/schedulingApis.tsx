@@ -48,7 +48,6 @@ export const selectProductNumber = async () => {
     if (axiosError.response?.data?.message) {
       toast.error(axiosError.response.data.message);
     } else {
-      toast.error("Failed to fetch product numbers.");
     }
     return [];
   }
