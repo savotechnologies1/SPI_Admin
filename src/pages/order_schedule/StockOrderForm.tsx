@@ -67,7 +67,8 @@ const StockOrderForm = () => {
           customerName: "",
           customerEmail: "",
           customerPhone: "",
-          productNumber: "",
+          productId: "", // 👈 Add this
+          productNumber: "", // 👈 Keep for display
           cost: "",
           totalCost: "",
           productQuantity: "",
@@ -148,38 +149,72 @@ const StockOrderForm = () => {
             }
           };
 
+          // Assuming productNumberList is typed correctly, for example:
+          interface Product {
+            part_id: string;
+            partNumber: string;
+            partDescription: string;
+            availStock: number;
+            cost: string; // The API sends cost as a string
+            type: string;
+          }
+
+          // Your component code...
           const handleProductSelectChange = (
             e: React.ChangeEvent<HTMLSelectElement>
           ) => {
-            const selectedPartNumber = e.target.value;
-            setFieldValue("productNumber", selectedPartNumber);
+            const selectedProductId = e.target.value;
+            setFieldValue("productId", selectedProductId); // Set the ID for submission
 
-            if (selectedPartNumber) {
+            if (selectedProductId) {
               const selectedProduct = productNumberList.find(
-                (p) => p.partNumber === selectedPartNumber
+                (p) => p.part_id === selectedProductId
               );
+
               if (selectedProduct) {
-                const unitCost = selectedProduct.cost;
+                // --- FIX IS HERE ---
+                // 1. Convert the 'cost' string from the API to a number
+                const unitCost = parseFloat(selectedProduct.cost);
+
+                // 2. Check if the conversion was successful before proceeding
+                if (isNaN(unitCost)) {
+                  console.error(
+                    "Invalid cost value for product:",
+                    selectedProduct
+                  );
+                  // Optionally, reset the form fields here as well
+                  // ...
+                  return; // Exit the function to prevent further errors
+                }
+
                 const quantity = 1; // Default quantity
 
-                setSingleUnitCost(unitCost); // For display and recalculation
-                setFieldValue("cost", unitCost.toFixed(2)); // CHANGED: Set UNIT cost in the 'cost' field
+                // Now you can safely use 'unitCost' as a number
+                setSingleUnitCost(unitCost);
+                setFieldValue("productNumber", selectedProduct.partNumber); // For display
+
+                // .toFixed() will now work correctly on the 'unitCost' number
+                setFieldValue("cost", unitCost.toFixed(2));
                 setFieldValue("productQuantity", quantity);
                 setFieldValue(
                   "productDescription",
                   selectedProduct.partDescription
                 );
-                setFieldValue("totalCost", (unitCost * quantity).toFixed(2)); // ADDED: Set initial TOTAL cost
+
+                // The calculation will also work correctly
+                setFieldValue("totalCost", (unitCost * quantity).toFixed(2));
               }
             } else {
+              // This is your reset logic, it's correct
               setSingleUnitCost(null);
+              setFieldValue("productNumber", "");
+              setFieldValue("productId", "");
               setFieldValue("cost", "");
               setFieldValue("productQuantity", "");
               setFieldValue("productDescription", "");
-              setFieldValue("totalCost", ""); // ADDED: Clear total cost
+              setFieldValue("totalCost", "");
             }
           };
-
           const handleQuantityChange = (
             e: React.ChangeEvent<HTMLInputElement>
           ) => {
@@ -386,23 +421,24 @@ const StockOrderForm = () => {
                 <div className="md:col-span-1">
                   <label className="font-semibold">Product Number</label>
                   <select
-                    name="productNumber"
-                    value={values.productNumber}
+                    name="productId"
+                    value={values.productId}
                     onChange={handleProductSelectChange}
                     onBlur={handleBlur}
                     className={`border px-2 py-3 rounded-md w-full placeholder-gray-600 ${
-                      touched.productNumber && errors.productNumber
+                      touched.productId && errors.productId
                         ? "border-red-500"
                         : ""
                     }`}
                   >
                     <option value="" label="Select a product" />
                     {productNumberList.map((product) => (
-                      <option key={product.part_id} value={product.partNumber}>
+                      <option key={product.part_id} value={product.part_id}>
                         {product.partNumber}
                       </option>
                     ))}
                   </select>
+
                   <ErrorMessage
                     name="productNumber"
                     component="div"
@@ -425,6 +461,7 @@ const StockOrderForm = () => {
                   <Field
                     name="productQuantity"
                     type="number"
+                    steps="1"
                     placeholder="Quantity"
                     onChange={handleQuantityChange}
                     min="1"

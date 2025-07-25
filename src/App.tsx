@@ -71,6 +71,7 @@ import CapacityStatus from "./pages/order_schedule/CapacityStatus";
 import LiveProductionGoal from "./pages/productionLive/LiveProductionGoal";
 import CurrentStatus from "./pages/productionLive/CurrentStatus";
 import EmailPasswordModal from "./pages/Employee_Information/Employee_Information/EmailPasswordModal";
+import StockOrderScheduleList from "./pages/order_schedule/StockOrderScheduleList";
 
 const App = () => {
   const { token } = useAuth();
@@ -126,6 +127,10 @@ const App = () => {
             <Route
               path="stock-order-schedule"
               element={<StockOrderSchedule />}
+            />
+            <Route
+              path="stock-order-schedule-list"
+              element={<StockOrderScheduleList />}
             />
             <Route
               path="custom-order-schedule"
