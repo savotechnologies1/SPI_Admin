@@ -155,6 +155,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       // 1. Create an array of payloads from the selectedItems state
       const payloads = selectedItems.map((item) => {
         const isPart = item.part.type === "part";
+        console.log("item", item);
 
         return {
           order_id: item.id,
@@ -192,8 +193,16 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   };
   return (
     <div className="py-6">
+      <div className="flex justify-end">
+        {" "}
+        <button
+          className="px-4 py-2 bg-blue-800 text-white text-sm rounded-md hover:bg-blue-900 transition my-4 "
+          onClick={scheduleAllData}
+        >
+          All schedule
+        </button>
+      </div>
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        {/* Left Section */}
         <div className="bg-white rounded-xl p-4 shadow">
           <h1 className="bg-[#CBCBCB] text-center p-2 font-semibold mb-4">
             Stock orders available to schedule
@@ -321,13 +330,6 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
           </div>
         </div>
       </div>
-
-      <button
-        className="px-4 py-2 bg-blue-800 text-white text-sm rounded-md hover:bg-blue-900 transition"
-        onClick={scheduleAllData}
-      >
-        All schedule
-      </button>
     </div>
   );
 };

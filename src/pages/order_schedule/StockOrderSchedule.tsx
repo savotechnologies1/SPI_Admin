@@ -24,7 +24,7 @@ const StockOrderSchedule = () => {
           </div>
           <div className="flex relative  ">
             <button className="py-2 px-10  border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer">
-              <NavLink to="/dashboard/addEmployees">1 Schedule Order</NavLink>
+              <NavLink to="/dashboard/addEmployees"> Schedule Order</NavLink>
             </button>
             <div className="absolute top-3 right-2 pl-2 ">
               <img src={send} alt="" />
