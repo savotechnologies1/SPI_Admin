@@ -33,7 +33,7 @@ export const selectCustomer = async () => {
     } else {
       toast.error("Failed to fetch customers.");
     }
-    return [];
+  return [];
   }
 };
 

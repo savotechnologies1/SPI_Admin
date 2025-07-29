@@ -35,9 +35,72 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
 
   console.log("selectedItemsselectedItems", selectedItems);
 
-  const scheduleItem = async (itemToAdd: SearchResultItem) => {
-    console.log("itemToAdditemToAdd", itemToAdd);
+  // const scheduleItem = async (itemToAdd: SearchResultItem) => {
+  //   console.log("itemToAdditemToAdd", itemToAdd);
 
+  //   const inputs = itemInputs[itemToAdd.id];
+  //   const qtyToSchedule = parseInt(inputs?.qty || "0", 10);
+  //   const deliveryDate = inputs?.deliveryDate || new Date();
+
+  //   if (isNaN(qtyToSchedule) || qtyToSchedule <= 0) {
+  //     toast.error("Please enter a valid quantity to schedule.");
+  //     return;
+  //   }
+  //   if (qtyToSchedule > itemToAdd.productQuantity) {
+  //     toast.warn(
+  //       `Cannot schedule more than the available quantity of ${itemToAdd.productQuantity}.`
+  //     );
+  //     return;
+  //   }
+  //   // if (selectedItems.some((item) => item.id === itemToAdd.id)) {
+  //   //   toast.info("This item has already been added to the schedule.");
+  //   //   return;
+  //   // }
+
+  //   const newScheduledItem: ScheduledItem = {
+  //     ...itemToAdd,
+  //     scheduledQty: qtyToSchedule,
+  //     deliveryDate: deliveryDate,
+  //   };
+  //   setSelectedItems([...selectedItems, newScheduledItem]);
+  //   const isPart = itemToAdd.part.type === "part";
+  //   const data = {
+  //     order_id: itemToAdd.id,
+  //     orderDate: itemToAdd.orderDate,
+  //     schedule_date: itemToAdd.shipDate,
+  //     submitted_date: itemToAdd.createdAt,
+  //     submitted_by: itemToAdd.createdAt,
+  //     customersId: itemToAdd.customer.id,
+  //     status: true,
+  //     type: itemToAdd.part.type,
+  //     ...(isPart
+  //       ? { part_id: itemToAdd.part.part_id }
+  //       : { productId: itemToAdd.part.part_id }),
+  //   };
+
+  //   await scheduleStockOrder(data);
+  // };
+
+  // const scheduleItem = async (itemToAdd: SearchResultItem) => {
+  //   // ... validation logic ...
+
+  //   const newScheduledItem: ScheduledItem = {
+  //     ...itemToAdd,
+  //     scheduledQty: qtyToSchedule,
+  //     deliveryDate: deliveryDate,
+  //   };
+  //   setSelectedItems([...selectedItems, newScheduledItem]);
+
+  //   // THIS PART IS INEFFICIENT FOR A "SCHEDULE ALL" WORKFLOW
+  //   const isPart = itemToAdd.part.type === "part";
+  //   const data = {
+  //     // ... payload data
+  //   };
+  //   await scheduleStockOrder(data); // <<< WE WILL REMOVE THIS LINE
+  // };
+
+  // TO THIS (without the API call)
+  const scheduleItem = (itemToAdd: SearchResultItem) => {
     const inputs = itemInputs[itemToAdd.id];
     const qtyToSchedule = parseInt(inputs?.qty || "0", 10);
     const deliveryDate = inputs?.deliveryDate || new Date();
@@ -52,36 +115,28 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       );
       return;
     }
-    // if (selectedItems.some((item) => item.id === itemToAdd.id)) {
-    //   toast.info("This item has already been added to the schedule.");
-    //   return;
-    // }
+    // Optional: Prevent adding the same item twice
+    if (selectedItems.some((item) => item.id === itemToAdd.id)) {
+      toast.info("This item has already been added to the schedule.");
+      return;
+    }
 
     const newScheduledItem: ScheduledItem = {
       ...itemToAdd,
       scheduledQty: qtyToSchedule,
       deliveryDate: deliveryDate,
     };
-    setSelectedItems([...selectedItems, newScheduledItem]);
-    const isPart = itemToAdd.part.type === "part";
 
-    const data = {
-      order_id: itemToAdd.id,
-      orderDate: itemToAdd.orderDate,
-      schedule_date: itemToAdd.shipDate,
-      submitted_date: itemToAdd.createdAt,
-      submitted_by: itemToAdd.createdAt,
-      customersId: itemToAdd.customer.id,
-      status: true,
-      type: itemToAdd.part.type,
-      ...(isPart
-        ? { part_id: itemToAdd.part.part_id }
-        : { productId: itemToAdd.part.part_id }),
-    };
+    // Just update the state. No API call here.
+    setSelectedItems((prev) => [...prev, newScheduledItem]);
 
-    await scheduleStockOrder(data);
+    // Clear the input for the item just added for a better user experience
+    setItemInputs((prev) => {
+      const newInputs = { ...prev };
+      delete newInputs[itemToAdd.id];
+      return newInputs;
+    });
   };
-
   const removeItem = (itemIdToRemove: string) => {
     setSelectedItems(
       selectedItems.filter((item) => item.id !== itemIdToRemove)
@@ -95,7 +150,46 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       )
     );
   };
+  const scheduleAllData = async () => {
+    try {
+      // 1. Create an array of payloads from the selectedItems state
+      const payloads = selectedItems.map((item) => {
+        const isPart = item.part.type === "part";
 
+        return {
+          order_id: item.id,
+          orderDate: item.orderDate,
+          delivery_date: item.deliveryDate, // Use the date selected by the user
+          submitted_date: new Date(), // Or item.createdAt if that's what you need
+          customersId: item.customer.id,
+          status: "new",
+          quantity: item.scheduledQty,
+          ...(isPart
+            ? { part_id: item.part.part_id }
+            : { product_id: item.part.part_id }),
+        };
+      });
+
+      console.log("Submitting all scheduled items with payload:", payloads);
+      await scheduleStockOrder(payloads);
+      // 2. Call your new bulk API endpoint with the array of payloads
+      // IMPORTANT: You will need to create this `scheduleMultipleStockOrders` function
+      // that sends a POST request to your backend with the `payloads` array.
+      // await scheduleMultipleStockOrders(payloads);
+
+      // 3. Handle success
+      toast.success("All selected items have been scheduled successfully!");
+
+      // 4. Clear the state after successful submission
+      setSelectedItems([]);
+      setItemInputs({}); // Optional: clear all inputs
+    } catch (error) {
+      console.error("Failed to schedule all items:", error);
+      toast.error(
+        "An error occurred while scheduling the items. Please try again."
+      );
+    }
+  };
   return (
     <div className="py-6">
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
@@ -227,6 +321,13 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
           </div>
         </div>
       </div>
+
+      <button
+        className="px-4 py-2 bg-blue-800 text-white text-sm rounded-md hover:bg-blue-900 transition"
+        onClick={scheduleAllData}
+      >
+        All schedule
+      </button>
     </div>
   );
 };

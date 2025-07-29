@@ -160,10 +160,10 @@ const StationLogin = () => {
       station: "",
       name: "",
     },
-    validationSchema: Yup.object({
-      station: Yup.string().required("Station is required"),
-      name: Yup.string().required("Name is required"),
-    }),
+    // validationSchema: Yup.object({
+    //   station: Yup.string().required("Station is required"),
+    //   name: Yup.string().required("Name is required"),
+    // }),
     onSubmit: (values) => {
       navigate("/run-schedule");
       console.log("Form Submitted", values);

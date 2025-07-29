@@ -239,12 +239,11 @@ const StockOrderScheduleList: React.FC = () => {
                 <th className="px-4 py-3">order number</th>
                 <th className="px-4 py-3">Product Number</th>
                 <th className="px-4 py-3">Part Number</th>
-                <th className="px-4 py-3">Process </th>
-
-                <th className="px-4 py-3">Customer Name</th>
+                {/* <th className="px-4 py-3">Process </th> */}
                 <th className="px-4 py-3">OrderDate</th>
-                <th className="px-4 py-3">Ship Date</th>
-                <th className="px-4 py-3">Schedule Date</th>
+                <th className="px-4 py-3">Delivery Date</th>
+                <th className="px-4 py-3">Completed Date</th>
+                <th className="px-4 py-3">Completed By</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Actions</th>
               </tr>
@@ -253,42 +252,22 @@ const StockOrderScheduleList: React.FC = () => {
               {workData.map((item, index) => (
                 <tr key={item.id} className="border-b hover:bg-gray-50">
                   <td className="px-4 py-3">{item.order.orderNumber}</td>
-                  <td className="px-4 py-3">
-                    {item.type === "part"
-                      ? item.order?.part?.partNumber
-                      : item.order?.part?.partNumber}
-                  </td>
-                  <td className="px-4 py-3">
-                    {item.type === "part"
-                      ? item.part.partNumber
-                      : item.product?.part.partNumber}
-                  </td>
-                  <td className="px-4 py-3">
-                    {item.type === "part"
-                      ? item.part.process.processName
-                      : item.product?.part.process.processName}
-                  </td>
+                  <td className="px-4 py-3">{item.order?.part?.partNumber}</td>
+                  <td className="px-4 py-3">{item.part.partNumber}</td>
+                  {/* <td className="px-4 py-3">{item.part.process.processName}</td> */}
 
-                  <td className="px-4 py-3">
-                    {item.order.customer.firstName}{" "}
-                    {item.order.customer.lastName}
-                  </td>
                   <td className="px-4 py-3">{item.order.orderDate}</td>
-                  <td className="px-4 py-3">{item.order.shipDate}</td>
                   <td className="px-4 py-3">
-                    {new Date(item.schedule_date).toLocaleDateString("en-GB")}
+                    {new Date(item.delivery_date).toLocaleDateString("en-GB")}
                   </td>
-
+                  <td className="px-4 py-3">
+                    {item.completed_date ? "complete date" : "not available"}
+                  </td>
+                  <td className="px-4 py-3">{item.completed_by}</td>
                   <td className="px-4 py-3">{item.status}</td>
 
-                  {/* <td className="px-4 py-3">
-                    <span className="px-2 py-1 rounded text-xs font-semibold bg-gray-200 text-gray-600">
-                      {new Date(item.createdAt).toLocaleDateString()}
-                    </span>
-                  </td> */}
-
                   <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
-                    <button
+                    {/* <button
                       className="text-brand hover:underline"
                       onClick={() => editWorkInstruction(item.id)}
                     >
@@ -297,7 +276,7 @@ const StockOrderScheduleList: React.FC = () => {
                         alt="Edit"
                         className="w-4 h-4 md:w-5 md:h-5"
                       />
-                    </button>
+                    </button> */}
                     <FaTrash
                       className="text-red-500 cursor-pointer h-7"
                       onClick={() => setSelectedId(item.id)}
