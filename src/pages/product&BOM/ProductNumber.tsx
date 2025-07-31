@@ -180,14 +180,32 @@ const ProductNumber = () => {
     formData.append("parts", JSON.stringify(savedBOMs));
 
     try {
-      await createProductNumber(formData);
+      const response = await createProductNumber(formData);
+      if (response?.status === 201) {
+        navigate("/product-tree");
+      }
+
       if (addPart) addPart(data);
-      // navigate("/product-tree");
     } catch (err) {
       console.error("Submission error:", err);
     }
   };
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
 
+  useEffect(() => {
+    if (selectedImages && selectedImages.length > 0) {
+      const imageUrls = Array.from(selectedImages).map((file) =>
+        URL.createObjectURL(file)
+      );
+      setPreviewImages(imageUrls);
+
+      return () => {
+        imageUrls.forEach((url) => URL.revokeObjectURL(url));
+      };
+    } else {
+      setPreviewImages([]);
+    }
+  }, [selectedImages]);
   return (
     <div className="p-4 md:p-7">
       <h1 className="font-bold text-[20px] md:text-[24px] text-black">
@@ -318,7 +336,7 @@ const ProductNumber = () => {
             className="border p-2 rounded w-full"
           />
         </label>
-        <label className="block col-span-4 md:col-span-2 cursor-pointer border bg-gray-100 p-4 rounded text-center">
+        {/* <label className="block col-span-4 md:col-span-2 cursor-pointer border bg-gray-100 p-4 rounded text-center">
           <input
             type="file"
             className="hidden"
@@ -328,6 +346,34 @@ const ProductNumber = () => {
           {selectedImages?.length
             ? `${selectedImages.length} image(s) selected`
             : "Tap or Click to Add Pictures"}
+        </label> */}
+
+        {previewImages.length > 0 && (
+          <div className="col-span-4 flex gap-3 flex-wrap mt-2">
+            {previewImages.map((img, idx) => (
+              <img
+                key={idx}
+                src={img}
+                alt={`preview-${idx}`}
+                className="w-24 h-24 object-cover rounded border"
+              />
+            ))}
+          </div>
+        )}
+
+        <label className="block col-span-4 md:col-span-2 cursor-pointer border bg-gray-100 p-4 rounded text-center">
+          <input
+            type="file"
+            className="hidden"
+            multiple
+            accept="image/*"
+            onChange={(e) => setSelectedImages(e.target.files)}
+          />
+          <div>
+            {selectedImages?.length
+              ? `${selectedImages.length} image(s) selected`
+              : "Tap or Click to Add Pictures"}
+          </div>
         </label>
 
         {/* BOM Section */}

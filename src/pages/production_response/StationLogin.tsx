@@ -134,60 +134,87 @@ import { FaArrowLeft, FaChevronRight } from "react-icons/fa";
 import logo from "../../assets/logo.png";
 import setting from "../../assets/settings_icon.png";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import {
+  selecEmployeeProcessApi,
+  stationLogin,
+} from "./https/productionResponseApi";
+import { toast } from "react-toastify";
+
+type SubmitType = "run_schedule" | "run_with_scan" | "training";
 
 const StationLogin = () => {
   const navigate = useNavigate();
+  const [emoloyeeProcess, setEmployeeProcess] = useState<any | null>(null);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const [processList, partList] = await Promise.all([
-  //         selectProcess(),
-  //         partNumberList(currentPage, rowsPerPage),
-  //       ]);
-  //       setProcessData(processList);
-  //       setPartData(partList.data);
-  //       setTotalPages(partList.pagination?.totalPages || 1);
-  //     } catch (error) {
-  //       toast.error("Failed to fetch data");
-  //     }
-  //   };
-  //   fetchData();
-  // }, [currentPage]);
+  const submitTypeRef = useRef<SubmitType>("run_schedule");
+
+  useEffect(() => {
+    fetchEmployeeProcess();
+  }, []);
+
+  const fetchEmployeeProcess = async () => {
+    try {
+      const response = await selecEmployeeProcessApi();
+      setEmployeeProcess(response || null);
+    } catch (error) {
+      toast.error("Failed to fetch login data");
+      console.error("Failed to fetch process:", error);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
-      station: "",
-      name: "",
+      processId: "",
+      stationUserId: "",
     },
-    // validationSchema: Yup.object({
-    //   station: Yup.string().required("Station is required"),
-    //   name: Yup.string().required("Name is required"),
-    // }),
-    onSubmit: (values) => {
-      navigate("/run-schedule");
-      console.log("Form Submitted", values);
-      // You can also do conditional navigation based on station or name here
+    validationSchema: Yup.object({
+      processId: Yup.string().required("Station/Process is required"),
+      stationUserId: Yup.string().required("Name is required"),
+    }),
+    onSubmit: async (values) => {
+      const type = submitTypeRef.current;
+
+      const data = {
+        processId: values.processId,
+        stationUserId: values.stationUserId,
+        type: type,
+      };
+
+      try {
+        console.log(
+          `Calling stationLogin API for type: "${type}" with data:`,
+          data
+        );
+        await stationLogin(data);
+        toast.success("Login Successful!");
+
+        switch (type) {
+          case "run_schedule":
+            navigate(`/run-schedule/${values.processId}`);
+            break;
+          case "run_with_scan":
+            navigate("/run-with-scan");
+            break;
+          case "training":
+            navigate("/training");
+            break;
+          default:
+            navigate("/");
+        }
+      } catch (error) {
+        toast.error("Login failed. Please try again.");
+      }
     },
   });
 
-  const RunSchedule = () => {
-    navigate("/run-schedule");
-  };
-  const RunWithScrap = () => {
-    navigate("/run-with-scan");
-  };
-  const Training = () => {
-    navigate("/training");
-  };
-
   return (
     <div className="bg-[#F5F6FA]">
-      {/* Header */}
       <div className="justify-between flex flex-row items-center px-4 py-2">
         <div className="flex items-center gap-3">
           <div className="relative group">
             <button
+              type="button"
               onClick={() => navigate(-1)}
               className="text-gray-600 hover:text-black"
             >
@@ -197,88 +224,110 @@ const StationLogin = () => {
               Back to dashboard
             </div>
           </div>
+
           <img className="w-[126px]" src={logo} alt="Logo" />
         </div>
+
         <div className="flex items-center gap-2">
           <img src={setting} alt="Settings" />
           <p className="font-semibold text-sm">Need Help?</p>
         </div>
       </div>
-
-      {/* Main Form */}
       <div className="min-h-screen flex items-center justify-center">
         <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
           <h1 className="text-2xl font-bold text-center mb-6">
             Station / Process Login
           </h1>
-
           <form onSubmit={formik.handleSubmit} className="space-y-4">
-            {/* Station Field */}
             <div>
               <label className="block text-gray-700 font-medium">Station</label>
               <select
-                name="station"
-                value={formik.values.station}
+                name="processId"
+                value={formik.values.processId}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                className="w-full mt-1 p-3 border rounded-md"
+                className={`w-full mt-1 p-3 border rounded-md ${
+                  formik.touched.processId && formik.errors.processId
+                    ? "border-red-500"
+                    : ""
+                }`}
               >
                 <option value="">Select Process Name</option>
-                <option value="Cut Trim">Cut Trim</option>
-                <option value="Inspection">Inspection</option>
-                <option value="Packaging">Packaging</option>
+                {emoloyeeProcess && emoloyeeProcess.stockAndProcess ? (
+                  emoloyeeProcess.stockAndProcess.map((process: any) => (
+                    <option key={process.id} value={process.id}>
+                      {`${process.name}`}
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>
+                    Loading...
+                  </option>
+                )}
               </select>
-              {formik.touched.station && formik.errors.station && (
+              {formik.touched.processId && formik.errors.processId && (
                 <p className="text-red-500 text-sm mt-1">
-                  {formik.errors.station}
+                  {formik.errors.processId}
                 </p>
               )}
             </div>
 
-            {/* Name Field */}
             <div>
               <label className="block text-gray-700 font-medium">Name</label>
               <select
-                name="name"
-                value={formik.values.name}
+                id="stationUserId"
+                name="stationUserId"
+                value={formik.values.stationUserId}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                className="w-full mt-1 p-3 border rounded-md"
+                className={`w-full mt-1 p-3 border rounded-md ${
+                  formik.touched.stationUserId && formik.errors.stationUserId
+                    ? "border-red-500"
+                    : ""
+                }`}
               >
-                <option value="">No Selection</option>
-                <option value="John Doe">John Doe</option>
-                <option value="Jane Smith">Jane Smith</option>
-                <option value="Alice Brown">Alice Brown</option>
+                <option value="">Select a User</option>
+                {emoloyeeProcess && emoloyeeProcess.stationUser ? (
+                  emoloyeeProcess.stationUser.map((user: any) => (
+                    <option key={user.id} value={user.id}>
+                      {`${user.name} (${user.email})`}
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>
+                    Loading...
+                  </option>
+                )}
               </select>
-              {formik.touched.name && formik.errors.name && (
+              {formik.touched.stationUserId && formik.errors.stationUserId && (
                 <p className="text-red-500 text-sm mt-1">
-                  {formik.errors.name}
+                  {formik.errors.stationUserId}
                 </p>
               )}
             </div>
 
-            {/* Buttons */}
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 pt-4">
               <button
                 type="submit"
+                onClick={() => (submitTypeRef.current = "run_schedule")}
                 className="w-full bg-brand text-white py-2 rounded-md transition"
               >
                 Run Schedule
               </button>
 
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-2">
                 <button
-                  onClick={RunWithScrap}
-                  type="button"
+                  type="submit"
+                  onClick={() => (submitTypeRef.current = "run_with_scan")}
                   className="w-full bg-gradient-to-r from-[#5BE49B] to-[#00A76F] text-white py-2 rounded-md transition"
                 >
                   Run With Scan
                 </button>
 
                 <button
-                  onClick={Training}
-                  type="button"
-                  className="w-full bg-gradient-to-r from-[#FFAC82] to-[#FF5630] text-white py-2 rounded-md transition ml-2"
+                  type="submit"
+                  onClick={() => (submitTypeRef.current = "training")}
+                  className="w-full bg-gradient-to-r from-[#FFAC82] to-[#FF5630] text-white py-2 rounded-md transition"
                 >
                   Training
                 </button>

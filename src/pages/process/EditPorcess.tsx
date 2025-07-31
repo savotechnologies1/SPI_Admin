@@ -1,12 +1,21 @@
 import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import delete_img from "../../assets/delete_1.png";
-import { deleteProcess, editProcess, processDetail } from "./https/processApi";
+import { editProcess, processDetail } from "./https/processApi";
 import { useEffect, useState } from "react";
 interface ProcessData extends ProcessFormData {
   id: string;
 }
+
+type ProcessFormData = {
+  processName: string;
+  partFamily: string;
+  machineName: string;
+  cycleTime: string;
+  ratePerHour: string;
+  orderNeeded: "true" | "false";
+  processDesc: string;
+};
 
 const EditProcess = () => {
   const {
@@ -16,18 +25,23 @@ const EditProcess = () => {
     reset,
   } = useForm<ProcessFormData>({
     defaultValues: {
-      orderNeeded: "false", // 👈 fallback string
+      orderNeeded: "false",
     },
   });
 
   const navigate = useNavigate();
-
   const { id } = useParams<{ id: string }>();
   const [processData, setProcessData] = useState([]);
-  const onSubmit = async (data: object) => {
-    // eslint-disable-next-line no-useless-catch
+
+  const onSubmit = async (data: ProcessFormData) => {
     try {
-      const response = await editProcess(data, id);
+      const response = await editProcess(
+        {
+          ...data,
+          orderNeeded: data.orderNeeded === "true",
+        },
+        id
+      );
       if (response.status === 200) {
         navigate("/process-list");
       }
@@ -35,6 +49,7 @@ const EditProcess = () => {
       throw error;
     }
   };
+
   const fetchProcessDetail = async () => {
     try {
       const response = await processDetail(id);
@@ -48,24 +63,10 @@ const EditProcess = () => {
       throw error;
     }
   };
+
   useEffect(() => {
     fetchProcessDetail();
   }, [id]);
-  const handleDelete = async () => {
-    try {
-      const response = await deleteProcess(id);
-      if (response.status === 200) {
-        navigate("/process-list");
-      }
-    } catch (error: unknown) {
-      throw error;
-    }
-  };
-
-  const orderNeededRegister = register("orderNeeded", {
-    required: true,
-    setValueAs: (v) => v === "true",
-  });
 
   return (
     <div className="p-7">
@@ -97,7 +98,7 @@ const EditProcess = () => {
             <div className="sm:w-1/2">
               <label className="font-semibold">Process Name</label>
               <input
-                {...register("processName")}
+                {...register("processName", { required: true })}
                 type="text"
                 placeholder="Enter your process name"
                 className="border py-4 px-4 rounded-md w-full"
@@ -109,16 +110,15 @@ const EditProcess = () => {
             <div className="sm:w-1/2">
               <label className="font-semibold">Part Family</label>
               <input
-                {...register("partFamily")}
+                {...register("partFamily", { required: true })}
                 type="text"
-                placeholder="Enter your process name"
+                placeholder="Enter your part family"
                 className="border py-4 px-4 rounded-md w-full"
               />
-              {errors.processName && (
+              {errors.partFamily && (
                 <p className="text-red-500 text-sm">This field is required</p>
               )}
             </div>
-
             <div className="sm:w-1/2">
               <label className="font-semibold">Machine Name</label>
               <input
@@ -135,12 +135,22 @@ const EditProcess = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 mt-2 mb-6">
             <div className="sm:w-1/2">
+              <label className="font-semibold">Process Description</label>
+              <input
+                {...register("processDesc", { required: true })}
+                type="text"
+                placeholder="Enter your cycle time"
+                className="border py-4 px-4 rounded-md w-full"
+              />
+              {errors.processDesc && (
+                <p className="text-red-500 text-sm">This field is required</p>
+              )}
+            </div>
+            <div className="sm:w-1/2">
               <label className="font-semibold">Cycle Time</label>
               <input
-                {...register("cycleTime", {
-                  required: true,
-                })}
-                type="string"
+                {...register("cycleTime", { required: true })}
+                type="text"
                 placeholder="Enter your cycle time"
                 className="border py-4 px-4 rounded-md w-full"
               />
@@ -152,10 +162,8 @@ const EditProcess = () => {
             <div className="sm:w-1/2">
               <label className="font-semibold">Rate per hour</label>
               <input
-                {...register("ratePerHour", {
-                  required: true,
-                })}
-                type="string"
+                {...register("ratePerHour", { required: true })}
+                type="text"
                 placeholder="Enter your rate per hour"
                 className="border py-4 px-4 rounded-md w-full"
               />
@@ -171,7 +179,7 @@ const EditProcess = () => {
               <input
                 type="radio"
                 value="true"
-                {...orderNeededRegister}
+                {...register("orderNeeded", { required: true })}
                 id="yes"
               />
               <label htmlFor="yes" className="ml-2">
@@ -183,7 +191,7 @@ const EditProcess = () => {
               <input
                 type="radio"
                 value="false"
-                {...orderNeededRegister}
+                {...register("orderNeeded", { required: true })}
                 id="no"
               />
               <label htmlFor="no" className="ml-2">

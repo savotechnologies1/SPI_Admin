@@ -22,6 +22,7 @@ const ForgetPassword = () => {
   const onSubmit = async (data: string) => {
     try {
       const response = await forgetPassword(data);
+      console.log("(response(response", response);
 
       if (response.status === 200) {
         navigate("/otp-verify");
@@ -146,23 +147,6 @@ const ForgetPassword = () => {
               </form>
             </TabPanel>
           </Tabs>
-
-          <div className="flex items-center justify-center my-4 text-[#6A707C] text-sm">
-            <span className="h-px bg-gray-300 flex-1"></span>
-            <span className="px-3">Or Login With</span>
-            <span className="h-px bg-gray-300 flex-1"></span>
-          </div>
-
-          <div className="flex gap-4 justify-center mb-6">
-            {[fb, google, apple].map((icon, index) => (
-              <button
-                key={index}
-                className="p-3 border rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <img src={icon} alt="" className="w-5 h-5" />
-              </button>
-            ))}
-          </div>
 
           <div className="text-center text-sm">
             Remember Password?{" "}

@@ -103,7 +103,7 @@ const EditWorkInstruction = () => {
       setInitialValues({
         processId: response.processId,
         productId: response.productId,
-        instructionTitle: response.instructionTitle,
+        instructionTitle: response.instructionTpitle,
         steps: formattedSteps,
       });
     } catch (error) {

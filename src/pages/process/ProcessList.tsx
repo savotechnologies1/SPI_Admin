@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react";
-
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaCircle, FaTrash } from "react-icons/fa";
-
-import more from "../../assets/more.png";
 import edit from "../../assets/edit_icon.png";
 import back from "../../assets/back.png";
 import next from "../../assets/next.png";
 import add from "../../assets/add.png";
-
-// import data from "../../components/Data/processListData";
 import { deleteProcess, processList } from "./https/processApi";
-import { Trash2 } from "lucide-react";
 interface ProcessItem {
+  processDesc: string;
   id: string;
   processName: string;
   machineName: string;
@@ -28,7 +23,6 @@ const ProcessList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
-  const [openOptionsIndex, setOpenOptionsIndex] = useState<number | null>(null);
   const [searchVal, setSearchVal] = useState("");
 
   const handleChange = (e) => {
@@ -38,9 +32,6 @@ const ProcessList = () => {
       throw error;
     }
   };
-  const toggleOptions = (index: number) => {
-    setOpenOptionsIndex((prevIndex) => (prevIndex === index ? null : index));
-  };
 
   const rowsPerPage = 8;
   const editProcess = (id: string) => {
@@ -48,7 +39,6 @@ const ProcessList = () => {
   };
 
   const fetchProcessList = async (page = 1) => {
-    // eslint-disable-next-line no-useless-catch
     try {
       const response = await processList(page, rowsPerPage, searchVal);
       setProcessData(response.data);
@@ -69,11 +59,10 @@ const ProcessList = () => {
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
-  const handleDelete = (id: string) => {
-    // eslint-disable-next-line no-useless-catch
+  const handleDelete = async (id: string) => {
     try {
       deleteProcess(id).then();
-      fetchProcessList(currentPage);
+      await fetchProcessList(currentPage);
     } catch (error: unknown) {
       throw error;
     }

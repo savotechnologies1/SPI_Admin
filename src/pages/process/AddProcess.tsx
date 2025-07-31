@@ -41,7 +41,7 @@ const AddProcess = () => {
           </span>
           <FaCircle className="text-[6px] text-gray-500" />
           <span className="text-xs sm:text-[16px] hover:cursor-pointer">
-            Add/edit process
+            Add process
           </span>
         </div>
       </div>
@@ -167,13 +167,13 @@ const AddProcess = () => {
             <p className="text-red-500 text-sm">Please select an option</p>
           )}
 
-          <div className="flex justify-between items-end">
+          <div className="flex justify-end items-end">
             <div className="mt-6">
               <button
                 type="submit"
                 className="bg-brand text-white px-6 py-3 rounded-md"
               >
-                Add/Edit Process
+                Add Process
               </button>
             </div>
           </div>

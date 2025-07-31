@@ -87,12 +87,24 @@ const App = () => {
           <Route path="forget-password" element={<ForgetPassowrd />} />
           <Route path="otp-verify" element={<OTP />} />
           <Route path="reset-password" element={<ResetPassword />} />
-          <Route path="station-login" element={<StationLogin />} />
-          <Route path="station-logout" element={<StationLogout />} />
+          <Route
+            path="station-login"
+            element={token ? <StationLogin /> : <SignIn />}
+          />
+          <Route
+            path="station-logout"
+            element={token ? <StationLogin /> : <SignIn />}
+          />
 
-          <Route path="run-schedule" element={<RunSchedule />} />
-          <Route path="run-with-scan" element={<RunWithScan />} />
-          <Route path="training" element={<Training />} />
+          <Route
+            path="run-schedule/:id"
+            element={token ? <RunSchedule /> : <SignIn />}
+          />
+          <Route
+            path="run-with-scan"
+            element={token ? <RunWithScan /> : <SignIn />}
+          />
+          <Route path="training" element={token ? <Layout /> : <Training />} />
 
           {/* Protected Routes */}
           {/* <Route

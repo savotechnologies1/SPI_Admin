@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import signin from "../assets/signin.png";
 import { useState } from "react";
-import { resetPassword } from "./https/authApi";
+import { forgetPassword, resetPassword } from "./https/authApi";
 
 const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);

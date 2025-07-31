@@ -33,73 +33,6 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
     }));
   };
 
-  console.log("selectedItemsselectedItems", selectedItems);
-
-  // const scheduleItem = async (itemToAdd: SearchResultItem) => {
-  //   console.log("itemToAdditemToAdd", itemToAdd);
-
-  //   const inputs = itemInputs[itemToAdd.id];
-  //   const qtyToSchedule = parseInt(inputs?.qty || "0", 10);
-  //   const deliveryDate = inputs?.deliveryDate || new Date();
-
-  //   if (isNaN(qtyToSchedule) || qtyToSchedule <= 0) {
-  //     toast.error("Please enter a valid quantity to schedule.");
-  //     return;
-  //   }
-  //   if (qtyToSchedule > itemToAdd.productQuantity) {
-  //     toast.warn(
-  //       `Cannot schedule more than the available quantity of ${itemToAdd.productQuantity}.`
-  //     );
-  //     return;
-  //   }
-  //   // if (selectedItems.some((item) => item.id === itemToAdd.id)) {
-  //   //   toast.info("This item has already been added to the schedule.");
-  //   //   return;
-  //   // }
-
-  //   const newScheduledItem: ScheduledItem = {
-  //     ...itemToAdd,
-  //     scheduledQty: qtyToSchedule,
-  //     deliveryDate: deliveryDate,
-  //   };
-  //   setSelectedItems([...selectedItems, newScheduledItem]);
-  //   const isPart = itemToAdd.part.type === "part";
-  //   const data = {
-  //     order_id: itemToAdd.id,
-  //     orderDate: itemToAdd.orderDate,
-  //     schedule_date: itemToAdd.shipDate,
-  //     submitted_date: itemToAdd.createdAt,
-  //     submitted_by: itemToAdd.createdAt,
-  //     customersId: itemToAdd.customer.id,
-  //     status: true,
-  //     type: itemToAdd.part.type,
-  //     ...(isPart
-  //       ? { part_id: itemToAdd.part.part_id }
-  //       : { productId: itemToAdd.part.part_id }),
-  //   };
-
-  //   await scheduleStockOrder(data);
-  // };
-
-  // const scheduleItem = async (itemToAdd: SearchResultItem) => {
-  //   // ... validation logic ...
-
-  //   const newScheduledItem: ScheduledItem = {
-  //     ...itemToAdd,
-  //     scheduledQty: qtyToSchedule,
-  //     deliveryDate: deliveryDate,
-  //   };
-  //   setSelectedItems([...selectedItems, newScheduledItem]);
-
-  //   // THIS PART IS INEFFICIENT FOR A "SCHEDULE ALL" WORKFLOW
-  //   const isPart = itemToAdd.part.type === "part";
-  //   const data = {
-  //     // ... payload data
-  //   };
-  //   await scheduleStockOrder(data); // <<< WE WILL REMOVE THIS LINE
-  // };
-
-  // TO THIS (without the API call)
   const scheduleItem = (itemToAdd: SearchResultItem) => {
     const inputs = itemInputs[itemToAdd.id];
     const qtyToSchedule = parseInt(inputs?.qty || "0", 10);
@@ -115,22 +48,18 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       );
       return;
     }
-    // Optional: Prevent adding the same item twice
     if (selectedItems.some((item) => item.id === itemToAdd.id)) {
       toast.info("This item has already been added to the schedule.");
       return;
     }
-
     const newScheduledItem: ScheduledItem = {
       ...itemToAdd,
-      scheduledQty: qtyToSchedule,
+      scheduledQty: qtyToSchedule, // yahan value 50 set ho gayi
       deliveryDate: deliveryDate,
     };
 
-    // Just update the state. No API call here.
     setSelectedItems((prev) => [...prev, newScheduledItem]);
 
-    // Clear the input for the item just added for a better user experience
     setItemInputs((prev) => {
       const newInputs = { ...prev };
       delete newInputs[itemToAdd.id];
@@ -152,7 +81,6 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   };
   const scheduleAllData = async () => {
     try {
-      // 1. Create an array of payloads from the selectedItems state
       const payloads = selectedItems.map((item) => {
         const isPart = item.part.type === "part";
         console.log("item", item);
@@ -160,8 +88,8 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
         return {
           order_id: item.id,
           orderDate: item.orderDate,
-          delivery_date: item.deliveryDate, // Use the date selected by the user
-          submitted_date: new Date(), // Or item.createdAt if that's what you need
+          delivery_date: item.deliveryDate,
+          submitted_date: new Date(),
           customersId: item.customer.id,
           status: "new",
           quantity: item.scheduledQty,
@@ -173,10 +101,6 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
 
       console.log("Submitting all scheduled items with payload:", payloads);
       await scheduleStockOrder(payloads);
-      // 2. Call your new bulk API endpoint with the array of payloads
-      // IMPORTANT: You will need to create this `scheduleMultipleStockOrders` function
-      // that sends a POST request to your backend with the `payloads` array.
-      // await scheduleMultipleStockOrders(payloads);
 
       // 3. Handle success
       toast.success("All selected items have been scheduled successfully!");
@@ -191,6 +115,8 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       );
     }
   };
+  console.log("selectedItemsselectedItems", selectedItems);
+
   return (
     <div className="py-6">
       <div className="flex justify-end">
@@ -232,9 +158,14 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                     {item.process && <span className="mx-2">|</span>}
                     {item.process && <span>{item.process}</span>}
                   </div>
-
                   <div className="flex items-center gap-2 text-sm">
-                    <p className="text-[#5A6774]">Available Qty:</p>
+                    <p className="text-[#5A6774]">Inventory Qty:</p>
+                    <span className="font-bold text-[#637381]  px-2 py-1 rounded-md">
+                      10
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <p className="text-[#5A6774]">Stock Order Qty:</p>
                     <span className="font-bold text-[#637381] bg-[#919EAB29] px-2 py-1 rounded-md">
                       {item.productQuantity}
                     </span>
@@ -250,6 +181,12 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                         handleInputChange(item.id, "qty", e.target.value)
                       }
                     />
+
+                    {itemInputs[item.id]?.qty >= item.productQuantity && (
+                      <p className="text-red-400">
+                        Enter quantity less then stock order quantitty
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -282,7 +219,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
         </div>
 
         {/* Right Section */}
-        <div className="bg-white rounded-xl p-4 shadow">
+        {/* <div className="bg-white rounded-xl p-4 shadow">
           <h1 className="bg-[#CBCBCB] text-center p-2 font-semibold mb-4">
             Stock orders selected to be scheduled
           </h1>
@@ -300,6 +237,14 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                 <div className="space-y-1 flex-1 min-w-0">
                   <p className="font-semibold">{item.part.partDescription}</p>
                   <p className="text-sm">{item.part.partNumber}</p>
+                  <p className="text-sm">
+                    {item.part.components.map((data) => (
+                      <div className="flex justify-between">
+                        <p className="text-sm"> {data.part.partNumber}</p>
+                        <p className="text-sm"> {data.part.partNumber}</p>
+                      </div>
+                    ))}
+                  </p>
                   <p className="text-sm font-bold">
                     Scheduled Qty: {item.scheduledQty}
                   </p>
@@ -325,6 +270,105 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                 >
                   <FaTrashAlt className="text-red-500" />
                 </button>
+              </div>
+            ))}
+          </div>
+        </div> */}
+
+        <div className="bg-white rounded-xl p-4 shadow">
+          <h1 className="bg-[#CBCBCB] text-center p-2 font-semibold mb-4">
+            Stock orders selected to be scheduled
+          </h1>
+          <div className="space-y-4">
+            {selectedItems.length === 0 && (
+              <p className="text-center text-gray-500">
+                No items scheduled yet.
+              </p>
+            )}
+            {selectedItems.map((item) => (
+              <div key={item.id} className="p-4  bg-white shadow-md ">
+                <div className="flex justify-between mb-4">
+                  {/* <p className="text-sm font-bold">
+                    Scheduled Qty: {item.scheduledQty}
+                  </p>{" "} */}
+                  <div className="flex flex-col justify-between">
+                    <label className="text-[#1C252E] text-sm">
+                      Delivery Date
+                    </label>
+                    <DatePicker
+                      selected={item.deliveryDate}
+                      onChange={(date) =>
+                        updateScheduledDate(item.id, date as Date)
+                      }
+                      dateFormat="dd MMM yyyy"
+                      className="border py-2 px-4 rounded-md font-semibold w-full sm:w-44"
+                    />
+                  </div>
+                  <button
+                    className=" rounded-full cursor-pointer"
+                    onClick={() => removeItem(item.id)}
+                  >
+                    <FaTrashAlt className="text-red-500 " />
+                  </button>
+                </div>
+                <div className="space-y-1 flex-1 min-w-0">
+                  {/* We start with a container for the table, maybe a div */}
+                  <div className="flex-1 min-w-0">
+                    {/* We no longer need the separate <p> tags here */}
+
+                    {/* The main container for the table */}
+                    <div className="overflow-x-auto border ">
+                      <table className="min-w-full text-sm text-left">
+                        {/* Table Head: Column titles, same as before */}
+                        <thead className="bg-gray-200">
+                          <tr>
+                            <th className="px-4 py-2 font-medium text-gray-700">
+                              Product /Part
+                            </th>
+                            <th className="px-4 py-2 font-medium text-gray-700">
+                              Description
+                            </th>
+                            <th className="px-4 py-2 font-medium text-gray-700">
+                              Scheduled Quantity
+                            </th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          <tr className="bg-gray-50 font-semibold border-b">
+                            <td className="px-4 py-2">
+                              {item.part.partNumber}
+                            </td>
+                            <td className="px-4 py-2">
+                              {item.part.partDescription}
+                            </td>
+                            <td className="px-4 py-2">
+                              {item.scheduledQty || "-"}
+                            </td>
+                          </tr>
+
+                          {item.part.components.map((data) => (
+                            <tr
+                              key={data.part.partNumber}
+                              className="border-b hover:bg-gray-50"
+                            >
+                              <td className="px-4 pr-4 py-2">
+                                {data.part.partNumber}
+                              </td>
+                              <td className="px-4 py-2">
+                                {data.part.partDescription || "N/A"}
+                              </td>
+                              <td className="px-4 py-2 font-medium">
+                                {(item.scheduledQty || 0) *
+                                  (data.part.minStock || 0)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

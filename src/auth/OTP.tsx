@@ -2,8 +2,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import signin from "../assets/signin.png";
-import { otpVarify } from "./https/authApi";
-import { ChangeEvent, useState } from "react";
+import { forgetPassword, otpVarify } from "./https/authApi";
+import { ChangeEvent, useEffect, useState } from "react";
 
 const OTP = () => {
   const { handleSubmit } = useForm();
@@ -38,7 +38,36 @@ const OTP = () => {
       console.error("Error during OTP verification:", error);
     }
   };
+  const resendOtpApi = async () => {
+    try {
+      navigate("/forget-password");
+    } catch (error) {
+      console.error("Error during forgetPassword:", error);
+    }
+  };
 
+  const [seconds, setSeconds] = useState(30);
+
+  useEffect(() => {
+    // 2. Jab tak seconds 0 se zyada hain, tab tak har second pe countdown chalao.
+    if (seconds > 0) {
+      const timerId = setInterval(() => {
+        // Har second, seconds ki value 1 se kam kardo.
+        setSeconds((prevSeconds) => prevSeconds - 1);
+      }, 1000);
+
+      // 3. Cleanup function: Jab component hatega ya 'seconds' update hoga,
+      // toh purana interval clear ho jayega. Isse memory leaks nahi hote.
+      return () => clearInterval(timerId);
+    }
+    // 4. Dependency Array [seconds]: Yeh effect tabhi chalega jab 'seconds' ki value badlegi.
+  }, [seconds]);
+
+  // Function to format time as 00:SS
+  const formatTime = () => {
+    const remainingSeconds = seconds % 60;
+    return `00:${String(remainingSeconds).padStart(2, "0")}`;
+  };
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
       {/* Left Image Section - Hidden on mobile */}
@@ -82,7 +111,9 @@ const OTP = () => {
               ))}
             </div>
             <div className="text-center text-[#F2451C] mb-6">
-              <p className="font-medium">00:30</p>
+              <p className="font-medium text-2xl">
+                {seconds === 0 ? "Time's up!" : formatTime()}
+              </p>
             </div>
 
             <button
@@ -96,6 +127,7 @@ const OTP = () => {
               <button
                 type="button"
                 className="text-[#F2451C] font-semibold hover:underline focus:outline-none"
+                onClick={resendOtpApi}
               >
                 Resend
               </button>

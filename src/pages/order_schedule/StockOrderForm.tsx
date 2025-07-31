@@ -155,7 +155,7 @@ const StockOrderForm = () => {
             partNumber: string;
             partDescription: string;
             availStock: number;
-            cost: string; // The API sends cost as a string
+            cost: string;
             type: string;
           }
 
@@ -164,7 +164,7 @@ const StockOrderForm = () => {
             e: React.ChangeEvent<HTMLSelectElement>
           ) => {
             const selectedProductId = e.target.value;
-            setFieldValue("productId", selectedProductId); // Set the ID for submission
+            setFieldValue("productId", selectedProductId);
 
             if (selectedProductId) {
               const selectedProduct = productNumberList.find(
@@ -172,28 +172,19 @@ const StockOrderForm = () => {
               );
 
               if (selectedProduct) {
-                // --- FIX IS HERE ---
-                // 1. Convert the 'cost' string from the API to a number
                 const unitCost = parseFloat(selectedProduct.cost);
 
-                // 2. Check if the conversion was successful before proceeding
                 if (isNaN(unitCost)) {
                   console.error(
                     "Invalid cost value for product:",
                     selectedProduct
                   );
-                  // Optionally, reset the form fields here as well
-                  // ...
-                  return; // Exit the function to prevent further errors
+                  return;
                 }
 
-                const quantity = 1; // Default quantity
-
-                // Now you can safely use 'unitCost' as a number
+                const quantity = 1;
                 setSingleUnitCost(unitCost);
-                setFieldValue("productNumber", selectedProduct.partNumber); // For display
-
-                // .toFixed() will now work correctly on the 'unitCost' number
+                setFieldValue("productNumber", selectedProduct.partNumber);
                 setFieldValue("cost", unitCost.toFixed(2));
                 setFieldValue("productQuantity", quantity);
                 setFieldValue(
@@ -201,11 +192,9 @@ const StockOrderForm = () => {
                   selectedProduct.partDescription
                 );
 
-                // The calculation will also work correctly
                 setFieldValue("totalCost", (unitCost * quantity).toFixed(2));
               }
             } else {
-              // This is your reset logic, it's correct
               setSingleUnitCost(null);
               setFieldValue("productNumber", "");
               setFieldValue("productId", "");
@@ -221,20 +210,15 @@ const StockOrderForm = () => {
             const quantityValue = e.target.value;
             let newQuantity = Number(quantityValue);
 
-            setFieldValue("productQuantity", quantityValue); // Set the raw value to allow clearing the input
+            setFieldValue("productQuantity", quantityValue);
 
             if (newQuantity < 1 && quantityValue !== "") {
               newQuantity = 1;
             }
-
-            // Recalculate total cost if we have a unit cost and a valid quantity
             if (singleUnitCost !== null && newQuantity >= 1) {
               const totalCost = singleUnitCost * newQuantity;
-              // CHANGED: Update the 'totalCost' field, not the 'cost' field
               setFieldValue("totalCost", totalCost.toFixed(2));
             } else {
-              // If quantity is cleared or invalid, clear the total cost
-              // CHANGED: Update the 'totalCost' field
               setFieldValue("totalCost", "");
             }
           };
@@ -321,8 +305,6 @@ const StockOrderForm = () => {
                   />
                 </div>
               </div>
-
-              {/* Personal Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 bg-white px-6 ">
                 <div className="flex flex-col ">
                   <label className="font-semibold">Select Customer</label>
@@ -416,7 +398,6 @@ const StockOrderForm = () => {
                 </div>
               </div>
 
-              {/* Product Details */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 bg-white px-6 ">
                 <div className="md:col-span-1">
                   <label className="font-semibold">Product Number</label>
@@ -446,7 +427,6 @@ const StockOrderForm = () => {
                   />
                 </div>
 
-                {/* Unit Cost */}
                 <div>
                   <label className="font-semibold">Unit Cost</label>
                   <p className="border py-3 px-4 rounded-md w-full bg-gray-100 min-h-[48px] flex items-center">
@@ -480,7 +460,6 @@ const StockOrderForm = () => {
 
                 <div>
                   <label className="font-semibold">Total Cost</label>
-                  {/* CHANGED: This field is now bound to 'totalCost' */}
                   <Field
                     name="totalCost"
                     type="number"
@@ -524,7 +503,6 @@ const StockOrderForm = () => {
                 </div>
               </div>
 
-              {/* Submit Button */}
               <div className="mt-6">
                 <button
                   type="submit"

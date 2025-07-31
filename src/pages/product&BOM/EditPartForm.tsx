@@ -61,13 +61,21 @@ const EditPartForm = () => {
   const { register, handleSubmit, setValue, watch, reset } = useForm();
   const context = useContext(PartContext);
   const navigate = useNavigate();
+  const { id } = useParams();
+  const rowsPerPage = 5;
   const [totalPages, setTotalPages] = useState(1);
-
   const [currentPage, setCurrentPage] = useState(1);
+
   if (!context)
     throw new Error("PartContext must be used within a PartProvider");
-  const rowsPerPage = 5;
-  const { id } = useParams();
+
+  const { addPart } = context;
+
+  const [processData, setProcessData] = useState([]);
+  const [partData, setPartData] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
+  const selectedImages = watch("image");
+  const [previewImages, setPreviewImages] = useState([]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -77,9 +85,7 @@ const EditPartForm = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-  const { addPart } = context;
-
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data) => {
     const formData = new FormData();
 
     formData.append("partFamily", data.partFamily);
@@ -112,8 +118,6 @@ const EditPartForm = () => {
     }
   };
 
-  const [processData, setProcessData] = useState([]);
-  const [partData, setPartData] = useState([]);
   const getAllPartList = async (page = 1) => {
     try {
       const response = await partNumberList(page, rowsPerPage);
@@ -121,8 +125,8 @@ const EditPartForm = () => {
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {}
   };
-  const fetchProcessList = async (page = 1) => {
-    // eslint-disable-next-line no-useless-catch
+
+  const fetchProcessList = async () => {
     try {
       const response = await selectProcess();
       setProcessData(response);
@@ -130,8 +134,6 @@ const EditPartForm = () => {
       throw error;
     }
   };
-
-  const [existingImages, setExistingImages] = useState<string[]>([]);
 
   const fetchProcessDetail = async () => {
     try {
@@ -149,6 +151,31 @@ const EditPartForm = () => {
     }
   };
 
+  const handleDeleteImg = async (imageId) => {
+    try {
+      await deleteProductImage(imageId);
+      await fetchProcessDetail(id);
+    } catch (error) {
+      console.error("Failed to delete image:", error);
+    }
+  };
+
+  // Update preview image URLs on image selection
+  useEffect(() => {
+    if (selectedImages?.length) {
+      const newPreviews = Array.from(selectedImages).map((file) =>
+        URL.createObjectURL(file)
+      );
+      setPreviewImages(newPreviews);
+
+      return () => {
+        newPreviews.forEach((url) => URL.revokeObjectURL(url));
+      };
+    } else {
+      setPreviewImages([]);
+    }
+  }, [selectedImages]);
+
   useEffect(() => {
     fetchProcessDetail();
   }, [id]);
@@ -157,20 +184,7 @@ const EditPartForm = () => {
     fetchProcessList();
     getAllPartList();
   }, []);
-  const handleDeleteImg = async (imageId: string, stepIndex: number) => {
-    try {
-      console.log("imageIdimageId", imageId);
 
-      await deleteProductImage(imageId);
-      await fetchProcessDetail(id);
-      // const updatedImgs = values.steps[stepIndex].workInstructionImg.filter(
-      //   (img) => img.id !== imageId
-      // );
-      // setFieldValue(`steps.${stepIndex}.workInstructionImg`, updatedImgs);
-    } catch (error) {
-      console.error("Failed to delete image:", error);
-    }
-  };
   return (
     <div className="p-4 md:p-7">
       <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-black">
@@ -210,6 +224,7 @@ const EditPartForm = () => {
               ))}
             </select>
           </label>
+
           <label className="block col-span-4 md:col-span-2">
             Part Number
             <input
@@ -250,7 +265,7 @@ const EditPartForm = () => {
           </div>
 
           <div className="col-span-4 md:col-span-1">
-            <label> Order Quantity by Supplier</label>
+            <label>Order Quantity by Supplier</label>
             <input
               type="number"
               {...register("supplierOrderQty")}
@@ -273,7 +288,7 @@ const EditPartForm = () => {
             <label>Minimum Stock</label>
             <input
               type="number"
-              {...register("minStock", { valueAsNumber: true })}
+              {...register("minStock")}
               placeholder="Minimum Stock"
               className="border p-2 rounded w-full"
             />
@@ -283,7 +298,7 @@ const EditPartForm = () => {
             <label>Available Stock</label>
             <input
               type="number"
-              {...register("availStock", { valueAsNumber: true })}
+              {...register("availStock")}
               placeholder="Available Stock"
               className="border p-2 rounded w-full"
             />
@@ -298,20 +313,7 @@ const EditPartForm = () => {
               className="border p-2 rounded w-full"
             />
           </div>
-          {/* <div>
-            <label className="font-semibold">Supplier</label>
-            <select
-              {...register("supplier_id")}
-              className="border py-3 px-4 rounded-md w-full text-gray-600"
-            >
-              <option value="">-- Select Supplier --</option>
-              {supplierData.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </div> */}
+
           <div className="col-span-4 md:col-span-1">
             <label>Process Order Required</label>
             <select
@@ -348,13 +350,26 @@ const EditPartForm = () => {
               className="border p-2 rounded w-full"
             />
           </label>
+
           <div className="col-span-4">
             <label className="block font-medium mb-2">Uploaded Images</label>
-            <div className="flex gap-2 flex-wrap">
-              {existingImages.map((img, i) => (
-                <div className="relative">
+
+            {previewImages.length > 0 && (
+              <div className="col-span-4 flex gap-2 flex-wrap mt-2">
+                {previewImages.map((imgUrl, i) => (
                   <img
                     key={i}
+                    src={imgUrl}
+                    alt={`Preview ${i}`}
+                    className="w-20 h-20 object-cover border rounded"
+                  />
+                ))}
+              </div>
+            )}
+            <div className="flex gap-2 flex-wrap">
+              {existingImages.map((img, i) => (
+                <div key={img.id} className="relative">
+                  <img
                     src={`${BASE_URL}/uploads/partImages/${img.imageUrl}`}
                     alt={`Uploaded ${i}`}
                     className="w-20 h-20 object-cover border rounded"
@@ -362,7 +377,7 @@ const EditPartForm = () => {
                   <MdCancel
                     className="absolute -top-2 -right-2 cursor-pointer text-red-600 bg-white rounded-full"
                     size={20}
-                    onClick={() => handleDeleteImg(img.id, i)}
+                    onClick={() => handleDeleteImg(img.id)}
                   />
                 </div>
               ))}
@@ -370,7 +385,7 @@ const EditPartForm = () => {
           </div>
 
           <label className="block col-span-4 md:col-span-2 cursor-pointer border bg-gray-100 p-4 rounded text-center">
-            {watch("image")?.[0]?.name || "Tap or Click to Add Picture"}
+            {selectedImages?.[0]?.name || "Tap or Click to Add Picture"}
             <input
               type="file"
               {...register("image")}
@@ -390,8 +405,6 @@ const EditPartForm = () => {
           </div>
         </form>
       </div>
-
-      {/* Table */}
     </div>
   );
 };
