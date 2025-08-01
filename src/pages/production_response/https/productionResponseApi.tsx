@@ -38,19 +38,35 @@ export const stationProcessDetail = async (id: string) => {
   }
 };
 
-export const completeOrder = async (id: string, data: string) => {
+export const stationLogoutApi = async (id: string) => {
   try {
-    console.log("datadata", data);
-
-    const response = await axiosInstance.put(`/complete-order/${id}`, {
-      orderId: data,
-    });
-
-    if (response.status === 201) {
+    const response = await axiosInstance.post(`/station-logout/${id}`);
+    if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response;
   } catch (error: unknown) {
     toast.error(error.response.data.message);
+  }
+};
+
+export const completeOrder = async (
+  id: string,
+  orderId: string,
+  partId: string
+) => {
+  try {
+    const response = await axiosInstance.put(`/complete-order/${id}`, {
+      orderId,
+      partId, // ✅ pass correct partId here
+    });
+
+    if (response.status === 201) {
+      toast.success(response.data.message);
+    }
+
+    return response;
+  } catch (error: any) {
+    toast.error(error?.response?.data?.message || "Something went wrong");
   }
 };

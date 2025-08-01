@@ -104,7 +104,10 @@ const App = () => {
             path="run-with-scan"
             element={token ? <RunWithScan /> : <SignIn />}
           />
-          <Route path="training" element={token ? <Layout /> : <Training />} />
+          <Route
+            path="training/:id"
+            element={token ? <Training /> : <Training />}
+          />
 
           {/* Protected Routes */}
           {/* <Route

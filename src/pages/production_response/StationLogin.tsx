@@ -197,7 +197,7 @@ const StationLogin = () => {
             navigate("/run-with-scan");
             break;
           case "training":
-            navigate("/training");
+            navigate(`/training/${values.processId}`);
             break;
           default:
             navigate("/");

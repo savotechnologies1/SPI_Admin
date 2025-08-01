@@ -6,11 +6,12 @@ import step_3 from "../../assets/step_3.png";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import {
   completeOrder,
+  stationLogoutApi,
   stationProcessDetail,
 } from "./https/productionResponseApi";
 import { useEffect, useState } from "react";
 
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = import.meta.env.VITE_SERVER_URL;
 const data = [
   {
     img: step_1,
@@ -230,66 +231,39 @@ const formatDate = (dateString) => {
 
 const RunSchedule = () => {
   const navigate = useNavigate();
-  const { id } = useParams(); // --> ADDED: Get the 'jobId' from the URL
+  const { id } = useParams();
   console.log("id", id);
 
-  // --> ADDED: State for storing API data, loading status, and errors
   const [jobData, setJobData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // --> ADDED: useEffect to fetch data when the component mounts or jobId changes
-  useEffect(() => {
-    const fetchJobDetails = async () => {
-      // Log #1: Does the effect run? Is jobId present?
-      console.log("useEffect triggered. Job ID:", id);
-
+  const fetchJobDetails = async (jobId) => {
+    try {
       setLoading(true);
-      try {
-        // Log #2: Are we attempting the API call?
-        console.log("Attempting to call stationProcessDetail...");
+      const response = await stationProcessDetail(jobId);
+      const data = response?.data;
 
-        const response = await stationProcessDetail(id);
-
-        console.log("API call successful. Full response:", response);
-
-        if (response && response.data && response.data) {
-          setJobData(response.data);
-          setError(null);
-        } else {
-          console.warn("Unexpected API response structure:", response);
-        }
-      } catch (err) {
-        // Log #4: If the call fails, what is the error?
-        console.error("API call failed in catch block:", err);
-
-        // Provide more detailed error for debugging
-        if (err.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          console.error("Error Response Data:", err.response.data);
-          console.error("Error Response Status:", err.response.status);
-          setError(
-            `Error ${err.response.status}: ${
-              err.response.data.message || "Server Error"
-            }`
-          );
-        } else if (err.request) {
-          // The request was made but no response was received (e.g., network error, CORS)
-          console.error("Error Request:", err.request);
-          setError("Network Error: Could not connect to the server.");
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.error("Error Message:", err.message);
-          setError("An error occurred while setting up the request.");
-        }
-      } finally {
-        setLoading(false);
+      if (data) {
+        setJobData(data);
       }
-    };
+    } catch (error) {
+      console.log("errorerror", error);
+      if (error.status == 404) {
+        navigate("/station-login");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchJobDetails();
+  // useEffect stays clean
+  useEffect(() => {
+    fetchJobDetails(id);
   }, [id]);
+  useEffect(() => {
+    console.log("🔁 Render triggered with updated jobData:", jobData);
+  }, [jobData]);
 
   const handleLogout = () => {
     navigate("/station-logout");
@@ -335,10 +309,32 @@ const RunSchedule = () => {
       return "N/A";
     }
   };
-
   const handleCompleteOrder = async (jobData) => {
     try {
-      await completeOrder(jobData.productionId, jobData.order_id);
+      const response = await completeOrder(
+        jobData.productionId,
+        jobData.order_id,
+        jobData.part_id
+      );
+
+      // ✅ Refetch data AFTER completing order
+      fetchJobDetails(id);
+    } catch (error) {
+      const status = error?.response?.status;
+      if (status === 400) {
+        console.warn("Already completed. Refetching...");
+        fetchJobDetails(id); // even if already completed, refetch
+      } else {
+        console.error("Error:", error);
+      }
+    }
+  };
+  const stationLogout = async (jobData) => {
+    try {
+      const response = await stationLogoutApi(jobData.productionId);
+      if (response.status === 200) {
+        navigate("/station-login");
+      }
     } catch (error) {}
   };
   return (
@@ -346,7 +342,7 @@ const RunSchedule = () => {
       <div className="bg-[#243C75] relative ">
         <div className="flex items-center gap-2 text-white bg-[#17274C] w-full justify-end p-2">
           <button
-            onClick={handleLogout}
+            onClick={() => stationLogout(jobData)}
             className="text-xs md:text-sm font-semibold flex items-center gap-1"
           >
             Log out
@@ -383,7 +379,7 @@ const RunSchedule = () => {
                 Date: {formatDate(jobData.delivery_date)}
               </p>
               <p className=" text-sm md:text-base">
-                Qty: {order.productQuantity}
+                Qty: {jobData.completedQuantity}
               </p>
               <p className=" text-sm md:text-base">Scrap Qty: 2</p>
             </div>
@@ -498,5 +494,3 @@ const RunSchedule = () => {
 };
 
 export default RunSchedule;
-
-
