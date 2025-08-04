@@ -261,7 +261,12 @@ const StockOrderScheduleList: React.FC = () => {
                     {new Date(item.delivery_date).toLocaleDateString("en-GB")}
                   </td>
                   <td className="px-4 py-3">
-                    {item.completed_date ? "complete date" : "not available"}
+                    {}
+                    {item.completed_date
+                      ? new Date(item.completed_date).toLocaleDateString(
+                          "en-GB"
+                        )
+                      : "not available"}
                   </td>
                   <td className="px-4 py-3">{item.completed_by}</td>
                   <td className="px-4 py-3">{item.status}</td>

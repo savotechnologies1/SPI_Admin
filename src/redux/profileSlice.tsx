@@ -1,11 +1,10 @@
 // src/features/profile/profileSlice.js
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getProfile } from '../pages/settings/https/profileApi';
-
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getProfile } from "../pages/settings/https/profileApi";
 
 // Async thunk to fetch profile
 export const fetchProfile = createAsyncThunk(
-  'profile/fetchProfile',
+  "profile/fetchProfile",
   async () => {
     const response = await getProfile();
     return response.data;
@@ -13,10 +12,10 @@ export const fetchProfile = createAsyncThunk(
 );
 
 const profileSlice = createSlice({
-  name: 'profile',
+  name: "profile",
   initialState: {
     data: null,
-    status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
+    status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null,
   },
   reducers: {
@@ -28,14 +27,14 @@ const profileSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchProfile.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(fetchProfile.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = "succeeded";
         state.data = action.payload;
       })
       .addCase(fetchProfile.rejected, (state, action) => {
-        state.status = 'failed';
+        state.status = "failed";
         state.error = action.error.message;
       });
   },

@@ -22,7 +22,7 @@ export const stationLogin = async (userData: object) => {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: unknown) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };
@@ -45,7 +45,7 @@ export const stationLogoutApi = async (id: string) => {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: unknown) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };
@@ -53,12 +53,68 @@ export const stationLogoutApi = async (id: string) => {
 export const completeOrder = async (
   id: string,
   orderId: string,
-  partId: string
+  partId: string,
+  employeeId: string
 ) => {
   try {
     const response = await axiosInstance.put(`/complete-order/${id}`, {
       orderId,
-      partId, // ✅ pass correct partId here
+      partId,
+      employeeId,
+    });
+
+    if (response.status === 201) {
+      toast.success(response.data.message);
+    }
+
+    return response;
+  } catch (error: any) {
+    toast.error(error?.response?.data?.message || "Something went wrong");
+  }
+};
+
+export const completeTraningApi = async (id: string) => {
+  try {
+    const response = await axiosInstance.put(`/complete-traning/${id}`);
+
+    if (response.status === 201) {
+      toast.success(response.data.message);
+    }
+
+    return response;
+  } catch (error: any) {
+    toast.error(error?.response?.data?.message || "Something went wrong");
+  }
+};
+
+export const updateStepTime = async (productionId: string, stepId: string) => {
+  try {
+    const response = await axiosInstance.put(
+      `/production-response/${productionId}/update-step-time`,
+      { stepId }
+    );
+
+    if (response.status === 200) {
+      toast.success("Step marked as completed.");
+    }
+
+    return response.data;
+  } catch (error: any) {
+    toast.error(error?.response?.data?.message || "Failed to update step.");
+  }
+};
+
+export const scrapOrder = async (
+  id: string,
+  orderId: string,
+  partId: string,
+  employeeId: string
+) => {
+  try {
+    const response = await axiosInstance.put(`/scrap-order/${id}`, {
+      orderId,
+      partId,
+      employeeId,
     });
 
     if (response.status === 201) {

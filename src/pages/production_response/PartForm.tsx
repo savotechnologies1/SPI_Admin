@@ -3,28 +3,6 @@ import { useForm } from "react-hook-form";
 
 const PartForm = () => {
   const supplier = "Cortez herring";
-  // const [formData, setFormData] = useState({
-  //   orderNumber: "",
-  //   orderDate: "2025-02-26",
-  //   shipDate: "2025-02-26",
-  //   customer: "Cortez Herring",
-  //   customerName: "",
-  //   customerEmail: "",
-  //   customerPhone: "",
-  //   productNumber: "",
-  //   cost: "",
-  //   quantity: "",
-  //   description: "",
-  //   file: null,
-  //   partFamily: "Cortez Herring",
-  //   partNumber: "",
-  //   partDesc: "",
-  //   partQuantity: "",
-  //   partCost: "",
-  //   time: "09:33 AM",
-  //   process: "Cortez Herring",
-  //   assignTo: "Cortez Herring",
-  // });
 
   const { register, handleSubmit, setValue } = useForm();
 
@@ -48,38 +26,7 @@ const PartForm = () => {
             {...register("searchPart")}
           />
         </div>
-
         <div className="grid grid-cols-1 gap-4 bg-white p-4 ">
-          {/* <div>
-            <label className="block font-semibold mb-1">
-              Select Part Family
-            </label>
-            <select
-              {...register("partFamily")}
-              className="border py-3 px-4 rounded-md w-full text-gray-600"
-            >
-              <option value="" disabled selected>
-                Select Part Family
-              </option>
-              <option value="family1">Family 1</option>
-              <option value="family2">Family 2</option>
-              <option value="family3">Family 3</option>
-            </select>
-          </div> */}
-          {/* <div>
-            <label className="block font-semibold mb-1">Select Part</label>
-            <select
-              {...register("part")}
-              className="border py-3 px-4 rounded-md w-full text-gray-600"
-            >
-              <option value="" disabled selected>
-                Select Part
-              </option>
-              <option value="part1">Part 1</option>
-              <option value="part2">Part 2</option>
-              <option value="part3">Part 3</option>
-            </select>
-          </div> */}
           <div>
             <label className="block font-semibold mb-1">Supplier</label>
             <p
@@ -145,7 +92,6 @@ const PartForm = () => {
           </div>
         </div>
 
-        {/* Add More Parts */}
         <div className="bg-white p-4">
           <button
             type="button"
@@ -158,7 +104,6 @@ const PartForm = () => {
           </button>
         </div>
 
-        {/* Submit and Reset Buttons */}
         <div className="flex items-center justify-start bg-white p-6">
           <button
             type="submit"

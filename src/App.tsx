@@ -101,7 +101,7 @@ const App = () => {
             element={token ? <RunSchedule /> : <SignIn />}
           />
           <Route
-            path="run-with-scan"
+            path="run-with-scan/:id"
             element={token ? <RunWithScan /> : <SignIn />}
           />
           <Route

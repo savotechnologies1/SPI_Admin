@@ -1,227 +1,67 @@
 import belt from "../../assets/belt-solid.png";
 import { IoLogOutOutline } from "react-icons/io5";
-import step_1 from "../../assets/step_1.png";
-import step_2 from "../../assets/step_2.png";
-import step_3 from "../../assets/step_3.png";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import {
   completeOrder,
+  scrapOrder,
   stationLogoutApi,
   stationProcessDetail,
 } from "./https/productionResponseApi";
 import { useEffect, useState } from "react";
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
-const data = [
-  {
-    img: step_1,
-    title: "Step 1",
-    decs: "Remove burn and sharp edges",
-  },
-  {
-    img: step_2,
-    title: "Step 2",
-    decs: "Inspect for Surface Finish Defects",
-  },
-  {
-    img: step_3,
-    title: "Step 3",
-    decs: "Packaged Products",
-  },
-];
 
-// const RunSchedule = () => {
-//   const navigate = useNavigate();
+interface Image {
+  imagePath: string;
+}
 
-//   const handleLogout = () => {
-//     navigate("/station-logout");
-//   };
+interface Step {
+  id: string;
+  title: string;
+  instruction: string;
+  images: Image[];
+}
 
-//   return (
-//     <div className="bg-[#F5F6FA] min-h-screen flex flex-col">
-//       {/* Header Section */}
-//       <div className="bg-[#243C75] relative ">
-//         {/* Logout Button */}
-//         <div className="flex items-center gap-2 text-white bg-[#17274C] w-full justify-end p-2">
-//           <button
-//             onClick={handleLogout}
-//             className="text-xs md:text-sm font-semibold flex items-center gap-1"
-//           >
-//             Log out
-//             <IoLogOutOutline size={16} className="md:size-[20px]" />
-//           </button>
-//         </div>
-//         <div className="container mx-auto p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-//           <div className="relative w-full md:w-auto">
-//             <img className="w-24 md:w-40" src={belt} alt="Belt icon" />
-//             {/* Text centered above image on all screens */}
-//             <div className="text-white text-lg   absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full  whitespace-nowrap flex justify-between">
-//               <div className="gap-2 flex flex-col">
-//                 <p className="text-3xl 2xl:text-5xl font-semibold">
-//                   {" "}
-//                   tdriver GMT800 single
-//                 </p>
-//                 <div className="flex gap-4">
-//                   <p className="md:text-xl font-semibold"> 1001</p>
-//                   <p className=" "> january 13 ,2025</p>
-//                 </div>
-//                 <div className="flex gap-4">
-//                   <p className="md:text-xl font-semibold "> 1002</p>
-//                   <p className=""> March 13 ,2025</p>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//           <div className="text-white flex gap-4 md:gap-20 flex-wrap justify-center">
-//             <div>
-//               <p className="md:text-2xl "> Devon Lane</p>
-//             </div>
+interface WorkInstruction {
+  steps: Step[];
+}
 
-//             <div className="flex flex-col  gap-1 md:gap-2">
-//               <p className="text-sm md:text-base">Date: january 17, 2025</p>
-//               <p className=" text-sm md:text-base">Qty: 20</p>
-//               <p className=" text-sm md:text-base">Scrap Qty: 2</p>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
+interface Part {
+  partDescription: string;
+  WorkInstruction: WorkInstruction[];
+}
 
-//       {/* Main Content */}
-//       <div className="container mx-auto p-4 md:p-6 flex-grow">
-//         {/* Comment and Button Section */}
-//         <div className="flex flex-col md:flex-row items-center gap-3 mb-6">
-//           <input
-//             type="text"
-//             placeholder="Write your comments"
-//             className="border border-gray-400 py-2 px-4 rounded-md w-full placeholder-gray-400 bg-transparent text-sm md:text-base"
-//           />
+interface Order {
+  orderNumber: string;
+}
 
-//           <div className="flex gap-3 w-full ">
-//             <button className="bg-brand text-white px-4 md:px-8 py-2 rounded-sm text-sm md:text-base font-semibold w-full md:w-auto">
-//               Add Picture
-//             </button>
+interface EmployeeInfo {
+  firstName: string;
+  lastName: string;
+}
 
-//             <button className="bg-brand text-white px-4 py-2 rounded-sm text-sm md:text-base font-semibold w-full md:w-auto">
-//               Send
-//             </button>
-//           </div>
-//         </div>
+interface Process {
+  processName: string;
+}
 
-//         {/* Steps Section */}
-//         <div className="py-4 flex flex-col gap-4">
-//           {data.map((item, index) => (
-//             <div
-//               key={index}
-//               className="flex flex-col md:flex-row gap-4 md:gap-20 items-center bg-white rounded-lg shadow-sm p-4"
-//             >
-//               <div className="w-full md:w-auto">
-//                 <img
-//                   className="rounded-md w-full max-w-xs md:max-w-none"
-//                   src={item.img}
-//                   alt={item.title}
-//                 />
-//               </div>
-//               <div className="text-center md:text-left">
-//                 <p className="font-semibold text-lg">{item.title}</p>
-//                 <p className="text-gray-600">{item.decs}</p>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
+interface JobData {
+  productionId: string;
+  order_id: string;
+  part_id: string;
+  order_date: string;
+  delivery_date: string;
+  upcommingOrder: string;
+  part: Part;
+  order: Order;
+  employeeInfo: EmployeeInfo;
+  process: Process;
+  quantity: number;
+  completedQuantity: number;
+  cycleTime: string;
+}
 
-//         {/* Action Buttons */}
-//         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
-//           <button className="bg-brand text-white px-4 py-2 rounded-md text-sm md:text-base font-semibold w-full sm:w-auto">
-//             Complete Order
-//           </button>
-
-//           <NavLink to="/scrap-entry" className="w-full sm:w-auto">
-//             <button className="bg-transparent text-brand px-4 py-2 font-semibold border-2 border-black rounded-md w-full">
-//               Scrap
-//             </button>
-//           </NavLink>
-//         </div>
-//       </div>
-
-//       {/* Footer Section */}
-//       <div className="bg-[#243C75]  bottom-0 w-full">
-//         <div className="container mx-auto p-3 md:p-4 flex flex-col md:flex-row justify-between items-center gap-4">
-//           {/* Process & Inspection Section */}
-//           <div className="text-white flex gap-4 md:gap-10 items-center flex-wrap justify-center">
-//             <div className="flex flex-col items-center">
-//               <p className="text-sm md:text-base">Process</p>
-//               <p className="text-sm md:text-base">Inspection</p>
-//             </div>
-
-//             <div className="flex flex-col items-center">
-//               <p className="text-green-500 text-sm md:text-base">Qty</p>
-//               <p className="text-green-500 text-sm md:text-base">20</p>
-//             </div>
-
-//             <div className="flex flex-col items-center">
-//               <p className="text-red-500 text-sm md:text-base">Scrap</p>
-//               <p className="text-red-500 text-sm md:text-base">2</p>
-//             </div>
-//           </div>
-
-//           {/* Action Buttons */}
-//           <div className="flex gap-2 md:gap-6  justify-center">
-//             {/* <NavLink to="/current-status" className="w-full sm:w-auto">
-//               <button className="bg-white text-black px-3 py-1 md:px-6 md:py-2 rounded-md shadow-md hover:bg-gray-200 transition text-xs md:text-sm">
-//                 Process
-//               </button>
-//             </NavLink>
-
-//             <NavLink to="/live-production" className="w-full sm:w-auto">
-//               <button className="bg-white text-black px-3 py-1 md:px-6 md:py-2 rounded-md shadow-md hover:bg-gray-200 transition text-xs md:text-sm">
-//                 Employee
-//               </button>
-//             </NavLink>
-
-//             <NavLink to="/live-production" className="w-full sm:w-auto">
-//               <button className="bg-white text-black px-3 py-1 md:px-6 md:py-2 rounded-md shadow-md hover:bg-gray-200 transition text-xs md:text-sm">
-//                 Count
-//               </button>
-//             </NavLink>
-
-//             <NavLink to="/current-quality" className="w-full sm:w-auto">
-//               <button className="bg-white text-black px-3 py-1 md:px-6 md:py-2 rounded-md shadow-md hover:bg-gray-200 transition text-xs md:text-sm">
-//                 Cycle
-//               </button>
-//             </NavLink> */}
-
-//             <div className="flex flex-col items-center text-white">
-//               <p className="text-sm md:text-base font-semibold"> Employee</p>
-//               <p className="text-sm md:text-base">Devon Lane</p>
-//             </div>
-
-//             <div className="flex flex-col items-center text-white">
-//               <p className="text-sm md:text-base font-semibold"> Qty</p>
-//               <p className="text-sm md:text-base"> 20</p>
-//             </div>
-
-//             <div className="flex flex-col items-center text-white">
-//               <p className="text-sm md:text-base font-semibold">Cycle Time</p>
-//               <p className="text-sm md:text-base">150</p>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default RunSchedule;
-
-// import React, { useState, useEffect } from "react";
-// import { useNavigate, useParams, NavLink } from "react-router-dom"; // --> ADDED useParams, NavLink
-// import axios from "axios"; // --> ADDED
-// import { IoLogOutOutline } from "react-icons/io5"; // --> ADDED (assuming this is your icon library)
-// import belt from "./path/to/your/belt-image.png"; // --> ADDED: Update this path
-
-// --> ADDED: A helper function to format dates nicely
-const formatDate = (dateString) => {
-  if (!dateString) return "Not Avaialble";
+const formatDate = (dateString: string | undefined): string => {
+  if (!dateString) return "Not Available";
   return new Date(dateString).toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
@@ -229,27 +69,42 @@ const formatDate = (dateString) => {
   });
 };
 
+const formatCycleTime = (dateString) => {
+  if (!dateString) return "N/A";
+
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return "Invalid Time";
+    }
+    return date.toLocaleTimeString("en-US");
+  } catch (error) {
+    console.error("Could not format cycle time:", dateString, error);
+    return "N/A";
+  }
+};
+
 const RunSchedule = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
-  console.log("id", id);
-
-  const [jobData, setJobData] = useState(null);
+  const { id } = useParams<{ id: string }>();
+  const [jobData, setJobData] = useState<JobData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  const fetchJobDetails = async (jobId) => {
+  const fetchJobDetails = async (jobId: string | undefined) => {
+    if (!jobId) {
+      setLoading(false);
+      navigate("/station-login");
+      return;
+    }
     try {
       setLoading(true);
       const response = await stationProcessDetail(jobId);
       const data = response?.data;
-
       if (data) {
         setJobData(data);
       }
-    } catch (error) {
-      console.log("errorerror", error);
-      if (error.status == 404) {
+    } catch (error: any) {
+      if (error?.status === 404) {
         navigate("/station-login");
       }
     } finally {
@@ -257,31 +112,76 @@ const RunSchedule = () => {
     }
   };
 
-  // useEffect stays clean
   useEffect(() => {
     fetchJobDetails(id);
-  }, [id]);
-  useEffect(() => {
-    console.log("🔁 Render triggered with updated jobData:", jobData);
-  }, [jobData]);
+  }, [id, navigate]);
+  console.log("jobDatajobData", jobData);
 
-  const handleLogout = () => {
-    navigate("/station-logout");
+  const handleCompleteOrder = async () => {
+    if (!jobData) return;
+    console.log(
+      "jobData.employeeInfojobData.employeeInfo",
+      jobData.employeeInfo
+    );
+
+    try {
+      await completeOrder(
+        jobData.productionId,
+        jobData.order_id,
+        jobData.part_id,
+        jobData.employeeInfo.id
+      );
+      fetchJobDetails(id);
+    } catch (error: any) {
+      const status = error?.response?.status;
+      if (status === 400) {
+        console.warn("Order might be already completed. Refetching...");
+        fetchJobDetails(id);
+      } else {
+        console.error("Error completing order:", error);
+      }
+    }
+  };
+  const handleScrapOrder = async () => {
+    if (!jobData) return;
+    console.log("jobData.employeeInfojobData.employeeInfo", jobData);
+
+    try {
+      await scrapOrder(
+        jobData.productionId,
+        jobData.order_id,
+        jobData.part_id,
+        jobData.employeeInfo.id
+      );
+      fetchJobDetails(id);
+      navigate("/scrap-entry");
+    } catch (error: any) {
+      const status = error?.response?.status;
+      if (status === 400) {
+        console.warn("Order might be already completed. Refetching...");
+        fetchJobDetails(id);
+      } else {
+        console.error("Error completing order:", error);
+      }
+    }
+  };
+  const stationLogout = async () => {
+    if (!jobData) return;
+
+    try {
+      const response = await stationLogoutApi(jobData.productionId);
+      if (response && response.status === 200) {
+        navigate("/station-login");
+      }
+    } catch (error) {
+      throw error;
+    }
   };
 
-  // --> ADDED: Loading and error states
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         Loading...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-red-500">
-        {error}
       </div>
     );
   }
@@ -295,54 +195,13 @@ const RunSchedule = () => {
   }
 
   const { part, order, employeeInfo, process, upcommingOrder } = jobData;
-  const formatCycleTime = (dateString) => {
-    if (!dateString) return "N/A";
 
-    try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
-        return "Invalid Time";
-      }
-      return date.toLocaleTimeString("en-US");
-    } catch (error) {
-      console.error("Could not format cycle time:", dateString, error);
-      return "N/A";
-    }
-  };
-  const handleCompleteOrder = async (jobData) => {
-    try {
-      const response = await completeOrder(
-        jobData.productionId,
-        jobData.order_id,
-        jobData.part_id
-      );
-
-      // ✅ Refetch data AFTER completing order
-      fetchJobDetails(id);
-    } catch (error) {
-      const status = error?.response?.status;
-      if (status === 400) {
-        console.warn("Already completed. Refetching...");
-        fetchJobDetails(id); // even if already completed, refetch
-      } else {
-        console.error("Error:", error);
-      }
-    }
-  };
-  const stationLogout = async (jobData) => {
-    try {
-      const response = await stationLogoutApi(jobData.productionId);
-      if (response.status === 200) {
-        navigate("/station-login");
-      }
-    } catch (error) {}
-  };
   return (
     <div className="bg-[#F5F6FA] min-h-screen flex flex-col">
       <div className="bg-[#243C75] relative ">
         <div className="flex items-center gap-2 text-white bg-[#17274C] w-full justify-end p-2">
           <button
-            onClick={() => stationLogout(jobData)}
+            onClick={stationLogout}
             className="text-xs md:text-sm font-semibold flex items-center gap-1"
           >
             Log out
@@ -379,9 +238,11 @@ const RunSchedule = () => {
                 Date: {formatDate(jobData.delivery_date)}
               </p>
               <p className=" text-sm md:text-base">
-                Qty: {jobData.completedQuantity}
+                Qty: {jobData.completedQty}
               </p>
-              <p className=" text-sm md:text-base">Scrap Qty: 2</p>
+              <p className=" text-sm md:text-base">
+                Scrap Qty: {jobData.scrapQty}
+              </p>
             </div>
           </div>
         </div>
@@ -440,12 +301,15 @@ const RunSchedule = () => {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
           <button
             className="bg-brand text-white px-4 py-2 rounded-md text-sm md:text-base font-semibold w-full sm:w-auto"
-            onClick={() => handleCompleteOrder(jobData)}
+            onClick={handleCompleteOrder}
           >
             Complete Order
           </button>
-          <NavLink to="/scrap-entry" className="w-full sm:w-auto">
-            <button className="bg-transparent text-brand px-4 py-2 font-semibold border-2 border-black rounded-md w-full">
+          <NavLink className="w-full sm:w-auto">
+            <button
+              className="bg-transparent text-brand px-4 py-2 font-semibold border-2 border-black rounded-md w-full"
+              onClick={handleScrapOrder}
+            >
               Scrap
             </button>
           </NavLink>
@@ -459,14 +323,25 @@ const RunSchedule = () => {
               <p className="text-sm md:text-base">{process?.processName}</p>
             </div>
             <div className="flex flex-col items-center">
-              <p className="text-green-500 text-sm md:text-base">Qty</p>
+              <p className="text-green-500 text-sm md:text-base">Total Qty</p>
               <p className="text-green-500 text-sm md:text-base">
                 {jobData.quantity}
               </p>
             </div>
             <div className="flex flex-col items-center">
+              <p className="text-green-500 text-sm md:text-base">
+                Remaining Qty
+              </p>
+              <p className="text-green-500 text-sm md:text-base">
+                {jobData.remainingQty}
+              </p>
+            </div>
+            <div className="flex flex-col items-center">
               <p className="text-red-500 text-sm md:text-base">Scrap</p>
-              <p className="text-red-500 text-sm md:text-base"> 0</p>
+              <p className="text-red-500 text-sm md:text-base">
+                {" "}
+                {jobData.scrapQuantity}
+              </p>
             </div>
           </div>
           <div className="flex gap-2 md:gap-6  justify-center">
@@ -476,9 +351,7 @@ const RunSchedule = () => {
             </div>
             <div className="flex flex-col items-center text-white">
               <p className="text-sm md:text-base font-semibold"> Qty</p>
-              <p className="text-sm md:text-base">
-                {jobData.completedQuantity}
-              </p>
+              <p className="text-sm md:text-base">{jobData.completedQty}</p>
             </div>
             <div className="flex flex-col items-center text-white">
               <p className="text-sm md:text-base font-semibold">Cycle Time</p>

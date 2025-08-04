@@ -42,19 +42,19 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       toast.error("Please enter a valid quantity to schedule.");
       return;
     }
-    if (qtyToSchedule > itemToAdd.productQuantity) {
-      toast.warn(
-        `Cannot schedule more than the available quantity of ${itemToAdd.productQuantity}.`
-      );
-      return;
-    }
-    if (selectedItems.some((item) => item.id === itemToAdd.id)) {
-      toast.info("This item has already been added to the schedule.");
-      return;
-    }
+    // if (qtyToSchedule > itemToAdd.productQuantity) {
+    //   toast.warn(
+    //     `Cannot schedule more than the available quantity of ${itemToAdd.productQuantity}.`
+    //   );
+    //   return;
+    // }
+    // if (selectedItems.some((item) => item.id === itemToAdd.id)) {
+    //   toast.info("This item has already been added to the schedule.");
+    //   return;
+    // }
     const newScheduledItem: ScheduledItem = {
       ...itemToAdd,
-      scheduledQty: qtyToSchedule, // yahan value 50 set ho gayi
+      scheduledQty: qtyToSchedule,
       deliveryDate: deliveryDate,
     };
 
@@ -101,13 +101,8 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
 
       console.log("Submitting all scheduled items with payload:", payloads);
       await scheduleStockOrder(payloads);
-
-      // 3. Handle success
-      toast.success("All selected items have been scheduled successfully!");
-
-      // 4. Clear the state after successful submission
       setSelectedItems([]);
-      setItemInputs({}); // Optional: clear all inputs
+      setItemInputs({});
     } catch (error) {
       console.error("Failed to schedule all items:", error);
       toast.error(
