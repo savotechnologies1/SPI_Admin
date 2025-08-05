@@ -5,7 +5,7 @@ import PartForm from "./PartForm";
 import ProductForm from "./ProductForm";
 
 const ScrapEntry = () => {
-  const [activeTab, setActiveTab] = useState("part"); // 'part' or 'product'
+  const [activeTab, setActiveTab] = useState("part");
 
   return (
     <div className="p-4">
@@ -14,7 +14,7 @@ const ScrapEntry = () => {
           Scrap Entry
         </h1>
       </div>
-      
+
       <div className="flex justify-between items-center">
         <div className="flex gap-2 items-center">
           <p className="text-[14px] text-black">
@@ -28,7 +28,6 @@ const ScrapEntry = () => {
       </div>
 
       <div className="py-6 bg-white mt-4 rounded-md p-4">
-        {/* Custom Tabs Implementation */}
         <div className="flex gap-4 border-b">
           <button
             className={`p-2 px-4 rounded-t-md transition cursor-pointer ${
@@ -48,7 +47,6 @@ const ScrapEntry = () => {
           </button>
         </div>
 
-        {/* Tab Content */}
         <div className="mt-4">
           {activeTab === "part" ? <PartForm /> : <ProductForm />}
         </div>

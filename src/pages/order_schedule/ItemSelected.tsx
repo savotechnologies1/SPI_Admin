@@ -32,9 +32,12 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       },
     }));
   };
+  console.log("selectedItemsselectedItems", selectedItems);
 
   const scheduleItem = (itemToAdd: SearchResultItem) => {
     const inputs = itemInputs[itemToAdd.id];
+    console.log("itemToAdditemToAdd", itemToAdd);
+
     const qtyToSchedule = parseInt(inputs?.qty || "0", 10);
     const deliveryDate = inputs?.deliveryDate || new Date();
 
@@ -332,7 +335,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                         <tbody>
                           <tr className="bg-gray-50 font-semibold border-b">
                             <td className="px-4 py-2">
-                              {item.part.partNumber}
+                              part {item.part.partNumber}
                             </td>
                             <td className="px-4 py-2">
                               {item.part.partDescription}

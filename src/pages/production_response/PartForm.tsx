@@ -38,7 +38,6 @@ const PartForm = () => {
           </div>
         </div>
 
-        {/* Return Quantity and Scrap Status */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 ">
           <div>
             <label className="block font-semibold mb-1">Return Quantity</label>
@@ -65,34 +64,9 @@ const PartForm = () => {
               <option value="no">no</option>
             </select>
           </div>
-          <div>
-            <label className="block font-semibold mb-1">Return Quantity</label>
-            <select
-              {...register("returnQuantity2")}
-              className="border py-3 px-4 rounded-md w-full text-gray-600"
-            >
-              <option value="" disabled selected>
-                Select Return Quantity
-              </option>
-              <option value="10">10</option>
-              <option value="20">20</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-            </select>
-          </div>
-          <div>
-            <label className="block font-semibold mb-1">Scrap Status</label>
-            <select
-              {...register("scrapStatus2")}
-              className="border py-3 px-4 rounded-md w-full text-gray-600"
-            >
-              <option value="yes">yes</option>
-              <option value="no">no</option>
-            </select>
-          </div>
         </div>
 
-        <div className="bg-white p-4">
+        {/* <div className="bg-white p-4">
           <button
             type="button"
             className="text-[#4092FF] text-sm hover:text-blue-800 flex items-center border-b border-[#4092FF]"
@@ -102,7 +76,7 @@ const PartForm = () => {
             </span>{" "}
             Add More Parts
           </button>
-        </div>
+        </div> */}
 
         <div className="flex items-center justify-start bg-white p-6">
           <button

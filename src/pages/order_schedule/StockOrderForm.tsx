@@ -11,6 +11,7 @@ import {
   ProductNumberInterface,
 } from "../../utils/Interfaces";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const generateNewOrderNumber = () => Date.now().toString();
 
@@ -55,7 +56,7 @@ const StockOrderForm = () => {
   function setFieldValue(arg0: string, arg1: string) {
     throw new Error("Function not implemented.");
   }
-
+  const navigate = useNavigate();
   return (
     <div className="p-4 bg-white rounded-2xl border shadow-md">
       <Formik
@@ -67,8 +68,8 @@ const StockOrderForm = () => {
           customerName: "",
           customerEmail: "",
           customerPhone: "",
-          productId: "", // 👈 Add this
-          productNumber: "", // 👈 Keep for display
+          productId: "",
+          productNumber: "",
           cost: "",
           totalCost: "",
           productQuantity: "",
@@ -86,6 +87,7 @@ const StockOrderForm = () => {
                 orderDate: new Date().toISOString().split("T")[0],
                 shipDate: "",
                 customerId: "",
+                productId: "",
                 customerName: "",
                 customerEmail: "",
                 customerPhone: "",
@@ -96,13 +98,12 @@ const StockOrderForm = () => {
                 productDescription: "",
               },
             });
+
             setSelectedCustomerId(null);
             setSingleUnitCost(null);
           } catch (error) {
             console.error("Submission error:", error);
-            toast.error(
-              "Failed to create order. A new Order ID has been generated. Please try again."
-            );
+            
             setFieldValue("orderNumber", generateNewOrderNumber());
           } finally {
             setSubmitting(false);

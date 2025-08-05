@@ -13,24 +13,20 @@ import AsyncSelect from "react-select/async";
 const ApplyWorkInstruction = () => {
   const [workInstructions, setWorkInstructions] = useState([]);
   const [processData, setProcessData] = useState([]);
-
   const [formData, setFormData] = useState({
     workInstructionId: "",
     processId: "",
     productId: "",
   });
   const [selectedProduct, setSelectedProduct] = useState(null);
-
   useEffect(() => {
     fetchProcess();
     fetchWorkInstructions();
   }, []);
-
   const fetchProcess = async () => {
     const res = await selectProcessApi();
     setProcessData(res || []);
   };
-
   const fetchWorkInstructions = async () => {
     const res = await getAllWorkInstructionApi();
     setWorkInstructions(res?.data || []);

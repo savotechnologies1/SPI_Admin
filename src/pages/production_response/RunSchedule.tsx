@@ -154,7 +154,6 @@ const RunSchedule = () => {
         jobData.employeeInfo.id
       );
       fetchJobDetails(id);
-      navigate("/scrap-entry");
     } catch (error: any) {
       const status = error?.response?.status;
       if (status === 400) {

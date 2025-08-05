@@ -48,7 +48,7 @@ const EditWorkInstruction = () => {
   const [type, setType] = useState("");
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
+  const BASE_URL = import.meta.env.VITE_SERVER_URL;
   useEffect(() => {
     if (id) {
       fetchProcess();
@@ -90,12 +90,12 @@ const EditWorkInstruction = () => {
           name: img.name,
           id: img.id,
           type: "image",
-          preview: `http://82.25.110.131:8080/uploads/workInstructionImg/${img.name}`,
+          preview: `${BASE_URL}/uploads/workInstructionImg/${img.name}`,
         })),
         workInstructionVideo: step.workInstructionVideo.length
           ? {
               name: step.workInstructionVideo[0],
-              preview: `http://82.25.110.131:8080/uploads/workInstructionVideo/${step.workInstructionVideo[0]}`,
+              preview: `${BASE_URL}/uploads/workInstructionVideo/${step.workInstructionVideo[0]}`,
               type: "video",
             }
           : null,
@@ -103,7 +103,7 @@ const EditWorkInstruction = () => {
       setInitialValues({
         processId: response.processId,
         productId: response.productId,
-        instructionTitle: response.instructionTpitle,
+        instructionTitle: response.instructionTitle,
         steps: formattedSteps,
       });
     } catch (error) {
@@ -147,17 +147,10 @@ const EditWorkInstruction = () => {
       formData.append("instructionTitle", values.instructionTitle);
       formData.append("workInstructionId", id!);
       formData.append("type", type);
-      console.log(
-        " values.steps.map((step) => ({ values.steps.map((step) => ({",
-        values.steps
-      );
-
       const instructionSteps = values.steps.map((step) => {
         const existingImageIds = step.workInstructionImg
           .filter((img) => !(img instanceof File))
           .map((img) => img.id);
-        console.log("existingImageIdsexistingImageIds", existingImageIds);
-
         return {
           stepNumber: step.stepNumber,
           title: step.title,
@@ -167,7 +160,6 @@ const EditWorkInstruction = () => {
       });
 
       formData.append("instructionSteps", JSON.stringify(instructionSteps));
-
       values.steps.forEach((step, i) => {
         step.workInstructionImg.forEach((img) => {
           if (img instanceof File) {
@@ -185,12 +177,10 @@ const EditWorkInstruction = () => {
           );
         }
       });
-
       const response = await editWorkInstruction(formData);
       if (response.status === 200) {
         navigate("/work-instructions-list");
       }
-      console.log("✅ Final Payload:", formData);
     },
   });
 
@@ -227,7 +217,7 @@ const EditWorkInstruction = () => {
       );
       setFieldValue(`steps.${stepIndex}.workInstructionImg`, updatedImgs);
     } catch (error) {
-      console.error("Failed to delete image:", error);
+      throw error;
     }
   };
   const handleDeleteStep = async (id: string) => {
@@ -248,7 +238,6 @@ const EditWorkInstruction = () => {
       <h1 className="font-bold text-xl sm:text-2xl text-black mb-4">
         Edit Work Instruction
       </h1>
-
       <FormikProvider value={formik}>
         <Form onSubmit={formik.handleSubmit}>
           <div className="flex flex-col sm:flex-row gap-4 mb-6">

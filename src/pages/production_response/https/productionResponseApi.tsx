@@ -126,3 +126,18 @@ export const scrapOrder = async (
     toast.error(error?.response?.data?.message || "Something went wrong");
   }
 };
+
+export const processPartScan = async (
+  productionId: string,
+  scannedBarcode: string,
+  employeeId: string
+) => {
+  const response = await axiosInstance.post(
+    `/production/${productionId}/scan`,
+    {
+      barcode: scannedBarcode,
+      employeeId: employeeId,
+    }
+  );
+  return response.data;
+};

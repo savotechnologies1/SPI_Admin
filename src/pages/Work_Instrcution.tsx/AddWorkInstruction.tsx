@@ -27,12 +27,12 @@ type FormValues = {
 const AddWorkInstruction = () => {
   const [productData, setProductData] = useState<any[]>([]);
   const [processData, setProcessData] = useState<any[]>([]);
-
+  const navigate = useNavigate();
+  const BASE_URL = import.meta.env.VITE_SERVER_URL;
   useEffect(() => {
     fetchProcess();
     selectProduct();
   }, []);
-
   const fetchProcess = async () => {
     try {
       const response = await selectProcessApi();
@@ -41,7 +41,6 @@ const AddWorkInstruction = () => {
       console.error("Failed to fetch process:", error);
     }
   };
-
   const selectProduct = async () => {
     try {
       const response = await selectProductApi();
@@ -50,7 +49,6 @@ const AddWorkInstruction = () => {
       console.error("Failed to fetch product:", error);
     }
   };
-
   const validationSchema = Yup.object().shape({
     processId: Yup.string().required("Process is required"),
     productId: Yup.string().required("Product is required"),
@@ -62,8 +60,6 @@ const AddWorkInstruction = () => {
       })
     ),
   });
-
-  const navigate = useNavigate();
   const formik = useFormik<FormValues>({
     initialValues: {
       processId: "",
@@ -80,7 +76,6 @@ const AddWorkInstruction = () => {
       ],
     },
     validationSchema,
-
     onSubmit: async (values) => {
       try {
         const formData = new FormData();
@@ -94,9 +89,7 @@ const AddWorkInstruction = () => {
           partId: step.part_id,
           workInstruction: step.workInstruction,
         }));
-
         formData.append("instructionSteps", JSON.stringify(instructionSteps));
-
         values.steps.forEach((step, i) => {
           step.workInstructionImg.forEach((img) => {
             formData.append(`instructionSteps[${i}][workInstructionImgs]`, img);
@@ -109,9 +102,8 @@ const AddWorkInstruction = () => {
             );
           }
         });
-
         const response = await addWorkinstructionInfo(formData);
-        if (response.status === 200) {
+        if (response.status === 201) {
           navigate("/work-instructions-list");
           console.log("Final Payload:", formData);
         }
@@ -120,9 +112,7 @@ const AddWorkInstruction = () => {
       }
     },
   });
-
   const { values, setFieldValue, errors, touched } = formik;
-
   const handleMultipleImageChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -136,7 +126,6 @@ const AddWorkInstruction = () => {
       <h1 className="font-bold text-xl sm:text-2xl text-black mb-4">
         Add Work Instruction
       </h1>
-
       <FormikProvider value={formik}>
         <Form onSubmit={formik.handleSubmit}>
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -209,7 +198,6 @@ const AddWorkInstruction = () => {
               )}
             </div>
           </div>
-
           <FieldArray
             name="steps"
             render={(arrayHelpers) => (
@@ -303,7 +291,6 @@ const AddWorkInstruction = () => {
                         </div>
                       </div>
 
-                      {/* Video Upload */}
                       <div className="w-full sm:w-1/2">
                         <label className="font-semibold block mb-2">
                           Upload Video
@@ -330,8 +317,6 @@ const AddWorkInstruction = () => {
                         />
                       </div>
                     </div>
-
-                    {/* Video Upload */}
                   </div>
                 ))}
 
