@@ -13,7 +13,7 @@ type ProcessFormData = {
   machineName: string;
   cycleTime: string;
   ratePerHour: string;
-  orderNeeded: "true" | "false";
+  isProcessReq: "true" | "false";
   processDesc: string;
 };
 
@@ -25,7 +25,7 @@ const EditProcess = () => {
     reset,
   } = useForm<ProcessFormData>({
     defaultValues: {
-      orderNeeded: "false",
+      isProcessReq: "false",
     },
   });
 
@@ -38,7 +38,7 @@ const EditProcess = () => {
       const response = await editProcess(
         {
           ...data,
-          orderNeeded: data.orderNeeded === "true",
+          isProcessReq: data.isProcessReq === "true",
         },
         id
       );
@@ -57,7 +57,7 @@ const EditProcess = () => {
       setProcessData(data);
       reset({
         ...data,
-        orderNeeded: data.orderNeeded === true ? "true" : "false",
+        isProcessReq: data.isProcessReq === true ? "true" : "false",
       });
     } catch (error) {
       throw error;
@@ -179,7 +179,7 @@ const EditProcess = () => {
               <input
                 type="radio"
                 value="true"
-                {...register("orderNeeded", { required: true })}
+                {...register("isProcessReq", { required: true })}
                 id="yes"
               />
               <label htmlFor="yes" className="ml-2">
@@ -191,7 +191,7 @@ const EditProcess = () => {
               <input
                 type="radio"
                 value="false"
-                {...register("orderNeeded", { required: true })}
+                {...register("isProcessReq", { required: true })}
                 id="no"
               />
               <label htmlFor="no" className="ml-2">
@@ -200,7 +200,7 @@ const EditProcess = () => {
             </div>
           </div>
 
-          {errors.orderNeeded && (
+          {errors.isProcessReq && (
             <p className="text-red-500 text-sm">Please select an option</p>
           )}
 

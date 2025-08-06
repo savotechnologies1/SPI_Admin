@@ -110,7 +110,7 @@ const ProductNumber = () => {
       updated[index].process = partDetail.process?.processName || "";
       updated[index].processId = partDetail.process?.id || "";
       updated[index].cycleTime = partDetail.cycleTime?.toString() || "";
-      updated[index].qty = partDetail.supplierOrderQty?.toString() || "";
+      updated[index].qty = partDetail.availStock?.toString() || "";
 
       setBomEntries(updated);
       setSuggestions((prev) => ({ ...prev, [index]: [] }));

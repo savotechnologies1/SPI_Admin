@@ -127,15 +127,11 @@ const AddProcess = () => {
               )}
             </div>
           </div>
-
           <label className="font-semibold">Process Order Needed?</label>
           <div className="mt-2 mb-6 flex gap-6">
             <div className="flex items-center">
               <input
-                {...register("orderNeeded", {
-                  required: true,
-                  setValueAs: (v) => v === "true", // 🔁 string to boolean conversion
-                })}
+                {...register("orderNeeded", { required: true })}
                 type="radio"
                 id="yes"
                 value="true"
@@ -148,10 +144,7 @@ const AddProcess = () => {
 
             <div className="flex items-center">
               <input
-                {...register("orderNeeded", {
-                  required: true,
-                  setValueAs: (v) => v === "true", // 🔁 string to boolean conversion
-                })}
+                {...register("orderNeeded", { required: true })}
                 type="radio"
                 id="no"
                 value="false"

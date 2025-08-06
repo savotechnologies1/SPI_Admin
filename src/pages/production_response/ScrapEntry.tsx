@@ -21,7 +21,7 @@ const ScrapEntry = () => {
             <NavLink to="/dashboardDetailes">Dashboard</NavLink>
           </p>
           <FaCircle className="text-[6px] text-gray-500" />
-          <span className="text-[14px]">Shop Floor</span>
+          <span className="text-[14px]">Production Response</span>
           <FaCircle className="text-[6px] text-gray-500" />
           <span className="text-[14px]">Scrap Entry</span>
         </div>

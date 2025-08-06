@@ -149,3 +149,28 @@ export const scheduleStockOrderListApi = async (page = 1, limit = 5) => {
     return [];
   }
 };
+export const validateQty = async (productId: string, quantity: number) => {
+  try {
+    const res = await fetch(
+      "http://localhost:5000/api/validate-stock-quantity",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productId, quantity }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message); // ❌ Invalid quantity
+    } else {
+      alert(data.message); // ✅ Valid quantity
+    }
+  } catch (error) {
+    console.error("API error:", error);
+    alert("Something went wrong.");
+  }
+};

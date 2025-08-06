@@ -31,7 +31,6 @@ const ProductForm = () => {
   return (
     <div className="">
       <form onSubmit={handleSubmit(onSubmit)} className="">
-        {/* Search Part */}
         <div className="bg-white p-4">
           <label className="block font-semibold mb-1">
             Search Product For Update
@@ -43,8 +42,6 @@ const ProductForm = () => {
             {...register("searchPart")}
           />
         </div>
-
-        {/* Part Family, Part, and Supplier */}
         <div className="grid grid-cols-1 gap-4 bg-white p-4 ">
           <div>
             <label className="block font-semibold mb-1">Supplier</label>
@@ -57,9 +54,9 @@ const ProductForm = () => {
           </div>
         </div>
 
-        {/* Return Quantity and Scrap Status */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 ">
-          <div>
+          {
+            /* <div>
             <label className="block font-semibold mb-1">Return Quantity</label>
             <select
               {...register("returnQuantity1")}
@@ -73,7 +70,20 @@ const ProductForm = () => {
               <option value="50">50</option>
               <option value="100">100</option>
             </select>
-          </div>
+          </div> */
+
+            <div>
+              <label className="block font-semibold mb-1">
+                Return Supplier
+              </label>
+              <input
+                type="text"
+                {...register("returnQuantity1")}
+                placeholder="Enter supplier"
+                className="border py-3 px-4 rounded-md w-full text-gray-600"
+              />
+            </div>
+          }
           <div>
             <label className="block font-semibold mb-1">Scrap Status</label>
             <select
@@ -86,7 +96,6 @@ const ProductForm = () => {
           </div>
         </div>
 
-        {/* Add More Parts */}
         {/* <div className="bg-white p-4">
           <button
             type="button"
@@ -95,11 +104,10 @@ const ProductForm = () => {
             <span className="text-sm mr-1 bg-[#4092FF] rounded-full  text-white px-1 ">
               +
             </span>{" "}
-            Add More Product
+            Add More Parts
           </button>
         </div> */}
 
-        {/* Submit and Reset Buttons */}
         <div className="flex items-center justify-start bg-white p-6">
           <button
             type="submit"

@@ -24,6 +24,7 @@ const ProcessList = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
   const [searchVal, setSearchVal] = useState("");
+  const [selectedDeleteId, setSelectedDeleteId] = useState<string | null>(null);
 
   const handleChange = (e) => {
     try {
@@ -61,12 +62,14 @@ const ProcessList = () => {
   };
   const handleDelete = async (id: string) => {
     try {
-      deleteProcess(id).then();
+      await deleteProcess(id);
+      await new Promise((r) => setTimeout(r, 500));
       await fetchProcessList(currentPage);
     } catch (error: unknown) {
-      throw error;
+      console.error("Error deleting process:", error);
     }
   };
+
   return (
     <div className="p-7">
       <div>
@@ -152,7 +155,7 @@ const ProcessList = () => {
                   <td className="px-3 py-4">{item.processDesc}</td>
                   <td className="px-3 py-4">{item.cycleTime}</td>
                   <td className="px-3 py-4">{item.ratePerHour}</td>
-                  {item.orderNeeded === true ? (
+                  {item.isProcessReq === true ? (
                     <td className="px-3 py-4">yes</td>
                   ) : (
                     <td className="px-3 py-4">no</td>
@@ -171,32 +174,39 @@ const ProcessList = () => {
                     <button className="text-brand hover:underline">
                       <FaTrash
                         className="text-red-500 cursor-pointer"
-                        onClick={() => setShowConfirm(true)}
+                        onClick={() => {
+                          setSelectedDeleteId(item.id);
+                          setShowConfirm(true);
+                        }}
                       />
-                      {showConfirm && (
-                        <div
-                          className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
-                                    flex items-center justify-center z-50"
-                        >
+
+                      {showConfirm && selectedDeleteId && (
+                        <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
                           <div className="bg-white p-6 rounded-xl shadow-lg">
                             <h2 className="text-lg font-semibold mb-4">
                               Are you sure?
                             </h2>
                             <p className="mb-4">
-                              Do you really want to delete this process ?
+                              Do you really want to delete this process?
                             </p>
                             <div className="flex justify-end space-x-3">
                               <button
                                 className="px-4 py-2 bg-gray-300 rounded"
-                                onClick={() => setShowConfirm(false)}
+                                onClick={() => {
+                                  setShowConfirm(false);
+                                  setSelectedDeleteId(null);
+                                }}
                               >
                                 Cancel
                               </button>
                               <button
                                 className="px-4 py-2 bg-red-500 text-white rounded"
                                 onClick={() => {
-                                  handleDelete(item.id);
-                                  setShowConfirm(false);
+                                  if (selectedDeleteId) {
+                                    handleDelete(selectedDeleteId);
+                                    setShowConfirm(false);
+                                    setSelectedDeleteId(null);
+                                  }
                                 }}
                               >
                                 Delete

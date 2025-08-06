@@ -108,6 +108,10 @@ const App = () => {
             path="training/:id"
             element={token ? <Training /> : <Training />}
           />
+          <Route
+            path="scrap-entry"
+            element={token ? <ScrapEntry /> : <Training />}
+          />
 
           {/* Protected Routes */}
           {/* <Route
@@ -185,7 +189,6 @@ const App = () => {
             <Route path="supplier-order" element={<SupplierOrders />} />
             <Route path="supplier-inventory" element={<SupplierInventory />} />
             <Route path="supplier-list" element={<SupplierPartList />} />
-            <Route path="Scrap-entry" element={<ScrapEntry />} />
             <Route path="/employees" element={<Employees />} />
             <Route path="/add-employee" element={<AddEmployee />} />
             <Route path="/edit-employee/:id" element={<EditEmployee />} />

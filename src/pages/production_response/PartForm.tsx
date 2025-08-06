@@ -1,16 +1,28 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { selectPartNamber } from "../product&BOM/https/partProductApis";
 
 const PartForm = () => {
   const supplier = "Cortez herring";
 
   const { register, handleSubmit, setValue } = useForm();
-
+  const [partData, setPartData] = useState<any[]>([]);
   const onSubmit = (data: any) => {};
 
   useEffect(() => {
     setValue("supplier", supplier), [supplier, setValue];
   });
+  useEffect(() => {
+    (async () => {
+      try {
+        const parts = await selectPartNamber();
+        setPartData(parts?.data || []);
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, []);
+  console.log("partDatapartData", partData);
 
   return (
     <div className="">
@@ -29,17 +41,18 @@ const PartForm = () => {
         <div className="grid grid-cols-1 gap-4 bg-white p-4 ">
           <div>
             <label className="block font-semibold mb-1">Supplier</label>
-            <p
+            <input
+              type="text"
               {...register("supplier")}
-              className="border py-3 px-4 rounded-md w-full text-gray-600 bg-gray-100"
-            >
-              {supplier}
-            </p>
+              placeholder="Enter supplier"
+              className="border py-3 px-4 rounded-md w-full text-gray-600"
+            />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 ">
-          <div>
+          {
+            /* <div>
             <label className="block font-semibold mb-1">Return Quantity</label>
             <select
               {...register("returnQuantity1")}
@@ -53,7 +66,20 @@ const PartForm = () => {
               <option value="50">50</option>
               <option value="100">100</option>
             </select>
-          </div>
+          </div> */
+
+            <div>
+              <label className="block font-semibold mb-1">
+                Return Supplier
+              </label>
+              <input
+                type="text"
+                {...register("returnQuantity1")}
+                placeholder="Enter supplier"
+                className="border py-3 px-4 rounded-md w-full text-gray-600"
+              />
+            </div>
+          }
           <div>
             <label className="block font-semibold mb-1">Scrap Status</label>
             <select

@@ -15,23 +15,6 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   const [selectedItems, setSelectedItems] = useState<ScheduledItem[]>([]);
   const [itemInputs, setItemInputs] = useState<ItemInputState>({});
 
-  const handleInputChange = (
-    itemId: string,
-    field: "qty" | "deliveryDate",
-    value: string | Date
-  ) => {
-    setItemInputs((prev) => ({
-      ...prev,
-      [itemId]: {
-        ...prev[itemId],
-        qty: field === "qty" ? (value as string) : prev[itemId]?.qty ?? "",
-        deliveryDate:
-          field === "deliveryDate"
-            ? (value as Date)
-            : prev[itemId]?.deliveryDate ?? new Date(),
-      },
-    }));
-  };
   console.log("selectedItemsselectedItems", selectedItems);
 
   const scheduleItem = (itemToAdd: SearchResultItem) => {
@@ -114,6 +97,23 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
     }
   };
   console.log("selectedItemsselectedItems", selectedItems);
+  const handleInputChange = (
+    itemId: string,
+    field: "qty" | "deliveryDate",
+    value: string | Date
+  ) => {
+    setItemInputs((prev) => ({
+      ...prev,
+      [itemId]: {
+        ...prev[itemId],
+        qty: field === "qty" ? (value as string) : prev[itemId]?.qty ?? "",
+        deliveryDate:
+          field === "deliveryDate"
+            ? (value as Date)
+            : prev[itemId]?.deliveryDate ?? new Date(),
+      },
+    }));
+  };
 
   return (
     <div className="py-6">
