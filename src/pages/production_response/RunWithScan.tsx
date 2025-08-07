@@ -360,7 +360,7 @@ const RunWithScan = () => {
             else console.log("❌ No match");
 
             setScannedCode("");
-          }, 800);
+          }, 400);
 
           return newCode;
         });
