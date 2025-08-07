@@ -168,7 +168,6 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                       {item.productQuantity}
                     </span>
                   </div>
-
                   <div>
                     <input
                       className="w-full sm:w-40 p-2 border rounded-md text-sm"
@@ -178,11 +177,15 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                       onChange={(e) =>
                         handleInputChange(item.id, "qty", e.target.value)
                       }
+                      min={0}
+                      max={item.productQuantity}
                     />
 
-                    {itemInputs[item.id]?.qty >= item.productQuantity && (
-                      <p className="text-red-400">
-                        Enter quantity less then stock order quantitty
+                    {Number(itemInputs[item.id]?.qty) >
+                      item.productQuantity && (
+                      <p className="text-red-400 text-sm mt-1">
+                        Enter quantity less than or equal to available stock (
+                        {item.productQuantity})
                       </p>
                     )}
                   </div>
