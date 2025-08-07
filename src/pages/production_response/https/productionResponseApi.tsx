@@ -143,3 +143,28 @@ export const processPartScan = async (
   );
   return response.data;
 };
+
+export const ScrapEntryApi = async (userData: object) => {
+  try {
+    const response = await axiosInstance.post("/add-scrap-entry", userData);
+    if (response.status === 201) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error: any) {
+    toast.error(error.response.data.message);
+  }
+};
+
+export const allScrapEntries = async (page = 1, limit = 5) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await axiosInstance.get(
+      `/all-scrap-entry?page=${page}&limit=${limit}`
+    );
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

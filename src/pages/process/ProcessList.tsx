@@ -149,12 +149,24 @@ const ProcessList = () => {
                   key={index}
                   className="border-b border-dashed border-gray-200"
                 >
-                  <td className="px-3 py-4">{item.processName}</td>
-                  <td className="px-3 py-4">{item.machineName}</td>
-                  <td className="px-3 py-4">{item.partFamily}</td>
-                  <td className="px-3 py-4">{item.processDesc}</td>
-                  <td className="px-3 py-4">{item.cycleTime}</td>
-                  <td className="px-3 py-4">{item.ratePerHour}</td>
+                  <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
+                    {item.processName}
+                  </td>
+                  <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
+                    {item.machineName}
+                  </td>
+                  <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
+                    {item.partFamily}
+                  </td>
+                  <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
+                    {item.processDesc}
+                  </td>
+                  <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
+                    {item.cycleTime}
+                  </td>
+                  <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
+                    {item.ratePerHour}
+                  </td>
                   {item.isProcessReq === true ? (
                     <td className="px-3 py-4">yes</td>
                   ) : (

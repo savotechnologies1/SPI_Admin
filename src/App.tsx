@@ -72,6 +72,7 @@ import LiveProductionGoal from "./pages/productionLive/LiveProductionGoal";
 import CurrentStatus from "./pages/productionLive/CurrentStatus";
 import EmailPasswordModal from "./pages/Employee_Information/Employee_Information/EmailPasswordModal";
 import StockOrderScheduleList from "./pages/order_schedule/StockOrderScheduleList";
+import AllScrapEntries from "./pages/production_response/AllScrapEntries";
 
 const App = () => {
   const { token } = useAuth();
@@ -189,6 +190,7 @@ const App = () => {
             <Route path="supplier-order" element={<SupplierOrders />} />
             <Route path="supplier-inventory" element={<SupplierInventory />} />
             <Route path="supplier-list" element={<SupplierPartList />} />
+            <Route path="scrap-entries" element={<AllScrapEntries />} />
             <Route path="/employees" element={<Employees />} />
             <Route path="/add-employee" element={<AddEmployee />} />
             <Route path="/edit-employee/:id" element={<EditEmployee />} />

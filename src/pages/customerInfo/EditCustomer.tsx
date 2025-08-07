@@ -265,7 +265,7 @@ const EditCustomer = () => {
           </label>
           <div className="mt-2 w-full">
             <input
-              type="text"
+              type="number"
               {...register("billingTerms", { required: true })}
               placeholder="Billing Terms"
               className="border py-4 px-4 rounded-md w-full "
@@ -275,7 +275,7 @@ const EditCustomer = () => {
             )}
           </div>
 
-          <div className="flex justify-between items-end">
+          <div className="flex justify-end items-end">
             <div className="mt-6">
               <button
                 type="submit"
@@ -283,15 +283,6 @@ const EditCustomer = () => {
               >
                 Save
               </button>
-            </div>
-
-            <div className="bg-[#FF5630] rounded-full p-2 cursor-pointer">
-              <img
-                className="w-[20px]"
-                src={delete_img}
-                alt="delete"
-                onClick={handleDelete}
-              />
             </div>
           </div>
         </div>

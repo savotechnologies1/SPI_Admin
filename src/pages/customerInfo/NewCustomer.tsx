@@ -127,7 +127,7 @@ const NewCustomer = () => {
           </label>
           <div className="mt-2 w-full">
             <input
-              type="text"
+              type="number"
               {...register("billingTerms")}
               placeholder="Billing Terms"
               className="border py-4 px-4 rounded-md w-full "

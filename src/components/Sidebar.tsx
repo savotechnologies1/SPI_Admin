@@ -243,6 +243,12 @@ const sections: Section[] = [
         path: "/station-login",
       },
       {
+        key: "Scrap Entries",
+        label: "Scrap Entries",
+        icon: production_response,
+        path: "/scrap-entries",
+      },
+      {
         key: "Product & BOM  ",
         label: "Product & BOM ",
         icon: operation,

@@ -337,34 +337,31 @@ const RunWithScan = () => {
       console.error("Error scrapping part:", error);
     }
   }, [jobData, id, fetchJobDetails]);
-  const COMPLETE_BARCODE = `${jobData?.order.orderNumber}`;
-  const SCRAP_BARCODE = `${jobData?.part.partNumber}`;
-  // Barcode Scanner Listener (No Changes)
-  useEffect(() => {
-    const COMPLETE_BARCODE = `${jobData?.order.orderNumber}`;
-    const SCRAP_BARCODE = `${jobData?.part.partNumber}`;
-    console.log("jobData?.part.partNumber", jobData?.part.partNumber);
-    console.log("jobData?.part.partNumber", jobData?.order.orderNumber);
+  let COMPLETE_BARCODE = `${jobData?.order.orderNumber}`;
+  let SCRAP_BARCODE = `${jobData?.part.partNumber}`;
 
+  useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement;
       if (["input", "textarea"].includes(target.tagName.toLowerCase())) return;
 
-      console.log("Key pressed:", event.key);
-
       if (event.key.length === 1) {
         setScannedCode((prev) => {
           const newCode = prev + event.key;
+
           clearTimeout(timeout);
           timeout = setTimeout(() => {
             console.log("Scanned:", newCode);
-            if (newCode === COMPLETE_BARCODE) handleCompleteOrder();
-            else if (newCode === SCRAP_BARCODE) handleScrapOrder();
+
+            if (newCode === "123") handleCompleteOrder();
+            else if (newCode === "1234") handleScrapOrder();
             else console.log("❌ No match");
+
             setScannedCode("");
           }, 800);
+
           return newCode;
         });
       }

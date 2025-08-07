@@ -208,15 +208,6 @@ const CustomerList = () => {
                     </td>
                     <td className="px-2 py-3 md:px-3 md:py-4">
                       <div className="flex items-center">
-                        <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gray-300 mr-2 md:mr-4 overflow-hidden">
-                          {/* <img
-                            src={item.avatar}
-                            alt=""
-                            className="w-full h-full object-cover"
-                          /> */}
-
-                          <FaCircle />
-                        </div>
                         <div>
                           <p className="text-xs md:text-sm lg:text-base font-medium">
                             {item.firstName} {item.lastName}
