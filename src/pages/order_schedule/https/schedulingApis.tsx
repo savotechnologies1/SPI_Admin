@@ -165,12 +165,25 @@ export const validateQty = async (productId: string, quantity: number) => {
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.message); // ❌ Invalid quantity
+      alert(data.message);
     } else {
-      alert(data.message); // ✅ Valid quantity
+      alert(data.message);
     }
   } catch (error) {
     console.error("API error:", error);
     alert("Something went wrong.");
+  }
+};
+
+export const deleteEmployee = async (id: string) => {
+  try {
+    const response = await axiosInstance.patch(`/delete-employee/${id}`);
+    console.log("response222", response);
+    if (response.status === 200) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error: unknown) {
+    toast.error(error.response.data.message);
   }
 };

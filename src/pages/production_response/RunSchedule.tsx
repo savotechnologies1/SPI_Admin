@@ -129,7 +129,8 @@ const RunSchedule = () => {
         jobData.productionId,
         jobData.order_id,
         jobData.part_id,
-        jobData.employeeInfo.id
+        jobData.employeeInfo.id,
+        jobData.order.partId
       );
       fetchJobDetails(id);
     } catch (error: any) {

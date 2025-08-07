@@ -321,6 +321,7 @@ const RunWithScan = () => {
       console.error("Error completing order:", error);
     }
   }, [jobData, id, fetchJobDetails]);
+
   const handleScrapOrder = useCallback(async () => {
     if (!jobData) return;
     console.log("ACTION: Scrapping part...");
@@ -340,25 +341,42 @@ const RunWithScan = () => {
   const SCRAP_BARCODE = `${jobData?.part.partNumber}`;
   // Barcode Scanner Listener (No Changes)
   useEffect(() => {
+    const COMPLETE_BARCODE = `${jobData?.order.orderNumber}`;
+    const SCRAP_BARCODE = `${jobData?.part.partNumber}`;
+    console.log("jobData?.part.partNumber", jobData?.part.partNumber);
+    console.log("jobData?.part.partNumber", jobData?.order.orderNumber);
+
+    let timeout: ReturnType<typeof setTimeout>;
+
     const handleKeyDown = (event: KeyboardEvent) => {
-      const targetElement = event.target as HTMLElement;
-      if (["input", "textarea"].includes(targetElement.tagName.toLowerCase()))
-        return;
-      if (event.key === "Enter") {
-        event.preventDefault();
-        if (!scannedCode) return;
-        if (scannedCode === COMPLETE_BARCODE) handleCompleteOrder();
-        else if (scannedCode === SCRAP_BARCODE) handleScrapOrder();
-        setScannedCode("");
-      } else {
-        if (event.key.length === 1) setScannedCode((prev) => prev + event.key);
+      const target = event.target as HTMLElement;
+      if (["input", "textarea"].includes(target.tagName.toLowerCase())) return;
+
+      console.log("Key pressed:", event.key);
+
+      if (event.key.length === 1) {
+        setScannedCode((prev) => {
+          const newCode = prev + event.key;
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            console.log("Scanned:", newCode);
+            if (newCode === COMPLETE_BARCODE) handleCompleteOrder();
+            else if (newCode === SCRAP_BARCODE) handleScrapOrder();
+            else console.log("❌ No match");
+            setScannedCode("");
+          }, 800);
+          return newCode;
+        });
       }
     };
+
     window.addEventListener("keydown", handleKeyDown);
     return () => {
+      clearTimeout(timeout);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [scannedCode, handleCompleteOrder, handleScrapOrder]);
+  }, []);
+
   const stationLogout = useCallback(async () => {
     if (!jobData) return;
     try {

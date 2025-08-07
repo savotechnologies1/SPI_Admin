@@ -54,13 +54,15 @@ export const completeOrder = async (
   id: string,
   orderId: string,
   partId: string,
-  employeeId: string
+  employeeId: string,
+  productId: string
 ) => {
   try {
     const response = await axiosInstance.put(`/complete-order/${id}`, {
       orderId,
       partId,
       employeeId,
+      productId,
     });
 
     if (response.status === 201) {

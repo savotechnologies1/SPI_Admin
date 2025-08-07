@@ -71,7 +71,6 @@ const ProductNumber = () => {
     })();
   }, []);
 
-  // Handle partNumber suggestion box click-outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       inputRefs.current.forEach((ref, index) => {
@@ -143,7 +142,6 @@ const ProductNumber = () => {
       return entry;
     });
 
-    // Add empty new entry after saving
     validated.push({
       partNumber: "",
       qty: "",
