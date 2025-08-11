@@ -13,13 +13,19 @@ export const workInstructionApi = async () => {
 export const addWorkInstruction = async (data: object) => {
   try {
     const response = await axiosInstance.post("/create-work-instruction", data);
-    localStorage.setItem("instructionId", response.data.instructionId);
+    localStorage.setItem("instructionId", response);
     if (response.status === 201) {
       toast.success(response.data.message);
     }
     return response;
   } catch (error: any) {
-    toast.error(error.response.data.message);
+    console.error("Add Work Instruction Error:", error);
+
+    if (error.response && error.response.data) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error("Something went wrong. Please try again.");
+    }
   }
 };
 
@@ -28,19 +34,26 @@ export const addWorkinstructionInfo = async (data: object) => {
     const response = await axiosInstance.post(
       "/create-work-instruction-detail",
       data,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+      { headers: { "Content-Type": "multipart/form-data" } }
     );
 
-    if (response.status === 200) {
-      toast.success(response.data.message);
+    if (response.data?.success) {
+      toast.success(
+        response.data.message || "Work instruction created successfully!"
+      );
+    } else {
+      toast.error(response.data?.message || "Something went wrong");
     }
+
     return response;
   } catch (error: any) {
-    toast.error(error.response.data.message);
+    const errorMessage =
+      error?.response?.data?.message ||
+      error?.response?.data?.error ||
+      "Something went wrong";
+
+    toast.error(errorMessage);
+    throw new Error(errorMessage);
   }
 };
 
@@ -69,12 +82,26 @@ export const editWorkInstruction = async (data: object) => {
         "Content-Type": "multipart/form-data",
       },
     });
-    if (response.status === 200) {
-      toast.success(response.data.message);
+
+    if (response.data?.success) {
+      toast.success(
+        response.data.message || "Work instruction updated successfully!"
+      );
+    } else {
+      toast.error(
+        response.data?.message || "Something went wrong while updating."
+      );
     }
+
     return response;
   } catch (error: any) {
-    toast.error(error.response.data.message);
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "An unexpected error occurred while updating.";
+
+    toast.error(errorMessage);
+    return null;
   }
 };
 

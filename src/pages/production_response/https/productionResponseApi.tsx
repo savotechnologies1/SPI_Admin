@@ -156,11 +156,16 @@ export const ScrapEntryApi = async (userData: object) => {
   }
 };
 
-export const allScrapEntries = async (page = 1, limit = 5) => {
+export const allScrapEntries = async (
+  page = 1,
+  limit = 5,
+  selectedValue: string,
+  debouncedSearchVal: string
+) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/all-scrap-entry?page=${page}&limit=${limit}`
+      `/all-scrap-entry?page=${page}&limit=${limit}&filterScrap=${selectedValue}&search=${debouncedSearchVal}`
     );
 
     return response.data;

@@ -176,7 +176,12 @@ const WorkInstructionList: React.FC = () => {
     try {
       const response = await deleteWorkInstruction(id, type);
       if (response?.status === 200) {
-        await fetchWorkInstructionList(currentPage);
+        await new Promise((r) => setTimeout(r, 500));
+        await fetchWorkInstructionList(
+          currentPage,
+          selectedValue,
+          debouncedSearchVal
+        );
       }
     } catch (error) {
       console.error(error);
@@ -227,7 +232,7 @@ const WorkInstructionList: React.FC = () => {
           </select>
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search by work instruction title..."
             className="border w-full md:w-2/3 px-3 py-2 rounded-md"
             value={searchVal}
             onChange={(e) => handleChange(e)}
@@ -295,7 +300,7 @@ const WorkInstructionList: React.FC = () => {
                             <button
                               className="px-4 py-2 bg-red-500 text-white rounded"
                               onClick={() => {
-                                handleDelete(selectedId, item.type); // use selectedId here
+                                handleDelete(selectedId, item.type);
                                 setSelectedId(null);
                               }}
                             >

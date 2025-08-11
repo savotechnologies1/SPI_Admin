@@ -146,13 +146,21 @@ const AllScrapEntries: React.FC = () => {
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
+
+  console.log("debouncedSearchValdebouncedSearchVal", debouncedSearchVal);
+
   const fetchWorkInstructionList = async (
     page = 1,
     searchTerm = "",
     type = ""
   ) => {
     try {
-      const response = await allScrapEntries(page, rowsPerPage);
+      const response = await allScrapEntries(
+        page,
+        rowsPerPage,
+        selectedValue,
+        debouncedSearchVal
+      );
       setWorkData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
@@ -184,7 +192,7 @@ const AllScrapEntries: React.FC = () => {
         <div className="flex relative">
           <button className="py-2 px-7 rounded-lg border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer">
             <NavLink to="/add-work-instruction">
-              <span className="">New Work Instruction</span>
+              <span className="">New Scrap Entry</span>
             </NavLink>
           </button>
           <div className="absolute top-3 left-2">
@@ -207,8 +215,8 @@ const AllScrapEntries: React.FC = () => {
             onChange={handleSelectChange}
           >
             <option value="all">All</option>
-            <option value="original">Original work instructions</option>
-            <option value="applied">Applied work instructions</option>
+            <option value="part">parts</option>
+            <option value="product">products</option>
           </select>
           <input
             type="text"
