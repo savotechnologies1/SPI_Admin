@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
+import { AxiosError } from "axios";
 
 export const selecEmployeeProcessApi = async () => {
   try {
@@ -171,5 +172,50 @@ export const allScrapEntries = async (
     return response.data;
   } catch (error) {
     throw error;
+  }
+};
+
+export const selectPartNamber = async () => {
+  try {
+    const response = await axiosInstance.get(`/select-schedule-part-number`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const selectProductNumber = async () => {
+  try {
+    const response = await axiosInstance.get(`/select-schedule-product-number`);
+    return response.data.data;
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError<{ message: string }>;
+    if (axiosError.response?.data?.message) {
+      toast.error(axiosError.response.data.message);
+    } else {
+    }
+    return [];
+  }
+};
+
+export const scrapEntryDetail = async (id: string) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await axiosInstance.get(`/scrap-entry-detail/${id}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateScrapEntry = async (id: string, data: object) => {
+  try {
+    const response = await axiosInstance.put(`/update-scrap-entry/${id}`, data);
+    if (response.status === 201) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error: any) {
+    toast.error(error.response.data.message);
   }
 };

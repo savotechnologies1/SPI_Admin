@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { selectPartNamber } from "../product&BOM/https/partProductApis";
-import { ScrapEntryApi } from "./https/productionResponseApi";
+import {
+  ScrapEntryApi,
+  selectProductNumber,
+} from "./https/productionResponseApi";
 import { selectSupplier } from "../supplier_chain/https/suppliersApi";
-import { selectProductNumber } from "../order_schedule/https/schedulingApis";
 
 const ProductForm = () => {
   const [partData, setPartData] = useState<any[]>([]);
@@ -30,6 +32,11 @@ const ProductForm = () => {
     },
   });
 
+  const handleReset = () => {
+    formik.resetForm();
+    setSuggestions([]);
+    setSupplierSuggestions([]);
+  };
   useEffect(() => {
     (async () => {
       try {
@@ -46,13 +53,7 @@ const ProductForm = () => {
       }
     })();
   }, []);
-  console.log(
-    "supplierSuggestionssupplierSuggestions",
-    suggestions,
-    supplierSuggestions
-  );
 
-  // Filter part suggestions
   useEffect(() => {
     if (formik.values.searchPart && !formik.values.partId) {
       const filteredSuggestions = partData.filter((part) =>
@@ -66,7 +67,6 @@ const ProductForm = () => {
     }
   }, [formik.values.searchPart, formik.values.partId, partData]);
 
-  // Filter supplier suggestions
   useEffect(() => {
     if (formik.values.supplier && !formik.values.supplierId) {
       const filteredSuppliers = supplierData.filter((s) =>
@@ -78,14 +78,12 @@ const ProductForm = () => {
     }
   }, [formik.values.supplier, formik.values.supplierId, supplierData]);
 
-  // Select part
   const handleSuggestionClick = (part: any) => {
     formik.setFieldValue("searchPart", part.partNumber);
-    formik.setFieldValue("partId", part.part_id); // ✅ Correct key from API
+    formik.setFieldValue("partId", part.id);
     setSuggestions([]);
   };
 
-  // Select supplier
   const handleSupplierClick = (supplier: any) => {
     formik.setFieldValue("supplier", supplier.name);
     formik.setFieldValue("supplierId", supplier.id);
@@ -95,15 +93,12 @@ const ProductForm = () => {
   return (
     <div className="">
       <form onSubmit={formik.handleSubmit} className="">
-        {/* 🔍 Search Part Input */}
         <div className="bg-white p-4">
-          <label className="block font-semibold mb-1">
-            Search Product For Update
-          </label>
+          <label className="block font-semibold mb-1">Search Product</label>
           <div className="relative">
             <input
               type="text"
-              placeholder="Search part for update....."
+              placeholder="Search product ....."
               className="border py-3 px-4 rounded-md w-full text-gray-600 placeholder-black"
               value={formik.values.searchPart}
               onChange={(e) => {
@@ -111,13 +106,15 @@ const ProductForm = () => {
                 formik.setFieldValue("partId", "");
               }}
               onFocus={() => {
-                if (formik.values.searchPart && !formik.values.partId) {
+                if (formik.values.searchPart) {
                   const filtered = partData.filter((part) =>
                     part.partNumber
                       .toLowerCase()
                       .includes(formik.values.searchPart.toLowerCase())
                   );
                   setSuggestions(filtered);
+                } else {
+                  setSuggestions(partData);
                 }
               }}
               onBlur={() => {
@@ -156,13 +153,15 @@ const ProductForm = () => {
                 setSupplierSuggestions(filtered);
               }}
               onFocus={() => {
-                if (formik.values.supplier && !formik.values.supplierId) {
+                if (formik.values.supplier) {
                   const filtered = supplierData.filter((s) =>
                     s.name
                       .toLowerCase()
                       .includes(formik.values.supplier.toLowerCase())
                   );
                   setSupplierSuggestions(filtered);
+                } else {
+                  setSupplierSuggestions(supplierData);
                 }
               }}
               onBlur={() => {
@@ -209,7 +208,7 @@ const ProductForm = () => {
         </div>
 
         {/* ✅ Buttons */}
-        <div className="flex items-center justify-start bg-white p-6">
+        <div className="flex items-center justify-between bg-white p-6">
           <button
             type="submit"
             className="px-6 py-2 bg-blue-600 text-white text-md hover:bg-blue-800 transition rounded-md"
@@ -218,8 +217,8 @@ const ProductForm = () => {
           </button>
           <button
             type="button"
-            onClick={() => formik.resetForm()}
-            className="ml-4 px-6 py-2 text-red-500 hover:text-red-700 transition rounded-md flex items-center"
+            onClick={handleReset}
+            className="ml-4 px-6 py-2 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition rounded-md flex items-center"
           >
             <span className="text-lg mr-1">🔄</span> Reset
           </button>

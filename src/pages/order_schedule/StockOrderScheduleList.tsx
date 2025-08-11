@@ -10,7 +10,10 @@ import {
 } from "../Work_Instrcution.tsx/https/workInstructionApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { scheduleStockOrderListApi } from "./https/schedulingApis";
+import {
+  deleteScheduleOrder,
+  scheduleStockOrderListApi,
+} from "./https/schedulingApis";
 interface WorkInstructionItem {
   id: string;
   imageUrl: string;
@@ -169,10 +172,10 @@ const StockOrderScheduleList: React.FC = () => {
     fetchWorkInstructionList(currentPage, selectedValue, debouncedSearchVal);
   }, [currentPage, selectedValue, debouncedSearchVal]);
 
-  const handleDelete = async (id: string | null, type: string) => {
+  const handleDelete = async (id: string) => {
     if (!id) return;
     try {
-      const response = await deleteWorkInstruction(id, type);
+      const response = await deleteScheduleOrder(id);
       if (response?.status === 200) {
         await fetchWorkInstructionList(currentPage);
       }
@@ -294,7 +297,7 @@ const StockOrderScheduleList: React.FC = () => {
                             Are you sure?
                           </h2>
                           <p className="mb-4">
-                            Do you really want to delete this work instruction?
+                            Do you really want to delete this schedule order?
                           </p>
                           <div className="flex justify-end space-x-3">
                             <button
@@ -306,7 +309,7 @@ const StockOrderScheduleList: React.FC = () => {
                             <button
                               className="px-4 py-2 bg-red-500 text-white rounded"
                               onClick={() => {
-                                handleDelete(selectedId, item.type); // use selectedId here
+                                handleDelete(selectedId); // use selectedId here
                                 setSelectedId(null);
                               }}
                             >

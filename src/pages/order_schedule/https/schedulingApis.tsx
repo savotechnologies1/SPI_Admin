@@ -6,9 +6,10 @@ export const addStockOrder = async (apiData: object) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.post("/create-stock-order", apiData);
+    console.log("responseresponse", response);
 
     if (response.status === 201) {
-      toast.success(response.data.data.message);
+      toast.success(response.data.message);
     }
     return response;
   } catch (error: unknown) {
@@ -188,5 +189,17 @@ export const deleteEmployee = async (id: string) => {
   }
 };
 
+export const deleteScheduleOrder = async (id: string) => {
+  try {
+    const response = await axiosInstance.patch(`/delete-schedule-order/${id}`);
+    console.log("response222", response);
+    if (response.status === 200) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error: unknown) {
+    toast.error(error.response.data.message);
+  }
+};
 // Is at cycleTime should have to add time picker
 // => add picture

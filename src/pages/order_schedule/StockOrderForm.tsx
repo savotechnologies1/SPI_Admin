@@ -80,7 +80,10 @@ const StockOrderForm = () => {
           try {
             console.log("values", values);
 
-            await addStockOrder(values);
+            const response = await addStockOrder(values);
+            if (response.status === 201) {
+              navigate("/stock-order-schedule");
+            }
             resetForm({
               values: {
                 orderNumber: generateNewOrderNumber(),
@@ -102,8 +105,6 @@ const StockOrderForm = () => {
             setSelectedCustomerId(null);
             setSingleUnitCost(null);
           } catch (error) {
-            console.error("Submission error:", error);
-            
             setFieldValue("orderNumber", generateNewOrderNumber());
           } finally {
             setSubmitting(false);

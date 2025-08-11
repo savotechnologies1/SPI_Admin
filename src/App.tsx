@@ -73,6 +73,7 @@ import CurrentStatus from "./pages/productionLive/CurrentStatus";
 import EmailPasswordModal from "./pages/Employee_Information/Employee_Information/EmailPasswordModal";
 import StockOrderScheduleList from "./pages/order_schedule/StockOrderScheduleList";
 import AllScrapEntries from "./pages/production_response/AllScrapEntries";
+import EditPartScrapEntry from "./pages/production_response/EditPartScrapEntry";
 
 const App = () => {
   const { token } = useAuth();
@@ -113,7 +114,10 @@ const App = () => {
             path="scrap-entry"
             element={token ? <ScrapEntry /> : <Training />}
           />
-
+          <Route
+            path="edit-part-scrap-entry/:id"
+            element={token ? <EditPartScrapEntry /> : <Training />}
+          />
           {/* Protected Routes */}
           {/* <Route
             path="/"
@@ -191,6 +195,7 @@ const App = () => {
             <Route path="supplier-inventory" element={<SupplierInventory />} />
             <Route path="supplier-list" element={<SupplierPartList />} />
             <Route path="scrap-entries" element={<AllScrapEntries />} />
+
             <Route path="/employees" element={<Employees />} />
             <Route path="/add-employee" element={<AddEmployee />} />
             <Route path="/edit-employee/:id" element={<EditEmployee />} />

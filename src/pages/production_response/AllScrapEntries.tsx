@@ -177,7 +177,7 @@ const AllScrapEntries: React.FC = () => {
   };
 
   const editWorkInstruction = (id) => {
-    navigate(`/edit-work-instruction/${id}`);
+    navigate(`/edit-part-scrap-entry/${id}`);
   };
 
   console.log("workData", workData);
