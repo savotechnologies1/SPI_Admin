@@ -28,7 +28,6 @@ const StockOrderScheduleForm = () => {
       setSubmitting(false);
     }
   };
-  console.log("searchResultssearchResults", searchResults);
 
   return (
     <>

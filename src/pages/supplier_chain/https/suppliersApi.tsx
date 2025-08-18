@@ -150,3 +150,17 @@ export const deleteSupplierOrder = async (id: string) => {
     toast.error(error.response.data.message);
   }
 };
+
+export const deleteSupplierInventory = async (id: string) => {
+  try {
+    const response = await axiosInstance.patch(
+      `/delete-supplier-invetory/${id}`
+    );
+    if (response.status === 200) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error: any) {
+    toast.error(error.response.data.message);
+  }
+};

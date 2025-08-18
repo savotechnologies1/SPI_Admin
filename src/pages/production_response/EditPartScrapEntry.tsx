@@ -241,22 +241,22 @@
 
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import axios from "axios";
-import { NavLink, useParams } from "react-router-dom";
-import { FaCircle } from "react-icons/fa";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import {
   scrapEntryDetail,
+  selectPartNamber,
   updateScrapEntry,
 } from "./https/productionResponseApi";
+import { selectSupplier } from "../supplier_chain/https/suppliersApi";
 
 const EditPartScrapEntry = () => {
   const [partData, setPartData] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [supplierData, setSupplierData] = useState([]);
   const [supplierSuggestions, setSupplierSuggestions] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(true); // To manage loading state
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       searchPart: "",
@@ -268,116 +268,113 @@ const EditPartScrapEntry = () => {
       type: "part",
     },
     enableReinitialize: true,
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
+        setSubmitting(true);
         const payload = {
           ...values,
           type: "part",
+          returnQuantity: parseInt(values.returnQuantity, 10) || 0,
         };
-        await updateScrapEntry(id, payload);
-
-        resetForm();
-        setSuggestions([]);
-        setSupplierSuggestions([]);
+        // Ensure your updateScrapEntry function handles errors and toasts
+        const response = await updateScrapEntry(id, payload);
+        if (response.status === 200) {
+          navigate("/scrap-entries");
+        }
+        // Optionally, navigate the user away after success
+        // navigate('/scrap-entries');
       } catch (error) {
-        console.error("Error submitting scrap entry:", error);
+        console.error("Error updating scrap entry:", error);
+        
+      } finally {
+        setSubmitting(false);
       }
     },
   });
 
   useEffect(() => {
-    const fetchScrapEntryDetail = async () => {
+    const fetchInitialData = async () => {
+      setIsLoading(true);
       try {
-        const response = await scrapEntryDetail(id);
+        const [partsRes, suppliersRes, entryRes] = await Promise.all([
+          selectPartNamber(),
+          selectSupplier(),
+          scrapEntryDetail(id),
+        ]);
+        const allParts = partsRes?.data || [];
+        const allSuppliers = suppliersRes || [];
+        setPartData(allParts);
+        setSupplierData(allSuppliers);
 
-        const data = response.data.data;
-
+        const entryData = entryRes.data.data;
         formik.setValues({
-          searchPart: data.PartNumber?.partNumber || "",
-          partId: data.partId || "",
-          supplier: data.supplier
-            ? `${data.supplier.firstName} ${data.supplier.lastName}`
-            : "",
-          supplierId: data.supplierId || "",
-          returnQuantity: data.returnQuantity?.toString() || "",
-          scrapStatus: data.scrapStatus ? "yes" : "no",
-          type: data.type || "part",
+          searchPart: entryData.PartNumber?.partNumber || "",
+          partId: entryData.partId || "",
+          supplier: entryData.supplier?.name || "",
+          supplierId: entryData.supplierId || "",
+          returnQuantity: entryData.returnQuantity?.toString() || "",
+          scrapStatus: entryData.scrapStatus === true ? "yes" : "no",
+          type: entryData.type || "part",
         });
       } catch (error) {
-        console.error("Error fetching scrap entry detail:", error);
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     if (id) {
-      fetchScrapEntryDetail();
+      fetchInitialData();
     }
-  }, [id]);
+  }, [id]); // Only re-run if the ID changes
 
-  useEffect(() => {
-    const fetchPartsAndSuppliers = async () => {
-      try {
-        const [partsRes, suppliersRes] = await Promise.all([
-          axios.get(`${BASE_URL}/select-schedule-part-number`),
-          axios.get(`${BASE_URL}/select-supplier`),
-        ]);
-
-        setPartData(partsRes.data.data || []);
-        setSupplierData(suppliersRes.data.data || []);
-      } catch (error) {
-        console.error("Error fetching parts or suppliers:", error);
-      }
-    };
-    fetchPartsAndSuppliers();
-  }, []);
-
-  useEffect(() => {
-    if (formik.values.searchPart && !formik.values.partId) {
-      const filtered = partData.filter((part) =>
-        part.partNumber
-          .toLowerCase()
-          .includes(formik.values.searchPart.toLowerCase())
-      );
-      setSuggestions(filtered);
-    } else {
-      setSuggestions([]);
-    }
-  }, [formik.values.searchPart, formik.values.partId, partData]);
-
-  // Filter supplier suggestions
-  useEffect(() => {
-    if (formik.values.supplier && !formik.values.supplierId) {
-      const filtered = supplierData.filter((supplier) =>
-        `${supplier.firstName} ${supplier.lastName}`
-          .toLowerCase()
-          .includes(formik.values.supplier.toLowerCase())
-      );
-      setSupplierSuggestions(filtered);
-    } else {
-      setSupplierSuggestions([]);
-    }
-  }, [formik.values.supplier, formik.values.supplierId, supplierData]);
-
-  // Handle part suggestion click
   const handleSuggestionClick = (part) => {
     formik.setFieldValue("searchPart", part.partNumber);
-    formik.setFieldValue("partId", part.part_id || part.id);
+    formik.setFieldValue("partId", part.id);
     setSuggestions([]);
   };
 
-  // Handle supplier suggestion click
   const handleSupplierClick = (supplier) => {
-    const fullName = `${supplier.firstName} ${supplier.lastName}`;
-    formik.setFieldValue("supplier", fullName);
+    formik.setFieldValue("supplier", supplier.name);
     formik.setFieldValue("supplierId", supplier.id);
     setSupplierSuggestions([]);
   };
 
-  // Reset form handler
   const handleReset = () => {
     formik.resetForm();
     setSuggestions([]);
     setSupplierSuggestions([]);
   };
+
+  // This useEffect is now for filtering based on typing
+  useEffect(() => {
+    if (!formik.values.searchPart) {
+      setSuggestions([]);
+      return;
+    }
+    const filtered = partData.filter((part) =>
+      part.partNumber
+        .toLowerCase()
+        .includes(formik.values.searchPart.toLowerCase())
+    );
+    setSuggestions(filtered);
+  }, [formik.values.searchPart]);
+
+  // This useEffect is for filtering suppliers based on typing
+  useEffect(() => {
+    if (!formik.values.supplier) {
+      setSupplierSuggestions([]);
+      return;
+    }
+    const filtered = supplierData.filter((supplier) =>
+      supplier.name.toLowerCase().includes(formik.values.supplier.toLowerCase())
+    );
+    setSupplierSuggestions(filtered);
+  }, [formik.values.supplier]);
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Or a spinner component
+  }
 
   return (
     <div className="py-4 px-5">
@@ -385,16 +382,7 @@ const EditPartScrapEntry = () => {
         <h1 className="font-semibold text-[20px] md:text-[24px] text-black mb-2">
           Edit Part Scrap Entry
         </h1>
-
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex gap-2 items-center">
-            <p className="text-[14px] text-black">
-              <NavLink to="/scrap-entries">Station Login </NavLink>
-            </p>
-            <FaCircle className="text-[6px] text-gray-500" />
-            <span className="text-[14px]">Edit Part Scrap Entry</span>
-          </div>
-        </div>
+        {/* Breadcrumbs etc. */}
 
         {/* Part Search Input */}
         <div className="bg-white p-4 relative">
@@ -406,7 +394,13 @@ const EditPartScrapEntry = () => {
             value={formik.values.searchPart}
             onChange={(e) => {
               formik.setFieldValue("searchPart", e.target.value);
-              formik.setFieldValue("partId", "");
+              formik.setFieldValue("partId", ""); // Clear ID when typing
+              const filtered = partData.filter((part) =>
+                part.partNumber
+                  .toLowerCase()
+                  .includes(e.target.value.toLowerCase())
+              );
+              setSuggestions(filtered);
             }}
             onFocus={() => {
               if (formik.values.searchPart) {
@@ -417,22 +411,20 @@ const EditPartScrapEntry = () => {
                 );
                 setSuggestions(filtered);
               } else {
-                setSuggestions(partData);
+                setSuggestions(partData); // Show all parts on focus
               }
             }}
-            onBlur={() => {
-              setTimeout(() => setSuggestions([]), 150);
-            }}
+            onBlur={() => setTimeout(() => setSuggestions([]), 150)}
           />
           {suggestions.length > 0 && (
             <ul className="absolute z-50 w-full bg-white border rounded-md mt-1 max-h-60 overflow-y-auto shadow-lg">
               {suggestions.map((part) => (
                 <li
-                  key={part.part_id || part.id}
+                  key={part.id}
                   className="p-2 hover:bg-brand hover:text-white cursor-pointer"
                   onClick={() => handleSuggestionClick(part)}
                 >
-                  {part.partNumber} (Stock: {part.availStock ?? "N/A"})
+                  {part.partNumber} (Stock: {part.stock ?? "N/A"})
                 </li>
               ))}
             </ul>
@@ -449,29 +441,12 @@ const EditPartScrapEntry = () => {
             value={formik.values.supplier}
             onChange={(e) => {
               formik.setFieldValue("supplier", e.target.value);
-              formik.setFieldValue("supplierId", "");
-              const filtered = supplierData.filter((s) =>
-                `${s.firstName} ${s.lastName}`
-                  .toLowerCase()
-                  .includes(e.target.value.toLowerCase())
-              );
-              setSupplierSuggestions(filtered);
+              formik.setFieldValue("supplierId", ""); // Clear ID when user types
             }}
-            onFocus={() => {
-              if (formik.values.supplier) {
-                const filtered = supplierData.filter((s) =>
-                  `${s.firstName} ${s.lastName}`
-                    .toLowerCase()
-                    .includes(formik.values.supplier.toLowerCase())
-                );
-                setSupplierSuggestions(filtered);
-              } else {
-                setSupplierSuggestions(supplierData);
-              }
-            }}
-            onBlur={() => {
-              setTimeout(() => setSupplierSuggestions([]), 150);
-            }}
+            // <<< THE FIX IS HERE >>>
+            // Always show the full list on focus.
+            onFocus={() => setSupplierSuggestions(supplierData)}
+            onBlur={() => setTimeout(() => setSupplierSuggestions([]), 150)}
           />
           {supplierSuggestions.length > 0 && (
             <ul className="absolute z-50 w-full bg-white border rounded-md mt-1 max-h-60 overflow-y-auto shadow-lg">
@@ -481,7 +456,7 @@ const EditPartScrapEntry = () => {
                   className="p-2 hover:bg-brand hover:text-white cursor-pointer"
                   onClick={() => handleSupplierClick(supplier)}
                 >
-                  {supplier.firstName} {supplier.lastName}
+                  {supplier.name}
                 </li>
               ))}
             </ul>
@@ -497,6 +472,12 @@ const EditPartScrapEntry = () => {
               placeholder="Enter Return Quantity"
               className="border py-3 px-4 rounded-md w-full text-gray-600"
               {...formik.getFieldProps("returnQuantity")}
+              min="0"
+              onKeyDown={(e) => {
+                if (["e", "E", "+", "-", "."].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }}
             />
           </div>
           <div>
@@ -516,8 +497,9 @@ const EditPartScrapEntry = () => {
           <button
             type="submit"
             className="px-6 py-2 bg-blue-600 text-white text-md hover:bg-blue-800 transition rounded-md"
+            disabled={formik.isSubmitting}
           >
-            Save Scrap
+            {formik.isSubmitting ? "Saving..." : "Save Scrap"}
           </button>
           <button
             type="button"

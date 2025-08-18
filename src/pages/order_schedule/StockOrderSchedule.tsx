@@ -1,5 +1,3 @@
-import send from "../../assets/Send.png";
-
 import { NavLink } from "react-router-dom";
 import { FaCircle } from "react-icons/fa";
 
@@ -17,7 +15,7 @@ const StockOrderSchedule = () => {
             Stock Order Schedule
           </h1>
         </div>
-
+        {/* 
         <div className="flex gap-4 justify-center items-center">
           <div className="bg-white p-2 rounded-3xl">
             <FontAwesomeIcon icon={faCartShopping} />
@@ -30,7 +28,7 @@ const StockOrderSchedule = () => {
               <img src={send} alt="" />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="flex justify-between  items-center">
         <div className="flex gap-2 items-center ">

@@ -212,6 +212,7 @@ import {
 import { useEffect, useState, useCallback } from "react";
 // 1. NAYI LIBRARY IMPORT KAREIN
 import Barcode from "react-barcode";
+import CommentBox from "./CommentBox";
 // Server ka base URL
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 // --- BARCODE SCANNER CONFIGURATION ---
@@ -306,21 +307,51 @@ const RunWithScan = () => {
   useEffect(() => {
     fetchJobDetails(id);
   }, [id, fetchJobDetails]);
-  const handleCompleteOrder = useCallback(async () => {
-    if (!jobData) return;
-    console.log("ACTION: Completing order...");
+  const [isCompleting, setIsCompleting] = useState(false);
+
+  const handleCompleteOrder = async () => {
+    if (!jobData || isCompleting) return;
+    setIsCompleting(true);
     try {
+      if (jobData.type === "product") {
+        const stationLoginData = {
+          processId: jobData.processId,
+          stationUserId: jobData.employeeInfo.id,
+          type: "run_schedule",
+        };
+
+        const loginRes = await stationLogin(stationLoginData);
+        if (loginRes?.status !== 200) {
+          console.error("Station login failed");
+          setIsCompleting(false); // ✅ Unlock
+          return;
+        }
+        console.log("Station login successful!");
+      }
+
+      // Then call complete order API
       await completeOrder(
         jobData.productionId,
         jobData.order_id,
         jobData.part_id,
-        jobData.employeeInfo.id
+        jobData.employeeInfo.id,
+        jobData.order.partId
       );
+
+      // Refetch updated job details
       fetchJobDetails(id);
     } catch (error: any) {
-      console.error("Error completing order:", error);
+      const status = error?.response?.status;
+      if (status === 400) {
+        console.warn("Order might be already completed. Refetching...");
+        fetchJobDetails(id);
+      } else {
+        console.error("Error completing order:", error);
+      }
+    } finally {
+      setIsCompleting(false);
     }
-  }, [jobData, id, fetchJobDetails]);
+  };
 
   const handleScrapOrder = useCallback(async () => {
     if (!jobData) return;
@@ -341,38 +372,29 @@ const RunWithScan = () => {
   let SCRAP_BARCODE = `${jobData?.part.partNumber}`;
 
   useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>;
+    let scanned = "";
 
     const handleKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement;
       if (["input", "textarea"].includes(target.tagName.toLowerCase())) return;
 
-      if (event.key.length === 1) {
-        setScannedCode((prev) => {
-          const newCode = prev + event.key;
+      if (event.key === "Enter") {
+        // Enter key ka matlab scan complete
+        if (scanned === COMPLETE_BARCODE) handleCompleteOrder();
+        else if (scanned === SCRAP_BARCODE) handleScrapOrder();
+        else console.log("❌ Barcode not matched:", scanned);
 
-          clearTimeout(timeout);
-          timeout = setTimeout(() => {
-            console.log("Scanned:", newCode);
-
-            if (newCode === "123") handleCompleteOrder();
-            else if (newCode === "1234") handleScrapOrder();
-            else console.log("❌ No match");
-
-            setScannedCode("");
-          }, 400);
-
-          return newCode;
-        });
+        scanned = "";
+      } else if (event.key.length === 1) {
+        scanned += event.key;
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => {
-      clearTimeout(timeout);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [COMPLETE_BARCODE, SCRAP_BARCODE, handleCompleteOrder, handleScrapOrder]);
 
   const stationLogout = useCallback(async () => {
     if (!jobData) return;
@@ -449,21 +471,7 @@ const RunWithScan = () => {
       </div>
 
       <div className="container mx-auto p-4 md:p-6 flex-grow">
-        <div className="flex flex-col md:flex-row items-center gap-3 mb-6">
-          <input
-            type="text"
-            placeholder="Write your comments"
-            className="border border-gray-400 py-2 px-4 rounded-md w-full placeholder-gray-400 bg-transparent text-sm md:text-base"
-          />
-          <div className="flex gap-3 w-full ">
-            <button className="bg-brand text-white px-4 md:px-8 py-2 rounded-sm text-sm md:text-base font-semibold w-full md:w-auto">
-              Add Picture
-            </button>
-            <button className="bg-brand text-white px-4 py-2 rounded-sm text-sm md:text-base font-semibold w-full md:w-auto">
-              Send
-            </button>
-          </div>
-        </div>
+        <CommentBox employeeInfo={employeeInfo} />
 
         <div className="py-4 flex flex-col gap-4">
           {part.WorkInstruction && part.WorkInstruction.length > 0 ? (
@@ -553,7 +561,7 @@ const RunWithScan = () => {
             <div className="flex flex-col items-center">
               <p className="text-green-500 text-sm md:text-base">Total Qty</p>
               <p className="text-green-500 text-sm md:text-base">
-                {jobData.quantity}
+                {jobData.scheduleQuantity}
               </p>
             </div>
             <div className="flex flex-col items-center">

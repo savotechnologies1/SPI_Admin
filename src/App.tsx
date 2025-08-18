@@ -74,6 +74,7 @@ import EmailPasswordModal from "./pages/Employee_Information/Employee_Informatio
 import StockOrderScheduleList from "./pages/order_schedule/StockOrderScheduleList";
 import AllScrapEntries from "./pages/production_response/AllScrapEntries";
 import EditPartScrapEntry from "./pages/production_response/EditPartScrapEntry";
+import EditProductScrapEntry from "./pages/production_response/EditProductScrapEntry";
 
 const App = () => {
   const { token } = useAuth();
@@ -117,6 +118,10 @@ const App = () => {
           <Route
             path="edit-part-scrap-entry/:id"
             element={token ? <EditPartScrapEntry /> : <Training />}
+          />
+          <Route
+            path="edit-product-scrap-entry/:id"
+            element={token ? <EditProductScrapEntry /> : <Training />}
           />
           {/* Protected Routes */}
           {/* <Route

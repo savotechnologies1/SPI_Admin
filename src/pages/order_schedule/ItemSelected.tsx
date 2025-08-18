@@ -10,7 +10,9 @@ import {
   ItemInputState,
 } from "../../utils/Interfaces";
 import { scheduleStockOrder } from "./https/schedulingApis";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import send from "../../assets/Send.png";
 const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   const [selectedItems, setSelectedItems] = useState<ScheduledItem[]>([]);
   const [itemInputs, setItemInputs] = useState<ItemInputState>({});
@@ -67,11 +69,8 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   };
   const scheduleAllData = async () => {
     try {
-      const payloads = selectedItems.map((item) => {
-        const isPart = item.part.type === "part";
-        console.log("item", item);
-
-        return {
+      const payloads = selectedItems.flatMap((item) => {
+        const productPayload = {
           order_id: item.id,
           orderDate: item.orderDate,
           delivery_date: item.deliveryDate,
@@ -79,10 +78,26 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
           customersId: item.customer.id,
           status: "new",
           quantity: item.scheduledQty,
-          ...(isPart
-            ? { part_id: item.part.part_id }
-            : { product_id: item.part.part_id }),
+          product_id: item.part.part_id,
+          part_id: item.part.part_id,
+          // type: item.part.type,
+          type: "part",
         };
+
+        const componentPayloads = item.part.components.map((comp) => ({
+          order_id: item.id,
+          orderDate: item.orderDate,
+          delivery_date: item.deliveryDate,
+          submitted_date: new Date(),
+          customersId: item.customer.id,
+          status: "new",
+          quantity: item.scheduledQty,
+          product_id: item.part.part_id,
+          part_id: comp.part.part_id,
+          type: "product",
+        }));
+
+        return [productPayload, ...componentPayloads];
       });
 
       console.log("Submitting all scheduled items with payload:", payloads);
@@ -117,15 +132,38 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
 
   return (
     <div className="py-6">
-      <div className="flex justify-end">
-        {" "}
-        <button
-          className="px-4 py-2 bg-blue-800 text-white text-sm rounded-md hover:bg-blue-900 transition my-4 "
-          onClick={scheduleAllData}
-        >
-          All schedule
-        </button>
+      <div className="flex gap-4 justify-end items-center mb-5">
+        <div className="bg-white p-2 rounded-3xl">
+          <FontAwesomeIcon icon={faCartShopping} />
+        </div>
+        <div className="flex relative  ">
+          <button
+            className="py-2 px-10  border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer"
+            onClick={scheduleAllData}
+          >
+            Schedule Order
+          </button>
+          <div className="absolute top-3 right-2 pl-2 ">
+            <img src={send} alt="" />
+          </div>
+        </div>
       </div>
+      {/* <div className="flex gap-4 justify-end items-center">
+        <div className="bg-white p-2 rounded-3xl">
+          <FontAwesomeIcon icon={faCartShopping} />
+        </div>
+        <div className="flex justify-end">
+          <div className="absolute top-3 right-2 pl-2 ">
+            <img src={send} alt="" />
+          </div>
+          <button
+            className="px-4 py-2 bg-blue-800 text-white text-sm rounded-md hover:bg-blue-900 transition my-4 "
+            onClick={scheduleAllData}
+          >
+            All schedule
+          </button>
+        </div>
+      </div> */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <div className="bg-white rounded-xl p-4 shadow">
           <h1 className="bg-[#CBCBCB] text-center p-2 font-semibold mb-4">
@@ -191,7 +229,6 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                   </div>
                 </div>
 
-                {/* --- Right Column --- */}
                 <div className="flex flex-col items-end gap-4">
                   <button
                     className="px-4 py-2 bg-blue-800 text-white text-sm rounded-md hover:bg-blue-900 transition"

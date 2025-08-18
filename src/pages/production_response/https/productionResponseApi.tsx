@@ -153,7 +153,9 @@ export const ScrapEntryApi = async (userData: object) => {
     }
     return response;
   } catch (error: any) {
+    console.log("errorerror", error.response);
     toast.error(error.response.data.message);
+    throw error; // <-- IMPORTANT: Add this line
   }
 };
 
@@ -211,11 +213,39 @@ export const scrapEntryDetail = async (id: string) => {
 export const updateScrapEntry = async (id: string, data: object) => {
   try {
     const response = await axiosInstance.put(`/update-scrap-entry/${id}`, data);
+    if (response.status === 200) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error: any) {
+    toast.error(error.response.data.message);
+  }
+};
+
+export const sendStationNotification = async (data: object) => {
+  try {
+    const response = await axiosInstance.post(`/send-notification`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     if (response.status === 201) {
       toast.success(response.data.message);
     }
     return response;
   } catch (error: any) {
+    toast.error(error.response.data.message);
+  }
+};
+
+export const deleteScrapEntry = async (id: string) => {
+  try {
+    const response = await axiosInstance.patch(`/delete-scrap-entry/${id}`);
+    if (response.status === 200) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error: unknown) {
     toast.error(error.response.data.message);
   }
 };

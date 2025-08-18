@@ -7,7 +7,10 @@ import { Trash2 } from "lucide-react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { allScrapEntries } from "./https/productionResponseApi";
+import {
+  allScrapEntries,
+  deleteScrapEntry,
+} from "./https/productionResponseApi";
 interface WorkInstructionItem {
   id: string;
   imageUrl: string;
@@ -134,10 +137,7 @@ const AllScrapEntries: React.FC = () => {
   const handleSelectChange = (event) => {
     const newValue = event.target.value;
     setSelectedValue(newValue);
-
-    console.log("A new option was selected:", newValue);
   };
-  console.log("searchValsearchVal", searchVal);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -146,8 +146,6 @@ const AllScrapEntries: React.FC = () => {
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
-
-  console.log("debouncedSearchValdebouncedSearchVal", debouncedSearchVal);
 
   const fetchWorkInstructionList = async (
     page = 1,
@@ -174,14 +172,27 @@ const AllScrapEntries: React.FC = () => {
 
   const handleDelete = async (id: string | null, type: string) => {
     if (!id) return;
+    try {
+      await deleteScrapEntry(id);
+      await new Promise((r) => setTimeout(r, 500));
+      await fetchWorkInstructionList(
+        currentPage,
+        selectedValue,
+        debouncedSearchVal
+      );
+    } catch (error: unknown) {
+      console.error("Error deleting process:", error);
+    }
   };
 
-  const editWorkInstruction = (id) => {
-    navigate(`/edit-part-scrap-entry/${id}`);
+  const editWorkInstruction = (id, type) => {
+    console.log("typetype", type);
+    if (type === "part") {
+      navigate(`/edit-part-scrap-entry/${id}`);
+    } else {
+      navigate(`/edit-product-scrap-entry/${id}`);
+    }
   };
-
-  console.log("workData", workData);
-
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between">
@@ -191,7 +202,7 @@ const AllScrapEntries: React.FC = () => {
 
         <div className="flex relative">
           <button className="py-2 px-7 rounded-lg border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer">
-            <NavLink to="/add-work-instruction">
+            <NavLink to="/scrap-entry">
               <span className="">New Scrap Entry</span>
             </NavLink>
           </button>
@@ -258,7 +269,7 @@ const AllScrapEntries: React.FC = () => {
                   <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
                     <button
                       className="text-brand hover:underline"
-                      onClick={() => editWorkInstruction(item.id)}
+                      onClick={() => editWorkInstruction(item.id, item.type)}
                     >
                       <img
                         src={edit}
@@ -278,7 +289,7 @@ const AllScrapEntries: React.FC = () => {
                             Are you sure?
                           </h2>
                           <p className="mb-4">
-                            Do you really want to delete this work instruction?
+                            Do you really want to delete this scrap entry?
                           </p>
                           <div className="flex justify-end space-x-3">
                             <button

@@ -8,6 +8,8 @@ import { Plus } from "lucide-react";
 import {
   createProductNumber,
   getPartDetail,
+  getProcessDetail,
+  partNumberList,
   selectPartNamber,
   selectProcess,
 } from "./https/partProductApis";
@@ -23,6 +25,9 @@ interface Part {
   availStock?: number;
   companyName?: string;
   minStock?: number;
+  processOrderRequired: Boolean;
+  instructionRequired: Boolean;
+  processId: string;
 }
 
 const ProductNumber = () => {
@@ -32,9 +37,11 @@ const ProductNumber = () => {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<Part>();
-
+  const processId = watch("processId");
   const [processData, setProcessData] = useState([]);
   const [partData, setPartData] = useState<any[]>([]);
   const [savedBOMs, setSavedBOMs] = useState<any[]>([]);
@@ -57,6 +64,29 @@ const ProductNumber = () => {
 
   const { addPart } = partContext || {};
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [processList] = await Promise.all([selectProcess()]);
+        setProcessData(processList);
+      } catch (error) {}
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchProcessDetail = async () => {
+      if (!processId) return setValue("processDesc", "");
+      try {
+        const res = await getProcessDetail(processId);
+        setValue("processDesc", res.data?.processDesc || "");
+      } catch (err) {
+        setValue("processDesc", "");
+        toast.error("Failed to fetch process description");
+      }
+    };
+    fetchProcessDetail();
+  }, [processId, setValue]);
   // Fetch process list and parts
   useEffect(() => {
     (async () => {
@@ -331,6 +361,72 @@ const ProductNumber = () => {
             type="number"
             {...register("cycleTime", { valueAsNumber: true })}
             placeholder="Cycle Time"
+            className="border p-2 rounded w-full"
+          />
+        </label>
+
+        <div className="col-span-4 md:col-span-1">
+          <label>Process Order Required</label>
+          <select
+            {...register("processOrderRequired", {
+              required: "Please select Yes or No",
+            })}
+            className="border p-2 rounded w-full"
+          >
+            <option value="">Select</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+          {errors.processOrderRequired && (
+            <p className="text-red-500 text-sm">
+              {errors.processOrderRequired.message}
+            </p>
+          )}
+        </div>
+        <div className="col-span-4 md:col-span-1">
+          <label>Work Instruction </label>
+          <select
+            {...register("instructionRequired", {
+              required: "Please select Yes or No",
+            })}
+            className="border p-2 rounded w-full"
+          >
+            <option value="">Select</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+          {errors.instructionRequired && (
+            <p className="text-red-500 text-sm">
+              {errors.instructionRequired.message}
+            </p>
+          )}
+        </div>
+
+        <div className="col-span-4 md:col-span-2">
+          <label>Process</label>
+          <select
+            {...register("processId", { required: "Process is required" })}
+            className="border p-2 rounded w-full"
+          >
+            <option value="">Select Process</option>
+            {processData.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+          {errors.processId && (
+            <p className="text-red-500 text-sm">{errors.processId.message}</p>
+          )}
+        </div>
+
+        {/* Process Order Required */}
+
+        <label className="block col-span-4 md:col-span-2">
+          Process Description
+          <textarea
+            {...register("processDesc")}
+            placeholder="Process Description"
             className="border p-2 rounded w-full"
           />
         </label>
