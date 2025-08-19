@@ -135,8 +135,7 @@ const CustomOrderScheduleForm = () => {
         </form>
       </div>
 
-      <CustomItemSelected/>
- 
+      {/* <CustomItemSelected /> */}
     </>
   );
 };

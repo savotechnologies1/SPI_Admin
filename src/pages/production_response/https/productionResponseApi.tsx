@@ -54,6 +54,7 @@ export const stationLogoutApi = async (id: string) => {
 export const completeOrder = async (
   id: string,
   orderId: string,
+  order_type: string,
   partId: string,
   employeeId: string,
   productId: string
@@ -61,6 +62,7 @@ export const completeOrder = async (
   try {
     const response = await axiosInstance.put(`/complete-order/${id}`, {
       orderId,
+      order_type,
       partId,
       employeeId,
       productId,
@@ -110,12 +112,14 @@ export const updateStepTime = async (productionId: string, stepId: string) => {
 export const scrapOrder = async (
   id: string,
   orderId: string,
+  order_type: string,
   partId: string,
   employeeId: string
 ) => {
   try {
     const response = await axiosInstance.put(`/scrap-order/${id}`, {
       orderId,
+      order_type,
       partId,
       employeeId,
     });

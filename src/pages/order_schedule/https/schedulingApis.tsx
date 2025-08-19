@@ -116,10 +116,49 @@ export const searchStockOrder = async (searchParams: object) => {
   }
 };
 
+export const searchCustomOrder = async (searchParams: object) => {
+  try {
+    console.log("searchParams", searchParams);
+
+    const response = await axiosInstance.get("/search-custom-order", {
+      params: searchParams,
+    });
+    return response.data || [];
+  } catch (error) {
+    const axiosError = error as AxiosError<{ message: string }>;
+    if (axiosError.response?.data?.message) {
+      toast.error(axiosError.response.data.message);
+    } else {
+      toast.error("An error occurred while searching for stock orders.");
+    }
+    return [];
+  }
+};
 export const scheduleStockOrder = async (apiData: object) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.post("/stock-order-schedule", apiData);
+    if (response.status === 201) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError<{ message: string }>;
+    if (axiosError.response?.data?.message) {
+      toast.error(axiosError.response.data.message);
+    } else {
+      toast.error("Something went wrong");
+    }
+  }
+};
+
+export const scheduleCustomOrder = async (apiData: object) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await axiosInstance.post(
+      "/custom-order-schedule",
+      apiData
+    );
     if (response.status === 201) {
       toast.success(response.data.message);
     }

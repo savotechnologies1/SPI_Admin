@@ -18,7 +18,7 @@ import {
 } from "./https/schedulingApis";
 
 const generateNewOrderNumber = () => Date.now().toString();
-const initialProcess = { totalTime: "", process: "", assignTo: "" };
+const initialProcess = { totalTime: "", processId: "", part: "" };
 
 const CustomOrderForm = () => {
   const [customerList, setCustomerList] = useState<CustomerInterface[]>([]);
@@ -69,7 +69,6 @@ const CustomOrderForm = () => {
       const response: PartNumberInterface[] = await selectPartNumber();
       setPartList(response || []);
       // toast.success("Part Number fetch successfully!");
-
     } catch (error) {
       console.error("Error fetching part number:", error);
       toast.error("Failed to fetch part number. Please try again.");
@@ -100,7 +99,7 @@ const CustomOrderForm = () => {
     cost: "",
     totalCost: "",
     productQuantity: "",
-    processDetails: [initialProcess],
+    newParts: [initialProcess],
   };
 
   return (
@@ -110,10 +109,13 @@ const CustomOrderForm = () => {
         validationSchema={customOrderValidation}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           try {
-            console.log("Values", values);
-
             await addCustomOrder(values);
-            resetForm({ values: { ...initialFormValues, orderNumber: generateNewOrderNumber() } });
+            resetForm({
+              values: {
+                ...initialFormValues,
+                orderNumber: generateNewOrderNumber(),
+              },
+            });
             setSelectedCustomerId(null);
             setSingleUnitCost(null);
           } catch (error) {
@@ -155,10 +157,10 @@ const CustomOrderForm = () => {
             e: React.ChangeEvent<HTMLSelectElement>
           ) => {
             const selectedProdNumber = e.target.value;
-            setFieldValue("productNumber", selectedProdNumber);
+            setFieldValue("productId", selectedProdNumber);
             if (selectedProdNumber) {
               const selected = productList.find(
-                (p) => p.partNumber === selectedProdNumber
+                (p) => p.productId === selectedProdNumber
               );
               if (selected) {
                 const unitCost = selected.cost;
@@ -180,7 +182,7 @@ const CustomOrderForm = () => {
             e: React.ChangeEvent<HTMLSelectElement>
           ) => {
             const selectedPartNumber = e.target.value;
-            setFieldValue("partNumber", selectedPartNumber);
+            setFieldValue("part_id", selectedPartNumber);
           };
 
           const handleQuantityChange = (
@@ -229,10 +231,11 @@ const CustomOrderForm = () => {
                   <Field
                     name="shipDate"
                     type="date"
-                    className={`border py-3 px-4 rounded-md w-full ${touched.shipDate && errors.shipDate
-                      ? "border-red-500"
-                      : ""
-                      }`}
+                    className={`border py-3 px-4 rounded-md w-full ${
+                      touched.shipDate && errors.shipDate
+                        ? "border-red-500"
+                        : ""
+                    }`}
                   />
                   <ErrorMessage
                     name="shipDate"
@@ -250,10 +253,11 @@ const CustomOrderForm = () => {
                     name="customerId"
                     value={values.customerId}
                     onChange={handleCustomerSelectChange}
-                    className={`border px-2 py-3 rounded-md w-full ${touched.customerId && errors.customerId
-                      ? "border-red-500"
-                      : ""
-                      }`}
+                    className={`border px-2 py-3 rounded-md w-full ${
+                      touched.customerId && errors.customerId
+                        ? "border-red-500"
+                        : ""
+                    }`}
                   >
                     <option value="">Select a customer</option>
                     <option value="new">➕ Add New Customer</option>
@@ -275,11 +279,13 @@ const CustomOrderForm = () => {
                     name="customerName"
                     readOnly={selectedCustomerId !== null}
                     placeholder="Enter Customer Name"
-                    className={`border py-3 px-4 rounded-md w-full ${selectedCustomerId !== null ? "bg-gray-100" : ""
-                      } ${touched.customerName && errors.customerName
+                    className={`border py-3 px-4 rounded-md w-full ${
+                      selectedCustomerId !== null ? "bg-gray-100" : ""
+                    } ${
+                      touched.customerName && errors.customerName
                         ? "border-red-500"
                         : ""
-                      }`}
+                    }`}
                   />
                   <ErrorMessage
                     name="customerName"
@@ -294,11 +300,13 @@ const CustomOrderForm = () => {
                     type="email"
                     readOnly={selectedCustomerId !== null}
                     placeholder="Enter Customer Email"
-                    className={`border py-3 px-4 rounded-md w-full ${selectedCustomerId !== null ? "bg-gray-100" : ""
-                      } ${touched.customerEmail && errors.customerEmail
+                    className={`border py-3 px-4 rounded-md w-full ${
+                      selectedCustomerId !== null ? "bg-gray-100" : ""
+                    } ${
+                      touched.customerEmail && errors.customerEmail
                         ? "border-red-500"
                         : ""
-                      }`}
+                    }`}
                   />
                   <ErrorMessage
                     name="customerEmail"
@@ -312,11 +320,13 @@ const CustomOrderForm = () => {
                     name="customerPhone"
                     readOnly={selectedCustomerId !== null}
                     placeholder="Enter Customer Phone"
-                    className={`border py-3 px-4 rounded-md w-full ${selectedCustomerId !== null ? "bg-gray-100" : ""
-                      } ${touched.customerPhone && errors.customerPhone
+                    className={`border py-3 px-4 rounded-md w-full ${
+                      selectedCustomerId !== null ? "bg-gray-100" : ""
+                    } ${
+                      touched.customerPhone && errors.customerPhone
                         ? "border-red-500"
                         : ""
-                      }`}
+                    }`}
                   />
                   <ErrorMessage
                     name="customerPhone"
@@ -331,24 +341,25 @@ const CustomOrderForm = () => {
                 <div>
                   <label className="font-semibold">Product Number</label>
                   <select
-                    name="productNumber"
-                    value={values.productNumber}
+                    name="productId"
+                    value={values.productId}
                     onChange={handleProductSelectChange}
                     className={`border px-2 py-3 rounded-md w-full 
-                    ${touched.productNumber && errors.productNumber
+                    ${
+                      touched.productNumber && errors.productNumber
                         ? "border-red-500"
                         : ""
-                      }`}
+                    }`}
                   >
                     <option value="">Select a product</option>
                     {productList.map((p) => (
-                      <option key={p.part_id} value={p.partNumber}>
+                      <option key={p.productId} value={p.productId}>
                         {p.partNumber}
                       </option>
                     ))}
                   </select>
                   <ErrorMessage
-                    name="productNumber"
+                    name="productId"
                     component="div"
                     className="text-red-500 text-sm mt-1"
                   />
@@ -370,10 +381,11 @@ const CustomOrderForm = () => {
                     placeholder="Quantity"
                     onChange={handleQuantityChange}
                     min="1"
-                    className={`border py-3 px-4 rounded-md w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${touched.productQuantity && errors.productQuantity
-                      ? "border-red-500"
-                      : ""
-                      }`}
+                    className={`border py-3 px-4 rounded-md w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                      touched.productQuantity && errors.productQuantity
+                        ? "border-red-500"
+                        : ""
+                    }`}
                   />
                   <ErrorMessage
                     name="productQuantity"
@@ -402,24 +414,23 @@ const CustomOrderForm = () => {
                 <div className="col-span-1">
                   <label className="font-semibold">Part Number</label>
                   <select
-                    name="partNumber"
-                    value={values.partNumber}
+                    name="part_id"
+                    value={values.part_id}
                     onChange={handlePartSelectChange}
                     className={`border px-2 py-3 rounded-md w-full 
-                    ${touched.partNumber && errors.partNumber
-                        ? "border-red-500"
-                        : ""
-                      }`}
+                    ${
+                      touched.part_id && errors.part_id ? "border-red-500" : ""
+                    }`}
                   >
                     <option value="">Select a part number</option>
                     {partList.map((p) => (
-                      <option key={p.part_id} value={p.partNumber}>
+                      <option key={p.part_id} value={p.part_id}>
                         {p.partNumber}
                       </option>
                     ))}
                   </select>
                   <ErrorMessage
-                    name="partNumber"
+                    name="part_id"
                     component="div"
                     className="text-red-500 text-sm mt-1"
                   />
@@ -428,10 +439,10 @@ const CustomOrderForm = () => {
 
               {/* --- Process Details  --- */}
               <div className="bg-white px-6 mt-4">
-                <FieldArray name="processDetails">
+                <FieldArray name="newParts">
                   {({ push, remove }) => (
                     <div>
-                      {values.processDetails.map((_, index) => (
+                      {values.newParts.map((_, index) => (
                         <div
                           key={index}
                           className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center mb-4 p-4 border rounded-md relative"
@@ -442,14 +453,14 @@ const CustomOrderForm = () => {
                               Total Time (minutes)
                             </label>
                             <Field
-                              name={`processDetails[${index}].totalTime`}
+                              name={`newParts[${index}].totalTime`}
                               min="1"
                               type="number"
                               placeholder="e.g., 65"
                               className="border py-3 px-4 rounded-md w-full"
                             />
                             <ErrorMessage
-                              name={`processDetails[${index}].totalTime`}
+                              name={`newParts[${index}].totalTime`}
                               component="div"
                               className="text-red-500 text-sm"
                             />
@@ -462,18 +473,18 @@ const CustomOrderForm = () => {
                             </label>
                             <Field
                               as="select"
-                              name={`processDetails[${index}].process`}
+                              name={`newParts[${index}].processId`}
                               className="border px-2 py-3 rounded-md w-full"
                             >
                               <option value="">Select Process</option>
                               {processList.map((p) => (
-                                <option key={p.id} value={p.name}>
+                                <option key={p.id} value={p.id}>
                                   {p.name}
                                 </option>
                               ))}
                             </Field>
                             <ErrorMessage
-                              name={`processDetails[${index}].process`}
+                              name={`newParts[${index}].processId`}
                               component="div"
                               className="text-red-500 text-sm"
                             />
@@ -485,13 +496,13 @@ const CustomOrderForm = () => {
                               Assign To Part Number
                             </label>
                             <Field
-                              name={`processDetails[${index}].assignTo`}
+                              name={`newParts[${index}].part`}
                               type="text"
                               placeholder="Enter Part Number"
                               className="border py-3 px-4 rounded-md w-full"
                             />
                             <ErrorMessage
-                              name={`processDetails[${index}].assignTo`}
+                              name={`newParts[${index}].part`}
                               component="div"
                               className="text-red-500 text-sm"
                             />

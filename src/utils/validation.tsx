@@ -42,24 +42,24 @@ export const customOrderValidation = Yup.object().shape({
     .email("Invalid email format")
     .required("Customer email is required"),
   customerPhone: Yup.string().required("Customer phone is required"),
-  productNumber: Yup.string().required("Product number is required"),
-  partNumber: Yup.string().required("Part Number is required"),
+  productId: Yup.string().required("Product number is required"),
+  // part_id: Yup.string().required("Part Number is required"),
   productQuantity: Yup.number()
     .min(1, "Quantity must be at least 1")
     .required("Quantity is required"),
   totalCost: Yup.number().required("Total cost could not be calculated"),
-  processDetails: Yup.array()
-    .of(
-      Yup.object().shape({
-        totalTime: Yup.number()
-          .typeError("Must be a number")
-          .required("Time is required")
-          .min(1, "Time must be > 0"),
-        process: Yup.string().required("Process is required"),
-        assignTo: Yup.string().required("Assignment is required"),
-      })
-    )
-    .min(1, "At least one process is required"),
+  // processDetails: Yup.array()
+  //   .of(
+  //     Yup.object().shape({
+  //       totalTime: Yup.number()
+  //         .typeError("Must be a number")
+  //         .required("Time is required")
+  //         .min(1, "Time must be > 0"),
+  //       process: Yup.string().required("Process is required"),
+  //       assignTo: Yup.string().required("Assignment is required"),
+  //     })
+  //   )
+  //   .min(1, "At least one process is required"),
 });
 
 export const stockOrderShedule = Yup.object().shape({

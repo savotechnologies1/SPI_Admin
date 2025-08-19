@@ -333,6 +333,7 @@ const RunWithScan = () => {
       await completeOrder(
         jobData.productionId,
         jobData.order_id,
+        jobData.order_type,
         jobData.part_id,
         jobData.employeeInfo.id,
         jobData.order.partId
@@ -360,6 +361,7 @@ const RunWithScan = () => {
       await scrapOrder(
         jobData.productionId,
         jobData.order_id,
+        jobData.order_type,
         jobData.part_id,
         jobData.employeeInfo.id
       );

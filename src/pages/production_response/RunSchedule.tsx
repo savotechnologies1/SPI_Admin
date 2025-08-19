@@ -517,11 +517,11 @@ const RunSchedule = () => {
   //   }
   // };
   const [isCompleting, setIsCompleting] = useState(false);
-
   const handleCompleteOrder = async () => {
     if (!jobData || isCompleting) return;
     setIsCompleting(true);
     try {
+      // This part for station login remains the same
       if (jobData.type === "product") {
         const stationLoginData = {
           processId: jobData.processId,
@@ -532,20 +532,32 @@ const RunSchedule = () => {
         const loginRes = await stationLogin(stationLoginData);
         if (loginRes?.status !== 200) {
           console.error("Station login failed");
-          setIsCompleting(false); // ✅ Unlock
+          setIsCompleting(false);
           return;
         }
         console.log("Station login successful!");
       }
 
-      // Then call complete order API
+      // ======================= CHANGE STARTS HERE =======================
+
+      // 1. Define productId and set it only if the job type is 'product'
+      let productId = null;
+      if (jobData.type === "product") {
+        // Get the final product's ID from the main order object
+        productId = jobData.productId;
+      }
+
+      // 2. Call complete order API with the new, conditional productId
       await completeOrder(
         jobData.productionId,
         jobData.order_id,
-        jobData.part_id,
+        jobData.order_type,
+        jobData.part_id, // This is the component part_id from the schedule
         jobData.employeeInfo.id,
-        jobData.order.partId
+        jobData.productId // This will be the product's ID or null
       );
+
+      // ======================== CHANGE ENDS HERE ========================
 
       // Refetch updated job details
       fetchJobDetails(id);
@@ -561,13 +573,13 @@ const RunSchedule = () => {
       setIsCompleting(false);
     }
   };
-
   const handleScrapOrder = async () => {
     if (!jobData) return;
     try {
       await scrapOrder(
         jobData.productionId,
         jobData.order_id,
+        jobData.order_type,
         jobData.part_id,
         jobData.employeeInfo.id
       );

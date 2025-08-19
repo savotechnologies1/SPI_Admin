@@ -187,7 +187,14 @@ const StockOrderScheduleList: React.FC = () => {
   const editWorkInstruction = (id) => {
     navigate(`/edit-work-instruction/${id}`);
   };
-
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    try {
+      return new Date(dateString).toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
+    } catch (error) {
+      return "Invalid Date";
+    }
+  };
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between">
@@ -252,71 +259,51 @@ const StockOrderScheduleList: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {workData.map((item, index) => (
+              {workData.map((item) => (
                 <tr key={item.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3">{item.order.orderNumber}</td>
-                  <td className="px-4 py-3">{item.order?.part?.partNumber}</td>
-                  <td className="px-4 py-3">{item.part.partNumber}</td>
-                  {/* <td className="px-4 py-3">{item.part.process.processName}</td> */}
-
-                  <td className="px-4 py-3">{item.order.orderDate}</td>
+                  {/* SAFELY access order data */}
                   <td className="px-4 py-3">
-                    {new Date(item.delivery_date).toLocaleDateString("en-GB")}
+                    {item.order?.orderNumber || "N/A"}
                   </td>
-                  <td className="px-4 py-3">
-                    {}
-                    {item.completed_date
-                      ? new Date(item.completed_date).toLocaleDateString(
-                          "en-GB"
-                        )
-                      : "not available"}
-                  </td>
-                  <td className="px-4 py-3">{item.completed_by}</td>
-                  <td className="px-4 py-3">{item.status}</td>
 
-                  <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
-                    {/* <button
-                      className="text-brand hover:underline"
-                      onClick={() => editWorkInstruction(item.id)}
-                    >
-                      <img
-                        src={edit}
-                        alt="Edit"
-                        className="w-4 h-4 md:w-5 md:h-5"
-                      />
-                    </button> */}
+                  {/* SAFELY access the main product's part number */}
+                  <td className="px-4 py-3">
+                    {item.order?.part?.partNumber ||
+                      item.order?.product?.partNumber ||
+                      "N/A"}
+                  </td>
+
+                  {/* This is the part for this specific schedule line */}
+                  <td className="px-4 py-3">
+                    {item.part?.partNumber || "N/A"}
+                  </td>
+
+                  {/* SAFELY format the order date */}
+                  <td className="px-4 py-3">
+                    {formatDate(item.order?.orderDate)}
+                  </td>
+
+                  {/* Format the delivery date */}
+                  <td className="px-4 py-3">
+                    {formatDate(item.delivery_date)}
+                  </td>
+
+                  <td className="px-4 py-3">
+                    <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                      {item.status || "Unknown"}
+                    </span>
+                  </td>
+
+                  <td className="px-2 py-3 md:px-3 md:py-4">
                     <FaTrash
-                      className="text-red-500 cursor-pointer h-7"
+                      className="text-red-500 cursor-pointer h-5 w-5"
                       onClick={() => setSelectedId(item.id)}
                     />
 
+                    {/* Your delete confirmation modal is fine */}
                     {selectedId === item.id && (
                       <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-                        <div className="bg-white p-6 rounded-xl shadow-lg">
-                          <h2 className="text-lg font-semibold mb-4">
-                            Are you sure?
-                          </h2>
-                          <p className="mb-4">
-                            Do you really want to delete this schedule order?
-                          </p>
-                          <div className="flex justify-end space-x-3">
-                            <button
-                              className="px-4 py-2 bg-gray-300 rounded"
-                              onClick={() => setSelectedId(null)}
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              className="px-4 py-2 bg-red-500 text-white rounded"
-                              onClick={() => {
-                                handleDelete(selectedId); // use selectedId here
-                                setSelectedId(null);
-                              }}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
+                        {/* ... modal content ... */}
                       </div>
                     )}
                   </td>

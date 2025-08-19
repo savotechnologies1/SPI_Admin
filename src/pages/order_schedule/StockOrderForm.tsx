@@ -142,7 +142,6 @@ const StockOrderForm = () => {
                 setFieldValue("customerPhone", selectedCustomer.customerPhone);
               }
             } else {
-              // This handles clearing the fields if "Select a customer" is re-selected.
               setFieldValue("customerId", "");
               setSelectedCustomerId(null);
               setFieldValue("customerName", "");
@@ -155,55 +154,97 @@ const StockOrderForm = () => {
           interface Product {
             part_id: string;
             partNumber: string;
-            partDescription: string;
+            productDescription: string;
             availStock: number;
             cost: string;
             type: string;
           }
 
           // Your component code...
+          // const handleProductSelectChange = (
+          //   e: React.ChangeEvent<HTMLSelectElement>
+          // ) => {
+          //   const selectedProductId = e.target.value;
+          //   setFieldValue("productId", selectedProductId);
+
+          //   if (selectedProductId) {
+          //     const selectedProduct = productNumberList.find(
+          //       (p) => p.part_id === selectedProductId
+          //     );
+
+          //     if (selectedProduct) {
+          //       const unitCost = parseFloat(selectedProduct.cost);
+
+          //       if (isNaN(unitCost)) {
+          //         console.error(
+          //           "Invalid cost value for product:",
+          //           selectedProduct
+          //         );
+          //         return;
+          //       }
+
+          //       const quantity = 1;
+          //       setSingleUnitCost(unitCost);
+          //       setFieldValue("productNumber", selectedProduct.partNumber);
+          //       setFieldValue("cost", unitCost.toFixed(2));
+          //       setFieldValue("productQuantity", quantity);
+          //       setFieldValue(
+          //         "productDescription",
+          //         selectedProduct.partDescription
+          //       );
+
+          //       setFieldValue("totalCost", (unitCost * quantity).toFixed(2));
+          //     }
+          //   } else {
+          //     setSingleUnitCost(null);
+          //     setFieldValue("productNumber", "");
+          //     setFieldValue("productId", "");
+          //     setFieldValue("cost", "");
+          //     setFieldValue("productQuantity", "");
+          //     setFieldValue("productDescription", "");
+          //     setFieldValue("totalCost", "");
+          //   }
+          // };
+          console.log("productNumberListproductNumberList", productNumberList);
+
+          // Corrected Code
           const handleProductSelectChange = (
             e: React.ChangeEvent<HTMLSelectElement>
           ) => {
-            const selectedProductId = e.target.value;
-            setFieldValue("productId", selectedProductId);
+            const selectedProdNumber = e.target.value;
+            console.log("selectedProdNumber", selectedProdNumber);
+            setFieldValue("productId", selectedProdNumber);
 
-            if (selectedProductId) {
-              const selectedProduct = productNumberList.find(
-                (p) => p.part_id === selectedProductId
+            if (selectedProdNumber) {
+              const selected = productNumberList.find(
+                (p) => p.productId === selectedProdNumber
               );
+              console.log("selectedselected", selected);
 
-              if (selectedProduct) {
-                const unitCost = parseFloat(selectedProduct.cost);
-
-                if (isNaN(unitCost)) {
-                  console.error(
-                    "Invalid cost value for product:",
-                    selectedProduct
-                  );
-                  return;
-                }
-
+              if (selected) {
+                const unitCost = selected.cost;
                 const quantity = 1;
+
                 setSingleUnitCost(unitCost);
-                setFieldValue("productNumber", selectedProduct.partNumber);
                 setFieldValue("cost", unitCost.toFixed(2));
                 setFieldValue("productQuantity", quantity);
+                setFieldValue("totalCost", (unitCost * quantity).toFixed(2));
+                setFieldValue("productNumber", selected.partNumber);
+                // === YEH LINE ADD KARNI HAI ===
                 setFieldValue(
                   "productDescription",
-                  selectedProduct.partDescription
+                  selected.productDescription
                 );
-
-                setFieldValue("totalCost", (unitCost * quantity).toFixed(2));
               }
             } else {
+              // Jab product deselect ho, to saare fields clear karein
               setSingleUnitCost(null);
-              setFieldValue("productNumber", "");
-              setFieldValue("productId", "");
               setFieldValue("cost", "");
               setFieldValue("productQuantity", "");
-              setFieldValue("productDescription", "");
               setFieldValue("totalCost", "");
+
+              // === DESCRIPTION KO BHI CLEAR KAREIN ===
+              setFieldValue("productDescription", "");
             }
           };
           const handleQuantityChange = (
@@ -416,14 +457,14 @@ const StockOrderForm = () => {
                   >
                     <option value="" label="Select a product" />
                     {productNumberList.map((product) => (
-                      <option key={product.part_id} value={product.part_id}>
+                      <option key={product.productId} value={product.productId}>
                         {product.partNumber}
                       </option>
                     ))}
                   </select>
 
                   <ErrorMessage
-                    name="productNumber"
+                    name="productId"
                     component="div"
                     className="text-red-500 text-sm mt-1"
                   />

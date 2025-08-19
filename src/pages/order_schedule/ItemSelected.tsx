@@ -93,7 +93,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
           status: "new",
           quantity: item.scheduledQty,
           product_id: item.part.part_id,
-          part_id: comp.part.part_id,
+          part_id: comp?.part?.part_id,
           type: "product",
         }));
 
@@ -387,18 +387,18 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
 
                           {item.part.components.map((data) => (
                             <tr
-                              key={data.part.partNumber}
+                              key={data?.part?.partNumber}
                               className="border-b hover:bg-gray-50"
                             >
                               <td className="px-4 pr-4 py-2">
-                                {data.part.partNumber}
+                                {data?.part?.partNumber}
                               </td>
                               <td className="px-4 py-2">
-                                {data.part.partDescription || "N/A"}
+                                {data?.part?.partDescription || "N/A"}
                               </td>
                               <td className="px-4 py-2 font-medium">
-                                {(item.scheduledQty || 0) *
-                                  (data.part.minStock || 0)}
+                                {(item?.scheduledQty || 0) *
+                                  (data?.part?.minStock || 0)}
                               </td>
                             </tr>
                           ))}
