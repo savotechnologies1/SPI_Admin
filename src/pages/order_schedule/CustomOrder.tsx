@@ -6,7 +6,7 @@ import CustomOrderForm from "./CustomOrderForm";
 
 const CustomOrder = () => {
   return (
-    <div className="p-4">
+    <div className="p-5">
       <div className="flex flex-col sm:flex-row justify-between gap-2 mb-4 md:mb-0">
         <div>
           {" "}
@@ -28,7 +28,7 @@ const CustomOrder = () => {
         <div className="flex gap-2 items-center ">
           <p
             className={`text-[14px] text-black`}
-            onClick={() => ("dashboardDetailes")}
+            onClick={() => "dashboardDetailes"}
           >
             <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
           </p>
@@ -39,12 +39,14 @@ const CustomOrder = () => {
           <span>
             <FaCircle className="text-[6px] text-gray-500" />
           </span>
-          <span className="text-[14px] hover:cursor-pointer">Custom Orders</span>
+          <span className="text-[14px] hover:cursor-pointer">
+            Custom Orders
+          </span>
         </div>
       </div>
 
       <div className="py-6">
-        <CustomOrderForm/>
+        <CustomOrderForm />
       </div>
     </div>
   );

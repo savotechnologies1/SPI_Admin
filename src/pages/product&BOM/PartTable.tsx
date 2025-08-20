@@ -74,6 +74,7 @@ export default function PartTable() {
   const handleDelete = async (id: string) => {
     try {
       deletePartNumber(id).then();
+      await new Promise((r) => setTimeout(r, 500));
       await fetchCustomerList(currentPage);
     } catch (error: unknown) {
       throw error;
@@ -164,10 +165,13 @@ export default function PartTable() {
                   LeadTimeDays
                 </th>
                 <th className="border p-2 font-semibold text-gray-600">
-                  Availble stock
+                  order qty.
                 </th>
                 <th className="border p-2 font-semibold text-gray-600">
-                  order qty.
+                  Minimum qty
+                </th>
+                <th className="border p-2 font-semibold text-gray-600">
+                  Available qty
                 </th>
                 <th className="border p-2 font-semibold text-gray-600"></th>
               </tr>
@@ -189,10 +193,13 @@ export default function PartTable() {
                     {part.leadTime} Days
                   </td>
                   <td className="border-b border-dashed p-2">
-                    {part.availStock}
+                    {part.supplierOrderQty}
                   </td>
                   <td className="border-b border-dashed p-2">
-                    {part.supplierOrderQty}
+                    {part.minStock}
+                  </td>
+                  <td className="border-b border-dashed p-2">
+                    {part.availStock}
                   </td>
                   <td className="flex items-center gap-4 border-b border-dashed p-2">
                     <img

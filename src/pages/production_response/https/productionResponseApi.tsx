@@ -57,7 +57,8 @@ export const completeOrder = async (
   order_type: string,
   partId: string,
   employeeId: string,
-  productId: string
+  productId: string,
+  type: string
 ) => {
   try {
     const response = await axiosInstance.put(`/complete-order/${id}`, {
@@ -66,6 +67,7 @@ export const completeOrder = async (
       partId,
       employeeId,
       productId,
+      type,
     });
 
     if (response.status === 201) {

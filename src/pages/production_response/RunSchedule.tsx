@@ -538,28 +538,20 @@ const RunSchedule = () => {
         console.log("Station login successful!");
       }
 
-      // ======================= CHANGE STARTS HERE =======================
-
-      // 1. Define productId and set it only if the job type is 'product'
       let productId = null;
       if (jobData.type === "product") {
-        // Get the final product's ID from the main order object
-        productId = jobData.productId;
+        productId = jobData.productId || jobData.order.productId;
       }
 
-      // 2. Call complete order API with the new, conditional productId
       await completeOrder(
         jobData.productionId,
         jobData.order_id,
         jobData.order_type,
-        jobData.part_id, // This is the component part_id from the schedule
+        jobData.part_id,
         jobData.employeeInfo.id,
-        jobData.productId // This will be the product's ID or null
+        jobData.productId || jobData.order.productId,
+        jobData.type
       );
-
-      // ======================== CHANGE ENDS HERE ========================
-
-      // Refetch updated job details
       fetchJobDetails(id);
     } catch (error: any) {
       const status = error?.response?.status;

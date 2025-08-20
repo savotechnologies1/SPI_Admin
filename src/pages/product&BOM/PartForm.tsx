@@ -383,7 +383,6 @@ const PartForm = () => {
               className="border p-2 rounded w-full"
             />
           </div>
-
           <div className="col-span-4 md:col-span-1">
             <label>Company Name</label>
             <input
@@ -393,25 +392,57 @@ const PartForm = () => {
               className="border p-2 rounded w-full"
             />
           </div>
-
           <div className="col-span-4 md:col-span-1">
             <label>Minimum Stock</label>
             <input
               type="number"
-              {...register("minStock")}
+              {...register("minStock", {
+                required: "Minimum Stock is required",
+                validate: (value) => {
+                  const supplierOrderQty = parseFloat(
+                    watch("supplierOrderQty")
+                  );
+                  if (!supplierOrderQty) return true;
+                  return (
+                    parseFloat(value) <= supplierOrderQty ||
+                    "Minimum Stock must be less than Order Quantity"
+                  );
+                },
+              })}
               placeholder="Minimum Stock"
               className="border p-2 rounded w-full"
             />
+            {errors.minStock && (
+              <p className="text-red-500 text-sm">{errors.minStock.message}</p>
+            )}
           </div>
 
+          {/* === MODIFIED SECTION: availStock === */}
           <div className="col-span-4 md:col-span-1">
             <label>Available Stock</label>
             <input
               type="number"
-              {...register("availStock")}
+              {...register("availStock", {
+                required: "Available Stock is required",
+                validate: (value) => {
+                  const supplierOrderQty = parseFloat(
+                    watch("supplierOrderQty")
+                  );
+                  if (!supplierOrderQty) return true;
+                  return (
+                    parseFloat(value) <= supplierOrderQty ||
+                    "Available Stock must be less than Order Quantity"
+                  );
+                },
+              })}
               placeholder="Available Stock"
               className="border p-2 rounded w-full"
             />
+            {errors.availStock && (
+              <p className="text-red-500 text-sm">
+                {errors.availStock.message}
+              </p>
+            )}
           </div>
 
           <div className="col-span-4 md:col-span-1">
@@ -459,8 +490,6 @@ const PartForm = () => {
             )}
           </div>
 
-          {/* Process Order Required */}
-
           <label className="block col-span-4 md:col-span-2">
             Process Description
             <textarea
@@ -494,7 +523,6 @@ const PartForm = () => {
         </form>
       </div>
 
-      {/* Table */}
       <div className="mt-6 bg-white p-6 rounded-2xl shadow-md">
         <table className="text-sm w-full">
           <thead className="bg-[#F4F6F8] text-left text-gray-500">
@@ -525,10 +553,7 @@ const PartForm = () => {
                       onClick={() => setShowConfirm(true)}
                     />
                     {showConfirm && (
-                      <div
-                        className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
-                                                                flex items-center justify-center z-50"
-                      >
+                      <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
                         <div className="bg-white p-6 rounded-xl shadow-lg">
                           <h2 className="text-lg font-semibold mb-4">
                             Are you sure?
@@ -563,7 +588,6 @@ const PartForm = () => {
           </tbody>
         </table>
 
-        {/* Pagination */}
         <div className="flex flex-row justify-between items-center bg-white py-2 px-2 md:px-4 gap-2">
           <p className="text-xs md:text-sm text-gray-600">
             Page {currentPage} of {totalPages}

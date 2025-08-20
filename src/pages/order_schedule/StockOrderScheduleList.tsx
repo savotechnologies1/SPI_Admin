@@ -287,7 +287,14 @@ const StockOrderScheduleList: React.FC = () => {
                   <td className="px-4 py-3">
                     {formatDate(item.delivery_date)}
                   </td>
-
+                  <td className="px-4 py-3">
+                    {formatDate(item.completed_date)}
+                  </td>
+                  <td className="px-4 py-3">
+                    {item.completed_by === null
+                      ? "Not Available"
+                      : item.completed_by}
+                  </td>
                   <td className="px-4 py-3">
                     <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
                       {item.status || "Unknown"}

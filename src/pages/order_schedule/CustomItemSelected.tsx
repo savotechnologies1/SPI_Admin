@@ -1315,8 +1315,11 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
                               {part.partDescription || "No Description"}
                             </td>
                             <td className="px-4 py-2">
-                              {item.originalData.productQuantity *
-                                part.quantityRequired}
+                              {part.type === "product"
+                                ? item.originalData.productQuantity *
+                                  part.quantityRequired
+                                : item.originalData.productQuantity *
+                                  part.minStock}
                             </td>
                           </tr>
                         ))}

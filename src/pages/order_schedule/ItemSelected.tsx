@@ -384,24 +384,25 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                               {item.scheduledQty || "-"}
                             </td>
                           </tr>
-
-                          {item.part.components.map((data) => (
-                            <tr
-                              key={data?.part?.partNumber}
-                              className="border-b hover:bg-gray-50"
-                            >
-                              <td className="px-4 pr-4 py-2">
-                                {data?.part?.partNumber}
-                              </td>
-                              <td className="px-4 py-2">
-                                {data?.part?.partDescription || "N/A"}
-                              </td>
-                              <td className="px-4 py-2 font-medium">
-                                {(item?.scheduledQty || 0) *
-                                  (data?.part?.minStock || 0)}
-                              </td>
-                            </tr>
-                          ))}
+                          {item.part.components
+                            .filter((data) => data?.part) // keep only those with part info
+                            .map((data) => (
+                              <tr
+                                key={data.part.partNumber}
+                                className="border-b hover:bg-gray-50"
+                              >
+                                <td className="px-4 py-2">
+                                  {data.part.partNumber}
+                                </td>
+                                <td className="px-4 py-2">
+                                  {data.part.partDescription}
+                                </td>
+                                <td className="px-4 py-2 font-medium">
+                                  {(item?.scheduledQty || 0) *
+                                    (data.part.minStock || 0)}
+                                </td>
+                              </tr>
+                            ))}
                         </tbody>
                       </table>
                     </div>

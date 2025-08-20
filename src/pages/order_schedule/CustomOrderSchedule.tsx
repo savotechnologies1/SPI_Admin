@@ -85,8 +85,8 @@ const CustomOrderSchedule = () => {
   };
 
   return (
-    <>
-      <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
+    <div className="p-5">
+      <h1 className="font-semibold text-[20px] md:text-[24px] text-black pb-5">
         Custom Order Schedule
       </h1>
       <div className="p-4 bg-white rounded-2xl border shadow-md mb-6">
@@ -168,7 +168,7 @@ const CustomOrderSchedule = () => {
       </div>
 
       <CustomItemSelected items={searchResults} isLoading={false} />
-    </>
+    </div>
   );
 };
 

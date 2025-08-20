@@ -495,6 +495,7 @@ const EditWorkInstruction = () => {
                             {step.workInstructionVideo?.name ||
                               "Upload or Replace Video"}
                           </label>
+
                           <input
                             id={`video-${index}`}
                             type="file"

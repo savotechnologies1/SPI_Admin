@@ -12,53 +12,17 @@ import {
   deleteProductImage,
   getPartDetail,
   getPartNumberDetail,
+  getProcessDetail,
   partNumberList,
   selectProcess,
   updatePartNumber,
 } from "./https/partProductApis";
 import { MdCancel } from "react-icons/md";
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
-const data = [
-  {
-    process: "Cut Trim",
-    partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 min",
-    totalCycle: "54252 min",
-  },
-  {
-    process: "Cut Trim",
-    partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 min",
-    totalCycle: "54252 min",
-  },
-  {
-    process: "Cut Trim",
-    partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 min",
-    totalCycle: "54252 min",
-  },
-  {
-    process: "Cut Trim",
-    partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 min",
-    totalCycle: "54252 min",
-  },
-  {
-    process: "Cut Trim",
-    partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 min",
-    totalCycle: "54252 min",
-  },
-  {
-    process: "Cut Trim",
-    partDesc: "24×96” Virgin ABS, black smooth/ smooth 070 sheet",
-    cycleTime: "320 min",
-    totalCycle: "54252 min",
-  },
-];
-
 const EditPartForm = () => {
   const { register, handleSubmit, setValue, watch, reset } = useForm();
+  const selectedProcessId = watch("processId"); // <-- 1. WATCH THE FIELD
+
   const context = useContext(PartContext);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -69,21 +33,13 @@ const EditPartForm = () => {
   if (!context)
     throw new Error("PartContext must be used within a PartProvider");
 
-  const { addPart } = context;
-
   const [processData, setProcessData] = useState([]);
   const [partData, setPartData] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
   const selectedImages = watch("image");
   const [previewImages, setPreviewImages] = useState([]);
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
+  // ... (handleNextPage, handlePreviousPage, onSubmit, etc. are unchanged)
 
   const onSubmit = async (data) => {
     const formData = new FormData();
@@ -176,6 +132,31 @@ const EditPartForm = () => {
     }
   }, [selectedImages]);
 
+  // <-- 2. ADD THIS USE EFFECT
+  // Automatically update process description when a process is selected
+  useEffect(() => {
+    const fetchProcessDescription = async () => {
+      // If no process is selected, clear the description and stop.
+      if (!selectedProcessId) {
+        setValue("processDesc", "");
+        return;
+      }
+
+      try {
+        // Fetch details for the *specific* selected process
+        const res = await getProcessDetail(selectedProcessId);
+        // Set the description from the API response
+        setValue("processDesc", res.data?.processDesc || "");
+      } catch (err) {
+        // If the API call fails, clear the description and notify the user
+        setValue("processDesc", "");
+        console.error(err);
+      }
+    };
+
+    fetchProcessDescription();
+  }, [selectedProcessId, setValue]); // This effect runs whenever the selected process ID changes
+
   useEffect(() => {
     fetchProcessDetail();
   }, [id]);
@@ -186,6 +167,7 @@ const EditPartForm = () => {
   }, []);
 
   return (
+    // ... your JSX is unchanged, it will work automatically now
     <div className="p-4 md:p-7">
       <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-black">
         Edit Part Number
@@ -210,6 +192,7 @@ const EditPartForm = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
         >
+          {/* Part Family */}
           <label className="block col-span-4 md:col-span-2">
             Part Family
             <select
@@ -225,6 +208,7 @@ const EditPartForm = () => {
             </select>
           </label>
 
+          {/* Part Number */}
           <label className="block col-span-4 md:col-span-2">
             Part Number
             <input
@@ -235,6 +219,7 @@ const EditPartForm = () => {
             />
           </label>
 
+          {/* Part Description */}
           <label className="block col-span-4">
             Part Description
             <textarea
@@ -244,6 +229,7 @@ const EditPartForm = () => {
             />
           </label>
 
+          {/* Cost */}
           <div className="col-span-4 md:col-span-1">
             <label>Cost ($)</label>
             <input
@@ -254,6 +240,7 @@ const EditPartForm = () => {
             />
           </div>
 
+          {/* Lead Time */}
           <div className="col-span-4 md:col-span-1">
             <label>Lead Time (Days)</label>
             <input
@@ -264,6 +251,7 @@ const EditPartForm = () => {
             />
           </div>
 
+          {/* Order Quantity */}
           <div className="col-span-4 md:col-span-1">
             <label>Order Quantity by Supplier</label>
             <input
@@ -274,6 +262,7 @@ const EditPartForm = () => {
             />
           </div>
 
+          {/* Company Name */}
           <div className="col-span-4 md:col-span-1">
             <label>Company Name</label>
             <input
@@ -284,6 +273,7 @@ const EditPartForm = () => {
             />
           </div>
 
+          {/* Minimum Stock */}
           <div className="col-span-4 md:col-span-1">
             <label>Minimum Stock</label>
             <input
@@ -294,6 +284,7 @@ const EditPartForm = () => {
             />
           </div>
 
+          {/* Available Stock */}
           <div className="col-span-4 md:col-span-1">
             <label>Available Stock</label>
             <input
@@ -304,6 +295,7 @@ const EditPartForm = () => {
             />
           </div>
 
+          {/* Cycle Time */}
           <div className="col-span-4 md:col-span-1">
             <label>Cycle Time</label>
             <input
@@ -314,6 +306,7 @@ const EditPartForm = () => {
             />
           </div>
 
+          {/* Process Order Required */}
           <div className="col-span-4 md:col-span-1">
             <label>Process Order Required</label>
             <select
@@ -327,6 +320,7 @@ const EditPartForm = () => {
             </select>
           </div>
 
+          {/* Process */}
           <label className="block col-span-4 md:col-span-2">
             Process
             <select
@@ -342,6 +336,7 @@ const EditPartForm = () => {
             </select>
           </label>
 
+          {/* Process Description */}
           <label className="block col-span-4 md:col-span-2">
             Process Description
             <textarea
@@ -351,6 +346,7 @@ const EditPartForm = () => {
             />
           </label>
 
+          {/* Images */}
           <div className="col-span-4">
             <label className="block font-medium mb-2">Uploaded Images</label>
 
@@ -384,6 +380,7 @@ const EditPartForm = () => {
             </div>
           </div>
 
+          {/* Image Upload */}
           <label className="block col-span-4 md:col-span-2 cursor-pointer border bg-gray-100 p-4 rounded text-center">
             {selectedImages?.[0]?.name || "Tap or Click to Add Picture"}
             <input
@@ -395,6 +392,7 @@ const EditPartForm = () => {
             />
           </label>
 
+          {/* Submit Button */}
           <div className="flex justify-end items-center col-span-4">
             <button
               type="submit"

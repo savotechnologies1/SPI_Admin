@@ -323,10 +323,19 @@ const ProductNumber = () => {
           Order Quantity by Supplier
           <input
             type="number"
-            {...register("supplierOrderQty", { valueAsNumber: true })}
+            {...register("supplierOrderQty", {
+              valueAsNumber: true,
+
+              required: "Supplier ordre quntity is required",
+            })}
             placeholder="Order Qty"
             className="border p-2 rounded w-full"
           />
+          {errors.supplierOrderQty && (
+            <p className="text-red-500 text-xs">
+              {errors.supplierOrderQty.message}
+            </p>
+          )}
         </label>
         <label className="col-span-4 md:col-span-1">
           Company Name
@@ -341,19 +350,31 @@ const ProductNumber = () => {
           Minimum Stock
           <input
             type="number"
-            {...register("minStock", { valueAsNumber: true })}
+            {...register("minStock", {
+              valueAsNumber: true,
+              required: "Minimum stock is required",
+            })}
             placeholder="Minimum Stock"
             className="border p-2 rounded w-full"
           />
+          {errors.minStock && (
+            <p className="text-red-500 text-xs">{errors.minStock.message}</p>
+          )}
         </label>
         <label className="col-span-4 md:col-span-1">
           Available Stock
           <input
             type="number"
-            {...register("availStock", { valueAsNumber: true })}
+            {...register("availStock", {
+              valueAsNumber: true,
+              required: "Available stock is required",
+            })}
             placeholder="Available Stock"
             className="border p-2 rounded w-full"
           />
+          {errors.availStock && (
+            <p className="text-red-500 text-xs">{errors.availStock.message}</p>
+          )}
         </label>
         <label className="col-span-4 md:col-span-1">
           Cycle Time

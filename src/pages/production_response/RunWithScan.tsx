@@ -206,6 +206,7 @@ import { NavLink, useNavigate, useParams } from "react-router-dom";
 import {
   completeOrder,
   scrapOrder,
+  stationLogin,
   stationLogoutApi,
   stationProcessDetail,
 } from "./https/productionResponseApi";
@@ -313,6 +314,7 @@ const RunWithScan = () => {
     if (!jobData || isCompleting) return;
     setIsCompleting(true);
     try {
+      // This part for station login remains the same
       if (jobData.type === "product") {
         const stationLoginData = {
           processId: jobData.processId,
@@ -323,23 +325,26 @@ const RunWithScan = () => {
         const loginRes = await stationLogin(stationLoginData);
         if (loginRes?.status !== 200) {
           console.error("Station login failed");
-          setIsCompleting(false); // ✅ Unlock
+          setIsCompleting(false);
           return;
         }
         console.log("Station login successful!");
       }
 
-      // Then call complete order API
+      let productId = null;
+      if (jobData.type === "product") {
+        productId = jobData.productId || jobData.order.productId;
+      }
+
       await completeOrder(
         jobData.productionId,
         jobData.order_id,
         jobData.order_type,
         jobData.part_id,
         jobData.employeeInfo.id,
-        jobData.order.partId
+        jobData.productId || jobData.order.productId,
+        jobData.type
       );
-
-      // Refetch updated job details
       fetchJobDetails(id);
     } catch (error: any) {
       const status = error?.response?.status;
