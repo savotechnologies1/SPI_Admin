@@ -43,8 +43,8 @@ const SupplierInventory = () => {
         supplierName: `${item.supplier?.firstName || ""} ${
           item.supplier?.lastName || ""
         }`.trim(),
-        qtyAvail: item.availStock || 0,
-        safetyStock: item.minStock || 0,
+        qtyAvail: item.part?.availStock || 0,
+        safetyStock: item?.part?.minStock || 10,
         currentCost: item.cost || 0,
       }));
 
@@ -113,6 +113,7 @@ const SupplierInventory = () => {
   const goToNextPage = () => {
     if (currentPage < totalPages) fetchData(currentPage + 1);
   };
+  console.log("data", data);
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">

@@ -164,3 +164,46 @@ export const deleteSupplierInventory = async (id: string) => {
     toast.error(error.response.data.message);
   }
 };
+
+export const sendSupplierEmailApi = async (id) => {
+  try {
+    const response = await axiosInstance.post(`/supplier-order-email`, {
+      id: id,
+    });
+    if (response.status === 200) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error: any) {
+    toast.error(error.response.data.message);
+  }
+};
+
+export const supplierOrderDetail = async (id: string) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await axiosInstance.get(
+      `/get-supplier-order-detail/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateSupplierOrderStatus = async (
+  id: string,
+  quantity: string,
+  part_id: string,
+  status: string
+) => {
+  try {
+    const response = await axiosInstance.patch(`/change-order-status/${id}`, {
+      quantity: quantity,
+      part_id: part_id,
+      status: status,
+    });
+  } catch (error) {
+    throw error;
+  }
+};

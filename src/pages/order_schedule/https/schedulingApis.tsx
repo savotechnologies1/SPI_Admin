@@ -135,7 +135,6 @@ export const searchCustomOrder = async (searchParams: object) => {
   }
 };
 export const scheduleStockOrder = async (apiData: object) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.post("/stock-order-schedule", apiData);
     if (response.status === 201) {
@@ -153,7 +152,6 @@ export const scheduleStockOrder = async (apiData: object) => {
 };
 
 export const scheduleCustomOrder = async (apiData: object) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.post(
       "/custom-order-schedule",

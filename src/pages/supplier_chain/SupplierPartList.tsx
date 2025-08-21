@@ -161,7 +161,6 @@ const SupplierPartList: React.FC = () => {
         </div>
       </div>
 
-      {/* Table */}
       <div className="bg-white overflow-x-auto mt-6">
         <table className="w-full border-collapse">
           <thead>

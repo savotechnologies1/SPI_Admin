@@ -200,6 +200,11 @@ const sections: Section[] = [
             label: "Supplier Order",
             path: "/supplier-order",
           },
+          {
+            key: "SupplierOrder",
+            label: "Supplier Order List",
+            path: "/supplier-order-list",
+          },
           // {
           //   key: "SupplierPartList",
           //   label: "Supplier part list",
