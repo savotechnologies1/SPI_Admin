@@ -294,7 +294,8 @@ const RunWithScan = () => {
       }
       try {
         setLoading(true);
-        const response = await stationProcessDetail(jobId);
+        const stationUserId = localStorage.getItem("stationUserId");
+        const response = await stationProcessDetail(jobId, stationUserId);
         const data = response?.data;
         if (data) setJobData(data);
       } catch (error: any) {
@@ -314,7 +315,6 @@ const RunWithScan = () => {
     if (!jobData || isCompleting) return;
     setIsCompleting(true);
     try {
-      // This part for station login remains the same
       if (jobData.type === "product") {
         const stationLoginData = {
           processId: jobData.processId,

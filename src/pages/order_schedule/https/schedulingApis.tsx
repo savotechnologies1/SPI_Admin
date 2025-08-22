@@ -171,10 +171,15 @@ export const scheduleCustomOrder = async (apiData: object) => {
   }
 };
 
-export const scheduleStockOrderListApi = async (page = 1, limit = 5) => {
+export const scheduleStockOrderListApi = async (
+  page = 1,
+  limit = 5,
+  type: string,
+  searchTerm: string
+) => {
   try {
     const response = await axiosInstance.get(
-      `/stock-order-schedule-list?page=${page}&limit=${limit}`
+      `/stock-order-schedule-list?page=${page}&limit=${limit}&order_type=${type}&search=${searchTerm}`
     );
     return response;
   } catch (error) {

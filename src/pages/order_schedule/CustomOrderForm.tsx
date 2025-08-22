@@ -52,12 +52,10 @@ const CustomOrderForm = () => {
   const [partList, setPartList] = useState<PartNumberInterface[]>([]);
   const [processList, setProcessList] = useState<processInterface[]>([]);
 
-  // This state is used to control if the customer input fields are read-only.
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(
     null
   );
 
-  // This state holds the cost of a single unit of the selected product for calculations.
   const [singleUnitCost, setSingleUnitCost] = useState<number | null>(null);
 
   useEffect(() => {
@@ -67,7 +65,6 @@ const CustomOrderForm = () => {
     fetchProcess();
   }, []);
 
-  // --- Data Fetching Functions ---
   const fetchCustomers = async () => {
     try {
       const response = await selectCustomer();
@@ -108,7 +105,6 @@ const CustomOrderForm = () => {
     }
   };
 
-  // --- Formik Initial Values ---
   const initialFormValues = {
     orderNumber: generateNewOrderNumber(),
     orderDate: new Date().toISOString().split("T")[0],
@@ -117,8 +113,8 @@ const CustomOrderForm = () => {
     customerName: "",
     customerEmail: "",
     customerPhone: "",
-    productId: "", // Corresponds to the product dropdown
-    part_id: "", // Corresponds to the part number dropdown
+    productId: "",
+    part_id: "",
     cost: "",
     totalCost: "",
     productQuantity: "",
@@ -143,10 +139,9 @@ const CustomOrderForm = () => {
               resetForm({
                 values: {
                   ...initialFormValues,
-                  orderNumber: generateNewOrderNumber(), // Generate a new order number for the next form
+                  orderNumber: generateNewOrderNumber(),
                 },
               });
-              // Reset component-level state
               setSelectedCustomerId(null);
               setSingleUnitCost(null);
             } catch (error) {
@@ -158,32 +153,27 @@ const CustomOrderForm = () => {
           }}
         >
           {({ values, setFieldValue, errors, touched, isSubmitting }) => {
-            // --- Event Handlers ---
-
             const handleCustomerSelectChange = (
               e: React.ChangeEvent<HTMLSelectElement>
             ) => {
               const value = e.target.value;
               if (value === "new") {
-                // User wants to add a new customer
-                const tempId = crypto.randomUUID(); // Temporary ID for the backend to recognize a new customer
+                const tempId = crypto.randomUUID();
                 setFieldValue("customerId", tempId);
-                setSelectedCustomerId(null); // Unlock the input fields
+                setSelectedCustomerId(null);
                 setFieldValue("customerName", "");
                 setFieldValue("customerEmail", "");
                 setFieldValue("customerPhone", "");
               } else if (value) {
-                // User selected an existing customer
                 const selected = customerList.find((c) => c.id === value);
                 if (selected) {
                   setFieldValue("customerId", selected.id);
-                  setSelectedCustomerId(selected.id); // Lock the input fields
+                  setSelectedCustomerId(selected.id);
                   setFieldValue("customerName", selected.name);
                   setFieldValue("customerEmail", selected.email);
                   setFieldValue("customerPhone", selected.customerPhone);
                 }
               } else {
-                // User selected "Select a customer" (clearing the selection)
                 setFieldValue("customerId", "");
                 setSelectedCustomerId(null);
                 setFieldValue("customerName", "");
@@ -210,7 +200,6 @@ const CustomOrderForm = () => {
                   setFieldValue("totalCost", (unitCost * quantity).toFixed(2));
                 }
               } else {
-                // Clear related fields if deselected
                 setSingleUnitCost(null);
                 setFieldValue("cost", "");
                 setFieldValue("productQuantity", "");
@@ -230,7 +219,6 @@ const CustomOrderForm = () => {
               const quantityStr = e.target.value;
               setFieldValue("productQuantity", quantityStr);
               const newQuantity = Number(quantityStr);
-              // Recalculate total cost if unit cost is known and quantity is valid
               if (singleUnitCost !== null && newQuantity >= 1) {
                 const totalCost = singleUnitCost * newQuantity;
                 setFieldValue("totalCost", totalCost.toFixed(2));

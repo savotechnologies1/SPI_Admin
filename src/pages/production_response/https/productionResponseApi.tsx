@@ -28,10 +28,13 @@ export const stationLogin = async (userData: object) => {
   }
 };
 
-export const stationProcessDetail = async (id: string) => {
+export const stationProcessDetail = async (
+  id: string,
+  stationUserId: string
+) => {
   try {
     const response = await axiosInstance.get(
-      `/get-schedule-process-information/${id}`
+      `/get-schedule-process-information/${id}?stationUserId=${stationUserId}`
     );
     return response.data;
   } catch (error) {
@@ -58,7 +61,8 @@ export const completeOrder = async (
   partId: string,
   employeeId: string,
   productId: string,
-  type: string
+  type: string,
+  completedBy: string
 ) => {
   try {
     const response = await axiosInstance.put(`/complete-order/${id}`, {
@@ -68,6 +72,7 @@ export const completeOrder = async (
       employeeId,
       productId,
       type,
+      completedBy,
     });
 
     if (response.status === 201) {

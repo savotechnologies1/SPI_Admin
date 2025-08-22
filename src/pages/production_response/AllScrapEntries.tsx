@@ -245,6 +245,7 @@ const AllScrapEntries: React.FC = () => {
                 <th className="px-4 py-3">Part Number</th>
                 <th className="px-4 py-3">Supplier Name</th>
                 <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Submit By</th>
                 <th className="px-4 py-3">Submit Date</th>
                 <th className="px-4 py-3">Actions</th>
               </tr>
@@ -259,6 +260,15 @@ const AllScrapEntries: React.FC = () => {
                   </td>
                   <td className="px-4 py-3">
                     {item.scrapStatus == true ? "yes" : "no"}
+                  </td>
+                  <td className="px-4 py-3">
+                    {item.createdByEmployee !== null
+                      ? `${item?.createdByEmployee.firstName} ${item?.createdByEmployee.lastName}`
+                      : `${
+                          item?.createdByAdmin?.name
+                            ? item?.createdByAdmin?.name
+                            : "Not Available"
+                        }`}
                   </td>
                   <td className="px-4 py-3">
                     <span className="px-2 py-1 rounded text-xs font-semibold bg-gray-200 text-gray-600">

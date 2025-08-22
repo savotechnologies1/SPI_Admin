@@ -79,71 +79,59 @@ const mockData: WorkInstructionItem[] = [
 ];
 
 const StockOrderScheduleList: React.FC = () => {
-  const [openOptionsIndex, setOpenOptionsIndex] = useState<number | null>(null);
-  const rowsPerPage = 5;
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const toggleOptions = (index: number) => {
-    setOpenOptionsIndex((prev) => (prev === index ? null : index));
-  };
-
-  const { id } = useParams();
-
-  const getColorClass = (color: string) => {
-    switch (color) {
-      case "green":
-        return "bg-green-200 text-green-700";
-      case "yellow":
-        return "bg-yellow-200 text-yellow-800";
-      case "red":
-        return "bg-red-200 text-red-700";
-      default:
-        return "bg-gray-200 text-gray-600";
-    }
-  };
-
-  const navigate = useNavigate();
-  const handleEdit = (id: string) => {
-    navigate(`/edit-work-instruction/${id}`);
-  };
-  const [workData, setWorkData] = useState<[]>([]);
+  const [workData, setWorkData] = useState<any[]>([]); // Use any[] for now for simplicity
   const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
-  const [showConfirmId, setShowConfirmId] = useState(null);
+  const [selectedType, setSelectedType] = useState("all"); // Filter state
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [selectedValue, setSelectedValue] = useState("all");
+
+  const rowsPerPage = 10;
   const debouncedSearchVal = useDebounce(searchVal, 500);
-  function useDebounce(value, delay) {
+
+  // Custom Debounce Hook (your implementation is fine)
+  function useDebounce(value: string, delay: number) {
     const [debouncedValue, setDebouncedValue] = useState(value);
-
     useEffect(() => {
-      const handler = setTimeout(() => {
-        setDebouncedValue(value);
-      }, delay);
-
-      return () => {
-        clearTimeout(handler);
-      };
+      const handler = setTimeout(() => setDebouncedValue(value), delay);
+      return () => clearTimeout(handler);
     }, [value, delay]);
-
     return debouncedValue;
   }
-  const handleChange = (e) => {
+
+  // Fetcher function
+  const fetchScheduleList = async (page = 1, type = "all", searchTerm = "") => {
     try {
-      setSearchVal(e.target.value);
+      // Pass all parameters to the API call
+      const response = await scheduleStockOrderListApi(
+        page,
+        rowsPerPage,
+        type,
+        searchTerm
+      );
+
+      setWorkData(response.data.data || []);
+      setTotalPages(response.data.pagination?.totalPages || 1);
     } catch (error) {
-      throw error;
+      console.error("Failed to fetch schedule list:", error);
     }
   };
 
-  const handleSelectChange = (event) => {
-    const newValue = event.target.value;
-    setSelectedValue(newValue);
+  // Effect to fetch data when page, filter, or debounced search changes
+  useEffect(() => {
+    fetchScheduleList(currentPage, selectedType, debouncedSearchVal);
+  }, [currentPage, selectedType, debouncedSearchVal]);
 
-    console.log("A new option was selected:", newValue);
+  // Handlers for UI changes
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchVal(e.target.value);
+    setCurrentPage(1); // Reset to page 1 on new search
   };
-  console.log("searchValsearchVal", searchVal);
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedType(e.target.value);
+    setCurrentPage(1); // Reset to page 1 on new filter
+  };
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -152,49 +140,27 @@ const StockOrderScheduleList: React.FC = () => {
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
-  const fetchWorkInstructionList = async (
-    page = 1,
-    searchTerm = "",
-    type = ""
-  ) => {
-    try {
-      const response = await scheduleStockOrderListApi(page, rowsPerPage);
-      console.log("responseresponse", response);
-
-      setWorkData(response.data.data);
-      setTotalPages(response.pagination?.totalPages || 1);
-    } catch (error) {
-      console.error("Failed to fetch work instructions:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchWorkInstructionList(currentPage, selectedValue, debouncedSearchVal);
-  }, [currentPage, selectedValue, debouncedSearchVal]);
 
   const handleDelete = async (id: string) => {
     if (!id) return;
     try {
-      const response = await deleteScheduleOrder(id);
-      if (response?.status === 200) {
-        await fetchWorkInstructionList(currentPage);
-      }
+      await deleteScheduleOrder(id);
+      // Refetch data for the current page after deletion
+      fetchScheduleList(currentPage, selectedType, debouncedSearchVal);
     } catch (error) {
-      console.error(error);
+      console.error("Failed to delete:", error);
     }
   };
 
-  const editWorkInstruction = (id) => {
-    navigate(`/edit-work-instruction/${id}`);
-  };
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string | undefined) => {
     if (!dateString) return "N/A";
     try {
-      return new Date(dateString).toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
+      return new Date(dateString).toLocaleDateString("en-GB"); // DD/MM/YYYY
     } catch (error) {
       return "Invalid Date";
     }
   };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between">
@@ -222,25 +188,25 @@ const StockOrderScheduleList: React.FC = () => {
       </div>
 
       <div className="bg-white p-4 mt-6 rounded-lg">
-        {/* <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
+        <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
           <select
             id="work-instruction-filter"
             className="border w-full md:w-1/3 px-3 py-2 rounded-md"
-            value={selectedValue}
+            value={selectedType}
             onChange={handleSelectChange}
           >
-            <option value="all">All</option>
-            <option value="original">Original work instructions</option>
-            <option value="applied">Applied work instructions</option>
+            <option value="all">All Order Types</option>
+            <option value="StockOrder">Stock Order</option>
+            <option value="CustomOrder">Custom Order</option>
           </select>
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search by Order #, Part #, or Status..."
             className="border w-full md:w-2/3 px-3 py-2 rounded-md"
             value={searchVal}
-            onChange={(e) => handleChange(e)}
+            onChange={handleSearchChange}
           />
-        </div> */}
+        </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
@@ -308,9 +274,34 @@ const StockOrderScheduleList: React.FC = () => {
                     />
 
                     {/* Your delete confirmation modal is fine */}
+
                     {selectedId === item.id && (
                       <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-                        {/* ... modal content ... */}
+                        <div className="bg-white p-6 rounded-xl shadow-lg">
+                          <h2 className="text-lg font-semibold mb-4">
+                            Are you sure?
+                          </h2>
+                          <p className="mb-4">
+                            Do you really want to delete this schedule order.
+                          </p>
+                          <div className="flex justify-end space-x-3">
+                            <button
+                              className="px-4 py-2 bg-gray-300 rounded"
+                              onClick={() => setSelectedId(null)}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              className="px-4 py-2 bg-red-500 text-white rounded"
+                              onClick={() => {
+                                handleDelete(selectedId);
+                                setSelectedId(null);
+                              }}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </td>

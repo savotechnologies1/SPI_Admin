@@ -471,7 +471,8 @@ const RunSchedule = () => {
     }
     try {
       setLoading(true);
-      const response = await stationProcessDetail(jobId);
+      const stationUserId = localStorage.getItem("stationUserId");
+      const response = await stationProcessDetail(jobId, stationUserId);
       const data = response?.data;
       if (data) {
         setJobData(data);
@@ -550,7 +551,8 @@ const RunSchedule = () => {
         jobData.part_id,
         jobData.employeeInfo.id,
         jobData.productId || jobData.order.productId,
-        jobData.type
+        jobData.type,
+        `Admin`
       );
       fetchJobDetails(id);
     } catch (error: any) {
@@ -592,6 +594,7 @@ const RunSchedule = () => {
     try {
       const response = await stationLogoutApi(jobData.productionId);
       if (response && response.status === 200) {
+        localStorage.removeItem("stationUserId");
         navigate("/station-login");
       }
     } catch (error) {
