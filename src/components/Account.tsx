@@ -2,9 +2,8 @@ import { useState } from "react";
 import img from "../assets/pofile_img.jpg";
 import cross from "../assets/cross.png";
 import home from "../assets/home.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import upgrade from "../assets/upgrade.png";
-import { useSelector } from "react-redux";
 
 interface AccountProps {
   onClose: () => void;
@@ -13,6 +12,7 @@ interface AccountProps {
 const Account = ({ onClose }: AccountProps) => {
   const [isOpen, setIsOpen] = useState(true);
   const [activeTab, setActiveTab] = useState("Dashboard");
+  const navigate = useNavigate();
   interface RootState {
     profile: {
       data: {
@@ -22,11 +22,10 @@ const Account = ({ onClose }: AccountProps) => {
       };
     };
   }
-  // const profile = useSelector((state: RootState) => state.profile.data);
   const profile = {
     name: "John Doe",
     email: "johndoe@example.com",
-    profileImg: "", // or "sample.jpg"
+    profileImg: "",
   };
   const section = [
     {
@@ -67,6 +66,10 @@ const Account = ({ onClose }: AccountProps) => {
     profile.profileImg
   );
 
+  const handleLogout = () => {
+    localStorage.removeItem("auth_token"); // Clear the loggedIn flag from localStorage
+    navigate("/sign-in"); // Redirect to the sign-in page
+  };
   return (
     <div>
       <div className="fixed overflow-y-auto right-0 top-0 z-60 w-[320px] h-full bg-white shadow-lg">
@@ -152,7 +155,10 @@ const Account = ({ onClose }: AccountProps) => {
             </div>
           </div>
 
-          <button className="mt-4 w-full bg-[#FF563014] text-[#B71D18] py-2 rounded-lg font-semibold text-lg">
+          <button
+            className="mt-4 w-full bg-[#FF563014] text-[#B71D18] py-2 rounded-lg font-semibold text-lg"
+            onClick={handleLogout}
+          >
             Logout
           </button>
         </div>

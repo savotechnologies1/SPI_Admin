@@ -77,10 +77,19 @@ import EditPartScrapEntry from "./pages/production_response/EditPartScrapEntry";
 import EditProductScrapEntry from "./pages/production_response/EditProductScrapEntry";
 import SupplierOrderList from "./pages/supplier_chain/supplierOrderList";
 import EditSupplierOrder from "./pages/supplier_chain/EditSupplierOrder";
+import { Loader } from "lucide-react";
 
 const App = () => {
-  const { token } = useAuth();
+  const { isLoading, token } = useAuth();
 
+  if (isLoading) {
+    // Show loader until token check is done
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader className="text-brand" />
+      </div>
+    );
+  }
   return (
     <PartProvider>
       <ToastContainer />
@@ -167,10 +176,7 @@ const App = () => {
               path="custom-order-schedule"
               element={<CustomOrderSchedule />}
             />
-            <Route
-              path="email-password-detail"
-              element={<EmailPasswordModal />}
-            />
+
             <Route path="custom-details" element={<CustomOrderDetails />} />
             <Route path="daily-schedule" element={<DailySchedule />} />
             <Route path="labor-forecast" element={<LaborForecast />} />
