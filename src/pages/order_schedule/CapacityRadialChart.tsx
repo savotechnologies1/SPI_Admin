@@ -1,17 +1,15 @@
 import ReactApexChart from "react-apexcharts";
 
 const CapacityRadialChart = () => {
-  const series = [30, 50, 80]; // Values for each section
+  const series = [30, 50, 80];
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: "radialBar",
-
     },
     plotOptions: {
       radialBar: {
         hollow: {
           size: "50%",
-          
         },
         dataLabels: {
           name: {
@@ -28,8 +26,6 @@ const CapacityRadialChart = () => {
             label: "Total",
             formatter: () => `500`,
           },
-
-
         },
         track: {
           background: "#f0f0f0",
@@ -37,7 +33,7 @@ const CapacityRadialChart = () => {
       },
     },
     labels: ["Sanding", "Inspection", "CutTrim"],
-    colors: ["#00C853", "#FFC107", "#FF5722"], // Green, yellow, red
+    colors: ["#00C853", "#FFC107", "#FF5722"],
     legend: {
       show: true,
       position: "bottom",
@@ -54,7 +50,12 @@ const CapacityRadialChart = () => {
   return (
     <div className="p-6 bg-white rounded-md shadow-md">
       <h2 className="text-lg font-semibold mb-4">Status By Process</h2>
-      <ReactApexChart options={options} series={series} type="radialBar" height={300} />
+      <ReactApexChart
+        options={options}
+        series={series}
+        type="radialBar"
+        height={300}
+      />
     </div>
   );
 };

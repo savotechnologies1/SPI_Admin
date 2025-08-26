@@ -9,7 +9,6 @@ const OrderStatus = () => {
     <div className=" py-6 bg-white rounded-lg">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
-          {" "}
           <h1 className="text-xl font-semibold px-4  ">Orders Status</h1>
         </div>
         <div className="flex sm:flex-row  gap-2 items-center md:px-4">
@@ -20,7 +19,6 @@ const OrderStatus = () => {
               <option value="">feb 2025</option>
             </select>
           </div>
-         
         </div>
       </div>
 

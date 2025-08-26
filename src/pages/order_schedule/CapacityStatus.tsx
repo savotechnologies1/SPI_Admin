@@ -60,7 +60,6 @@ const CapacityStatus = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      {/* Breadcrumb */}
       <div className="flex items-center text-sm text-gray-500 mb-4"></div>
       <div>
         {" "}
@@ -92,7 +91,6 @@ const CapacityStatus = () => {
         </div>
       </div>
 
-      {/* Filters */}
       <div className="  mt-6 flex  flex-col md:flex-row  justify-between gap-4">
         <div className="   md:w-[60%]  ">
           <CapacityBarChart />
@@ -102,7 +100,6 @@ const CapacityStatus = () => {
         </div>
       </div>
 
-      {/* Table */}
       <div className="bg-white   rounded-lg mt-4 overflow-auto">
         <h1 className="p-4 text-lg font-semibold">Process Status</h1>
         <table className="min-w-full border-collapse">
@@ -113,7 +110,6 @@ const CapacityStatus = () => {
               <th className="py-2 px-4 text-left ">Load</th>
               <th className="py-2 px-4 text-left ">Quality</th>
               <th className="py-2 px-4 text-left ">Open Date</th>
-              {/* <th className="py-2 px-4 text-left "></th> */}
             </tr>
           </thead>
           <tbody>

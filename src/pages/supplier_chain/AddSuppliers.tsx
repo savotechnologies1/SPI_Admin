@@ -12,7 +12,6 @@ const AddSuppliers = () => {
 
   const navigate = useNavigate();
   const onSubmit = async (data: object) => {
-    // eslint-disable-next-line no-useless-catch
     try {
       const response = await addSupplier(data);
       if (response.status === 201) {
@@ -25,7 +24,6 @@ const AddSuppliers = () => {
   return (
     <div className="p-7">
       <div>
-        {" "}
         <h1 className="font-bold text-[20px] md:text-[24px] text-black">
           Add new Supplier
         </h1>
@@ -54,7 +52,6 @@ const AddSuppliers = () => {
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mt-4 bg-white p-6 w-full rounded-2xl md:w-2/3">
-          {/* Supplier Name */}
           <label className="font-semibold">Supplier's Name</label>
           <div className="flex flex-col sm:flex-row gap-4 mt-2 mb-6">
             <div className="sm:w-1/2">
@@ -86,8 +83,6 @@ const AddSuppliers = () => {
               )}
             </div>
           </div>
-
-          {/* Email */}
           <label className="font-semibold">Supplier's Email</label>
           <div className="mt-2 w-full mb-6">
             <input
@@ -108,8 +103,6 @@ const AddSuppliers = () => {
               </span>
             )}
           </div>
-
-          {/* Address */}
           <label className="font-semibold">Address</label>
           <div className="mt-2 w-full mb-6">
             <input
@@ -124,8 +117,6 @@ const AddSuppliers = () => {
               </span>
             )}
           </div>
-
-          {/* Billing Terms */}
           <label className="font-semibold">
             Billing Terms (In Days) <span className="text-red-700">*</span>
           </label>
@@ -148,8 +139,6 @@ const AddSuppliers = () => {
               </span>
             )}
           </div>
-
-          {/* Submit */}
           <div className="mt-6 text-end">
             <button
               type="submit"

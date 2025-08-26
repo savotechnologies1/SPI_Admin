@@ -6,7 +6,6 @@ export const updateProfile = async (
   profileImg: string,
   file: boolean
 ) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.put(
       "/profile-update",
@@ -17,7 +16,6 @@ export const updateProfile = async (
       file === true
         ? {
             headers: {
-              // 'Content-Type': 'application/json',
               "Content-Type": "multipart/form-data",
             },
           }
@@ -37,7 +35,6 @@ export const updateProfile = async (
 };
 
 export const getProfile = async () => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get("/profile-detail");
 
@@ -48,7 +45,6 @@ export const getProfile = async () => {
 };
 
 export const deleteProfile = async () => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.put("/delete-profile-image");
     if (response.status === 200) {

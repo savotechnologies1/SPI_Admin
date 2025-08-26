@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FiEdit2 } from "react-icons/fi";
-import { Trash2 } from "lucide-react";
 import axiosInstance from "../../utils/axiosInstance";
-import more from "../../assets/more.png";
 import { FaTrash } from "react-icons/fa";
 import { deleteSupplierInventory } from "./https/suppliersApi";
 
@@ -16,12 +13,9 @@ const SupplierInventory = () => {
   });
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedDeleteId, setSelectedDeleteId] = useState<string | null>(null);
-  // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const rowsPerPage = 5;
-
-  // Search & Sort states
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("newest");
 
@@ -123,7 +117,6 @@ const SupplierInventory = () => {
         </h1>
       </div>
 
-      {/* Filters */}
       <div className="bg-white p-4 mt-6">
         <div className="flex flex-col md:flex-row justify-between gap-4 items-end">
           <div className="flex items-center gap-2 w-full md:w-1/2">
@@ -149,7 +142,6 @@ const SupplierInventory = () => {
         </div>
       </div>
 
-      {/* Table */}
       <div className="bg-white overflow-x-auto mt-4">
         <table className="w-full border-collapse">
           <thead>
@@ -290,7 +282,6 @@ const SupplierInventory = () => {
           </tbody>
         </table>
 
-        {/* Pagination */}
         <div className="flex justify-between items-center mt-4 p-2">
           <button
             onClick={goToPreviousPage}

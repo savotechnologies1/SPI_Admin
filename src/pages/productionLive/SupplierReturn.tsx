@@ -13,7 +13,6 @@ const SupplierReturn = () => {
     <div className=" py-6 bg-white rounded-lg">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
-          {" "}
           <h1 className="text-xl font-semibold px-4  ">Supplier Return</h1>
         </div>
         <div className="flex flex-col sm:flex-row  gap-2 items-center px-4">
@@ -23,9 +22,7 @@ const SupplierReturn = () => {
             <img src={filter} alt="" />
             <img src={fullscren} alt="" />
             <img className="rotate-90" src={more} alt="" />
-           
           </div>
-        
         </div>
       </div>
 

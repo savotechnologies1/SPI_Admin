@@ -52,7 +52,7 @@ const ProductNumber = () => {
       process: "",
       cycleTime: "",
       workInstruction: "",
-      isSaved: false, // NEW
+      isSaved: false,
     },
   ]);
 

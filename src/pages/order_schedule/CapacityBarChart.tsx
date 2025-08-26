@@ -9,7 +9,14 @@ import {
   Legend,
 } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const CapacityBarChart = () => {
   const data = {
@@ -18,13 +25,13 @@ const CapacityBarChart = () => {
       {
         label: "2022",
         data: [300, 360, 360, 290, 300],
-        backgroundColor: (context: { dataIndex: string | number; }) => {
+        backgroundColor: (context: { dataIndex: string | number }) => {
           const colors = [
-            "rgba(0, 210, 150, 1) ",   // Green
-            "rgba(255, 99, 132, 1)",  // Red
-            "rgba(255, 206, 86, 1)",  // Yellow
-            "rgba(54, 162, 235, 1)",  // Blue
-            "rgba(153, 102, 255, 1)"  // Purple
+            "rgba(0, 210, 150, 1) ",
+            "rgba(255, 99, 132, 1)",
+            "rgba(255, 206, 86, 1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(153, 102, 255, 1)",
           ];
           return colors[context.dataIndex as number];
         },
@@ -43,7 +50,6 @@ const CapacityBarChart = () => {
         display: true,
         position: "bottom" as const,
         labels: {
-          // usePointStyle: true,
           boxWidth: 10,
         },
       },
@@ -53,7 +59,6 @@ const CapacityBarChart = () => {
         position: "top" as const,
         grid: {
           color: "#e5e5e5",
-          // drawBorder: false,
         },
         ticks: {
           stepSize: 100,

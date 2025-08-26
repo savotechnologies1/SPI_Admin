@@ -73,7 +73,6 @@ const partsData = [
 
 const cycleData = [{ name: "Cut Trim", avgCycle: 20 }];
 
-
 const CurrentStatus = () => {
   const [selected, setSelected] = useState("Cut Trim");
   const handleSelect = (station: string) => {
@@ -161,7 +160,6 @@ const CurrentStatus = () => {
       </div>
 
       <div className="flex flex-col md:flex-row gap-8">
-        {/* Table */}
         <div className="bg-white rounded-lg shadow-md p-4 md:w-[65%]">
           <h2 className="text-lg font-semibold mb-4">Parts Completed</h2>
           <table className="w-full">
@@ -181,8 +179,6 @@ const CurrentStatus = () => {
             </tbody>
           </table>
         </div>
-
-        {/* Bar Chart */}
         <div className="bg-white rounded-lg shadow-md p-4 w-[35%]">
           <h2 className="text-lg font-semibold mb-4">Avg Cycle Time</h2>
           <ResponsiveContainer width="100%" height={280}>

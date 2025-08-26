@@ -285,7 +285,6 @@ const EditPartScrapEntry = () => {
         // navigate('/scrap-entries');
       } catch (error) {
         console.error("Error updating scrap entry:", error);
-        
       } finally {
         setSubmitting(false);
       }

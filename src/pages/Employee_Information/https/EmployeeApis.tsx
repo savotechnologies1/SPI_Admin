@@ -83,3 +83,44 @@ export const sendEmailToTheEmployeeApi = async (apiData: object) => {
     toast.error(error.response.data.message);
   }
 };
+
+export const vacationList = async (
+  page = 1,
+  limit = 5,
+  isShopFloor: boolean,
+  searchVal: string
+) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await axiosInstance.get(
+      `/all-vacation-request?page=${page}&limit=${limit}&isShopFloor=${isShopFloor}&search=${searchVal}`
+    );
+    console.log("response.dataresponse.data", response.data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const vacationReqDetail = async (id: string) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await axiosInstance.get(`/vacation-req-detail/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const vacationReqStatus = async (data: object) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await axiosInstance.patch(
+      `/change-vacation-request-status`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

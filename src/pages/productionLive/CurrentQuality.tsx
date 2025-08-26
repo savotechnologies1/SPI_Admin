@@ -1,4 +1,4 @@
-import {  NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import img1 from "../../assets/green.png";
 import img2 from "../../assets/yellow.png";
 import img3 from "../../assets/orange.png";
@@ -50,14 +50,11 @@ const CurrentQuality = () => {
   return (
     <div>
       <div className="p-7">
-        {/* Title */}
         <div>
           <h1 className="font-bold text-[20px] md:text-[24px] text-black">
             Current Quality Performance
           </h1>
         </div>
-
-        {/* Breadcrumb */}
         <div className="flex justify-between mt-2 items-center">
           <div className="flex gap-4 items-center ">
             <p className={`text-sm  text-black font-semibold`}>
@@ -75,13 +72,11 @@ const CurrentQuality = () => {
           <div className="flex flex-col md:flex-row  mt-2 gap-4  ">
             {data_1.map((item) => (
               <div className="flex flex-col justify-between  bg-white  rounded-md w-full p-2 gap-2 border">
-                {" "}
                 <div className="flex items-center gap-2">
                   <div>
                     <img className="w-[40px]" src={item.scrap_img} alt="" />
                   </div>
                   <div className="">
-                    {" "}
                     <p className="text-sm text-gray-600">{item.text}</p>
                     <p className="font-bold text-xl">{item.num}</p>
                   </div>
@@ -90,13 +85,12 @@ const CurrentQuality = () => {
                   <img src={item.scrap} alt="" />
                 </div>
                 <div className="text-sm text-gray-600">
-                  Increase by{" "}
+                  Increase by
                   <span
                     className={`font-semibold rounded-md text-xs  ${item.textColor} ${item.bgColor}`}
                   >
-                    {" "}
                     {item.increase}
-                  </span>{" "}
+                  </span>
                   this week
                 </div>
               </div>
@@ -118,7 +112,6 @@ const CurrentQuality = () => {
           <div className="mt-6 bg-white rounded-md shadow  ">
             <MultiLineChart />
           </div>
-         
         </div>
       </div>
     </div>

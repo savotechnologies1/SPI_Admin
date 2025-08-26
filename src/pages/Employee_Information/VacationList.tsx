@@ -45,7 +45,7 @@ const VacationList = () => {
         <div className="flex justify-between items-start">
           <div>
             <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-black">
-              Vacation List for approval11
+              Vacation List for approval
             </h1>
           </div>
         </div>
@@ -215,7 +215,7 @@ const VacationList = () => {
                     <td className="px-2 py-3 text-xs md:text-sm font-medium hidden lg:table-cell">
                       {item.hours}
                     </td>
-                    <td className="px-2 py-3 text-xs md:text-sm font-medium hidden xl:table-cell">
+                    <td className="px-2 py-3 text-xs md:text-sm font-medium hidden xl:table-cell max-w-[150px] whitespace-normal break-words">
                       {item.notes}
                     </td>
                     <td className="px-2 py-3">

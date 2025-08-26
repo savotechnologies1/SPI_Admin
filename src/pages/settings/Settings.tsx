@@ -27,8 +27,6 @@ const Settings = () => {
     },
   });
 
-  console.log("defaultValuesdefaultValues", form1);
-
   const {
     reset,
     setValue,
@@ -172,7 +170,6 @@ const Settings = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Profile card */}
           <div className="bg-white p-6 shadow rounded-lg">
             <div className="flex flex-col items-center mt-12">
               <div className="w-32 h-32 rounded-full shadow-xl relative group overflow-hidden">
@@ -273,8 +270,6 @@ const Settings = () => {
                   className="w-full border px-4 py-2 rounded-md"
                 />
               </div>
-              {/* Country, State, City */}
-              {/* Country Selection */}
               <div>
                 <label>Country:</label>
                 <Controller

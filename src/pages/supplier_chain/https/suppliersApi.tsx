@@ -3,7 +3,6 @@ import axiosInstance from "../../../utils/axiosInstance";
 import { AxiosError } from "axios";
 
 export const addSupplier = async (apiData: object) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.post("/add-supplier", apiData);
     if (response.status === 201) {
@@ -21,7 +20,6 @@ export const addSupplier = async (apiData: object) => {
 };
 
 export const supplierList = async (page = 1, limit = 5, searchVal: string) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
       `/all-supplier?page=${page}&limit=${limit}&search=${searchVal}`
@@ -33,7 +31,6 @@ export const supplierList = async (page = 1, limit = 5, searchVal: string) => {
 };
 
 export const supplierDetail = async (id: string) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(`/supplier-detail/${id}`);
     return response.data;
@@ -77,7 +74,6 @@ export const deleteSupplier = async (id: string) => {
 };
 
 export const selectSupplier = async () => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(`/select-supplier`);
     return response.data;
@@ -87,7 +83,6 @@ export const selectSupplier = async () => {
 };
 
 export const addSupplierOrder = async (apiData: object) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.post("/add-supplier-order", apiData);
     if (response.status === 201) {
@@ -180,7 +175,6 @@ export const sendSupplierEmailApi = async (id) => {
 };
 
 export const supplierOrderDetail = async (id: string) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
       `/get-supplier-order-detail/${id}`

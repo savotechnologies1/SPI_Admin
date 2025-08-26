@@ -80,14 +80,11 @@ const QualityPerformance = () => {
   return (
     <div>
       <div className="p-7">
-        {/* Title */}
         <div>
           <h1 className="font-bold text-[20px] md:text-[24px] text-black">
-             Quality Performance
+            Quality Performance
           </h1>
         </div>
-
-        {/* Breadcrumb */}
         <div className="flex justify-between mt-2 items-center">
           <div className="flex gap-4 items-center ">
             <p className={`text-sm  text-black font-semibold`}>
@@ -146,7 +143,6 @@ const QualityPerformance = () => {
 
         <div className="bg-white shadow-md rounded-2xl  mt-6 p-4 ">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Manual Line Chart */}
             <div className="bg-white shadow-md rounded-2xl p-2 md:p-4">
               <h2 className=" md:text-lg font-medium mb-2">
                 Forming Temp by Time
@@ -218,7 +214,6 @@ const QualityPerformance = () => {
                 </LineChart>
               </ResponsiveContainer>
             </div>
-            {/* Machine Chart */}
             <div className="bg-white shadow-md rounded-2xl p-2 md:p-4">
               <h2 className="md:text-lg font-medium mb-2">
                 Vac Prestrech by Time{" "}

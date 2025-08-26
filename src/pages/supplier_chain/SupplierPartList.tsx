@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { FaCircle } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import more from "../../assets/more.png"; // Adjust import path accordingly
+import more from "../../assets/more.png";
 
 type SupplierPart = {
   id: number;
@@ -114,7 +114,6 @@ const SupplierPartList: React.FC = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      {/* Breadcrumb */}
       <div className="flex items-center text-sm text-gray-500 mb-4" />
       <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
         Suppliers
@@ -132,7 +131,6 @@ const SupplierPartList: React.FC = () => {
         </div>
       </div>
 
-      {/* Filters */}
       <div className="bg-white p-4 mt-6">
         <div className="flex flex-col md:flex-row justify-between gap-4 items-end">
           <div className="w-full md:w-1/2">
@@ -259,7 +257,6 @@ const SupplierPartList: React.FC = () => {
           </tbody>
         </table>
 
-        {/* Pagination */}
         <div className="flex justify-between items-center mt-4 p-2">
           <button
             onClick={goToPreviousPage}

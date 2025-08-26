@@ -9,7 +9,6 @@ const data = [
   { hr: "06:00", actual: 3, scrap: 11 },
 ];
 
-// Calculate total row
 const total = data.reduce(
   (acc, curr) => {
     acc.actual += curr.actual;
@@ -23,7 +22,7 @@ const Sanding = () => {
   return (
     <div className=" p-2 rounded-lg   mx-auto">
       <h2 className=" font-semibold mb-4 text-center text-[#1C252E]">
-     Sanding
+        Sanding
       </h2>
 
       <table className="w-full border-collapse">
@@ -42,7 +41,6 @@ const Sanding = () => {
               <td className="py-1 px-2 text-xs border">{item.scrap}</td>
             </tr>
           ))}
-          {/* Total row */}
           <tr className=" font-semibold">
             <td className="py-1 px-2 text-xs border">Total</td>
             <td className="py-1 px-2 text-xs border">{total.actual}</td>

@@ -23,9 +23,7 @@ const CustomerReturn = () => {
             <img src={filter} alt="" />
             <img src={fullscren} alt="" />
             <img className="rotate-90" src={more} alt="" />
-           
           </div>
-        
         </div>
       </div>
 

@@ -9,7 +9,6 @@ const data = [
   { hr: "06:00", actual: 3, scrap: 11 },
 ];
 
-// Calculate total row
 const total = data.reduce(
   (acc, curr) => {
     acc.actual += curr.actual;
@@ -42,7 +41,6 @@ const CutTrim = () => {
               <td className="py-1 px-2 text-xs border">{item.scrap}</td>
             </tr>
           ))}
-          {/* Total row */}
           <tr className=" font-semibold">
             <td className="py-1 px-2 text-xs border">Total</td>
             <td className="py-1 px-2 text-xs border">{total.actual}</td>

@@ -41,10 +41,11 @@ const ScrapBar = () => {
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false, // Allows chart to stretch vertically
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: window.innerWidth < 768 ? "bottom" as const : "top" as const,
+        position:
+          window.innerWidth < 768 ? ("bottom" as const) : ("top" as const),
         labels: {
           usePointStyle: true,
           boxWidth: 8,
@@ -55,7 +56,7 @@ const ScrapBar = () => {
         },
       },
       title: {
-        display: false, // Removed as we have our own title
+        display: false,
       },
       tooltip: {
         bodyFont: {
@@ -95,7 +96,7 @@ const ScrapBar = () => {
         },
       },
     },
-    barPercentage: window.innerWidth < 768 ? 0.6 : 0.8, // Thinner bars on mobile
+    barPercentage: window.innerWidth < 768 ? 0.6 : 0.8,
     categoryPercentage: window.innerWidth < 768 ? 0.7 : 0.9,
   };
 

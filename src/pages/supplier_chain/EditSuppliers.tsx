@@ -16,7 +16,6 @@ const EditSuppliers = () => {
     email?: string;
     address?: string;
     billingTerms?: string;
-    // add more fields if needed
   }
 
   const {
@@ -29,9 +28,7 @@ const EditSuppliers = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // Step 2: Strongly type the onSubmit function
   const onSubmit = async (data: object) => {
-    // eslint-disable-next-line no-useless-catch
     try {
       const response = await editSupplier(data, id!).then();
       if (response.status === 200) {
@@ -63,17 +60,12 @@ const EditSuppliers = () => {
   }, [id]);
 
   const handleDelete = async () => {
-    // eslint-disable-next-line no-useless-catch
     try {
       const response = await deleteSupplier(id!);
       navigate("/all-supplier");
-      // if (response.status === 200) {
-      //   navigate("/all-supplier");
-      // }
     } catch (error: unknown) {
       throw error;
     }
-    // You can trigger an API call or confirmation modal here
   };
   return (
     <div className="p-7">
@@ -158,7 +150,6 @@ const EditSuppliers = () => {
             )}
           </div>
 
-          {/* Address */}
           <label className="font-semibold">Address</label>
           <div className="mt-2 w-full mb-6">
             <input
@@ -174,7 +165,6 @@ const EditSuppliers = () => {
             )}
           </div>
 
-          {/* Billing Terms */}
           <label className="font-semibold">
             Billing Terms (In Days) <span className="text-red-700">*</span>
           </label>
@@ -198,7 +188,6 @@ const EditSuppliers = () => {
             )}
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-between items-end mt-6">
             <button
               type="submit"

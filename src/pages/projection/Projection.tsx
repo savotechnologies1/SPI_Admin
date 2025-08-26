@@ -111,115 +111,110 @@ const columnsManual = [
 ];
 
 const Projection = () => {
-   const [data, setData] = useState([
-      {
-        id: 1,
-        partNumber: "10001",
-        desc: "24'x96' Virgin ABS, black smooth/smooth 070 sheet",
-        qty: 2560,
-        stock: 2001,
-        cost: 14.92,
-        leadTime: "320 days",
-        partFamily: "part 01"
-      },
-      {
-        id: 2,
-        partNumber: "10001",
-        desc: "24'x96' Virgin ABS, black smooth/smooth 070 sheet",
-        supplier: "Darrell Steward",
-        qty: 2560,
-        stock: 2001,
-        cost: 14.92,
-        leadTime: "320 days",
-          partFamily: "part 01"
+  const [data, setData] = useState([
+    {
+      id: 1,
+      partNumber: "10001",
+      desc: "24'x96' Virgin ABS, black smooth/smooth 070 sheet",
+      qty: 2560,
+      stock: 2001,
+      cost: 14.92,
+      leadTime: "320 days",
+      partFamily: "part 01",
+    },
+    {
+      id: 2,
+      partNumber: "10001",
+      desc: "24'x96' Virgin ABS, black smooth/smooth 070 sheet",
+      supplier: "Darrell Steward",
+      qty: 2560,
+      stock: 2001,
+      cost: 14.92,
+      leadTime: "320 days",
+      partFamily: "part 01",
+    },
+    {
+      id: 3,
+      partNumber: "10001",
+      desc: "24'x96' Virgin ABS, black smooth/smooth 070 sheet",
+      supplier: "Robert Fox",
+      qty: 2560,
+      stock: 2001,
+      cost: 14.92,
+      leadTime: "320 days",
+      partFamily: "part 01",
+    },
+    {
+      id: 4,
+      partNumber: "10001",
+      desc: "24'x96' Virgin ABS, black smooth/smooth 070 sheet",
+      supplier: "Marvin McKin",
+      qty: 2560,
+      stock: 2001,
+      cost: 14.92,
+      leadTime: "320 days",
+      partFamily: "part 01",
+    },
+    {
+      id: 4,
+      partNumber: "10001",
+      desc: "24'x96' Virgin ABS, black smooth/smooth 070 sheet",
+      supplier: "Marvin McKin",
+      qty: 2560,
+      stock: 2001,
+      cost: 14.92,
+      leadTime: "320 days",
+      partFamily: "part 01",
+    },
+  ]);
 
-      },
-      {
-        id: 3,
-        partNumber: "10001",
-        desc: "24'x96' Virgin ABS, black smooth/smooth 070 sheet",
-        supplier: "Robert Fox",
-        qty: 2560,
-        stock: 2001,
-        cost: 14.92,
-        leadTime: "320 days",
-          partFamily: "part 01"
+  const [editingRow, setEditingRow] = useState(null);
+  const [editedData, setEditedData] = useState({
+    qty: "",
+    stock: "",
+    cost: "",
+  });
 
-      },
-      {
-        id: 4,
-        partNumber: "10001",
-        desc: "24'x96' Virgin ABS, black smooth/smooth 070 sheet",
-        supplier: "Marvin McKin",
-        qty: 2560,
-        stock: 2001,
-        cost: 14.92,
-        leadTime: "320 days",
-          partFamily: "part 01"
-
-      },
-      {
-        id: 4,
-        partNumber: "10001",
-        desc: "24'x96' Virgin ABS, black smooth/smooth 070 sheet",
-        supplier: "Marvin McKin",
-        qty: 2560,
-        stock: 2001,
-        cost: 14.92,
-        leadTime: "320 days",
-          partFamily: "part 01"
-
-      },
-    ]);
-  
-    const [editingRow, setEditingRow] = useState(null);
-    const [editedData, setEditedData] = useState({
-      qty: "",
-      stock: "",
-      cost: "",
+  // Handle Edit Click
+  const handleEditClick = (index: any) => {
+    setEditingRow(index);
+    setEditedData({
+      qty: data[index].qty.toString(),
+      stock: data[index].stock.toString(),
+      cost: data[index].cost.toString(),
     });
-  
-    // Handle Edit Click
-    const handleEditClick = (index:any) => {
-      setEditingRow(index);
-      setEditedData({
-        qty: data[index].qty.toString(),
-        stock: data[index].stock.toString(),
-        cost: data[index].cost.toString(),
-      });
+  };
+
+  // Handle Change in Input Fields
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setEditedData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Save the Updated Data
+  const handleUpdate = (index: any) => {
+    const updatedData = [...data];
+    updatedData[index] = {
+      ...updatedData[index],
+      qty: Number(editedData.qty),
+      stock: Number(editedData.stock),
+      cost: Number(editedData.cost),
     };
-  
-    // Handle Change in Input Fields
-    const handleChange = (e:any) => {
-      const { name, value } = e.target;
-      setEditedData((prev) => ({ ...prev, [name]: value }));
-    };
-  
-    // Save the Updated Data
-    const handleUpdate = (index:any) => {
-      const updatedData = [...data];
-      updatedData[index] = {
-        ...updatedData[index],
-        qty: Number(editedData.qty),
-        stock: Number(editedData.stock),
-        cost: Number(editedData.cost),
-      };
-      setData(updatedData);
-      setEditingRow(null);
-    };
-  
-    const [currentPage, setCurrentPage] = useState(1);
-    const rowsPerPage = 4;
-    const totalPages = Math.ceil(data.length / rowsPerPage);
-  
-   
-    const goToPreviousPage = () => {
-      if (currentPage > 1) setCurrentPage(currentPage - 1);
-    };
-  
-    const goToNextPage = () => {
-      if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-    };
+    setData(updatedData);
+    setEditingRow(null);
+  };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 4;
+  const totalPages = Math.ceil(data.length / rowsPerPage);
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
   return (
     <div className="p-7">
       <h1 className="font-bold text-[20px] md:text-[24px] text-black">
@@ -312,132 +307,133 @@ const Projection = () => {
           </div>
         </div>
         <div className="border rounded-md shadow-md w-full  md:w-1/2">
-            <FormingTemp />
-          </div>
+          <FormingTemp />
+        </div>
       </div>
 
+      <div className="bg-white p-2 mt-6 rounded-xl overflow-x-auto   ">
+        <h1 className="font-semibold p-2">Cash Flow Schedule</h1>
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-gray-100 text-sm whitespace-nowrap">
+              <th className="text-left p-3">Part Number</th>
+              <th className="text-left p-3">Part Family</th>
+              <th className="text-left p-3">Part Desc</th>
+              <th className="text-left p-3">Cost </th>
+              <th className="text-left p-3">LeadTimeDays</th>
+              <th className="text-left p-3">Available Stock</th>
+              <th className="text-left p-3">order qty</th>
+              <th className="text-left p-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((item, index) => (
+              <React.Fragment key={item.id}>
+                <tr className="border-b hover:bg-gray-50 text-sm">
+                  <td className="p-3">{item.partNumber}</td>
+                  <td className="p-3 whitespace-nowrap xl:whitespace-normal">
+                    {item.partFamily}
+                  </td>
+                  <td className="p-3 whitespace-nowrap xl:whitespace-normal">
+                    {item.desc}
+                  </td>
+                  <td className="p-3">{item.cost}</td>
+                  <td className="p-3">{item.leadTime}</td>
+                  <td className="p-3">{item.stock}</td>
+                  <td className="p-3">{item.qty}</td>
+                  <td className="p-3 flex items-center gap-4">
+                    {/* Edit Icon */}
+                    <FiEdit2
+                      onClick={() => handleEditClick(index)}
+                      className="text-black  cursor-pointer text-lg"
+                      title="Quick Edit"
+                    />
+                    {/* More Icon */}
+                    <BsThreeDotsVertical
+                      className="text-black hover:text-black cursor-pointer text-lg"
+                      title="More Options"
+                    />
+                  </td>
+                </tr>
 
-       <div className="bg-white p-2 mt-6 rounded-xl overflow-x-auto   ">
-        <h1 className="font-semibold p-2">Cash Flow  Schedule</h1>
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-gray-100 text-sm whitespace-nowrap">
-                    <th className="text-left p-3">Part Number</th>
-                    <th className="text-left p-3">Part Family</th>
-                    <th className="text-left p-3">Part Desc</th>
-                    <th className="text-left p-3">Cost </th>
-                    <th className="text-left p-3">LeadTimeDays</th>
-                    <th className="text-left p-3">Available Stock</th>
-                    <th className="text-left p-3">order qty</th>
-                    <th className="text-left p-3">Actions</th>
+                {/* Editable Row */}
+                {editingRow === index && (
+                  <tr className="bg-gray-50 ">
+                    <td colSpan={5} className="p-3 font-semibold text-gray-600">
+                      {item.desc}
+                    </td>
+                    <td className="p-3">
+                      <div>
+                        <label className="font-semibold text-xs">
+                          order qty{" "}
+                        </label>
+
+                        <input
+                          type="number"
+                          name="qty"
+                          value={editedData.qty}
+                          onChange={handleChange}
+                          className="border px-3 py-2 rounded-md w-full"
+                          placeholder="Quantity"
+                        />
+                      </div>
+                    </td>
+
+                    <td className="p-3">
+                      <div>
+                        <label className="font-semibold text-xs">
+                          Current Stock{" "}
+                        </label>
+                        <input
+                          type="number"
+                          name="cost"
+                          value={editedData.cost}
+                          onChange={handleChange}
+                          className="border px-3 py-2 rounded-md w-full"
+                          placeholder="Cost"
+                        />
+                      </div>
+                    </td>
+                    <td className="p-3">
+                      <button
+                        onClick={() => handleUpdate(index)}
+                        className="bg-brand text-white px-3 py-1 rounded-md  transition"
+                      >
+                        Update
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {data.map((item, index) => (
-                    <React.Fragment key={item.id}>
-                      <tr className="border-b hover:bg-gray-50 text-sm">
-                        <td className="p-3">{item.partNumber}</td>
-                        <td className="p-3 whitespace-nowrap xl:whitespace-normal">{item.partFamily}</td>
-                        <td className="p-3 whitespace-nowrap xl:whitespace-normal">{item.desc}</td>
-                        <td className="p-3">{item.cost}</td>
-                        <td className="p-3">{item.leadTime}</td>
-                        <td className="p-3">{item.stock}</td>
-                        <td className="p-3">{item.qty}</td>
-                        <td className="p-3 flex items-center gap-4">
-                          {/* Edit Icon */}
-                          <FiEdit2
-                            onClick={() => handleEditClick(index)}
-                            className="text-black  cursor-pointer text-lg"
-                            title="Quick Edit"
-                          />
-                          {/* More Icon */}
-                          <BsThreeDotsVertical
-                            className="text-black hover:text-black cursor-pointer text-lg"
-                            title="More Options"
-                          />
-                        </td>
-                      </tr>
-      
-                      {/* Editable Row */}
-                      {editingRow === index && (
-                        <tr className="bg-gray-50 ">
-                          <td colSpan={5} className="p-3 font-semibold text-gray-600">
-                            {item.desc}
-                          </td>
-                          <td className="p-3">
-                            <div>
-                              <label className="font-semibold text-xs">
-                                order qty{" "}
-                              </label>
-      
-                              <input
-                                type="number"
-                                name="qty"
-                                value={editedData.qty}
-                                onChange={handleChange}
-                                className="border px-3 py-2 rounded-md w-full"
-                                placeholder="Quantity"
-                              />
-                            </div>
-                          </td>
-                        
-                          <td className="p-3">
-                            <div>
-                              <label className="font-semibold text-xs">
-                                Current Stock{" "}
-                              </label>
-                              <input
-                                type="number"
-                                name="cost"
-                                value={editedData.cost}
-                                onChange={handleChange}
-                                className="border px-3 py-2 rounded-md w-full"
-                                placeholder="Cost"
-                              />
-                            </div>
-                          </td>
-                          <td className="p-3">
-                            <button
-                              onClick={() => handleUpdate(index)}
-                              className="bg-brand text-white px-3 py-1 rounded-md  transition"
-                            >
-                              Update
-                            </button>
-                          </td>
-                        </tr>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </tbody>
-              </table>
-      
-              {/* Pagination */}
-              <div className="flex justify-between items-center mt-4 p-2">
-                <button
-                  onClick={goToPreviousPage}
-                  disabled={currentPage === 1}
-                  className={`md:px-2 md:py-2 rounded-md ${
-                    currentPage === 1 ? "bg-gray-300" : "bg-brand text-white"
-                  }`}
-                >
-                  Previous
-                </button>
-                <span>
-                  Page {currentPage} of {totalPages}
-                </span>
-                <button
-                  onClick={goToNextPage}
-                  disabled={currentPage === totalPages}
-                  className={`px-4 md:py-2 rounded-md ${
-                    currentPage === totalPages
-                      ? "bg-gray-300"
-                      : "bg-brand text-white"
-                  }`}
-                >
-                  Next
-                </button>
-              </div>
-            </div>
+                )}
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Pagination */}
+        <div className="flex justify-between items-center mt-4 p-2">
+          <button
+            onClick={goToPreviousPage}
+            disabled={currentPage === 1}
+            className={`md:px-2 md:py-2 rounded-md ${
+              currentPage === 1 ? "bg-gray-300" : "bg-brand text-white"
+            }`}
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={goToNextPage}
+            disabled={currentPage === totalPages}
+            className={`px-4 md:py-2 rounded-md ${
+              currentPage === totalPages ? "bg-gray-300" : "bg-brand text-white"
+            }`}
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

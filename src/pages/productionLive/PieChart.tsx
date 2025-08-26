@@ -8,8 +8,8 @@ const PieChart = () => {
     labels: ["Scrap", "Actual"],
     datasets: [
       {
-        data: [35, 65], // Percentage values
-        backgroundColor: ["#FFD666", "#00A76F"], // Colors for pie sections
+        data: [35, 65],
+        backgroundColor: ["#FFD666", "#00A76F"],
         hoverBackgroundColor: ["#FBBF24", "#15803D"],
       },
     ],
@@ -19,7 +19,7 @@ const PieChart = () => {
     responsive: true,
     plugins: {
       legend: {
-        display: false, // Hide default legend
+        display: false,
       },
       tooltip: {
         enabled: true,
@@ -30,8 +30,6 @@ const PieChart = () => {
   return (
     <div className="bg-white  py-6 px-14  rounded-lg  ">
       <Pie data={data} options={options} />
-
-      {/* Custom Legend */}
       <div className="flex justify-center mt-4 ">
         <div className="flex items-center mr-4">
           <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>

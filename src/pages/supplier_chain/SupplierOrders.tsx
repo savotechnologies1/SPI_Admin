@@ -1,26 +1,8 @@
 import { NavLink } from "react-router-dom";
 import { FaCircle } from "react-icons/fa";
-
 import SupplierOrdersForm from "./SupplierOrdersForm";
-import { useState } from "react";
-import SupplierOrderList from "./supplierOrderList";
 
-const orders = ["12345", "23456", "34567", "45678", "56789", "67890", "78901"];
 const SupplierOrders = () => {
-  const [query, setQuery] = useState("");
-  const [filteredOrders, setFilteredOrders] = useState<string[]>([]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setQuery(value);
-
-    if (value.trim() === "") {
-      setFilteredOrders([]);
-    } else {
-      const results = orders.filter((order) => order.includes(value.trim()));
-      setFilteredOrders(results);
-    }
-  };
   return (
     <div className="p-4 mt-4">
       <div className="flex flex-col sm:flex-row justify-between gap-2 mb-4 md:mb-0">
@@ -55,8 +37,6 @@ const SupplierOrders = () => {
 
       <div className="py-6">
         <SupplierOrdersForm />
-
-        {/* <SupplierOrderList query={query} /> */}
       </div>
     </div>
   );

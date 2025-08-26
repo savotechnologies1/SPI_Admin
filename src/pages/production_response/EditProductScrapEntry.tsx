@@ -14,9 +14,7 @@ const EditProductScrapEntry = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [supplierData, setSupplierData] = useState([]);
   const [supplierSuggestions, setSupplierSuggestions] = useState([]);
-
   const { id } = useParams();
-
   const formik = useFormik({
     initialValues: {
       searchPart: "",
@@ -101,7 +99,6 @@ const EditProductScrapEntry = () => {
     }
   }, [formik.values.searchPart, formik.values.partId, partData]);
 
-  // Filter supplier suggestions
   useEffect(() => {
     if (formik.values.supplier && !formik.values.supplierId) {
       const filtered = supplierData.filter((supplier) =>
@@ -115,14 +112,12 @@ const EditProductScrapEntry = () => {
     }
   }, [formik.values.supplier, formik.values.supplierId, supplierData]);
 
-  // Handle part suggestion click
   const handleSuggestionClick = (part) => {
     formik.setFieldValue("searchPart", part.partNumber);
     formik.setFieldValue("partId", part.part_id || part.id);
     setSuggestions([]);
   };
 
-  // Handle supplier suggestion click
   const handleSupplierClick = (supplier) => {
     const fullName = `${supplier.firstName} ${supplier.lastName}`;
     formik.setFieldValue("supplier", fullName);
@@ -130,7 +125,6 @@ const EditProductScrapEntry = () => {
     setSupplierSuggestions([]);
   };
 
-  // Reset form handler
   const handleReset = () => {
     formik.resetForm();
     setSuggestions([]);

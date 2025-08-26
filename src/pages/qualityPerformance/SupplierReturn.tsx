@@ -1,7 +1,6 @@
 import data from "../../components/Data/customerReturnData";
 import client_icon from "../../assets/client.png";
 import date_icon from "../../assets/date.png";
-
 import pin from "../../assets/pin.png";
 import copy from "../../assets/copy.png";
 import filter from "../../assets/byte_filter.png";
@@ -23,9 +22,7 @@ const SupplierReturn = () => {
             <img src={filter} alt="" />
             <img src={fullscren} alt="" />
             <img className="rotate-90" src={more} alt="" />
-           
           </div>
-        
         </div>
       </div>
 

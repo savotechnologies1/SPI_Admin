@@ -10,25 +10,25 @@ const StationLogout = () => {
   };
   return (
     <>
-    <div className="bg-[#F5F6FA] h-screen">
-      <div className="p-4 ">
-        <div className="bg-white shadow-sm rounded-lg p-8 w-full  flex flex-col space-y-6 items-center ">
-          <img src={cloud} alt="" />
+      <div className="bg-[#F5F6FA] h-screen">
+        <div className="p-4 ">
+          <div className="bg-white shadow-sm rounded-lg p-8 w-full  flex flex-col space-y-6 items-center ">
+            <img src={cloud} alt="" />
 
-          <p className="font-semibold text-lg">Porcess Station Logout</p>
+            <p className="font-semibold text-lg">Porcess Station Logout</p>
 
-          <div>
-            <button
-              onClick={handleLogout}
-              className="bg-brand p-2 flex gap-2 items-center"
-            >
-              <MdLogout color="white" />
+            <div>
+              <button
+                onClick={handleLogout}
+                className="bg-brand p-2 flex gap-2 items-center"
+              >
+                <MdLogout color="white" />
 
-              <p className="text-sm text-white">End the job</p>
-            </button>
+                <p className="text-sm text-white">End the job</p>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </>
   );

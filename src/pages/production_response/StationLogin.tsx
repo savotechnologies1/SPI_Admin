@@ -454,7 +454,6 @@ const StationLogin = () => {
 
   const fetchEmployeeProcess = async () => {
     try {
-      // Tu llamada a la API que ahora devuelve { processOverviews: [], stationUsers: [] }
       const response = await selecEmployeeProcessApi();
       setEmployeeProcess(response || null);
     } catch (error) {

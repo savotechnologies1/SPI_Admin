@@ -21,7 +21,7 @@ import { MdCancel } from "react-icons/md";
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 const EditPartForm = () => {
   const { register, handleSubmit, setValue, watch, reset } = useForm();
-  const selectedProcessId = watch("processId"); // <-- 1. WATCH THE FIELD
+  const selectedProcessId = watch("processId");
 
   const context = useContext(PartContext);
   const navigate = useNavigate();
@@ -38,8 +38,6 @@ const EditPartForm = () => {
   const [existingImages, setExistingImages] = useState([]);
   const selectedImages = watch("image");
   const [previewImages, setPreviewImages] = useState([]);
-
-  // ... (handleNextPage, handlePreviousPage, onSubmit, etc. are unchanged)
 
   const onSubmit = async (data) => {
     const formData = new FormData();

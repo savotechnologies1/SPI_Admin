@@ -1,4 +1,275 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
+// import { NavLink, useNavigate } from "react-router-dom";
+// import { FaCircle, FaTrash } from "react-icons/fa";
+// import edit from "../../assets/edit_icon.png";
+// import back from "../../assets/back.png";
+// import next from "../../assets/next.png";
+// import add from "../../assets/add.png";
+// import { deleteProcess, processList } from "./https/processApi";
+// interface ProcessItem {
+//   processDesc: string;
+//   id: string;
+//   processName: string;
+//   machineName: string;
+//   cycleTime: number;
+//   ratePerHour: number;
+//   partFamily: string;
+//   orderNeeded: boolean;
+// }
+
+// const ProcessList = () => {
+//   const [processData, setProcessData] = useState<ProcessItem[]>([]);
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const [totalPages, setTotalPages] = useState(1);
+//   const [showConfirm, setShowConfirm] = useState(false);
+//   const navigate = useNavigate();
+//   const [searchVal, setSearchVal] = useState("");
+//   const [selectedDeleteId, setSelectedDeleteId] = useState<string | null>(null);
+
+//   const handleChange = (e) => {
+//     try {
+//       setSearchVal(e.target.value);
+//     } catch (error) {
+//       throw error;
+//     }
+//   };
+
+//   const rowsPerPage = 8;
+//   const editProcess = (id: string) => {
+//     navigate(`/edit-process/${id}`);
+//   };
+
+//   const fetchProcessList = async (page = 1) => {
+//     try {
+//       const response = await processList(page, rowsPerPage, searchVal);
+//       setProcessData(response.data);
+//       setTotalPages(response.pagination?.totalPages || 1);
+//     } catch (error) {
+//       throw error;
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchProcessList(currentPage);
+//   }, [currentPage, searchVal]);
+
+//   const handleNextPage = () => {
+//     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+//   };
+
+//   const handlePreviousPage = () => {
+//     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+//   };
+//   const handleDelete = async (id: string) => {
+//     try {
+//       await deleteProcess(id);
+//       await new Promise((r) => setTimeout(r, 500));
+//       await fetchProcessList(currentPage);
+//     } catch (error: unknown) {
+//       console.error("Error deleting process:", error);
+//     }
+//   };
+
+//   return (
+//     <div className="p-7">
+//       <div>
+//         <div className="flex justify-between">
+//           <h1 className="font-bold text-[20px] md:text-[24px] text-black">
+//             Process
+//           </h1>
+
+//           <div className="flex relative">
+//             <button className="py-2 px-7 rounded-lg border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer">
+//               <NavLink to="/add-process">
+//                 <span className="">New Process</span>
+//               </NavLink>
+//             </button>
+//             <div className="absolute top-3 left-2">
+//               <img src={add} alt="" className="w-4 h-4" />
+//             </div>
+//           </div>
+//         </div>
+
+//         <div className="flex justify-between mt-2 items-center">
+//           <div className="flex gap-2 items-center">
+//             <p className="text-[16px] text-black">
+//               <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
+//             </p>
+//             <FaCircle className="text-[6px] text-gray-500" />
+//             <span className="text-[16px] hover:cursor-pointer">Process</span>
+//             <FaCircle className="text-[6px] text-gray-500" />
+//             <span className="text-[16px] hover:cursor-pointer">
+//               Process List
+//             </span>
+//           </div>
+//         </div>
+//         <div className="flex justify-end">
+//           <input
+//             type="text"
+//             placeholder="Search by process name..."
+//             className="border w-full md:w-1/3 px-3 py-2 rounded-md flex justify-end"
+//             value={searchVal}
+//             onChange={(e) => handleChange(e)}
+//           />
+//         </div>
+//         <div className="overflow-x-auto mt-6 bg-white rounded">
+//           <table className="w-full bg-white">
+//             <thead className="bg-[#F4F6F8]">
+//               <tr>
+//                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
+//                   Process Name
+//                 </th>
+//                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
+//                   Machine Name
+//                 </th>
+//                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
+//                   Part Family
+//                 </th>
+//                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
+//                   Process Description
+//                 </th>
+//                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
+//                   Cycle Time
+//                 </th>
+//                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
+//                   RatePerHour
+//                 </th>
+//                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
+//                   Process Order
+//                 </th>
+//                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
+//                   Action
+//                 </th>
+//                 <th className="px-3 py-3 text-left text-gray-400 font-medium"></th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {processData.map((item, index) => (
+//                 <tr
+//                   key={index}
+//                   className="border-b border-dashed border-gray-200"
+//                 >
+//                   <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
+//                     {item.processName}
+//                   </td>
+//                   <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
+//                     {item.machineName}
+//                   </td>
+//                   <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
+//                     {item.partFamily}
+//                   </td>
+//                   <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
+//                     {item.processDesc}
+//                   </td>
+//                   <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
+//                     {item.cycleTime}
+//                   </td>
+//                   <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
+//                     {item.ratePerHour}
+//                   </td>
+//                   {item.isProcessReq === true ? (
+//                     <td className="px-3 py-4">yes</td>
+//                   ) : (
+//                     <td className="px-3 py-4">no</td>
+//                   )}
+//                   <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
+//                     <button
+//                       className="text-brand hover:underline"
+//                       onClick={() => editProcess(item.id)}
+//                     >
+//                       <img
+//                         src={edit}
+//                         alt="Edit"
+//                         className="w-4 h-4 md:w-5 md:h-5"
+//                       />
+//                     </button>
+//                     <button className="text-brand hover:underline">
+//                       <FaTrash
+//                         className="text-red-500 cursor-pointer"
+//                         onClick={() => {
+//                           setSelectedDeleteId(item.id);
+//                           setShowConfirm(true);
+//                         }}
+//                       />
+
+//                       {showConfirm && selectedDeleteId && (
+//                         <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+//                           <div className="bg-white p-6 rounded-xl shadow-lg">
+//                             <h2 className="text-lg font-semibold mb-4">
+//                               Are you sure?
+//                             </h2>
+//                             <p className="mb-4">
+//                               Do you really want to delete this process?
+//                             </p>
+//                             <div className="flex justify-end space-x-3">
+//                               <button
+//                                 className="px-4 py-2 bg-gray-300 rounded"
+//                                 onClick={() => {
+//                                   setShowConfirm(false);
+//                                   setSelectedDeleteId(null);
+//                                 }}
+//                               >
+//                                 Cancel
+//                               </button>
+//                               <button
+//                                 className="px-4 py-2 bg-red-500 text-white rounded"
+//                                 onClick={() => {
+//                                   if (selectedDeleteId) {
+//                                     handleDelete(selectedDeleteId);
+//                                     setShowConfirm(false);
+//                                     setSelectedDeleteId(null);
+//                                   }
+//                                 }}
+//                               >
+//                                 Delete
+//                               </button>
+//                             </div>
+//                           </div>
+//                         </div>
+//                       )}
+//                     </button>
+//                   </td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+
+//           <div className="flex justify-end items-center py-2 bg-white">
+//             <p className="text-sm text-gray-600 mr-4">
+//               Page {currentPage} of {totalPages}
+//             </p>
+
+//             <button
+//               onClick={handlePreviousPage}
+//               disabled={currentPage === 1}
+//               className={`px-3 py-2 rounded ${
+//                 currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+//               }`}
+//             >
+//               <img src={back} alt="Previous" />
+//             </button>
+
+//             <button
+//               onClick={handleNextPage}
+//               disabled={currentPage === totalPages}
+//               className={`px-3 py-2 rounded ${
+//                 currentPage === totalPages
+//                   ? "opacity-50 cursor-not-allowed"
+//                   : "hover:bg-gray-300"
+//               }`}
+//             >
+//               <img src={next} alt="Next" />
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ProcessList;
+
+import { useEffect, useState, ChangeEvent } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaCircle, FaTrash } from "react-icons/fa";
 import edit from "../../assets/edit_icon.png";
@@ -6,6 +277,7 @@ import back from "../../assets/back.png";
 import next from "../../assets/next.png";
 import add from "../../assets/add.png";
 import { deleteProcess, processList } from "./https/processApi";
+
 interface ProcessItem {
   processDesc: string;
   id: string;
@@ -17,6 +289,17 @@ interface ProcessItem {
   orderNeeded: boolean;
 }
 
+// 1. Define a consistent type for the API response
+interface ProcessListResponse {
+  data: ProcessItem[];
+  orderNeeded: boolean;
+
+  pagination: {
+    totalPages: number;
+    currentPage: number;
+  };
+}
+
 const ProcessList = () => {
   const [processData, setProcessData] = useState<ProcessItem[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,11 +309,12 @@ const ProcessList = () => {
   const [searchVal, setSearchVal] = useState("");
   const [selectedDeleteId, setSelectedDeleteId] = useState<string | null>(null);
 
-  const handleChange = (e) => {
+  // 2. Add proper type for the event object
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     try {
       setSearchVal(e.target.value);
     } catch (error) {
-      throw error;
+      console.error("Error in handleChange:", error);
     }
   };
 
@@ -45,12 +329,16 @@ const ProcessList = () => {
       setProcessData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
-      throw error;
+      console.error("Error fetching process list:", error);
     }
   };
 
   useEffect(() => {
-    fetchProcessList(currentPage);
+    const timer = setTimeout(() => {
+      fetchProcessList(currentPage);
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, [currentPage, searchVal]);
 
   const handleNextPage = () => {
@@ -60,13 +348,17 @@ const ProcessList = () => {
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteProcess(id);
-      await new Promise((r) => setTimeout(r, 500));
-      await fetchProcessList(currentPage);
-    } catch (error: unknown) {
-      console.error("Error deleting process:", error);
+
+  const handleConfirmDelete = async () => {
+    if (selectedDeleteId) {
+      try {
+        await deleteProcess(selectedDeleteId);
+        setShowConfirm(false);
+        setSelectedDeleteId(null);
+        await fetchProcessList(1);
+      } catch (error: unknown) {
+        console.error("Error deleting process:", error);
+      }
     }
   };
 
@@ -77,14 +369,14 @@ const ProcessList = () => {
           <h1 className="font-bold text-[20px] md:text-[24px] text-black">
             Process
           </h1>
-
           <div className="flex relative">
-            <button className="py-2 px-7 rounded-lg border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer">
-              <NavLink to="/add-process">
-                <span className="">New Process</span>
-              </NavLink>
-            </button>
-            <div className="absolute top-3 left-2">
+            <NavLink
+              to="/add-process"
+              className="py-2 px-7 rounded-lg border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer"
+            >
+              <span>New Process</span>
+            </NavLink>
+            <div className="absolute top-3 left-2 pointer-events-none">
               <img src={add} alt="" className="w-4 h-4" />
             </div>
           </div>
@@ -109,7 +401,7 @@ const ProcessList = () => {
             placeholder="Search by process name..."
             className="border w-full md:w-1/3 px-3 py-2 rounded-md flex justify-end"
             value={searchVal}
-            onChange={(e) => handleChange(e)}
+            onChange={handleChange}
           />
         </div>
         <div className="overflow-x-auto mt-6 bg-white rounded">
@@ -132,7 +424,7 @@ const ProcessList = () => {
                   Cycle Time
                 </th>
                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
-                  RatePerHour
+                  Rate Per Hour
                 </th>
                 <th className="px-3 py-3 text-left text-gray-400 font-medium">
                   Process Order
@@ -144,9 +436,9 @@ const ProcessList = () => {
               </tr>
             </thead>
             <tbody>
-              {processData.map((item, index) => (
+              {processData.map((item) => (
                 <tr
-                  key={index}
+                  key={item.id}
                   className="border-b border-dashed border-gray-200"
                 >
                   <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
@@ -167,11 +459,9 @@ const ProcessList = () => {
                   <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
                     {item.ratePerHour}
                   </td>
-                  {item.isProcessReq === true ? (
-                    <td className="px-3 py-4">yes</td>
-                  ) : (
-                    <td className="px-3 py-4">no</td>
-                  )}
+                  <td className="px-3 py-4">
+                    {item.orderNeeded ? "Yes" : "No"}
+                  </td>
                   <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
                     <button
                       className="text-brand hover:underline"
@@ -183,50 +473,14 @@ const ProcessList = () => {
                         className="w-4 h-4 md:w-5 md:h-5"
                       />
                     </button>
-                    <button className="text-brand hover:underline">
-                      <FaTrash
-                        className="text-red-500 cursor-pointer"
-                        onClick={() => {
-                          setSelectedDeleteId(item.id);
-                          setShowConfirm(true);
-                        }}
-                      />
-
-                      {showConfirm && selectedDeleteId && (
-                        <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-                          <div className="bg-white p-6 rounded-xl shadow-lg">
-                            <h2 className="text-lg font-semibold mb-4">
-                              Are you sure?
-                            </h2>
-                            <p className="mb-4">
-                              Do you really want to delete this process?
-                            </p>
-                            <div className="flex justify-end space-x-3">
-                              <button
-                                className="px-4 py-2 bg-gray-300 rounded"
-                                onClick={() => {
-                                  setShowConfirm(false);
-                                  setSelectedDeleteId(null);
-                                }}
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                className="px-4 py-2 bg-red-500 text-white rounded"
-                                onClick={() => {
-                                  if (selectedDeleteId) {
-                                    handleDelete(selectedDeleteId);
-                                    setShowConfirm(false);
-                                    setSelectedDeleteId(null);
-                                  }
-                                }}
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
+                    <button
+                      className="text-brand hover:underline"
+                      onClick={() => {
+                        setSelectedDeleteId(item.id);
+                        setShowConfirm(true);
+                      }}
+                    >
+                      <FaTrash className="text-red-500 cursor-pointer" />
                     </button>
                   </td>
                 </tr>
@@ -234,12 +488,38 @@ const ProcessList = () => {
             </tbody>
           </table>
 
-          {/* Pagination Controls */}
+          {showConfirm && selectedDeleteId && (
+            <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded-xl shadow-lg">
+                <h2 className="text-lg font-semibold mb-4">Are you sure?</h2>
+                <p className="mb-4">
+                  Do you really want to delete this process?
+                </p>
+                <div className="flex justify-end space-x-3">
+                  <button
+                    className="px-4 py-2 bg-gray-300 rounded"
+                    onClick={() => {
+                      setShowConfirm(false);
+                      setSelectedDeleteId(null);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-red-500 text-white rounded"
+                    onClick={handleConfirmDelete}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex justify-end items-center py-2 bg-white">
             <p className="text-sm text-gray-600 mr-4">
               Page {currentPage} of {totalPages}
             </p>
-
             <button
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
@@ -249,7 +529,6 @@ const ProcessList = () => {
             >
               <img src={back} alt="Previous" />
             </button>
-
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}

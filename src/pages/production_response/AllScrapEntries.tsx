@@ -11,95 +11,11 @@ import {
   allScrapEntries,
   deleteScrapEntry,
 } from "./https/productionResponseApi";
-interface WorkInstructionItem {
-  id: string;
-  imageUrl: string;
-  name: string;
-  partDesc: string;
-  stepNumber: string;
-  description: string;
-  submitDate: string;
-  statusColor: string;
-}
-
-const mockData: WorkInstructionItem[] = [
-  {
-    id: "1",
-    imageUrl: "/avatar1.jpg",
-    name: "John Smith",
-    partDesc: "Cut Trim",
-    stepNumber: "Step 1",
-    description: "Remove burn and sharp edges",
-    submitDate: "18/09/2016",
-    statusColor: "green",
-  },
-  {
-    id: "2",
-    imageUrl: "/avatar2.jpg",
-    name: "Emily Johnson",
-    partDesc: "Cut Trim",
-    stepNumber: "Step 2",
-    description: "Remove burn and sharp edges",
-    submitDate: "12/06/2020",
-    statusColor: "yellow",
-  },
-  {
-    id: "3",
-    imageUrl: "/avatar3.jpg",
-    name: "Michael Brown",
-    partDesc: "Cut Trim",
-    stepNumber: "Step 3",
-    description: "Remove burn and sharp edges",
-    submitDate: "15/08/2017",
-    statusColor: "red",
-  },
-  {
-    id: "4",
-    imageUrl: "/avatar4.jpg",
-    name: "Sarah Wilson",
-    partDesc: "Cut Trim",
-    stepNumber: "Step 4",
-    description: "Remove burn and sharp edges",
-    submitDate: "07/05/2016",
-    statusColor: "gray",
-  },
-  {
-    id: "5",
-    imageUrl: "/avatar5.jpg",
-    name: "David Lee",
-    partDesc: "Cut Trim",
-    stepNumber: "Step 5",
-    description: "Remove burn and sharp edges",
-    submitDate: "28/10/2012",
-    statusColor: "green",
-  },
-];
 
 const AllScrapEntries: React.FC = () => {
-  const [openOptionsIndex, setOpenOptionsIndex] = useState<number | null>(null);
   const rowsPerPage = 5;
-  const [showConfirm, setShowConfirm] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-
-  const toggleOptions = (index: number) => {
-    setOpenOptionsIndex((prev) => (prev === index ? null : index));
-  };
-
   const { id } = useParams();
-
-  const getColorClass = (color: string) => {
-    switch (color) {
-      case "green":
-        return "bg-green-200 text-green-700";
-      case "yellow":
-        return "bg-yellow-200 text-yellow-800";
-      case "red":
-        return "bg-red-200 text-red-700";
-      default:
-        return "bg-gray-200 text-gray-600";
-    }
-  };
-
   const navigate = useNavigate();
   const handleEdit = (id: string) => {
     navigate(`/edit-work-instruction/${id}`);
@@ -107,7 +23,6 @@ const AllScrapEntries: React.FC = () => {
   const [workData, setWorkData] = useState<[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [searchVal, setSearchVal] = useState("");
-  const [showConfirmId, setShowConfirmId] = useState(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedValue, setSelectedValue] = useState("all");
   const debouncedSearchVal = useDebounce(searchVal, 500);
@@ -186,7 +101,6 @@ const AllScrapEntries: React.FC = () => {
   };
 
   const editWorkInstruction = (id, type) => {
-    console.log("typetype", type);
     if (type === "part") {
       navigate(`/edit-part-scrap-entry/${id}`);
     } else {
@@ -311,7 +225,7 @@ const AllScrapEntries: React.FC = () => {
                             <button
                               className="px-4 py-2 bg-red-500 text-white rounded"
                               onClick={() => {
-                                handleDelete(selectedId, item.type); // use selectedId here
+                                handleDelete(selectedId, item.type);
                                 setSelectedId(null);
                               }}
                             >

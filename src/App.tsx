@@ -78,6 +78,7 @@ import EditProductScrapEntry from "./pages/production_response/EditProductScrapE
 import SupplierOrderList from "./pages/supplier_chain/supplierOrderList";
 import EditSupplierOrder from "./pages/supplier_chain/EditSupplierOrder";
 import { Loader } from "lucide-react";
+import EditVacationInfo from "./pages/Employee_Information/Employee_Information/EditVacationInfo";
 
 const App = () => {
   const { isLoading, token } = useAuth();
@@ -223,6 +224,10 @@ const App = () => {
             <Route path="update" element={<TimeClockUpdate />} />
             <Route path="clock-in-out" element={<ClockInOut />} />
             <Route path="vaction-request" element={<VacationRequest />} />
+            <Route
+              path="edit-vaction-request/:id"
+              element={<EditVacationInfo />}
+            />
             <Route path="time-sheet" element={<TimeSheet />} />
             <Route
               path="operation-performance"
