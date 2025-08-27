@@ -356,9 +356,8 @@ const VacationList = () => {
   const [showModal, setShowModal] = useState(false);
   const [employeeId, setEmployeeId] = useState("");
   const [status, setStatus] = useState("");
-  // const rowsPerPage = 5;
-  // const totalPages = Math.ceil(data.length / rowsPerPage);
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("desc");
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
@@ -393,8 +392,8 @@ const VacationList = () => {
       const response = await vacationList(
         page,
         rowsPerPage,
-        selectedValue,
-        searchVal
+        sortBy,
+        searchTerm
       );
       setCustomerData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
@@ -405,7 +404,7 @@ const VacationList = () => {
 
   useEffect(() => {
     fetchEmployeeList(currentPage);
-  }, [currentPage, selectedValue, searchVal]);
+  }, [currentPage, sortBy, searchTerm]);
 
   const normalizedTab = activeTab?.trim().toLowerCase();
   const statusCounts = customerData.reduce(
@@ -419,9 +418,8 @@ const VacationList = () => {
   );
   const categorys = [
     { tab: "All", text: statusCounts["all"] || 0 },
-    { tab: "Active", text: statusCounts["active"] || 0 },
+    { tab: "Approved", text: statusCounts["approved"] || 0 },
     { tab: "Pending", text: statusCounts["pending"] || 0 },
-    { tab: "Banned", text: statusCounts["banned"] || 0 },
     { tab: "Rejected", text: statusCounts["rejected"] || 0 },
   ];
   const handleDelete = async (id: string) => {
@@ -572,23 +570,23 @@ const VacationList = () => {
               <div className="p-2 md:p-4">
                 <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 p-2 md:p-4">
                   <select
-                    id="work-instruction-filter"
-                    className="border w-full md:w-1/4 px-3 py-2 rounded-md"
-                    value={selectedValue}
-                    onChange={handleSelectChange}
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="rounded border px-2 py-1 text-sm"
                   >
-                    <option value="all">All</option>
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
+                    <option value="desc">Newest</option>
+                    <option value="asc">Oldest</option>
                   </select>
 
                   <div className="flex-1 w-full relative border p-2 md:p-3 rounded-md">
                     <input
                       type="text"
                       placeholder="Search..."
-                      onChange={handleChange}
-                      className="w-full rounded-md border-gray-300 pl-6 text-xs md:text-sm lg:text-base outline-none"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full rounded-md border-gray-300 pl-6 text-xs md:text-sm outline-none"
                     />
+
                     <div className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400">
                       <img
                         src={search_2}

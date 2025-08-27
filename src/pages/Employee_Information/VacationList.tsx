@@ -45,7 +45,7 @@ const VacationList = () => {
         <div className="flex justify-between items-start">
           <div>
             <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-black">
-              Vacation List for approval
+              Vacation List for approval1
             </h1>
           </div>
         </div>

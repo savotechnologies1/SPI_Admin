@@ -87,13 +87,13 @@ export const sendEmailToTheEmployeeApi = async (apiData: object) => {
 export const vacationList = async (
   page = 1,
   limit = 5,
-  isShopFloor: boolean,
-  searchVal: string
+  sortBy: string,
+  search: string
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/all-vacation-request?page=${page}&limit=${limit}&isShopFloor=${isShopFloor}&search=${searchVal}`
+      `/all-vacation-request?page=${page}&limit=${limit}&sortBy=${sortBy}&search=${search}`
     );
     console.log("response.dataresponse.data", response.data);
     return response.data;
@@ -119,6 +119,37 @@ export const vacationReqStatus = async (data: object) => {
       `/change-vacation-request-status`,
       data
     );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const allTimeClock = async (
+  page: Number,
+  limit: Number,
+  filter: string,
+  search: string
+) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await axiosInstance.get(
+      `/all-time-clock-list?page=${page}&limit=${limit}&filter=${filter}&search=${search}`
+    );
+    console.log("response.dataresponse.data", response.data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const sendVacationReqStatus = async (data: object) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await axiosInstance.post(`/send-vacation-status`, data);
+    if (response.status === 201) {
+      toast.success(response.data.message);
+    }
     return response.data;
   } catch (error) {
     throw error;

@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { sendEmailToTheEmployeeApi } from "../https/EmployeeApis";
+import {
+  sendEmailToTheEmployeeApi,
+  sendVacationReqStatus,
+} from "../https/EmployeeApis";
 type Props = { employeeId: string; isOpen: boolean; onClose: () => void };
 
 const VacationReqModel = ({ employeeId, isOpen, onClose, status }: Props) => {
@@ -24,6 +27,7 @@ const VacationReqModel = ({ employeeId, isOpen, onClose, status }: Props) => {
     e.preventDefault();
     const data = { id: employeeId, email, status: status };
     console.log({ id: employeeId, email, status: status });
+    await sendVacationReqStatus(data);
     // const response = await sendEmailToTheEmployeeApi(data);
     closeModal();
   };
