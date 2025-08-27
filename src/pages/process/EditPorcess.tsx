@@ -315,8 +315,8 @@ const EditProcess = () => {
     try {
       const payload = {
         ...data,
-        cycleTime: parseInt(data.cycleTime),
-        ratePerHour: parseInt(data.ratePerHour),
+        cycleTime: data.cycleTime,
+        ratePerHour: data.cycleTime,
         isProcessReq: data.isProcessReq === "true",
       };
 
