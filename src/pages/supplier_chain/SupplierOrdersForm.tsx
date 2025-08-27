@@ -6,6 +6,8 @@ import { faRotateRight } from "@fortawesome/free-solid-svg-icons";
 import { addSupplierOrder, selectSupplier } from "./https/suppliersApi";
 import { selectProductApi } from "../Work_Instrcution.tsx/https/workInstructionApi";
 import Select from "react-select";
+import { v4 as uuidv4 } from "uuid";
+
 const validationSchema = Yup.object({
   order_date: Yup.date().required("Order Date is required"),
 
@@ -87,7 +89,7 @@ const SupplierOrdersForm = () => {
 
     const { showFields, firstName, lastName, email, ...orderData } = values;
     let finalPayload = { ...orderData };
-    const tempId = crypto.randomUUID();
+    const tempId = uuidv4();
     if (showFields) {
       finalPayload.supplier_id = null;
       finalPayload.newSupplier = {

@@ -16,7 +16,6 @@ import {
   selectPartNumber,
   selectProcess,
 } from "./https/schedulingApis";
-import { v4 as uuidv4 } from "uuid";
 
 // ========================================================================
 // MOCK DATA & INTERFACES (Replace with your actual imports and API calls)
@@ -159,7 +158,7 @@ const CustomOrderForm = () => {
             ) => {
               const value = e.target.value;
               if (value === "new") {
-                const tempId = uuidv4();
+                const tempId = crypto.randomUUID();
                 setFieldValue("customerId", tempId);
                 setSelectedCustomerId(null);
                 setFieldValue("customerName", "");
