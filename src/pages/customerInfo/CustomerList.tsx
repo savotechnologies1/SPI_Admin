@@ -1,6 +1,6 @@
 import { SetStateAction, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaCircle, FaTrash } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaCircle, FaTrash } from "react-icons/fa";
 import search_2 from "../../assets/search_2.png";
 import more from "../../assets/more.png";
 import edit from "../../assets/edit_icon.png";
@@ -8,7 +8,9 @@ import add from "../../assets/add.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { customerList, deleteCustomer } from "./https/customersApi";
-
+import back from "../../assets/back.png";
+import next from "../../assets/next.png";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 interface CustomerItem {
   id: string;
   firstName: string;
@@ -28,7 +30,7 @@ const CustomerList = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [showConfirmId, setShowConfirmId] = useState(null);
 
-  const rowsPerPage = 5;
+  const rowsPerPage = 10;
 
   const navigate = useNavigate();
   const handleNextPage = () => {
@@ -48,6 +50,8 @@ const CustomerList = () => {
     try {
       const response = await customerList(page, rowsPerPage, searchVal);
       setCustomerData(response.data);
+      console.log("esponse.pagination", response);
+
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
       throw error;
@@ -146,7 +150,7 @@ const CustomerList = () => {
                 <div className="flex-1 w-full relative border p-2 md:p-3 rounded-md">
                   <input
                     type="text"
-                    placeholder="Search..."
+                    placeholder="Search by email..."
                     onChange={handleChange}
                     className="w-full rounded-md border-gray-300 pl-6 text-xs md:text-sm lg:text-base outline-none"
                   />
@@ -158,10 +162,6 @@ const CustomerList = () => {
                     />
                   </div>
                 </div>
-
-                <div className="hidden sm:block">
-                  <img src={more} alt="" className="w-5 h-5" />
-                </div>
               </div>
             </div>
           </div>
@@ -169,10 +169,7 @@ const CustomerList = () => {
           <div className="overflow-x-auto">
             <table className="w-full bg-white">
               <thead>
-                <tr className="bg-[#F4F6F8]">
-                  <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
-                    <input type="checkbox" className="w-3 h-3 md:w-4 md:h-4" />
-                  </th>
+                <tr className="bg-[#F4F6F8] pl-2">
                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
                     Name
                   </th>
@@ -195,150 +192,153 @@ const CustomerList = () => {
                 </tr>
               </thead>
               <tbody>
-                {customerData.map((item, index) => (
-                  <tr
-                    key={index}
-                    className="border-b border-dashed border-gray-200"
-                  >
-                    <td className="px-2 py-2">
-                      <input
-                        type="checkbox"
-                        className="w-3 h-3 md:w-4 md:h-4"
-                      />
-                    </td>
-                    <td className="px-2 py-3 md:px-3 md:py-4">
-                      <div className="flex items-center">
-                        <div>
-                          <p className="text-xs md:text-sm lg:text-base font-medium">
-                            {item.firstName} {item.lastName}
-                          </p>
-                          <p className="text-xs text-gray-400 truncate max-w-[100px] md:max-w-none">
-                            {item.email}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
-                      {item.address}
-                    </td>
-                    <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
-                      {item.customerPhone}
-                    </td>
-                    <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden md:table-cell">
-                      {item.billingTerms} Days
-                    </td>
-                    <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden md:table-cell">
-                      Admin
-                    </td>
-                    <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
-                      <span
-                        className={`px-2 py-1 md:px-3 rounded-full text-xs md:text-sm font-mediumtext-green-800 bg-green-100`}
-                      >
-                        {new Date(item.createdAt).toLocaleString("en-IN", {
-                          timeZone: "Asia/Kolkata",
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "numeric",
-                        })}
-                      </span>
-                    </td>
-
-                    {/* <td className="px-2 py-3 md:px-3 md:py-4">
-                      <span
-                        className={`px-2 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium ${
-                          item.status === "Active"
-                            ? "text-green-800 bg-green-100"
-                            : item.status === "Pending"
-                            ? "text-[#B76E00] bg-yellow-100"
-                            : item.status === "Banned"
-                            ? "text-[#B71D18] bg-[#FF563029]"
-                            : item.status === "Rejected"
-                            ? "text-[#637381] bg-gray-100"
-                            : "text-gray-800 bg-gray-100"
-                        }`}
-                      >
-                        {item.status}
-                      </span>
-                    </td> */}
-                    <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
-                      <button
-                        className="text-brand hover:underline"
-                        onClick={() => editCustomer(item.id)}
-                      >
-                        <img
-                          src={edit}
-                          alt="Edit"
-                          className="w-4 h-4 md:w-5 md:h-5"
-                        />
-                      </button>
-                      <FaTrash
-                        className="text-red-500 cursor-pointer h-7"
-                        onClick={() => setShowConfirmId(item.id)}
-                      />
-
-                      {showConfirmId === item.id && (
-                        <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-                          <div className="bg-white p-6 rounded-xl shadow-lg">
-                            <h2 className="text-lg font-semibold mb-4">
-                              Are you sure?
-                            </h2>
-                            <p className="mb-4">
-                              Do you really want to delete this customer?
+                {customerData.length > 0 ? (
+                  customerData.map((item, index) => (
+                    <tr
+                      key={item.id}
+                      className="border-b border-dashed border-gray-200 pl-4"
+                    >
+                      {/* Name & Email */}
+                      <td className="px-2 py-3 md:px-3 md:py-4">
+                        <div className="flex items-center">
+                          <div>
+                            <p className="text-xs md:text-sm lg:text-base font-medium max-w-[150px] whitespace-normal break-words">
+                              {item.firstName} {item.lastName}
                             </p>
-                            <div className="flex justify-end space-x-3">
-                              <button
-                                className="px-4 py-2 bg-gray-300 rounded"
-                                onClick={() => setShowConfirmId(null)}
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                className="px-4 py-2 bg-red-500 text-white rounded"
-                                onClick={() => {
-                                  handleDelete(showConfirmId);
-                                  setShowConfirmId(null);
-                                }}
-                              >
-                                Delete
-                              </button>
-                            </div>
+                            <p className="text-xs text-gray-400 truncate max-w-[100px] md:max-w-none whitespace-normal break-words">
+                              {item.email}
+                            </p>
                           </div>
                         </div>
-                      )}
+                      </td>
+
+                      {/* Address */}
+                      <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell max-w-[150px] whitespace-normal break-words">
+                        {item.address}
+                      </td>
+
+                      {/* Phone */}
+                      <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
+                        {item.customerPhone}
+                      </td>
+
+                      {/* Billing Terms */}
+                      <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden md:table-cell ">
+                        {item.billingTerms} Days
+                      </td>
+
+                      {/* Submitted By */}
+                      <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden md:table-cell ">
+                        Admin
+                      </td>
+
+                      {/* Created At */}
+                      <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
+                        <span className="px-2 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-green-800 bg-green-100">
+                          {new Date(item.createdAt).toLocaleDateString(
+                            "en-IN",
+                            {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                            }
+                          )}
+                        </span>
+                      </td>
+
+                      {/* Actions */}
+                      <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
+                        <button
+                          className="text-brand hover:underline"
+                          onClick={() => editCustomer(item.id)}
+                        >
+                          {/* Replace with icon if needed */}
+                          <img
+                            src={edit}
+                            alt="Edit"
+                            className="w-4 h-4 md:w-5 md:h-5"
+                          />
+                        </button>
+
+                        <FaTrash
+                          className="text-red-500 cursor-pointer h-5 w-5"
+                          onClick={() => setShowConfirmId(item.id)}
+                        />
+
+                        {/* Confirm Delete Modal */}
+                        {showConfirmId === item.id && (
+                          <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+                            <div className="bg-white p-6 rounded-xl shadow-lg">
+                              <h2 className="text-lg font-semibold mb-4">
+                                Are you sure?
+                              </h2>
+                              <p className="mb-4">
+                                Do you really want to delete this customer?
+                              </p>
+                              <div className="flex justify-end space-x-3">
+                                <button
+                                  className="px-4 py-2 bg-gray-300 rounded"
+                                  onClick={() => setShowConfirmId(null)}
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  className="px-4 py-2 bg-red-500 text-white rounded"
+                                  onClick={() => {
+                                    handleDelete(showConfirmId);
+                                    setShowConfirmId(null);
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={8}
+                      className="text-center py-4 text-sm text-gray-500"
+                    >
+                      No data found
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
 
-            <div className="flex flex-row justify-between items-center bg-white py-2 px-2 md:px-4 gap-2 ">
-              <p className="text-xs md:text-sm text-gray-600">
+            <div className="flex justify-end items-center py-2 bg-white">
+              <p className="text-sm text-gray-600 mr-4">
                 Page {currentPage} of {totalPages}
               </p>
 
-              <div className="flex gap-2">
-                <button
-                  onClick={handlePreviousPage}
-                  disabled={currentPage === 1}
-                  className={`p-1 md:p-2 rounded ${
-                    currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faArrowLeft} />
-                </button>
+              <button
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+                className={`px-3 py-2 rounded ${
+                  currentPage === 1
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-300"
+                }`}
+              >
+                <MdKeyboardArrowLeft />
+              </button>
 
-                <button
-                  onClick={handleNextPage}
-                  disabled={currentPage === totalPages}
-                  className={`p-1 md:p-2 rounded ${
-                    currentPage === totalPages
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-gray-300"
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faArrowRight} />
-                </button>
-              </div>
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className={`px-3 py-2 rounded ${
+                  currentPage === totalPages
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-300"
+                }`}
+              >
+                <MdKeyboardArrowRight />
+              </button>
             </div>
           </div>
         </div>

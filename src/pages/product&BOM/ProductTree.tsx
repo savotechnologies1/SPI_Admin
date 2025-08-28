@@ -437,7 +437,7 @@ export default function ProductTree() {
                               Are you sure?
                             </h2>
                             <p className="mb-4">
-                              Do you really want to delete this part ?
+                              Do you really want to delete this product ?
                             </p>
                             <div className="flex justify-end space-x-3">
                               <button

@@ -179,7 +179,7 @@ export const deletePartNumber = async (id: string) => {
   try {
     const response = await axiosInstance.patch(`/delete-part-number/${id}`);
 
-    return response.data;
+    return response;
   } catch (error) {}
 };
 
@@ -190,6 +190,7 @@ export const deleteProductNumber = async (id: string) => {
     return response.data;
   } catch (error) {}
 };
+
 export const deleteProductPartNumber = async (id: string) => {
   try {
     const response = await axiosInstance.put(`/delete-product-part/${id}`);
@@ -212,4 +213,16 @@ export const deleteProductImage = async (id: string) => {
     console.error("Error deleting product part number", error);
     throw error;
   }
+};
+
+export const deleteProductPartNumber1 = async (id: string) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/delete-product-part-number/${id}`
+    );
+    if (response.status === 200) {
+      toast.success(response.data.message);
+    }
+    return response;
+  } catch (error) {}
 };

@@ -20,7 +20,14 @@ import {
 import { MdCancel } from "react-icons/md";
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 const EditPartForm = () => {
-  const { register, handleSubmit, setValue, watch, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm();
   const selectedProcessId = watch("processId");
 
   const context = useContext(PartContext);
@@ -129,9 +136,17 @@ const EditPartForm = () => {
       setPreviewImages([]);
     }
   }, [selectedImages]);
+  const handleRemoveSelectedImage = (index) => {
+    const updatedFiles = Array.from(selectedImages);
+    updatedFiles.splice(index, 1);
 
-  // <-- 2. ADD THIS USE EFFECT
-  // Automatically update process description when a process is selected
+    // Create a new DataTransfer object to mimic FileList
+    const dataTransfer = new DataTransfer();
+    updatedFiles.forEach((file) => dataTransfer.items.add(file));
+
+    setValue("image", dataTransfer.files); // Update the form field
+  };
+
   useEffect(() => {
     const fetchProcessDescription = async () => {
       // If no process is selected, clear the description and stop.
@@ -178,7 +193,14 @@ const EditPartForm = () => {
           Dashboard
         </NavLink>
         <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
-        <span className="text-xs sm:text-sm md:text-base">product and Bom</span>
+        <NavLink
+          to="/part-table"
+          className="text-xs sm:text-sm md:text-base text-black"
+        >
+          <span className="text-xs sm:text-sm md:text-base">
+            product and Bom
+          </span>
+        </NavLink>
         <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
         <span className="text-xs sm:text-sm md:text-base">
           Edit Part Number
@@ -276,10 +298,25 @@ const EditPartForm = () => {
             <label>Minimum Stock</label>
             <input
               type="number"
-              {...register("minStock")}
+              {...register("minStock", {
+                // required: "Minimum Stock is required",
+                valueAsNumber: true,
+                validate: (value) => {
+                  const supplierOrderQty = watch("supplierOrderQty");
+                  if (supplierOrderQty === null || isNaN(supplierOrderQty))
+                    return true;
+                  return (
+                    value <= supplierOrderQty ||
+                    "Minimum Stock must be less than Order Quantity"
+                  );
+                },
+              })}
               placeholder="Minimum Stock"
               className="border p-2 rounded w-full"
             />
+            {errors.minStock && (
+              <p className="text-red-500 text-sm">{errors.minStock.message}</p>
+            )}
           </div>
 
           {/* Available Stock */}
@@ -287,10 +324,27 @@ const EditPartForm = () => {
             <label>Available Stock</label>
             <input
               type="number"
-              {...register("availStock")}
+              {...register("availStock", {
+                // required: "Available Stock is required",
+                valueAsNumber: true,
+                validate: (value) => {
+                  const supplierOrderQty = watch("supplierOrderQty");
+                  if (supplierOrderQty === null || isNaN(supplierOrderQty))
+                    return true;
+                  return (
+                    value <= supplierOrderQty ||
+                    "Available Stock must be less than Order Quantity"
+                  );
+                },
+              })}
               placeholder="Available Stock"
               className="border p-2 rounded w-full"
             />
+            {errors.availStock && (
+              <p className="text-red-500 text-sm">
+                {errors.availStock.message}
+              </p>
+            )}
           </div>
 
           {/* Cycle Time */}
@@ -347,19 +401,25 @@ const EditPartForm = () => {
           {/* Images */}
           <div className="col-span-4">
             <label className="block font-medium mb-2">Uploaded Images</label>
-
             {previewImages.length > 0 && (
               <div className="col-span-4 flex gap-2 flex-wrap mt-2">
                 {previewImages.map((imgUrl, i) => (
-                  <img
-                    key={i}
-                    src={imgUrl}
-                    alt={`Preview ${i}`}
-                    className="w-20 h-20 object-cover border rounded"
-                  />
+                  <div key={i} className="relative">
+                    <img
+                      src={imgUrl}
+                      alt={`Preview ${i}`}
+                      className="w-20 h-20 object-cover border rounded"
+                    />
+                    <MdCancel
+                      className="absolute -top-2 -right-2 cursor-pointer text-red-600 bg-white rounded-full"
+                      size={20}
+                      onClick={() => handleRemoveSelectedImage(i)}
+                    />
+                  </div>
                 ))}
               </div>
             )}
+
             <div className="flex gap-2 flex-wrap">
               {existingImages.map((img, i) => (
                 <div key={img.id} className="relative">

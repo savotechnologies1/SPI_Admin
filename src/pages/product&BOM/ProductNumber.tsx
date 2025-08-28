@@ -40,7 +40,13 @@ const ProductNumber = () => {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<Part>();
+  } = useForm<Part>({
+    defaultValues: {
+      supplierOrderQty: 0,
+      availStock: 0,
+      minStock: 0,
+    },
+  });
   const processId = watch("processId");
   const [processData, setProcessData] = useState([]);
   const [partData, setPartData] = useState<any[]>([]);
@@ -63,6 +69,17 @@ const ProductNumber = () => {
   const [selectedImages, setSelectedImages] = useState<FileList | null>(null);
 
   const { addPart } = partContext || {};
+  const handleRemoveImage = (index: number) => {
+    if (!selectedImages) return;
+
+    const imageArray = Array.from(selectedImages);
+    imageArray.splice(index, 1); // Remove the clicked image
+
+    const updatedFileList = new DataTransfer();
+    imageArray.forEach((file) => updatedFileList.items.add(file));
+
+    setSelectedImages(updatedFileList.files);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -244,7 +261,9 @@ const ProductNumber = () => {
           Dashboard
         </NavLink>
         <FaCircle className="text-[6px]" />
-        <span>Product and BOM</span>
+        <NavLink to="/product-tree" className="hover:underline">
+          <span>Product and BOM</span>
+        </NavLink>
         <FaCircle className="text-[6px]" />
         <span>Product Number</span>
       </div>
@@ -423,7 +442,7 @@ const ProductNumber = () => {
           )}
         </div>
 
-        <div className="col-span-4 md:col-span-2">
+        <div className="col-span-4 md:col-span-1">
           <label>Process</label>
           <select
             {...register("processId", { required: "Process is required" })}
@@ -443,7 +462,7 @@ const ProductNumber = () => {
 
         {/* Process Order Required */}
 
-        <label className="block col-span-4 md:col-span-2">
+        <label className="block col-span-4 md:col-span-1">
           Process Description
           <textarea
             {...register("processDesc")}
@@ -462,16 +481,23 @@ const ProductNumber = () => {
             ? `${selectedImages.length} image(s) selected`
             : "Tap or Click to Add Pictures"}
         </label> */}
-
         {previewImages.length > 0 && (
           <div className="col-span-4 flex gap-3 flex-wrap mt-2">
             {previewImages.map((img, idx) => (
-              <img
-                key={idx}
-                src={img}
-                alt={`preview-${idx}`}
-                className="w-24 h-24 object-cover rounded border"
-              />
+              <div key={idx} className="relative">
+                <img
+                  src={img}
+                  alt={`preview-${idx}`}
+                  className="w-24 h-24 object-cover rounded border"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(idx)}
+                  className="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 text-xs"
+                >
+                  ✕
+                </button>
+              </div>
             ))}
           </div>
         )}

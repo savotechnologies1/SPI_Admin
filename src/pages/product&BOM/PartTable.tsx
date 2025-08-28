@@ -8,6 +8,7 @@ import { bomList, deletePartNumber } from "./https/partProductApis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 
 // export default function PartTable() {
 //   const partContext = useContext(PartContext);
@@ -316,7 +317,7 @@ export default function PartTable() {
   const [selectedValue, setSelectedValue] = useState("all");
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
-  const rowsPerPage = 5;
+  const rowsPerPage = 10;
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -344,10 +345,12 @@ export default function PartTable() {
 
   const handleDelete = async (id: string) => {
     try {
-      await deletePartNumber(id);
-      toast.success("Part deleted successfully!");
-      // Re-fetch the data to update the table
-      await fetchCustomerList(currentPage);
+      const response = await deletePartNumber(id);
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        await new Promise((r) => setTimeout(r, 500));
+        await fetchCustomerList(currentPage);
+      }
     } catch (error: unknown) {
       console.error("Failed to delete part:", error);
       toast.error("Failed to delete part. Please try again.");
@@ -459,47 +462,58 @@ export default function PartTable() {
               </tr>
             </thead>
             <tbody>
-              {customerData.map((part) => (
-                <tr
-                  key={part.part_id}
-                  className="hover:bg-gray-100 text-center"
-                >
-                  <td className="border-b border-dashed p-2">
-                    {part.partNumber}
-                  </td>
-                  <td className="border-b border-dashed p-2">
-                    {part.partFamily}
-                  </td>
-                  <td className="border-b border-dashed p-2">
-                    {part.partDescription}
-                  </td>
-                  <td className="border-b border-dashed p-2">${part.cost}</td>
-                  <td className="border-b border-dashed p-2">
-                    {part.leadTime} Days
-                  </td>
-                  <td className="border-b border-dashed p-2">
-                    {part.supplierOrderQty}
-                  </td>
-                  <td className="border-b border-dashed p-2">
-                    {part.minStock}
-                  </td>
-                  <td className="border-b border-dashed p-2">
-                    {part.availStock}
-                  </td>
-                  <td className="flex items-center gap-4 border-b border-dashed p-2">
-                    <img
-                      src={edit}
-                      alt="Edit"
-                      onClick={() => handleClick(part.part_id, part.type)}
-                      className="w-4 h-4 md:w-5 md:h-5 cursor-pointer"
-                    />
-                    <FaTrash
-                      className="text-red-500 cursor-pointer"
-                      onClick={() => setDeleteTargetId(part.part_id)}
-                    />
+              {customerData.length > 0 ? (
+                customerData.map((part) => (
+                  <tr
+                    key={part.part_id}
+                    className="hover:bg-gray-100 text-center"
+                  >
+                    <td className="border-b border-dashed p-2">
+                      {part.partNumber}
+                    </td>
+                    <td className="border-b border-dashed p-2">
+                      {part.partFamily}
+                    </td>
+                    <td className="border-b border-dashed p-2">
+                      {part.partDescription}
+                    </td>
+                    <td className="border-b border-dashed p-2">${part.cost}</td>
+                    <td className="border-b border-dashed p-2">
+                      {part.leadTime} Days
+                    </td>
+                    <td className="border-b border-dashed p-2">
+                      {part.supplierOrderQty}
+                    </td>
+                    <td className="border-b border-dashed p-2">
+                      {part.minStock}
+                    </td>
+                    <td className="border-b border-dashed p-2">
+                      {part.availStock}
+                    </td>
+                    <td className="flex items-center gap-4 border-b border-dashed p-2">
+                      <img
+                        src={edit}
+                        alt="Edit"
+                        onClick={() => handleClick(part.part_id, part.type)}
+                        className="w-4 h-4 md:w-5 md:h-5 cursor-pointer"
+                      />
+                      <FaTrash
+                        className="text-red-500 cursor-pointer"
+                        onClick={() => setDeleteTargetId(part.part_id)}
+                      />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={8}
+                    className="text-center py-4 text-sm text-gray-500"
+                  >
+                    No data found
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
@@ -544,7 +558,7 @@ export default function PartTable() {
               currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
-            <FontAwesomeIcon icon={faArrowLeft} />
+            <MdKeyboardArrowLeft />
           </button>
           <button
             onClick={handleNextPage}
@@ -555,7 +569,7 @@ export default function PartTable() {
                 : "hover:bg-gray-300"
             }`}
           >
-            <FontAwesomeIcon icon={faArrowRight} />
+            <MdKeyboardArrowRight />
           </button>
         </div>
       </div>

@@ -530,7 +530,13 @@ const PartForm = () => {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<FormDataType>();
+  } = useForm<FormDataType>({
+    defaultValues: {
+      supplierOrderQty: 0,
+      availStock: 0,
+      minStock: 0,
+    },
+  });
 
   const context = useContext(PartContext);
   const navigate = useNavigate();
@@ -542,6 +548,7 @@ const PartForm = () => {
   const [itemToDeleteId, setItemToDeleteId] = useState<string | null>(null);
   const rowsPerPage = 5;
   const processId = watch("processId");
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
   if (!context) {
     throw new Error("PartContext must be used within a PartProvider");
@@ -613,13 +620,11 @@ const PartForm = () => {
 
       const response = await createPartNumber(formData);
       if (response && response.status === 201) {
-        toast.success("Part created successfully!");
         navigate("/part-table");
         getAllPartList(currentPage);
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to add part");
     }
   };
 
@@ -654,8 +659,16 @@ const PartForm = () => {
         >
           Dashboard
         </NavLink>
+
         <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
-        <span className="text-xs sm:text-sm md:text-base">Product and BOM</span>
+        <NavLink
+          to="/part-table"
+          className="text-xs sm:text-sm md:text-base text-black"
+        >
+          <span className="text-xs sm:text-sm md:text-base">
+            Product and BOM
+          </span>
+        </NavLink>
         <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
         <span className="text-xs sm:text-sm md:text-base">
           Edit Part Number
@@ -858,17 +871,64 @@ const PartForm = () => {
               className="border p-2 rounded w-full"
             />
           </label>
+          {selectedImages.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 col-span-4 mt-4">
+              {selectedImages.map((file, index) => (
+                <div
+                  key={index}
+                  className="relative border rounded overflow-hidden"
+                >
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={`preview-${index}`}
+                    className="object-cover w-full h-32"
+                  />
+                  <button
+                    type="button"
+                    className="absolute top-1 right-1 bg-red-500 text-white text-xs px-2 py-1 rounded"
+                    onClick={() => {
+                      const updatedImages = selectedImages.filter(
+                        (_, i) => i !== index
+                      );
+                      setSelectedImages(updatedImages);
+                      setValue("image", updatedImages); // Update form value
+                    }}
+                  >
+                    ❌
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
           <label className="block col-span-4 md:col-span-2 cursor-pointer border bg-gray-100 p-4 rounded text-center">
             {watch("image")?.length
               ? `${watch("image").length} image(s) selected`
               : "Tap or Click to Add Pictures"}
+
             <input
+              type="file"
+              multiple
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const files = e.target.files;
+                if (files && files.length > 0) {
+                  const fileArray = Array.from(files);
+                  const updatedFiles = [...selectedImages, ...fileArray]; // Allow multiple selections
+                  setSelectedImages(updatedFiles);
+                  setValue("image", updatedFiles); // Update form value
+                }
+              }}
+            />
+
+            {/* <input
               type="file"
               multiple
               {...register("image")}
               className="hidden"
               accept="image/*"
-            />
+            /> */}
           </label>
           <div className="flex justify-between items-center col-span-4">
             <button
@@ -921,7 +981,7 @@ const PartForm = () => {
           <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-xl shadow-lg">
               <h2 className="text-lg font-semibold mb-4">Are you sure?</h2>
-              <p className="mb-4">Do you really want to delete this process?</p>
+              <p className="mb-4">Do you really want to delete this part?</p>
               <div className="flex justify-end space-x-3">
                 <button
                   className="px-4 py-2 bg-gray-300 rounded"

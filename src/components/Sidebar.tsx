@@ -260,16 +260,6 @@ const sections: Section[] = [
         hasSubmenu: true,
         submenu: [
           {
-            key: "Product tree view",
-            label: "Product tree view ",
-            path: "/product-tree",
-          },
-          {
-            key: "Add & Edit   product number",
-            label: "Add & Edit   product number ",
-            path: "/add-product-number",
-          },
-          {
             key: "Browse BOM",
             label: "Browse BOM ",
             path: "/part-table",
@@ -278,6 +268,16 @@ const sections: Section[] = [
             key: "Add & Edit  part number",
             label: "Add & Edit  part number ",
             path: "/partform",
+          },
+          {
+            key: "Product tree view",
+            label: "Product tree view ",
+            path: "/product-tree",
+          },
+          {
+            key: "Add & Edit   product number",
+            label: "Add & Edit   product number ",
+            path: "/add-product-number",
           },
         ],
       },
@@ -293,8 +293,8 @@ const sections: Section[] = [
             path: "/process-list",
           },
           {
-            key: "Add & Edit  new process",
-            label: "Add & Edit  new process ",
+            key: "Add  new process",
+            label: "Add  new process ",
             path: "/add-process",
           },
         ],

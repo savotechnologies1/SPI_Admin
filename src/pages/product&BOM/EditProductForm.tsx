@@ -773,7 +773,6 @@ const EditProductForm = () => {
 
   const onSubmitProduct = async (data: any) => {
     const formData = new FormData();
-    // Append main product data
     formData.append("partFamily", data.partFamily);
     formData.append("productNumber", data.productNumber);
     formData.append("partDescription", data.partDescription);
@@ -789,14 +788,12 @@ const EditProductForm = () => {
     formData.append("processId", data.processId);
     formData.append("processDesc", data.processDesc);
 
-    // Append new images
     if (imageFiles.length > 0) {
       for (let file of imageFiles) {
         formData.append("partImages", file);
       }
     }
 
-    // --- FIX: Send the unified bomItems state ---
     formData.append("parts", JSON.stringify(bomItems));
     // ------------------------------------------
 
@@ -815,6 +812,7 @@ const EditProductForm = () => {
     try {
       const response = await getProductNumberDetail(id);
       const data = response.data;
+      console.log("3333333333333", data.availStock);
       reset({
         // ... (reset call is correct from previous fix)
         partFamily: data.partFamily || "",
@@ -825,7 +823,7 @@ const EditProductForm = () => {
         supplierOrderQty: data.supplierOrderQty || "",
         companyName: data.companyName || "",
         minStock: data.minStock || "",
-        availStock: data.availStock || "",
+        availStock: data.availStock ?? "",
         cycleTime: data.cycleTime || "",
         processOrderRequired: String(data.processOrderRequired),
         instructionRequired: String(data.instructionRequired),
@@ -911,10 +909,13 @@ const EditProductForm = () => {
     ]);
   };
 
-  const handleDeleteBOM = (index: number) => {
+  const handleDeleteBOM = async (index: number, id: string) => {
+    console.log("idid", id);
+
     const updatedItems = [...bomItems];
     updatedItems.splice(index, 1);
     setBomItems(updatedItems);
+    await deleteProductPartNumber(id);
   };
 
   const handleBOMChange = (index: number, field: string, value: string) => {
@@ -987,13 +988,21 @@ const EditProductForm = () => {
       console.error("Failed to delete image:", error);
     }
   };
+  const handleRemoveSelectedImage = (index: number) => {
+    const updatedImages = [...selectedImages];
+    const updatedFiles = [...imageFiles];
+    updatedImages.splice(index, 1);
+    updatedFiles.splice(index, 1);
+    setSelectedImages(updatedImages);
+    setImageFiles(updatedFiles);
+  };
 
   return (
     <div className="p-4 md:p-7">
       <h1 className="font-bold text-[20px] md:text-[24px] text-black">
         Edit Product Number
       </h1>
-      {/* Breadcrumbs */}
+
       <div className="flex gap-4 items-center mt-2 text-sm text-gray-700">
         <NavLink to="/dashboardDetailes" className="hover:underline">
           Dashboard
@@ -1224,13 +1233,17 @@ const EditProductForm = () => {
                 </div>
               ))}
               {selectedImages.map((img, i) => (
-                <div key={`new-${i}`}>
-                  {" "}
+                <div key={`new-${i}`} className="relative">
                   <img
                     src={img}
                     alt="Selected"
                     className="w-20 h-20 object-cover border rounded"
-                  />{" "}
+                  />
+                  <MdCancel
+                    className="absolute -top-2 -right-2 cursor-pointer text-red-600 bg-white rounded-full"
+                    size={20}
+                    onClick={() => handleRemoveSelectedImage(i)}
+                  />
                 </div>
               ))}
             </div>
@@ -1318,7 +1331,7 @@ const EditProductForm = () => {
                 <div className="sm:col-span-1 flex justify-end">
                   <button
                     type="button"
-                    onClick={() => handleDeleteBOM(index)}
+                    onClick={() => handleDeleteBOM(index, item.id)}
                     className="text-red-600 hover:text-red-800"
                   >
                     <RiDeleteBin6Line size={20} />
