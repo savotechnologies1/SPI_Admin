@@ -113,7 +113,7 @@ const SupplierPartList: React.FC = () => {
   );
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-gray-100 min-h-screen mt-5">
       <div className="flex items-center text-sm text-gray-500 mb-4" />
       <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
         Suppliers

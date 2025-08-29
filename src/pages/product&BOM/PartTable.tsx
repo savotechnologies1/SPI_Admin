@@ -90,7 +90,7 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 //     console.log("A new option was selected:", selectedValue);
 //   };
 //   return (
-//     <div className="p-4">
+//     <div className="p-4 mt-5">
 //       <div className="flex justify-between mt-8">
 //         {" "}
 //         <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
@@ -375,7 +375,7 @@ export default function PartTable() {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 mt-5">
       <div className="flex justify-between mt-8">
         <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
           Browse BOM

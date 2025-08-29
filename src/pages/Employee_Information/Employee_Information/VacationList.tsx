@@ -485,7 +485,7 @@ const VacationList = () => {
   };
 
   return (
-    <div className="p-4 md:p-7">
+    <div className="p-4 mt-5  md:p-7">
       <div>
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <div>

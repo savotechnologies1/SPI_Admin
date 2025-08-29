@@ -16,14 +16,19 @@ const ResetPassword = () => {
   } = useForm();
 
   const navigate = useNavigate();
-  const onSubmit = async (data: object) => {
+  const onSubmit = async (data: any) => {
+    if (data.newPassword !== data.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
     try {
       const response = await resetPassword(data);
       if (response.status === 200) {
         navigate("/sign-in");
       }
     } catch (error) {
-      console.error("Error during forgetPassword:", error);
+      console.error("Error during resetPassword:", error);
     }
   };
 
@@ -110,7 +115,8 @@ const ResetPassword = () => {
                   {...register("confirmPassword", {
                     required: "Please confirm your password",
                     validate: (value) =>
-                      value === password || "Passwords do not match",
+                      value === watch("newPassword") ||
+                      "Passwords do not match",
                   })}
                   placeholder="••••••••"
                   className={`w-full p-3 rounded-lg border ${
@@ -119,6 +125,7 @@ const ResetPassword = () => {
                       : "border-gray-300"
                   } focus:outline-none focus:ring-2 focus:ring-[#052C89]`}
                 />
+
                 <button
                   type="button"
                   className="absolute right-3 top-3.5 text-gray-500 hover:text-gray-700"

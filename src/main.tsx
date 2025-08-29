@@ -7,10 +7,10 @@ import { store } from "./redux/store";
 import { AuthProvider } from "./context/AuthContext.tsx";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-     <AuthProvider>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <AuthProvider>
+      <Provider store={store}>
+        <App />
+      </Provider>
     </AuthProvider>
   </StrictMode>
 );

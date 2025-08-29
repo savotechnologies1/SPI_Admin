@@ -314,7 +314,7 @@ const Settings = () => {
                 <Controller
                   name="city"
                   control={control}
-                  rules={{ required: "City is required" }}
+                  // rules={{ required: "City is required" }}
                   render={({ field }) => (
                     <Select
                       {...field}

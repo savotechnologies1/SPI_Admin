@@ -37,7 +37,7 @@ const AddEmployee = () => {
     navigate("/edit-employee");
   };
   return (
-    <div className="p-4 md:p-7">
+    <div className="p-4 md:p-7 mt-5">
       <div>
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <div>
@@ -148,9 +148,21 @@ const AddEmployee = () => {
         </div>
 
         <div>
-          <label className="font-semibold block mb-1">Shop Floor Login</label>
+          <label className="font-semibold block mb-1">Employee Role</label>
           <select
-            {...register("shopFloorLogin")}
+            {...register("role")}
+            className="w-full border px-4 py-2 rounded-md text-gray-600"
+          >
+            <option value="">Require Shop Floor Login</option>
+            <option value="Shop_Floor">Shop Floor</option>
+            <option value="Frontline_Manager">Frontline Manager</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="font-semibold block mb-1">Station Login</label>
+          <select
+            {...register("processLogin")}
             className="w-full border px-4 py-2 rounded-md text-gray-600"
           >
             <option value="">Require Shop Floor Login</option>

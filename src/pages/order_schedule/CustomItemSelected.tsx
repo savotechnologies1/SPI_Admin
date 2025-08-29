@@ -866,7 +866,7 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
   }
 
   return (
-    <div className="p-4">
+    <div className="p-4 mt-5">
       <div className="flex justify-end mb-6">
         <button
           className="px-6 py-2 bg-blue-800 text-white font-semibold rounded-md hover:bg-blue-900 transition-colors shadow-lg"

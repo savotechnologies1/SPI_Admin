@@ -18,7 +18,8 @@ type FormData = {
   shift: string;
   startDate: string;
   pin: string;
-  shopFloorLogin: string;
+  role: string;
+  processLogin: string;
   status: string;
   termsAccepted: boolean;
 };
@@ -42,6 +43,7 @@ const EditEmployee = () => {
     try {
       const response = await employeeDetail(id);
       const data = response.data;
+      console.log("data.processLogindata.processLogin", data.processLogin);
 
       reset({
         firstName: data.firstName,
@@ -51,7 +53,8 @@ const EditEmployee = () => {
         hourlyRate: data.hourlyRate,
         pin: data.pin,
         shift: data.shift,
-        shopFloorLogin: data.shopFloorLogin,
+        role: data.role,
+        processLogin: data.processLogin,
         status: data.status,
         startDate: data.startDate,
         termsAccepted: data.termsAccepted,
@@ -75,7 +78,7 @@ const EditEmployee = () => {
     }
   };
   return (
-    <div className="p-4 md:p-7">
+    <div className="p-4 md:p-7 mt-5">
       <div>
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <div>
@@ -186,9 +189,21 @@ const EditEmployee = () => {
           />
         </div>
         <div>
-          <label className="font-semibold block mb-1">Shop Floor Login</label>
+          <label className="font-semibold block mb-1">Employee Role</label>
+
           <select
-            {...register("shopFloorLogin")}
+            {...register("role")}
+            className="w-full border px-4 py-2 rounded-md text-gray-600"
+          >
+            <option value="">Select Employee Role</option>
+            <option value="Shop_Floor">Shop Floor</option>
+            <option value="Frontline_Manager">Frontline Manager</option>
+          </select>
+        </div>
+        <div>
+          <label className="font-semibold block mb-1">Station Login</label>
+          <select
+            {...register("processLogin")}
             className="w-full border px-4 py-2 rounded-md text-gray-600"
           >
             <option value="">Require Shop Floor Login</option>

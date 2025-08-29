@@ -32,7 +32,7 @@ const data_1 = [
 
 const LiveProductionGoal = () => {
   return (
-    <div className="p-6">
+    <div className="p-4 mt-5">
       <div className="flex justify-between w-full  gap-4">
         <div className="xl:w-[70%] flex flex-col justify-between ">
           <div>

@@ -1,4 +1,3 @@
-
 const Timeline = () => {
   const events = [
     {
@@ -22,7 +21,7 @@ const Timeline = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Timeline</h2>
+      <h2 className="text-2xl font-bold mb-6 mt-6">Timeline</h2>
 
       <div className="relative  pl-6">
         {events.map((event, index) => (

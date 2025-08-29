@@ -23,7 +23,7 @@ export const employeeList = async (
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/all-employee?page=${page}&limit=${limit}&isShopFloor=${isShopFloor}&search=${searchVal}`
+      `/all-employee?page=${page}&limit=${limit}&processLogin=${isShopFloor}&search=${searchVal}`
     );
     console.log("response.dataresponse.data", response.data);
     return response.data;

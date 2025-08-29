@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaCircle} from "react-icons/fa";
+import { FaCircle } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import more from "../../assets/more.png";
 import edit from "../../assets/edit.png";
@@ -74,7 +74,7 @@ const InventoryStatus = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-gray-100 min-h-screen mt-5">
       {/* Breadcrumb */}
       <div className="flex items-center text-sm text-gray-500 mb-4"></div>
       <div>
@@ -87,7 +87,7 @@ const InventoryStatus = () => {
         <div className="flex gap-2 items-center ">
           <p
             className={`text-[14px] text-black`}
-            onClick={() => ("dashboardDetailes")}
+            onClick={() => "dashboardDetailes"}
           >
             <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
           </p>

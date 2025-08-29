@@ -1,12 +1,10 @@
-
-
 import { NavLink } from "react-router-dom";
 import { FaCircle } from "react-icons/fa";
 import LaborForecastList from "./LaborForecastList";
 
 const LaborForecast = () => {
   return (
-    <div className="p-4">
+    <div className="p-4 mt-5">
       <div>
         {" "}
         <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
@@ -17,7 +15,7 @@ const LaborForecast = () => {
         <div className="flex gap-2 items-center ">
           <p
             className={`text-[14px] text-black`}
-            onClick={() => ("dashboardDetailes")}
+            onClick={() => "dashboardDetailes"}
           >
             <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
           </p>

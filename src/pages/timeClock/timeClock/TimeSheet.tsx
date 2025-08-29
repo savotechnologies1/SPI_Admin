@@ -147,7 +147,7 @@
 //   };
 //   return (
 //     <>
-//       <div className="p-6 bg-gray-100 min-h-screen">
+//       <div className="p-6 bg-gray-100 min-h-screen mt-5">
 //         {/* Breadcrumb */}
 //         <div className="flex items-center text-sm text-gray-500 mb-4"></div>
 //         <div>
@@ -460,7 +460,7 @@ const TimeSheet: FC = () => {
   ];
 
   return (
-    <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-6 mt-6 bg-gray-50 min-h-screen">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-800">Time List</h1>
@@ -470,7 +470,7 @@ const TimeSheet: FC = () => {
       </div>
 
       {/* Main Content Card */}
-      <div className="mt-6 bg-white shadow-md rounded-lg p-4 sm:p-6">
+      <div className="mt-6 bg-white shadow-md rounded-lg p-4 sm:p-6 mt-6">
         {/* Filters and Search */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
           <div>

@@ -5,7 +5,7 @@ import StockOrderForm from "./StockOrderForm";
 
 const StockOrder = () => {
   return (
-    <div className="p-4">
+    <div className="p-4 mt-5">
       <div className="flex flex-col sm:flex-row justify-between gap-2 mb-4 md:mb-0 ">
         <div>
           {" "}

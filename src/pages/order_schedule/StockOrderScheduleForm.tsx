@@ -36,7 +36,7 @@ const StockOrderScheduleForm = () => {
           initialValues={{
             customerName: "",
             shipDate: "",
-            partNumber: "",
+            productNumber: "",
           }}
           validationSchema={stockOrderShedule}
           onSubmit={handleSearchSubmit}
@@ -74,9 +74,9 @@ const StockOrderScheduleForm = () => {
                 </div>
 
                 <div>
-                  <label className="font-semibold">Part Number</label>
+                  <label className="font-semibold">Product Number1</label>
                   <Field
-                    name="partNumber"
+                    name="productNumber"
                     type="text"
                     placeholder="Enter Part Number"
                     className="border py-3 px-4 rounded-md w-full placeholder-gray-600"

@@ -119,7 +119,7 @@ const Employees = () => {
     setShowModal(true);
   };
   return (
-    <div className="p-4 md:p-7">
+    <div className="p-4 mt-5 md:p-7">
       <div>
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <div>
@@ -228,10 +228,6 @@ const Employees = () => {
                         className="w-3 h-3 md:w-4 md:h-4"
                       />
                     </div>
-                  </div>
-
-                  <div className="hidden sm:block">
-                    <img src={more} alt="" className="w-5 h-5" />
                   </div>
                 </div>
               </div>

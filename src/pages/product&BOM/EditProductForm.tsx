@@ -795,7 +795,6 @@ const EditProductForm = () => {
     }
 
     formData.append("parts", JSON.stringify(bomItems));
-    // ------------------------------------------
 
     try {
       const response = await updateProductNumber(formData, id);

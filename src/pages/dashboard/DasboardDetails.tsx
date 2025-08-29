@@ -76,7 +76,7 @@ const DasboardDetails = () => {
   // }, [navigate]);
   console.log("profileImgprofileImgprofileImg", profileData);
   return (
-    <div className="p-4">
+    <div className="p-4 mt-5">
       <h1 className="text-xl font-semibold mt-4">Welcome back, Admin👋</h1>
 
       <div className="py-4">

@@ -322,13 +322,13 @@ const EditCustomer = () => {
           {/* Buttons */}
           <div className="flex justify-end items-end">
             <div className="mt-6 flex gap-4">
-              <button
+              {/* <button
                 type="button"
                 onClick={handleDelete}
                 className="bg-red-500 text-white px-6 py-2 rounded-md"
               >
                 Delete
-              </button>
+              </button> */}
               <button
                 type="submit"
                 className="bg-brand text-white px-6 py-2 rounded-md"

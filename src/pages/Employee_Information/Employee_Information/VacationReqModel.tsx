@@ -33,7 +33,7 @@ const VacationReqModel = ({ employeeId, isOpen, onClose, status }: Props) => {
   };
   if (!isOpen) return null;
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex justify-center items-center min-h-screen mt-5">
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
         <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
           <div className="flex justify-between items-center mb-4">

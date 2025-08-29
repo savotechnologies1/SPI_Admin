@@ -9,6 +9,8 @@ import flag3 from "../assets/flag3.png";
 import NotificationList from "./NotificationList";
 import Account from "./Account";
 import { useSelector } from "react-redux";
+import { getProfile } from "../pages/settings/https/profileApi";
+import profile from "../assets/profile.png";
 
 const Navbar = () => {
   const [isLanguage, isLanguageOpen] = useState(false);
@@ -16,8 +18,9 @@ const Navbar = () => {
   const [isProfile, isProfileOpen] = useState(false);
   const languageRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
-  const profile = useSelector((state) => state.profile.data);
+  const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
+  const [profileDetail, setProfileDetail] = useState<Profile | null>(null);
   const handleClickOutside = (event: MouseEvent) => {
     if (
       languageRef.current &&
@@ -56,8 +59,20 @@ const Navbar = () => {
     };
   }, [isNotification]);
 
+  const getProfileApi = async () => {
+    try {
+      const response = await getProfile();
+      setProfileDetail(response.data);
+    } catch (error) {
+      console.error("Failed to fetch profile", error);
+    }
+  };
+
+  useEffect(() => {
+    getProfileApi();
+  }, []);
   return (
-    <div className="fixed top-0 right-0 w-full z-30 items-center ">
+    <div className="fixed top-0 right-0 w-full z-30 items-center  ">
       <div className="flex items-center justify-end  bg-white p-4 shadow   w-full ">
         <div className="flex items-center space-x-4  justify-between relative ">
           <div className="rounded-lg bg-[#E9ECF1] md:flex  p-2 hidden items-center gap-2">
@@ -97,26 +112,26 @@ const Navbar = () => {
             />
           </div>
           <div className="flex space-x-4">
-            {/* <img
+            <img
               src={
-                profile?.profileImg
-                  ? `http://localhost:8080/uploads/profileImg/${profile?.profileImg}`
-                  : profileImg
+                profileDetail?.profileImg
+                  ? `${BASE_URL}/uploads/profileImg/${profileDetail.profileImg}`
+                  : profile
               }
-              alt="profileImg"
+              alt="Profile"
               onClick={() => {
                 isProfileOpen(true);
               }}
-              className="rounded-full w-[40px] border-2 border-green-400 mb-2"
-            /> */}
-            <img
+              className="rounded-full w-[60px] border-2 border-green-400 mb-2 py-2 cursor-pointer"
+            />
+            {/* <img
               src={profileImg}
               alt="avatar"
               className="w-10"
               onClick={() => {
                 isProfileOpen(true);
               }}
-            />
+            /> */}
           </div>
         </div>
 
@@ -128,11 +143,9 @@ const Navbar = () => {
             <div className="flex flex-col i gap-2 bg-white py-2">
               <div className="flex gap-2 hover:bg-[#919EAB29] items-center cursor-pointer px-6">
                 <div>
-                  {" "}
                   <img src={flag1} alt="" />
                 </div>
                 <div>
-                  {" "}
                   <p>English</p>
                 </div>
               </div>
@@ -146,7 +159,6 @@ const Navbar = () => {
               </div>
               <div className="flex gap-2 hover:bg-[#919EAB29] items-center justi cursor-pointer px-6">
                 <div>
-                  {" "}
                   <img src={flag3} alt="" />
                 </div>
 
@@ -172,7 +184,10 @@ const Navbar = () => {
             <div className="fixed inset-0 bg-black opacity-30 z-10" />{" "}
             {/* Background overlay */}
             <div className="absolute right-0 top-0 z-20">
-              <Account onClose={() => isProfileOpen(false)} />
+              <Account
+                onClose={() => isProfileOpen(false)}
+                profileDetail={profileDetail}
+              />
             </div>
           </div>
         )}

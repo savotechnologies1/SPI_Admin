@@ -1,4 +1,3 @@
-
 import img from "../../../assets/arrow-right.png";
 import dp from "../../../assets/dp_1.png";
 import QuickPunch from "./QuickPunch";
@@ -6,7 +5,7 @@ import Timeline from "./TimeLine";
 const ClockInOut = () => {
   return (
     <>
-      <div className="bg-[#243C75] p-4 text-end pb-10">
+      <div className="bg-[#243C75] p-4 text-end pb-10 mt-7">
         <h1 className="text-2xl  text-white ">Thu May 03, 2025</h1>
         <p className="text-lg text-white">Today</p>
       </div>
@@ -41,15 +40,11 @@ const ClockInOut = () => {
           <div className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-4 sm:gap-x-4 ">
             <div className="col-span-2 sm:col-span-1">
               <p className="text-xs text-gray-500">Joined</p>
-              <p className="text-sm  font-semibold mt-1">
-                22 Feb 2024
-              </p>
+              <p className="text-sm  font-semibold mt-1">22 Feb 2024</p>
             </div>
             <div>
               <p className="text-xs text-gray-500">Contact No.</p>
-              <p className="text-sm  font-semibold mt-1">
-                7585263152
-              </p>
+              <p className="text-sm  font-semibold mt-1">7585263152</p>
             </div>
             <div className="col-span-2 sm:col-span-1">
               <p className="text-xs text-gray-500">Email</p>
@@ -59,9 +54,7 @@ const ClockInOut = () => {
             </div>
             <div className="col-span-2 sm:col-span-1">
               <p className="text-xs text-gray-500">Contact No.</p>
-              <p className="text-sm  font-semibold mt-1">
-                7585263152
-              </p>
+              <p className="text-sm  font-semibold mt-1">7585263152</p>
             </div>
           </div>
         </div>
@@ -80,4 +73,3 @@ const ClockInOut = () => {
 };
 
 export default ClockInOut;
-

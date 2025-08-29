@@ -128,7 +128,7 @@ const TimeClockList = () => {
 
   return (
     <>
-      <div className="p-4 md:p-7">
+      <div className="p-4  mt-5 md:p-7">
         <div>
           <div className="flex justify-between">
             <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-black">

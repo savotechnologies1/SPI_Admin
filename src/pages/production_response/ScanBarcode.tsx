@@ -11,7 +11,7 @@ const ScanBarcode = () => {
   const [barcode, setBarcode] = useState<string | null>(null);
 
   return (
-    <div className="p-4">
+    <div className="p-4 mt-5">
       <h2 className="text-lg font-semibold mb-2">📷 Scan Barcode</h2>
 
       <div className="w-full max-w-xl border border-gray-400 rounded bg-black">

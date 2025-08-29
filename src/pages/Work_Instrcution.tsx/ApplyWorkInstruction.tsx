@@ -83,7 +83,7 @@ const ApplyWorkInstruction = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6">
+    <div className="p-4 sm:p-6 mt-6">
       <h1 className="font-bold text-xl sm:text-2xl text-black mb-2">
         Apply Work Instruction
       </h1>

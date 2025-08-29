@@ -89,7 +89,7 @@ const EditSupplierOrder = () => {
     }
   };
   if (loading) {
-    return <div className="p-6">Loading order details...</div>;
+    return <div className="p-4 mt-5">Loading order details...</div>;
   }
 
   if (error) {
@@ -97,7 +97,7 @@ const EditSupplierOrder = () => {
   }
 
   if (!initialValues) {
-    return <div className="p-6">No order data found.</div>;
+    return <div className="p-4 mt-5">No order data found.</div>;
   }
 
   return (

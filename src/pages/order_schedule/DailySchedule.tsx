@@ -4,7 +4,7 @@ import DailyScheduleList from "./DailyScheduleList";
 
 const DailySchedule = () => {
   return (
-    <div className="p-4">
+    <div className="p-4 mt-5">
       <div>
         {" "}
         <h1 className="font-semibold text-[20px] md:text-[24px] text-black">

@@ -193,7 +193,7 @@ const WorkInstructionList: React.FC = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-gray-100 min-h-screen mt-5">
       <div className="flex justify-between">
         <h1 className="font-semibold text-[20px] md:text-[24px] text-black mb-2">
           List of Work Instruction

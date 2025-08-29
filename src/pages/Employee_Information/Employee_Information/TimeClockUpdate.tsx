@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 const TimeClockUpdate = () => {
   return (
-    <div className="p-7">
+    <div className="p-7  mt-5">
       <div>
         {" "}
         <h1 className="font-bold text-[20px] md:text-[24px] text-black">
@@ -14,7 +14,7 @@ const TimeClockUpdate = () => {
         <div className="flex gap-4 items-center ">
           <p
             className={`text-xs sm:text-[14px] text-black`}
-            onClick={() => ("dashboardDetailes")}
+            onClick={() => "dashboardDetailes"}
           >
             <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
           </p>
@@ -79,7 +79,7 @@ const TimeClockUpdate = () => {
         <div className="flex flex-col sm:flex-row gap-4 mt-2 mb-6 ">
           <div className=" w-full md:w-1/2 ">
             <label className="font-semibold" htmlFor="">
-            Exception In
+              Exception In
             </label>
             <input
               type="date"
@@ -89,7 +89,7 @@ const TimeClockUpdate = () => {
           </div>
           <div className=" w-full md:w-1/2 ">
             <label className="font-semibold" htmlFor="">
-            Exception End
+              Exception End
             </label>
             <input
               type="date"

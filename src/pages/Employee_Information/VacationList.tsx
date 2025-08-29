@@ -40,7 +40,7 @@ const VacationList = () => {
   };
 
   return (
-    <div className="p-4 md:p-7">
+    <div className="p-4 mt-5 md:p-7">
       <div>
         <div className="flex justify-between items-start">
           <div>

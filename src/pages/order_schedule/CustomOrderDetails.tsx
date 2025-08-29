@@ -1,4 +1,3 @@
-
 import { NavLink } from "react-router-dom";
 import { FaCircle } from "react-icons/fa";
 import { useForm } from "react-hook-form";
@@ -27,16 +26,13 @@ const CustomOrderDetails = () => {
   //   assignTo: "Cortez Herring",
   // });
 
-  const {
-    register,
-    handleSubmit,
-  } = useForm();
+  const { register, handleSubmit } = useForm();
 
   const onSubmit = (data: any) => {
     console.log("Form Data:", data);
   };
   return (
-    <div className="p-4">
+    <div className="p-4 mt-5">
       <div>
         {" "}
         <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
@@ -47,7 +43,7 @@ const CustomOrderDetails = () => {
         <div className="flex gap-2 items-center ">
           <p
             className={`text-[14px] text-black`}
-            onClick={() => ("dashboardDetailes")}
+            onClick={() => "dashboardDetailes"}
           >
             <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
           </p>
@@ -289,12 +285,10 @@ const CustomOrderDetails = () => {
                   </div>
                   <div className=" mt-6">
                     <p className="px-2 py-2 bg-brand text-white text-sm  hover:bg-[#1a2e57] transition ml-4 rounded-md ">
-                  Assigned Date
+                      Assigned Date
                     </p>
                   </div>
                 </div>
-
-          
               </div>
             </div>
 
