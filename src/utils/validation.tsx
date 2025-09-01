@@ -1,5 +1,4 @@
 import * as Yup from "yup";
-
 export const stockOrderValidation = Yup.object().shape({
   orderNumber: Yup.string().required("Order Number is required"),
   orderDate: Yup.date().required("Order Date is required"),
@@ -16,9 +15,8 @@ export const stockOrderValidation = Yup.object().shape({
   customerPhone: Yup.string()
     .matches(/^[0-9]+$/, "Phone number must be only digits")
     .min(7, "Phone number must be at least 7 digits")
-    .max(15, "Phone number must be at least 15 digits")
+    .max(15, "Phone number must be at most 15 digits")
     .required("Customer Phone is required"),
-  // productNumber: Yup.string().required("Product Number is required"),
   cost: Yup.number()
     .typeError("Cost must be a number")
     .positive("Cost must be positive")
@@ -30,7 +28,6 @@ export const stockOrderValidation = Yup.object().shape({
     .required("Quantity is required"),
   productDescription: Yup.string().required("Product Description is required"),
 });
-
 export const customOrderValidation = Yup.object().shape({
   orderDate: Yup.date().required("Order date is required"),
   shipDate: Yup.date()

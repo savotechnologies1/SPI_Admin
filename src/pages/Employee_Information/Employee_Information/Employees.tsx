@@ -255,7 +255,7 @@ const Employees = () => {
                       PIN
                     </th>
                     <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium hidden lg:table-cell">
-                      Shop Floor Login
+                      Process Login
                     </th>
                     <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
                       Status
@@ -305,7 +305,7 @@ const Employees = () => {
                           {item.pin}
                         </td>
                         <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
-                          {item.shopFloorLogin === true ? "yes" : "no"}
+                          {item.processLogin === true ? "yes" : "no"}
                         </td>
                         <td className="px-2 py-3 md:px-3 md:py-4">
                           <span

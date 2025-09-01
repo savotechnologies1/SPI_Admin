@@ -220,6 +220,7 @@ const StockOrderScheduleList: React.FC = () => {
                 <th className="px-4 py-3">Delivery Date</th>
                 <th className="px-4 py-3">Completed Date</th>
                 <th className="px-4 py-3">Completed By</th>
+                <th className="px-4 py-3">Employee Name</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Actions</th>
               </tr>
@@ -260,6 +261,9 @@ const StockOrderScheduleList: React.FC = () => {
                     {item.completed_by === null
                       ? "Not Available"
                       : item.completed_by}
+                  </td>
+                  <td className="px-4 py-3">
+                    {item?.employee?.firstName} {item?.employee?.lastName}
                   </td>
                   <td className="px-4 py-3">
                     <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">

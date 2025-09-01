@@ -7,6 +7,7 @@ import {
   scheduleCustomOrder,
   scheduleStockOrder,
 } from "./https/schedulingApis";
+import { useNavigate } from "react-router-dom";
 
 type Item = {
   id: number;
@@ -670,6 +671,7 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
   const [availableItems, setAvailableItems] = useState<ItemForUI[]>([]);
   const [selectedItems, setSelectedItems] = useState<ItemForUI[]>([]);
   let processName;
+  const navigate = useNavigate();
   useEffect(() => {
     if (!items) return;
 
@@ -768,11 +770,79 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
   //   }
   // };
   // `scheduleAllData` mein koi badlav ki zaroorat nahi hai, yeh pehle se hi sahi hai
+  // const scheduleAllData = async () => {
+  //   if (selectedItems.length === 0) {
+  //     toast.warn("There are no items selected to schedule.");
+  //     return;
+  //   }
+  //   try {
+  //     const payloads = selectedItems.flatMap((item) => {
+  //       const parentProduct = item.originalData.productFamily?.find(
+  //         (p) => p.isParent
+  //       );
+  //       if (!parentProduct) return [];
+
+  //       return item.originalData.productFamily.map((partInFamily) => ({
+  //         order_id: item.originalData.id,
+  //         orderDate: item.originalData.orderDate,
+  //         delivery_date: item.originalData.shipDate,
+  //         submitted_date: new Date(),
+  //         customersId: item.originalData.customer.id,
+  //         status: "new",
+  //         quantity: item.originalData.productQuantity,
+  //         product_id: parentProduct.part_id,
+  //         part_id: partInFamily.part_id,
+  //         type: partInFamily.type,
+  //       }));
+  //     });
+  //     console.log("Payload for CUSTOM orders:", payloads);
+  //     await scheduleCustomOrder(payloads);
+  //   } catch (error) {
+  //     console.error("Failed to schedule custom items:", error);
+  //     toast.error("An error occurred while scheduling. Please try again.");
+  //   }
+  // };
+
   const scheduleAllData = async () => {
     if (selectedItems.length === 0) {
       toast.warn("There are no items selected to schedule.");
       return;
     }
+
+    // ✅ Step 1: Check for components with invalid minStock
+    const invalidMinStockItems = selectedItems.filter((item) =>
+      item.originalData.productFamily?.some(
+        (part) =>
+          part.type === "product" &&
+          (part.minStock === 0 || part.minStock === undefined)
+      )
+    );
+
+    if (invalidMinStockItems.length > 0) {
+      toast.error(
+        "Some components have minimum quantity set to 0. Please set it to at least 1 before scheduling."
+      );
+      return;
+    }
+
+    // ✅ Step 2: Check for any item that would result in totalQty = 0
+    const itemsWithZeroQty = selectedItems.filter((item) =>
+      item.originalData.productFamily?.some((part) => {
+        const isProduct = part.type === "product";
+        const multiplier = isProduct ? part.quantityRequired : part.minStock;
+        const totalQty = item.originalData.productQuantity * (multiplier || 0);
+        return totalQty === 0;
+      })
+    );
+
+    if (itemsWithZeroQty.length > 0) {
+      toast.error(
+        "One or more items have total quantity 0. Please fix the quantities before scheduling."
+      );
+      return;
+    }
+
+    // ✅ Step 3: Proceed to schedule
     try {
       const payloads = selectedItems.flatMap((item) => {
         const parentProduct = item.originalData.productFamily?.find(
@@ -793,8 +863,12 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
           type: partInFamily.type,
         }));
       });
+
       console.log("Payload for CUSTOM orders:", payloads);
-      await scheduleCustomOrder(payloads);
+      const response = await scheduleCustomOrder(payloads);
+      if (response.status === 201) {
+        navigate("/stock-order-schedule-list");
+      }
     } catch (error) {
       console.error("Failed to schedule custom items:", error);
       toast.error("An error occurred while scheduling. Please try again.");

@@ -204,9 +204,9 @@ const TimeClockList = () => {
                     <th className="px-2 py-2 text-left text-gray-400 text-xs md:text-sm font-medium hidden md:table-cell">
                       Vacation Date
                     </th>
-                    <th className="px-2 py-2 text-left text-gray-400 text-xs md:text-sm font-medium hidden lg:table-cell">
+                    {/* <th className="px-2 py-2 text-left text-gray-400 text-xs md:text-sm font-medium hidden lg:table-cell">
                       Vacation Hours
-                    </th>
+                    </th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -246,11 +246,11 @@ const TimeClockList = () => {
                           {item.hours}
                         </td>
                         <td className="px-2 py-3 text-xs md:text-sm font-medium hidden md:table-cell">
-                          {item.vacationDate}
+                          {item.createDate}
                         </td>
-                        <td className="px-2 py-3 text-xs md:text-sm font-medium hidden lg:table-cell">
+                        {/* <td className="px-2 py-3 text-xs md:text-sm font-medium hidden lg:table-cell">
                           {item.vacationHours || "N/A"}
-                        </td>
+                        </td> */}
                       </tr>
                     ))
                   )}

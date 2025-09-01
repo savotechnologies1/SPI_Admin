@@ -7,6 +7,7 @@ import { addSupplierOrder, selectSupplier } from "./https/suppliersApi";
 import { selectProductApi } from "../Work_Instrcution.tsx/https/workInstructionApi";
 import Select from "react-select";
 import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router-dom";
 
 const validationSchema = Yup.object({
   order_date: Yup.date().required("Order Date is required"),
@@ -83,6 +84,7 @@ const SupplierOrdersForm = () => {
     lastName: "",
     email: "",
   };
+  const navigate = useNavigate();
 
   const handleSubmit = async (values, { resetForm }) => {
     console.log("handleSubmit called!");
@@ -101,8 +103,10 @@ const SupplierOrdersForm = () => {
     }
     try {
       console.log("Submitting Payload to API:", finalPayload);
-      await addSupplierOrder(finalPayload);
-      alert("Order submitted successfully!");
+      const response = await addSupplierOrder(finalPayload);
+      if (response.status === 201) {
+        navigate("/supplier-order-list");
+      }
       const newOrderNum = Math.floor(10000 + Math.random() * 90000).toString();
       setOrderNumber(newOrderNum);
       resetForm({ values: { ...initialValues, order_number: newOrderNum } });

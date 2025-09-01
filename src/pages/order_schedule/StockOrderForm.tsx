@@ -589,7 +589,6 @@ interface ProductNumberInterface {
   cost: number;
   productDescription: string;
 }
-// --- END MOCK DATA ---
 
 const StockOrderForm = () => {
   const [customerList, setCustomerList] = useState<CustomerInterface[]>([]);
@@ -600,14 +599,11 @@ const StockOrderForm = () => {
     ProductNumberInterface[]
   >([]);
   const [singleUnitCost, setSingleUnitCost] = useState<number | null>(null);
-
   const navigate = useNavigate();
-
   useEffect(() => {
     getCustomer();
     getProductNumber();
   }, []);
-
   const getCustomer = async () => {
     try {
       const response: CustomerInterface[] = await selectCustomer();
@@ -617,14 +613,12 @@ const StockOrderForm = () => {
       setCustomerList([]);
     }
   };
-
   const getProductNumber = async () => {
     try {
       const response: ProductNumberInterface[] = await selectProductNumber();
       setProductNumberList(response || []);
     } catch (error) {
       console.error("Error fetching product number:", error);
-      // toast.error("Failed to fetch product number. Please try again.");
     }
   };
 
@@ -675,9 +669,6 @@ const StockOrderForm = () => {
             setSelectedCustomerId(null);
             setSingleUnitCost(null);
           } catch (error) {
-            console.error("Submission error:", error);
-            // In a real app, you would set a form-level error here
-            // setStatus({ error: 'Failed to create order.' });
           } finally {
             setSubmitting(false);
           }
@@ -696,26 +687,22 @@ const StockOrderForm = () => {
           ) => {
             const value = e.target.value;
             if (value === "new") {
-              // When creating a new customer, generate a temporary ID.
-              // The backend will know this ID doesn't exist and will create a new customer.
               const newCustomerId = crypto.randomUUID();
               setFieldValue("customerId", newCustomerId);
-              setSelectedCustomerId(null); // This unlocks the input fields
+              setSelectedCustomerId(null);
               setFieldValue("customerName", "");
               setFieldValue("customerEmail", "");
               setFieldValue("customerPhone", "");
             } else if (value) {
-              // Existing customer selected
               const selectedCustomer = customerList.find((c) => c.id === value);
               if (selectedCustomer) {
                 setFieldValue("customerId", selectedCustomer.id);
-                setSelectedCustomerId(selectedCustomer.id); // This locks the input fields
+                setSelectedCustomerId(selectedCustomer.id);
                 setFieldValue("customerName", selectedCustomer.name);
                 setFieldValue("customerEmail", selectedCustomer.email);
                 setFieldValue("customerPhone", selectedCustomer.customerPhone);
               }
             } else {
-              // "Select a customer" is chosen
               setFieldValue("customerId", "");
               setSelectedCustomerId(null);
               setFieldValue("customerName", "");
@@ -736,7 +723,7 @@ const StockOrderForm = () => {
               );
               if (selectedProduct) {
                 const unitCost = selectedProduct.cost;
-                const quantity = 1; // Default quantity
+                const quantity = 1;
                 setSingleUnitCost(unitCost);
                 setFieldValue("productNumber", selectedProduct.partNumber);
                 setFieldValue("cost", unitCost.toFixed(2));
@@ -748,7 +735,6 @@ const StockOrderForm = () => {
                 setFieldValue("totalCost", (unitCost * quantity).toFixed(2));
               }
             } else {
-              // Clear fields if product is deselected
               setSingleUnitCost(null);
               setFieldValue("productId", "");
               setFieldValue("productNumber", "");
@@ -777,7 +763,6 @@ const StockOrderForm = () => {
 
           return (
             <Form>
-              {/* Channel & Platform */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-6 ">
                 <div>
                   <label className="font-semibold">Order Number</label>
@@ -815,7 +800,6 @@ const StockOrderForm = () => {
                 </div>
               </div>
 
-              {/* Customer Details */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 bg-white px-6 ">
                 <div className="flex flex-col ">
                   <label className="font-semibold">Select Customer</label>
@@ -913,7 +897,6 @@ const StockOrderForm = () => {
                 </div>
               </div>
 
-              {/* Product Details */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 bg-white px-6 ">
                 <div className="md:col-span-1">
                   <label className="font-semibold">Product Number</label>
