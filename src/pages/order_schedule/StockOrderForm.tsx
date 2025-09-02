@@ -12,7 +12,7 @@ import {
 } from "../../utils/Interfaces";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import { v4 as uuidv4 } from "uuid";
 // const generateNewOrderNumber = () => Date.now().toString();
 
 // const StockOrderForm = () => {
@@ -687,7 +687,8 @@ const StockOrderForm = () => {
           ) => {
             const value = e.target.value;
             if (value === "new") {
-              const newCustomerId = crypto.randomUUID();
+              const newCustomerId = uuidv4();
+              // const newCustomerId = crypto.randomUUID();
               setFieldValue("customerId", newCustomerId);
               setSelectedCustomerId(null);
               setFieldValue("customerName", "");

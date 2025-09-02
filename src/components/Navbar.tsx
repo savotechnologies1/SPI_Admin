@@ -340,7 +340,7 @@ const Navbar = () => {
               onClick={() => {
                 isProfileOpen(true);
               }}
-              className="rounded-full w-[60px] border-2 border-green-400 mb-2 py-2 cursor-pointer"
+              className="w-[60px] h-[60px] rounded-full border-2 border-green-400 cursor-pointer object-cover shadow-md hover:scale-105 transition-transform duration-200"
             />
           </div>
         </div>

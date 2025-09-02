@@ -91,7 +91,7 @@ const Employees = () => {
   );
   const categorys = [
     { tab: "All", text: statusCounts["all"] || 0 },
-    { tab: "Active", text: statusCounts["active"] || 0 },
+    { tab: "Active", text: stagit atusCounts["active"] || 0 },
     { tab: "Pending", text: statusCounts["pending"] || 0 },
     { tab: "Banned", text: statusCounts["banned"] || 0 },
     { tab: "Rejected", text: statusCounts["rejected"] || 0 },
