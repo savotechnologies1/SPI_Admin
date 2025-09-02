@@ -285,7 +285,7 @@ const Navbar = () => {
     <div className="fixed top-0 right-0 w-full z-30 items-center">
       <div className="flex items-center justify-end bg-white p-4 shadow w-full">
         <div className="flex items-center space-x-4 justify-between relative">
-          <div className="rounded-lg bg-[#E9ECF1] md:flex p-2 hidden items-center gap-2">
+          {/* <div className="rounded-lg bg-[#E9ECF1] md:flex p-2 hidden items-center gap-2">
             <div className="">
               <img src={search} alt="" />
             </div>
@@ -310,7 +310,7 @@ const Navbar = () => {
                 isLanguageOpen(true);
               }}
             />
-          </div>
+          </div> */}
           <div className="flex space-x-4 relative">
             {" "}
             {/* Added relative for positioning the badge */}
