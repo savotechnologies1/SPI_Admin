@@ -395,7 +395,7 @@ const ProductNumber = () => {
             <p className="text-red-500 text-xs">{errors.availStock.message}</p>
           )}
         </label>
-        <label className="col-span-4 md:col-span-1">
+        {/* <label className="col-span-4 md:col-span-1">
           Cycle Time
           <input
             type="number"
@@ -403,8 +403,53 @@ const ProductNumber = () => {
             placeholder="Cycle Time"
             className="border p-2 rounded w-full"
           />
-        </label>
-
+        </label> */}
+        <div className="col-span-4 md:col-span-1">
+          <label className="font-semibold">Cycle Time</label>
+          <div className="flex gap-2">
+            <input
+              {...register("cycleTimeValue", {
+                required: "Cycle time is required",
+                pattern: {
+                  value: /^[1-9]\d*$/,
+                  message: "Only positive integers are allowed",
+                },
+                validate: (value) =>
+                  value.trim() !== "" || "Cycle time is required",
+              })}
+              type="text" // 'number' से 'text' में बदला
+              inputMode="numeric"
+              placeholder="Enter time"
+              onKeyDown={(e) => {
+                if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }}
+              // ध्यान दें: handleNumericInput फंक्शन को आपको PartForm में भी परिभाषित करना होगा।
+              // onInput={(e: ChangeEvent<HTMLInputElement>) => handleNumericInput(e, "cycleTimeValue")}
+              className="border p-2 rounded w-full" // py-4 px-4 से p-2 में बदला ताकि अन्य इनपुट्स से मेल खाए
+            />
+            <select
+              {...register("cycleTimeUnit", {
+                required: "Unit is required",
+              })}
+              className="border p-2 rounded w-1/3" // py-4 px-2 से p-2 में बदला
+              defaultValue=""
+            >
+              <option value="" disabled>
+                Unit
+              </option>
+              <option value="sec">Sec</option>
+              <option value="min">Min</option>
+              <option value="hr">Hr</option>
+            </select>
+          </div>
+          {(errors.cycleTimeValue || errors.cycleTimeUnit) && (
+            <p className="text-red-500 text-sm">
+              {errors.cycleTimeValue?.message || errors.cycleTimeUnit?.message}
+            </p>
+          )}
+        </div>
         <div className="col-span-4 md:col-span-1">
           <label>Process Order Required</label>
           <select

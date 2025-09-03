@@ -519,7 +519,8 @@ interface PartItem {
   partNumber: string;
   partFamily: string;
   cost: number;
-  cycleTime: number;
+  cycleTimeValue: number | string;
+  cycleTimeUnit: "sec" | "min" | "hr" | "";
 }
 
 const PartForm = () => {
@@ -540,7 +541,6 @@ const PartForm = () => {
 
   const context = useContext(PartContext);
   const navigate = useNavigate();
-
   const [processData, setProcessData] = useState<ProcessItem[]>([]);
   const [partData, setPartData] = useState<PartItem[]>([]);
   const [totalPages, setTotalPages] = useState(1);
@@ -593,7 +593,22 @@ const PartForm = () => {
     };
     fetchProcessDetail();
   }, [processId, setValue]);
-
+  // PartForm कॉम्पोनेंट के अंदर, useForm हुक के बाद
+  const handleNumericInput = (
+    e: ChangeEvent<HTMLInputElement>,
+    fieldName: "cycleTimeValue" // | "ratePerHour" अगर आप इसे जोड़ते हैं
+  ) => {
+    const value = e.target.value;
+    // Allow empty string or numbers starting from 1
+    if (!/^(?:[1-9]\d*)?$/.test(value) && value !== "") {
+      setError(fieldName, {
+        type: "manual",
+        message: "Only positive integers are allowed",
+      });
+    } else {
+      clearErrors(fieldName);
+    }
+  };
   const onSubmit = async (data: FormDataType) => {
     try {
       const formData = new FormData();
@@ -606,7 +621,10 @@ const PartForm = () => {
       formData.append("companyName", data.companyName);
       formData.append("minStock", data.minStock.toString());
       formData.append("availStock", data.availStock.toString());
-      formData.append("cycleTime", data.cycleTime.toString());
+      formData.append(
+        "cycleTime",
+        `${data.cycleTimeValue} ${data.cycleTimeUnit}`
+      );
       formData.append("processOrderRequired", data.processOrderRequired);
       formData.append("instructionRequired", data.instructionRequired);
       formData.append("processId", data.processId);
@@ -819,7 +837,7 @@ const PartForm = () => {
               </p>
             )}
           </div>
-          <div className="col-span-4 md:col-span-1">
+          {/* <div className="col-span-4 md:col-span-1">
             <label>Cycle Time</label>
             <input
               type="number"
@@ -827,6 +845,54 @@ const PartForm = () => {
               placeholder="Cycle Time"
               className="border p-2 rounded w-full"
             />
+          </div> */}
+
+          <div className="col-span-4 md:col-span-1">
+            <label className="font-semibold">Cycle Time</label>
+            <div className="flex gap-2">
+              <input
+                {...register("cycleTimeValue", {
+                  required: "Cycle time is required",
+                  pattern: {
+                    value: /^[1-9]\d*$/,
+                    message: "Only positive integers are allowed",
+                  },
+                  validate: (value) =>
+                    value.trim() !== "" || "Cycle time is required",
+                })}
+                type="text" // 'number' से 'text' में बदला
+                inputMode="numeric"
+                placeholder="Enter time"
+                onKeyDown={(e) => {
+                  if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
+                // ध्यान दें: handleNumericInput फंक्शन को आपको PartForm में भी परिभाषित करना होगा।
+                // onInput={(e: ChangeEvent<HTMLInputElement>) => handleNumericInput(e, "cycleTimeValue")}
+                className="border p-2 rounded w-full" // py-4 px-4 से p-2 में बदला ताकि अन्य इनपुट्स से मेल खाए
+              />
+              <select
+                {...register("cycleTimeUnit", {
+                  required: "Unit is required",
+                })}
+                className="border p-2 rounded w-1/3" // py-4 px-2 से p-2 में बदला
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  Unit
+                </option>
+                <option value="sec">Sec</option>
+                <option value="min">Min</option>
+                <option value="hr">Hr</option>
+              </select>
+            </div>
+            {(errors.cycleTimeValue || errors.cycleTimeUnit) && (
+              <p className="text-red-500 text-sm">
+                {errors.cycleTimeValue?.message ||
+                  errors.cycleTimeUnit?.message}
+              </p>
+            )}
           </div>
           <div className="col-span-4 md:col-span-1">
             <label>Process Order Required</label>

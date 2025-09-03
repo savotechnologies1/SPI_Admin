@@ -97,13 +97,13 @@ const CurrentQuality = () => {
             ))}
           </div>
         </div>
-
+        {/* 
         <div className="mt-6">
           <CustomerReturn />
         </div>
         <div className="mt-6">
           <SupplierReturn />
-        </div>
+        </div> */}
         <div className="mt-6 bg-white rounded-md shadow-sm">
           <ScrapBar />
         </div>

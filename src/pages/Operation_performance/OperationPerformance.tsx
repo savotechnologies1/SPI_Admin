@@ -1,39 +1,39 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { FaCircle } from "react-icons/fa";
 import Machine from "./Machine";
 import HourByHour from "./HourByHour";
 import Dive from "./Dive";
 import Monitor from "./Monitor";
 
-const tabs = ["Machine", "Hour by Hour", "Monitor", "Dive"];
+const tabs = ["Hour by Hour", "Monitor", "Dive"];
 
 const OperationPerformance = () => {
-  const [activeTab, setActiveTab] = useState("Machine");
+  const [activeTab, setActiveTab] = useState("Hour by Hour");
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case "Machine":
-        return (
-          <p>
-           <Machine/>
-          </p>
-        );
+      // case "Machine":
+      //   return (
+      //     <p>
+      //      <Machine/>
+      //     </p>
+      //   );
       case "Hour by Hour":
         return (
           <p>
-          <HourByHour/>
+            <HourByHour />
           </p>
         );
       case "Monitor":
         return (
           <p>
-       <Monitor/>
+            <Monitor />
           </p>
         );
       case "Dive":
         return (
           <p>
-            <Dive/>
+            <Dive />
           </p>
         );
       default:
@@ -88,9 +88,7 @@ const OperationPerformance = () => {
             ))}
           </div>
 
-          <div className="mt-6 text-gray-700 ">
-            {renderTabContent()}
-          </div>
+          <div className="mt-6 text-gray-700 ">{renderTabContent()}</div>
         </div>
       </div>
     </div>

@@ -7,10 +7,10 @@ import scrap_3 from "../../assets/scrap_3.png";
 import scrap_cost from "../../assets/scrap_cost.png";
 import customer_return from "../../assets/customer_return.png";
 import supplier_return from "../../assets/supplier_return.png";
-import Thermoforming from '../productionLive/Thermoforming';
-import CutTrim from '../productionLive/Cut$Trim';
-import Sanding from '../productionLive/Sanding';
-import Inspection from '../productionLive/Inspection';
+import Thermoforming from "../productionLive/Thermoforming";
+import CutTrim from "../productionLive/Cut$Trim";
+import Sanding from "../productionLive/Sanding";
+import Inspection from "../productionLive/Inspection";
 const data_1 = [
   {
     num: "$5,00,000",
@@ -46,44 +46,42 @@ const data_1 = [
 const HourByHour = () => {
   return (
     <div>
-       <div className="flex flex-col md:flex-row  mt-2 gap-4  ">
-            {data_1.map((item) => (
-              <div className="flex flex-col justify-between  bg-white  rounded-md w-full p-2 gap-2 border bg-gradient-to-l from-[#FFF7ED]">
-                {" "}
-                <div className="flex items-center gap-2">
-                  <div>
-                    <img className="w-[40px]" src={item.scrap_img} alt="" />
-                  </div>
-                  <div className="">
-                    {" "}
-                    <p className="text-sm text-gray-600">{item.text}</p>
-                    <p className="font-bold text-xl">{item.num}</p>
-                  </div>
-                </div>
-                <div>
-                  <img src={item.scrap} alt="" />
-                </div>
-                <div className="text-sm text-gray-600">
-                  Increase by{" "}
-                  <span
-                    className={`font-semibold rounded-md text-xs  ${item.textColor} ${item.bgColor}`}
-                  >
-                    {" "}
-                    {item.increase}
-                  </span>{" "}
-                  this week
-                </div>
+      <div className="flex flex-col md:flex-row  mt-2 gap-4  ">
+        {data_1.map((item) => (
+          <div className="flex flex-col justify-between  bg-white  rounded-md w-full p-2 gap-2 border bg-gradient-to-l from-[#FFF7ED]">
+            {" "}
+            <div className="flex items-center gap-2">
+              <div>
+                <img className="w-[40px]" src={item.scrap_img} alt="" />
               </div>
-            ))}
+              <div className="">
+                {" "}
+                <p className="text-sm text-gray-600">{item.text}</p>
+                <p className="font-bold text-xl">{item.num}</p>
+              </div>
+            </div>
+            <div>
+              <img src={item.scrap} alt="" />
+            </div>
+            <div className="text-sm text-gray-600">
+              Increase by{" "}
+              <span
+                className={`font-semibold rounded-md text-xs  ${item.textColor} ${item.bgColor}`}
+              >
+                {" "}
+                {item.increase}
+              </span>{" "}
+              this week
+            </div>
           </div>
+        ))}
+      </div>
 
-          <div className="grid gird-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mt-6">
+      <div className="grid gird-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mt-6">
         <div className="bg-white">
           <Thermoforming />
         </div>
-        <div className="bg-white">
-          <CutTrim />
-        </div>
+        <div className="bg-white">{/* <CutTrim /> */}</div>
         <div className="bg-white">
           <Sanding />
         </div>
@@ -92,7 +90,7 @@ const HourByHour = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default HourByHour
+export default HourByHour;

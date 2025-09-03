@@ -58,7 +58,10 @@ const EditPartForm = () => {
     formData.append("companyName", data.companyName);
     formData.append("minStock", data.minStock);
     formData.append("availStock", data.availStock);
-    formData.append("cycleTime", data.cycleTime);
+    formData.append(
+      "cycleTime",
+      `${data.cycleTimeValue} ${data.cycleTimeUnit}`
+    );
     formData.append("processOrderRequired", data.processOrderRequired);
     formData.append("processId", data.processId);
     formData.append("processDesc", data.processDesc);
@@ -101,8 +104,27 @@ const EditPartForm = () => {
       const response = await getPartNumberDetail(id);
       const data = response.data;
 
+      // ✅ cycleTime को अलग करें
+      let cycleTimeValue = "";
+      let cycleTimeUnit = "";
+      if (data.cycleTime && typeof data.cycleTime === "string") {
+        const parts = data.cycleTime.split(" ");
+        if (parts.length === 2) {
+          cycleTimeValue = parts[0];
+          cycleTimeUnit = parts[1];
+        } else {
+          // अगर सिर्फ नंबर आता है या यूनिट नहीं है, तो सिर्फ वैल्यू सेट करें
+          cycleTimeValue = data.cycleTime;
+          cycleTimeUnit = ""; // या कोई डिफॉल्ट यूनिट
+        }
+      }
+
       reset({
         ...data,
+        // ✅ cycleTime को हटाकर cycleTimeValue और cycleTimeUnit जोड़ें
+        cycleTime: undefined, // मूल cycleTime फ़ील्ड को हटा दें
+        cycleTimeValue: cycleTimeValue,
+        cycleTimeUnit: cycleTimeUnit,
         processOrderRequired: data.processOrderRequired ? "true" : "false",
       });
 
@@ -112,6 +134,21 @@ const EditPartForm = () => {
     }
   };
 
+  const handleNumericInput = (
+    e: React.ChangeEvent<HTMLInputElement>, // `React.ChangeEvent` का उपयोग करें
+    fieldName: "cycleTimeValue" // यदि कोई अन्य numeric फ़ील्ड है तो उसे भी जोड़ें
+  ) => {
+    const value = e.target.value;
+    // Allow empty string or numbers starting from 1
+    if (!/^(?:[1-9]\d*)?$/.test(value) && value !== "") {
+      setError(fieldName, {
+        type: "manual",
+        message: "Only positive integers are allowed",
+      });
+    } else {
+      clearErrors(fieldName);
+    }
+  };
   const handleDeleteImg = async (imageId) => {
     try {
       await deleteProductImage(imageId);
@@ -349,13 +386,52 @@ const EditPartForm = () => {
 
           {/* Cycle Time */}
           <div className="col-span-4 md:col-span-1">
-            <label>Cycle Time</label>
-            <input
-              type="number"
-              {...register("cycleTime")}
-              placeholder="Cycle Time"
-              className="border p-2 rounded w-full"
-            />
+            <label className="font-semibold">Cycle Time</label>
+            <div className="flex gap-2">
+              <input
+                {...register("cycleTimeValue", {
+                  required: "Cycle time is required",
+                  pattern: {
+                    value: /^[1-9]\d*$/, // केवल positive integers
+                    message: "Only positive integers are allowed",
+                  },
+                  validate: (value) =>
+                    value.trim() !== "" || "Cycle time is required",
+                })}
+                type="text" // 'number' से 'text' में बदला ताकि onInput हैंडलर काम कर सके
+                inputMode="numeric"
+                placeholder="Enter time"
+                onKeyDown={(e) => {
+                  if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleNumericInput(e, "cycleTimeValue")
+                }
+                className="border p-2 rounded w-full"
+              />
+              <select
+                {...register("cycleTimeUnit", {
+                  required: "Unit is required",
+                })}
+                className="border p-2 rounded w-1/3"
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  Unit
+                </option>
+                <option value="sec">Sec</option>
+                <option value="min">Min</option>
+                <option value="hr">Hr</option>
+              </select>
+            </div>
+            {(errors.cycleTimeValue || errors.cycleTimeUnit) && (
+              <p className="text-red-500 text-sm">
+                {errors.cycleTimeValue?.message ||
+                  errors.cycleTimeUnit?.message}
+              </p>
+            )}
           </div>
 
           {/* Process Order Required */}
