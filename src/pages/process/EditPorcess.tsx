@@ -619,7 +619,7 @@ const EditProcess = () => {
     const fetchProcessData = async () => {
       if (id) {
         try {
-          const response = await getProcessById(id); // Fetch data based on ID
+          const response = await processDetail(id); // Fetch data based on ID
           if (response && response.status === 200) {
             const processData = response.data.data;
             // Split cycleTime into value and unit
@@ -663,7 +663,7 @@ const EditProcess = () => {
         isProcessReq: data.isProcessReq === "true",
       };
 
-      const response = await updateProcess(id, apiPayload); // Call update API
+      const response = await editProcess(id, apiPayload); // Call update API
       if (response && response.status === 200) {
         navigate("/process-list");
       }
