@@ -117,17 +117,17 @@ const Monitor = () => {
     { title: "Manual", columns: columnsManual, data: sampleData },
     // { title: "Machine", columns: columnsManual, data: sampleData },
     { title: "Part to Monitor", columns: columnsManual1, data: sampleData1 },
-    { title: "Part to Monitor", columns: columnsManual2, data: sampleData2 },
+    // { title: "Part to Monitor", columns: columnsManual2, data: sampleData2 },git
     // {
     //   title: "Manual Scrap & Machine Scrap by Process",
     //   columns: columnsManual1,
     //   data: sampleData1,
     // },
-    {
-      title: "Cycle Time By Process",
-      columns: columnsManual2,
-      data: sampleData2,
-    },
+    // {
+    //   title: "Cycle Time By Process",
+    //   columns: columnsManual2,
+    //   data: sampleData2,
+    // },
   ];
 
   return (
