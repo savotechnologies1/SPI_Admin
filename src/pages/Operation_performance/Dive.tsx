@@ -1,10 +1,17 @@
-import  { useState } from "react";
+import { useState } from "react";
 
 import img1 from "../../assets/green.png";
 import img2 from "../../assets/yellow.png";
 import shape_1 from "../../assets/shape_1.png";
 import shape_2 from "../../assets/shape_2.png";
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import OrderStatus from "../productionLive/OrderStatus";
 const data_1 = [
   {
@@ -19,7 +26,6 @@ const data_1 = [
     img: img2,
     shape: shape_2,
   },
-  
 ];
 
 const data_2 = [
@@ -79,14 +85,14 @@ const cycleData = [{ name: "Cut Trim", avgCycle: 20 }];
 ``;
 
 const Dive = () => {
-   const [selected, setSelected] = useState("Cut Trim");
-    const handleSelect = (station: string) => {
-      setSelected(station);
-    };
-   const [selected1, setSelected1] = useState("Jane Cooper");
-    const handleSelect1 = (name: string) => {
-      setSelected1(name);
-    };
+  const [selected, setSelected] = useState("Cut Trim");
+  const handleSelect = (station: string) => {
+    setSelected(station);
+  };
+  const [selected1, setSelected1] = useState("Jane Cooper");
+  const handleSelect1 = (name: string) => {
+    setSelected1(name);
+  };
   return (
     <div>
       <div className="flex flex-col md:flex-row  mt-2 gap-4  ">
@@ -189,54 +195,53 @@ const Dive = () => {
         </div>
       </div>
 
+      <div className="flex flex-col md:flex-row gap-8 mt-6">
+        {/* Table */}
+        <div className="bg-white rounded-lg shadow-md p-4 md:w-[65%] overflow-x-auto">
+          <h2 className="text-lg font-semibold mb-4">Parts Completed</h2>
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gray-100 text-gray-600 text-sm whitespace-nowrap">
+                <th className="py-2 px-4 text-left">Process Name</th>
+                <th className="py-2 px-4 text-left">Part Desc</th>
+              </tr>
+            </thead>
+            <tbody>
+              {partsData.map((item, index) => (
+                <tr key={index} className="border-b">
+                  <td className="py-2 px-4 whitespace-nowrap">
+                    {item.process}
+                  </td>
+                  <td className="py-2 px-4 whitespace-nowrap">{item.desc}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-        <div className="flex flex-col md:flex-row gap-8 mt-6">
-              {/* Table */}
-              <div className="bg-white rounded-lg shadow-md p-4 md:w-[65%] overflow-x-auto">
-                <h2 className="text-lg font-semibold mb-4">Parts Completed</h2>
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-gray-100 text-gray-600 text-sm whitespace-nowrap">
-                      <th className="py-2 px-4 text-left">Process Name</th>
-                      <th className="py-2 px-4 text-left">Part Desc</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {partsData.map((item, index) => (
-                      <tr key={index} className="border-b">
-                        <td className="py-2 px-4 whitespace-nowrap">{item.process}</td>
-                        <td className="py-2 px-4 whitespace-nowrap">{item.desc}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-      
-              {/* Bar Chart */}
-              <div className="bg-white rounded-lg shadow-md p-4 md:w-[35%]">
-                <h2 className="text-lg font-semibold mb-4">Avg Cycle Time</h2>
-                <ResponsiveContainer width="100%" height={280}>
-                  <BarChart data={cycleData}>
-                    <XAxis
-                      dataKey="name"
-                      label={{ value: "Process", position: "bottom" }}
-                    />
-                    <YAxis
-                      label={{
-                        value: "Avg Cycle Time",
-                        angle: -90,
-                        position: "insideLeft",
-                      }}
-                    />
-                    <Tooltip />
-                    <Bar dataKey="avgCycle" fill="#4664C2" barSize={60} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div className="mt-6">
-        <OrderStatus />
+        {/* Bar Chart */}
+        <div className="bg-white rounded-lg shadow-md p-4 md:w-[35%]">
+          <h2 className="text-lg font-semibold mb-4">Avg Cycle Time</h2>
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={cycleData}>
+              <XAxis
+                dataKey="name"
+                label={{ value: "Process", position: "bottom" }}
+              />
+              <YAxis
+                label={{
+                  value: "Avg Cycle Time",
+                  angle: -90,
+                  position: "insideLeft",
+                }}
+              />
+              <Tooltip />
+              <Bar dataKey="avgCycle" fill="#4664C2" barSize={60} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
+      <div className="mt-6">{/* <OrderStatus /> */}</div>
     </div>
   );
 };

@@ -108,12 +108,13 @@ ChartJS.register(
 
 const ScrapBar = () => {
   const [chartData, setChartData] = useState(null);
+  const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
   useEffect(() => {
     const fetchScrapData = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8080/api/admin/current-status-overview"
+          `${BASE_URL}/api/admin/current-status-overview`
         );
         const apiData = res.data;
 

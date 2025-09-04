@@ -4,12 +4,14 @@ import Machine from "./Machine";
 import HourByHour from "./HourByHour";
 import Dive from "./Dive";
 import Monitor from "./Monitor";
+import DatePicker from "react-datepicker";
 
 const tabs = ["Hour by Hour", "Monitor", "Dive"];
 
 const OperationPerformance = () => {
   const [activeTab, setActiveTab] = useState("Hour by Hour");
-
+  const [startDate, setStartDate] = useState(new Date("2024-08-25"));
+  const [endDate, setEndDate] = useState(new Date("2025-11-25"));
   const renderTabContent = () => {
     switch (activeTab) {
       // case "Machine":
@@ -52,10 +54,24 @@ const OperationPerformance = () => {
             <span className="text-xs sm:text-[18px] font-bold hover:cursor-pointer">
               Operational Performance:
             </span>
-
-            <span className="text-xs sm:text-[16px] hover:cursor-pointer">
+            <div className="flex items-center gap-2">
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                dateFormat="dd/MM/yyyy"
+                className="border rounded-md p-1 text-xs"
+              />
+              <span>-</span>
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                dateFormat="dd/MM/yyyy"
+                className="border rounded-md p-1 text-xs"
+              />
+            </div>
+            {/* <span className="text-xs sm:text-[16px] hover:cursor-pointer">
               25/11/2025 (3:19 PM)
-            </span>
+            </span> */}
           </div>
         </div>
         <div className="flex justify-between mt-2 items-center">

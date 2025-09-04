@@ -1,7 +1,7 @@
 import img1 from "../../assets/green.png";
 import img2 from "../../assets/yellow.png";
 import scrap_1 from "../../assets/scrap_1.png";
-import scrap_2 from "../../assets/scrap_2.png";;
+import scrap_2 from "../../assets/scrap_2.png";
 import scrap_cost from "../../assets/scrap_cost.png";
 import customer_return from "../../assets/customer_return.png";
 import LargeThermoformer from "./LargeThermoformer";
@@ -68,8 +68,8 @@ const Machine = () => {
       <SmallThermoformer />
 
       <div className="bg-white rounded-md shadow-md mt-6">
-        <MachineCycleTime />
-        <OperatorCycleTime />
+        {/* <MachineCycleTime />
+        <OperatorCycleTime /> */}
       </div>
     </div>
   );

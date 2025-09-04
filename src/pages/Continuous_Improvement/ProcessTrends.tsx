@@ -48,8 +48,8 @@ export default function ProcessTrends() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={stepsData}>
                 <CartesianGrid stroke="#e0e0e0" strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="name" 
+                <XAxis
+                  dataKey="name"
                   fontSize={window.innerWidth < 768 ? 10 : 12}
                   tickMargin={window.innerWidth < 768 ? 5 : 10}
                 />
@@ -62,23 +62,23 @@ export default function ProcessTrends() {
                     fontSize: window.innerWidth < 768 ? 12 : 14,
                   }}
                 />
-                <Tooltip 
+                <Tooltip
                   contentStyle={{
-                    fontSize: '12px',
-                    borderRadius: '8px',
-                    padding: '8px'
+                    fontSize: "12px",
+                    borderRadius: "8px",
+                    padding: "8px",
                   }}
                 />
-                <Bar 
-                  dataKey="first" 
-                  fill="#D64550" 
-                  barSize={window.innerWidth < 768 ? 30 : 40} 
+                <Bar
+                  dataKey="first"
+                  fill="#D64550"
+                  barSize={window.innerWidth < 768 ? 30 : 40}
                   radius={[4, 4, 0, 0]}
                 />
-                <Bar 
-                  dataKey="second" 
-                  fill="#E68F96" 
-                  barSize={window.innerWidth < 768 ? 30 : 40} 
+                <Bar
+                  dataKey="second"
+                  fill="#E68F96"
+                  barSize={window.innerWidth < 768 ? 30 : 40}
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>
@@ -93,24 +93,22 @@ export default function ProcessTrends() {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={manualData}>
                 <CartesianGrid stroke="#e0e0e0" strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="name" 
+                <XAxis
+                  dataKey="name"
                   fontSize={window.innerWidth < 768 ? 10 : 12}
                   tickMargin={window.innerWidth < 768 ? 5 : 10}
                 />
-                <YAxis 
-                  fontSize={window.innerWidth < 768 ? 10 : 12}
-                />
-                <Tooltip 
+                <YAxis fontSize={window.innerWidth < 768 ? 10 : 12} />
+                <Tooltip
                   contentStyle={{
-                    fontSize: '12px',
-                    borderRadius: '8px',
-                    padding: '8px'
+                    fontSize: "12px",
+                    borderRadius: "8px",
+                    padding: "8px",
                   }}
                 />
-                <Legend 
+                <Legend
                   wrapperStyle={{
-                    paddingTop: window.innerWidth < 768 ? '10px' : '0'
+                    paddingTop: window.innerWidth < 768 ? "10px" : "0",
                   }}
                 />
                 <Line
@@ -140,7 +138,7 @@ export default function ProcessTrends() {
         </div>
 
         {/* Machine Chart */}
-        <div className="bg-white shadow-md rounded-xl md:rounded-2xl p-3 md:p-4 lg:col-span-2">
+        {/* <div className="bg-white shadow-md rounded-xl md:rounded-2xl p-3 md:p-4 lg:col-span-2">
           <h2 className="text-base md:text-lg font-medium mb-2">Machine</h2>
           <div className="h-[250px] sm:h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -190,7 +188,7 @@ export default function ProcessTrends() {
               </LineChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

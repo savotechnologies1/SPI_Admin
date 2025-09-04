@@ -229,6 +229,7 @@ const CurrentStatus = () => {
   const [selected, setSelected] = useState<string>("");
   const [processData, setProcessData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
   // helper: convert "5 min", "30 sec", "1 hr" → minutes
   const parseCycleTime = (cycleTime: string) => {
@@ -296,7 +297,7 @@ const CurrentStatus = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8080/api/admin/current-status-overview"
+          `${BASE_URL}/api/admin/current-status-overview`
         );
         const transformed = aggregateData(res.data);
         setProcessData(transformed);

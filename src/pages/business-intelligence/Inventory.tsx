@@ -44,7 +44,7 @@ const data_1 = [
     bgColor: "bg-green-50",
     textColor: "text-green-500",
   },
-  
+
   {
     num: "15,000",
     text: "Supplier Return",
@@ -200,8 +200,8 @@ const Inventory = () => {
             </LineChart>
           </ResponsiveContainer>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          <div className="bg-white shadow-md rounded-2xl p-4">
+        <div className="mt-5">
+          {/* <div className="bg-white shadow-md rounded-2xl p-4">
             <h2 className="text-lg font-medium mb-2"> Inventory Trans.</h2>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={forming}>
@@ -233,7 +233,7 @@ const Inventory = () => {
                 />
               </LineChart>
             </ResponsiveContainer>
-          </div>
+          </div> */}
 
           <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm bg-white">
             <table className="min-w-full text-sm text-left">

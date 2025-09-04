@@ -100,6 +100,7 @@ import shape_2 from "../../assets/shape_2.png";
 import shape_3 from "../../assets/shape_3.png";
 import ProcessTable from "./Cut$Trim";
 import { useEffect, useState } from "react";
+const BASE_URL = import.meta.env.VITE_SERVER_URL;
 const LiveProductionGoal = () => {
   const [overviewData, setOverviewData] = useState({
     hourByHour: [],
@@ -109,13 +110,13 @@ const LiveProductionGoal = () => {
 
   useEffect(() => {
     // Fetch overview data
-    fetch("http://localhost:8080/api/admin/production/overview")
+    fetch(`${BASE_URL}/api/admin/production/overview`)
       .then((res) => res.json())
       .then((data) => setOverviewData(data))
       .catch((error) => console.error("Error fetching overview:", error));
 
     // Fetch hourly process data
-    fetch("http://localhost:8080/api/admin/production/processes/hourly")
+    fetch(`${BASE_URL}/api/admin/production/processes/hourly`)
       .then((res) => res.json())
       .then((data) => setProcessTablesData(data))
       .catch((error) => console.error("Error fetching process data:", error));
@@ -155,8 +156,6 @@ const LiveProductionGoal = () => {
         </div>
         <div className="xl:w-[30%]">
           <PieChart data={overviewData.pieChartData} />
-
-          {/* Pass data to PieChart */}
         </div>
       </div>
 

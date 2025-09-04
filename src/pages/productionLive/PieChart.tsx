@@ -52,6 +52,8 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const PieChart = ({ data }) => {
+  console.log("datadata", data);
+
   // Convert API data into chart.js format
   const chartData = {
     labels: data.map((item) => item.name), // ["Actual", "Scrap"]
@@ -71,6 +73,7 @@ const PieChart = ({ data }) => {
       tooltip: { enabled: true },
     },
   };
+  console.log("chartDatachartData", chartData);
 
   return (
     <div className="bg-white py-6 px-14 rounded-lg">

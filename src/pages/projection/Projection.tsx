@@ -27,16 +27,16 @@ const data_1 = [
     bgColor: "bg-orange-50",
     textColor: "text-red-500",
   },
-  {
-    num: "01",
-    text: "Customer Return",
-    img: img2,
-    scrap: scrap_2,
-    scrap_img: customer_return,
-    increase: "+200",
-    bgColor: "bg-green-50",
-    textColor: "text-green-500",
-  },
+  // {
+  //   num: "01",
+  //   text: "Customer Return",
+  //   img: img2,
+  //   scrap: scrap_2,
+  //   scrap_img: customer_return,
+  //   increase: "+200",
+  //   bgColor: "bg-green-50",
+  //   textColor: "text-green-500",
+  // },
   {
     num: "15,000",
     text: "Supplier Return",
@@ -274,7 +274,7 @@ const Projection = () => {
         ))}
       </div>
 
-      <div className="flex flex-col md:flex-row mt-6 gap-4">
+      <div className=" w-full mt-6 gap-4">
         <div className="bg-white  rounded-2xl p-4 w-full md:w-1/2">
           <h3 className="text-lg font-semibold mb-3">Cash Flow Needed</h3>
 
@@ -306,9 +306,9 @@ const Projection = () => {
             </table>
           </div>
         </div>
-        <div className="border rounded-md shadow-md w-full  md:w-1/2">
+        {/* <div className="border rounded-md shadow-md w-full  md:w-1/2">
           <FormingTemp />
-        </div>
+        </div> */}
       </div>
 
       <div className="bg-white p-2 mt-6 rounded-xl overflow-x-auto   ">

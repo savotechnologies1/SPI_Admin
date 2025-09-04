@@ -60,7 +60,6 @@ const CurrentQuality = () => {
             <p className={`text-sm  text-black font-semibold`}>
               <NavLink to={"/dashboardDetailes"}>Quality Performance :</NavLink>
             </p>
-
             <span className="text-xs  hover:cursor-pointer">25/08/2024</span>
             <span>-</span>
             <span className="text-xs  hover:cursor-pointer">25/11/2025</span>
@@ -108,11 +107,11 @@ const CurrentQuality = () => {
           <ScrapBar />
         </div>
 
-        <div className=" bg-white p-4 mt-6 ">
+        {/* <div className=" bg-white p-4 mt-6 ">
           <div className="mt-6 bg-white rounded-md shadow  ">
             <MultiLineChart />
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

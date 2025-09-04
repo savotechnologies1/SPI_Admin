@@ -30,29 +30,29 @@ const data_1 = [
     bgColor: "bg-orange-50",
     textColor: "text-red-500",
   },
-  {
-    num: "01",
-    text: "Customer Return",
-    img: img2,
-    scrap: scrap_2,
-    scrap_img: customer_return,
-    increase: "+200",
-    bgColor: "bg-green-50",
-    textColor: "text-green-500",
-  },
-  {
-    num: "$5,00,000",
-    text: "Scrap Cost",
-    img: img1,
-    scrap: scrap_1,
-    scrap_img: scrap_cost,
-    increase: "-$10k",
-    bgColor: "bg-orange-50",
-    textColor: "text-red-500",
-  },
+  // {
+  //   num: "01",
+  //   text: "Customer Return",
+  //   img: img2,
+  //   scrap: scrap_2,
+  //   scrap_img: customer_return,
+  //   increase: "+200",
+  //   bgColor: "bg-green-50",
+  //   textColor: "text-green-500",
+  // },
+  // {
+  //   num: "$5,00,000",
+  //   text: "Scrap Cost",
+  //   img: img1,
+  //   scrap: scrap_1,
+  //   scrap_img: scrap_cost,
+  //   increase: "-$10k",
+  //   bgColor: "bg-orange-50",
+  //   textColor: "text-red-500",
+  // },
   {
     num: "15,000",
-  text: "Supplier Return",
+    text: "Supplier Return",
     img: img3,
     scrap: scrap_3,
     scrap_img: supplier_return,
@@ -76,10 +76,7 @@ const output = [
   { name: "Marker", "2022": 170, "2023": 65 },
   { name: "MarkFigmaer", "2022": 20, "2023": 60 },
 ];
-const costing = [
-  {  name: "Cost", part1: 60, part2: 40 },
-  
-];
+const costing = [{ name: "Cost", part1: 60, part2: 40 }];
 
 const Costing = () => {
   return (
@@ -120,13 +117,7 @@ const Costing = () => {
       <div className="bg-white shadow-md rounded-2xl p-4 mt-6">
         <h2 className="text-lg font-medium mb-2">Costing</h2>
         <ResponsiveContainer width="100%" height={50}>
-          <BarChart
-            layout="vertical"
-            width={500}
-            height={100}
-            data={costing}
-          >
-            
+          <BarChart layout="vertical" width={500} height={100} data={costing}>
             <XAxis type="number" hide />
             <YAxis type="category" dataKey="name" hide />
             <Bar dataKey="part1" stackId="a" fill="#052C89" />

@@ -28,16 +28,16 @@ const data_1 = [
     bgColor: "bg-orange-50",
     textColor: "text-red-500",
   },
-  {
-    num: "01",
-    text: "Customer Return",
-    img: img2,
-    scrap: scrap_2,
-    scrap_img: customer_return,
-    increase: "+200",
-    bgColor: "bg-green-50",
-    textColor: "text-green-500",
-  },
+  // {
+  //   num: "01",
+  //   text: "Customer Return",
+  //   img: img2,
+  //   scrap: scrap_2,
+  //   scrap_img: customer_return,
+  //   increase: "+200",
+  //   bgColor: "bg-green-50",
+  //   textColor: "text-green-500",
+  // },
   {
     num: "$5,00,000",
     text: "Scrap Cost",
@@ -126,7 +126,7 @@ const Production = () => {
         </div>
       </div>
 
-      <div className="mt-6">
+      {/* <div className="mt-6">
         {" "}
         <div className="bg-white shadow-md rounded-2xl p-4">
           <h2 className="text-lg font-medium mb-2">Vac Prestrech by Time </h2>
@@ -152,11 +152,10 @@ const Production = () => {
             </LineChart>
           </ResponsiveContainer>
         </div>
-      </div>
-
+      </div> */}
+      {/* 
       <div className=" mt-6  ">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Manual Line Chart */}
           <div className="bg-white shadow-md rounded-2xl p-4">
             <h2 className="text-lg font-medium mb-2">Forming Temp by Time</h2>
             <ResponsiveContainer width="100%" height={300}>
@@ -191,7 +190,6 @@ const Production = () => {
             </ResponsiveContainer>
           </div>
 
-          {/* Machine Chart */}
           <div className="bg-white shadow-md rounded-2xl p-4">
             <h2 className="text-lg font-medium mb-2">
               Cooling Time & Cool Delay by Time
@@ -228,7 +226,7 @@ const Production = () => {
             </ResponsiveContainer>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

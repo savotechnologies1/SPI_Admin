@@ -18,24 +18,123 @@ ChartJS.register(
   Legend
 );
 
-const ScrapBar = () => {
+// const ScrapBar = () => {
+//   const data = {
+//     labels: ["Sanding", "Inspection", "CutTrim", "Termoforming", "Technology"],
+//     datasets: [
+//       {
+//         label: "Manual CT",
+//         data: [10, 6, 8, 0, 0],
+//         backgroundColor: "rgba(214, 69, 80, 1)",
+//         borderColor: "rgba(214, 69, 80, 1)",
+//         borderWidth: 1,
+//       },
+//       {
+//         label: "Calculated ideal CT",
+//         data: [0, 0, 0, 9, 11],
+//         backgroundColor: "rgba(230, 143, 150, 1)",
+//         borderColor: "rgba(230, 143, 150, 1)",
+//         borderWidth: 1,
+//       },
+//     ],
+//   };
+
+//   const options = {
+//     responsive: true,
+//     maintainAspectRatio: false,
+//     plugins: {
+//       legend: {
+//         position:
+//           window.innerWidth < 768 ? ("bottom" as const) : ("top" as const),
+//         labels: {
+//           usePointStyle: true,
+//           boxWidth: 8,
+//           padding: 10,
+//           font: {
+//             size: window.innerWidth < 768 ? 10 : 12,
+//           },
+//         },
+//       },
+//       title: {
+//         display: false,
+//       },
+//       tooltip: {
+//         bodyFont: {
+//           size: window.innerWidth < 768 ? 10 : 12,
+//         },
+//         titleFont: {
+//           size: window.innerWidth < 768 ? 12 : 14,
+//         },
+//       },
+//     },
+//     scales: {
+//       x: {
+//         beginAtZero: true,
+//         grid: {
+//           display: false,
+//         },
+//         ticks: {
+//           font: {
+//             size: window.innerWidth < 768 ? 10 : 12,
+//           },
+//         },
+//       },
+//       y: {
+//         beginAtZero: true,
+//         ticks: {
+//           font: {
+//             size: window.innerWidth < 768 ? 10 : 12,
+//           },
+//           stepSize: 2,
+//         },
+//         title: {
+//           display: true,
+//           text: "Cycle Time (seconds)",
+//           font: {
+//             size: window.innerWidth < 768 ? 12 : 14,
+//           },
+//         },
+//       },
+//     },
+//     barPercentage: window.innerWidth < 768 ? 0.6 : 0.8,
+//     categoryPercentage: window.innerWidth < 768 ? 0.7 : 0.9,
+//   };
+
+//   return (
+//     <div className="w-full mx-auto p-2 md:p-4 bg-white rounded-lg shadow-sm">
+//       <h1 className="text-lg md:text-xl lg:text-2xl font-semibold mb-2 md:mb-4">
+//         Scrap Bar Comparision
+//       </h1>
+//       <div className="w-full h-[300px] sm:h-[350px] md:h-[400px]">
+//         <Bar data={data} options={options} />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ScrapBar;
+
+const ScrapBar = ({ supplierReturnData }) => {
+  console.log("datadata", supplierReturnData);
+
   const data = {
-    labels: ["Sanding", "Inspection", "CutTrim", "Termoforming", "Technology"],
+    labels: supplierReturnData.map((p) => p.PartNumber.process.processName),
     datasets: [
       {
         label: "Manual CT",
-        data: [10, 6, 8, 0, 0],
+        data: supplierReturnData.map((p) => p.returnQuantity || 0),
         backgroundColor: "rgba(214, 69, 80, 1)",
         borderColor: "rgba(214, 69, 80, 1)",
         borderWidth: 1,
+        maxBarThickness: 90,
       },
-      {
-        label: "Calculated ideal CT",
-        data: [0, 0, 0, 9, 11],
-        backgroundColor: "rgba(230, 143, 150, 1)",
-        borderColor: "rgba(230, 143, 150, 1)",
-        borderWidth: 1,
-      },
+      // {
+      //   label: "Calculated ideal CT",
+      //   data: [0, 0, 0, 9, 11], // Ye bhi dynamic data hoga
+      //   backgroundColor: "rgba(230, 143, 150, 1)",
+      //   borderColor: "rgba(230, 143, 150, 1)",
+      //   borderWidth: 1,
+      // },
     ],
   };
 
@@ -69,7 +168,6 @@ const ScrapBar = () => {
     },
     scales: {
       x: {
-        beginAtZero: true,
         grid: {
           display: false,
         },
@@ -80,16 +178,16 @@ const ScrapBar = () => {
         },
       },
       y: {
-        beginAtZero: true,
+        beginAtZero: true, // Always start from 0
         ticks: {
           font: {
             size: window.innerWidth < 768 ? 10 : 12,
           },
-          stepSize: 2,
+          // stepSize hata do taki scale automatic ho
         },
         title: {
           display: true,
-          text: "Cycle Time (seconds)",
+          text: "Quantity",
           font: {
             size: window.innerWidth < 768 ? 12 : 14,
           },
@@ -103,7 +201,7 @@ const ScrapBar = () => {
   return (
     <div className="w-full mx-auto p-2 md:p-4 bg-white rounded-lg shadow-sm">
       <h1 className="text-lg md:text-xl lg:text-2xl font-semibold mb-2 md:mb-4">
-        Cycle Time Comparison
+        Scrap Bar Comparison
       </h1>
       <div className="w-full h-[300px] sm:h-[350px] md:h-[400px]">
         <Bar data={data} options={options} />

@@ -24,16 +24,16 @@ const data_1 = [
     bgColor: "bg-orange-50",
     textColor: "text-red-500",
   },
-  {
-    num: "01",
-    text: "Customer Return",
-    img: img2,
-    scrap: scrap_2,
-    scrap_img: customer_return,
-    increase: "+200",
-    bgColor: "bg-green-50",
-    textColor: "text-green-500",
-  },
+  // {
+  //   num: "01",
+  //   text: "Customer Return",
+  //   img: img2,
+  //   scrap: scrap_2,
+  //   scrap_img: customer_return,
+  //   increase: "+200",
+  //   bgColor: "bg-green-50",
+  //   textColor: "text-green-500",
+  // },
   {
     num: "15,000",
     text: "Supplier Return",
@@ -131,8 +131,7 @@ const BusinessAnalysis = () => {
         ))}
       </div>
 
-<Tables/>
-
+      <Tables />
     </div>
   );
 };
