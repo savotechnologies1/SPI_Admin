@@ -54,21 +54,7 @@ const OperationPerformance = () => {
             <span className="text-xs sm:text-[18px] font-bold hover:cursor-pointer">
               Operational Performance:
             </span>
-            <div className="flex items-center gap-2">
-              <DatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                dateFormat="dd/MM/yyyy"
-                className="border rounded-md p-1 text-xs"
-              />
-              <span>-</span>
-              <DatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                dateFormat="dd/MM/yyyy"
-                className="border rounded-md p-1 text-xs"
-              />
-            </div>
+
             {/* <span className="text-xs sm:text-[16px] hover:cursor-pointer">
               25/11/2025 (3:19 PM)
             </span> */}

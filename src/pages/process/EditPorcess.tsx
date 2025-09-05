@@ -597,8 +597,8 @@ interface ProcessFormData {
   machineName: string;
   processDesc: string;
   cycleTimeValue: string;
-  cycleTimeUnit: "sec" | "min" | "hr" | ""; // Add empty string for initial state
-  ratePerHour: string; // Keep as string for form input
+  cycleTimeUnit: "sec" | "min" | "hr" | "";
+  ratePerHour: string;
   isProcessReq: "true" | "false";
 }
 
@@ -609,20 +609,19 @@ const EditProcess = () => {
     formState: { errors },
     setError,
     clearErrors,
-    reset, // Add reset to set form values
+    reset,
   } = useForm<ProcessFormData>();
 
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>(); // Get ID from URL
+  const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
     const fetchProcessData = async () => {
       if (id) {
         try {
-          const response = await processDetail(id); // Fetch data based on ID
+          const response = await processDetail(id);
           if (response && response.status === 200) {
             const processData = response.data.data;
-            // Split cycleTime into value and unit
             const [cycleTimeValue, cycleTimeUnit] =
               processData.cycleTime.split(" ");
 

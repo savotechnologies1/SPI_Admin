@@ -262,3 +262,323 @@ const Inventory = () => {
 };
 
 export default Inventory;
+// import React, { useState, useEffect } from "react";
+// import { Bar, Line } from "react-chartjs-2";
+// import {
+//   Chart as ChartJS,
+//   CategoryScale,
+//   LinearScale,
+//   BarElement,
+//   PointElement,
+//   LineElement,
+//   Title,
+//   Tooltip,
+//   Legend,
+// } from "chart.js";
+
+// ChartJS.register(
+//   CategoryScale,
+//   LinearScale,
+//   BarElement,
+//   PointElement,
+//   LineElement,
+//   Title,
+//   Tooltip,
+//   Legend
+// );
+
+// interface Part {
+//   partNumber: string;
+//   qtyAvail: number;
+//   minStock: number;
+//   partCost: number;
+// }
+
+// interface InventoryProps {
+//   cogs: number; // total COGS for the selected period
+// }
+
+// const Inventory: React.FC<InventoryProps> = ({ cogs }) => {
+//   const [parts, setParts] = useState<Part[]>([]);
+//   const [turnover, setTurnover] = useState<number>(0);
+
+//   useEffect(() => {
+//     // Mock data (replace with API call)
+//     const data: Part[] = [
+//       { partNumber: "Gobi", qtyAvail: 5, minStock: 2, partCost: 2 },
+//       { partNumber: "Tomato", qtyAvail: 12, minStock: 5, partCost: 3 },
+//       { partNumber: "Potato", qtyAvail: 20, minStock: 8, partCost: 1.5 },
+//     ];
+//     setParts(data);
+
+//     // Calculate inventory values
+//     const dailyTotalCost = data.reduce(
+//       (acc, p) => acc + p.qtyAvail * p.partCost,
+//       0
+//     );
+//     const avgInventory = dailyTotalCost / 2; // Example: (opening + closing) / 2
+//     setTurnover(cogs / avgInventory);
+//   }, [cogs]);
+
+//   // 📌 Inventory Levels per Part
+//   const barData = {
+//     labels: parts.map((p) => p.partNumber),
+//     datasets: [
+//       {
+//         label: "Inventory Level (Avail - Min)",
+//         data: parts.map((p) => p.qtyAvail - p.minStock),
+//         backgroundColor: "rgba(54, 162, 235, 0.6)",
+//       },
+//     ],
+//   };
+
+//   // 📌 Inventory Turnover Trend (mock 5 days)
+//   const lineData = {
+//     labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5"],
+//     datasets: [
+//       {
+//         label: "Inventory Turnover",
+//         data: [2.5, 3.2, 2.8, 3.5, turnover], // last point = calculated ratio
+//         borderColor: "rgba(255, 99, 132, 1)",
+//         backgroundColor: "rgba(255, 99, 132, 0.3)",
+//         fill: true,
+//         tension: 0.3,
+//       },
+//     ],
+//   };
+
+//   return (
+//     <div className="p-5">
+//       <h1 className="text-xl font-bold mb-5">📦 Inventory Dashboard</h1>
+
+//       {/* KPI - Turnover */}
+//       <div className="mb-5 p-4 border rounded shadow">
+//         <h2 className="text-lg font-semibold">
+//           Inventory Turnover Ratio: {turnover.toFixed(2)}x
+//         </h2>
+//       </div>
+
+//       {/* Inventory Levels */}
+//       <div className="mb-10">
+//         <Bar data={barData} options={{ responsive: true }} />
+//       </div>
+
+//       {/* Inventory Turnover Trend */}
+//       <div>
+//         <Line data={lineData} options={{ responsive: true }} />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Inventory;
+
+// import React, { useMemo } from "react";
+// import {
+//   CartesianGrid,
+//   Legend,
+//   Line,
+//   LineChart,
+//   ResponsiveContainer,
+//   Tooltip,
+//   XAxis,
+//   YAxis,
+//   Bar,
+//   BarChart,
+// } from "recharts";
+
+// // 📌 Mock Data
+// const revenueData = [
+//   { orderType: "stock", salesCost: 2000 },
+//   { orderType: "custom", salesCost: 5000 },
+// ];
+
+// const cogsData = [
+//   { supplierPartCost: 3000, cycleTime: 2, hourlyRate: 50, partsMade: 10 },
+//   { supplierPartCost: 1500, cycleTime: 1, hourlyRate: 50, partsMade: 5 },
+// ];
+
+// const partsData = [
+//   {
+//     partNumber: "30024T",
+//     availableInventory: 20,
+//     minimumStock: 5,
+//     partCost: 50,
+//   },
+//   {
+//     partNumber: "30025T",
+//     availableInventory: 10,
+//     minimumStock: 3,
+//     partCost: 30,
+//   },
+//   {
+//     partNumber: "30026T",
+//     availableInventory: 2,
+//     minimumStock: 5,
+//     partCost: 20,
+//   },
+// ];
+
+// // 📌 Dashboard Component
+// const Inventory = () => {
+//   // Revenue calculations
+//   const totalRevenue = useMemo(
+//     () => revenueData.reduce((sum, r) => sum + r.salesCost, 0),
+//     []
+//   );
+//   const stockRevenue = useMemo(
+//     () =>
+//       revenueData
+//         .filter((r) => r.orderType === "stock")
+//         .reduce((sum, r) => sum + r.salesCost, 0),
+//     []
+//   );
+//   const customRevenue = useMemo(
+//     () =>
+//       revenueData
+//         .filter((r) => r.orderType === "custom")
+//         .reduce((sum, r) => sum + r.salesCost, 0),
+//     []
+//   );
+
+//   const inventoryLevels = Array.from({ length: 120 }, (_, i) => ({
+//     partNumber: `Part-${i + 1}`,
+//     inventoryLevel: Math.floor(Math.random() * 500), // random for demo
+//   }));
+
+//   // COGS calculations
+//   const totalCOGS = useMemo(() => {
+//     return cogsData.reduce((sum, c) => {
+//       const partCost = c.supplierPartCost;
+//       const timeCost = c.cycleTime * c.hourlyRate * c.partsMade;
+//       return sum + (partCost + timeCost);
+//     }, 0);
+//   }, []);
+
+//   // Inventory calculations
+//   const dailyInventoryCost = useMemo(() => {
+//     return partsData.reduce(
+//       (sum, p) => sum + p.availableInventory * p.partCost,
+//       0
+//     );
+//   }, []);
+
+//   const avgInventory = dailyInventoryCost / 2; // Example approximation
+//   const turnoverRatio = totalCOGS / avgInventory;
+
+//   // const inventoryLevels = partsData.map((p) => ({
+//   //   partNumber: p.partNumber,
+//   //   inventoryLevel: p.availableInventory - p.minimumStock,
+//   // }));
+
+//   // Chart Data
+//   const revenueChart = [
+//     { name: "Stock Orders", revenue: stockRevenue },
+//     { name: "Custom Orders", revenue: customRevenue },
+//   ];
+
+//   return (
+//     <div className="p-6">
+//       <h1 className="text-2xl font-semibold mb-4">📊 Business Dashboard</h1>
+
+//       {/* KPI Row */}
+//       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+//         <div className="bg-white shadow p-4 rounded-xl">
+//           <h2 className="text-gray-600 text-sm">Total Revenue</h2>
+//           <p className="text-xl font-bold">${totalRevenue}</p>
+//         </div>
+//         <div className="bg-white shadow p-4 rounded-xl">
+//           <h2 className="text-gray-600 text-sm">Total COGS</h2>
+//           <p className="text-xl font-bold">${totalCOGS}</p>
+//         </div>
+//         <div className="bg-white shadow p-4 rounded-xl">
+//           <h2 className="text-gray-600 text-sm">Inventory Turnover</h2>
+//           <p className="text-xl font-bold">{turnoverRatio.toFixed(2)}x</p>
+//         </div>
+//       </div>
+
+//       {/* Revenue Chart */}
+//       <div className="bg-white shadow p-4 rounded-xl mb-6">
+//         <h2 className="text-lg font-medium mb-2">Revenue Breakdown</h2>
+//         <ResponsiveContainer width="100%" height={300}>
+//           <BarChart data={revenueChart}>
+//             <CartesianGrid stroke="#e0e0e0" />
+//             <XAxis dataKey="name" />
+//             <YAxis />
+//             <Tooltip />
+//             <Bar dataKey="revenue" fill="#4CAF50" />
+//           </BarChart>
+//         </ResponsiveContainer>
+//       </div>
+
+//       {/* Inventory Levels Chart */}
+//       <div className="bg-white shadow p-4 rounded-xl mb-6">
+//         <h2 className="text-lg font-medium mb-2">
+//           Inventory Levels (Per Part)
+//         </h2>
+//         <ResponsiveContainer width="100%" height={300}>
+//           <BarChart data={inventoryLevels}>
+//             <CartesianGrid stroke="#e0e0e0" />
+//             <XAxis dataKey="partNumber" />
+//             <YAxis />
+//             <Tooltip />
+//             <Bar dataKey="inventoryLevel" fill="#2196F3" />
+//           </BarChart>
+//         </ResponsiveContainer>
+//       </div>
+//       <div className="bg-white shadow p-4 rounded-xl mb-6">
+//         <h2 className="text-lg font-medium mb-2">
+//           Inventory Levels (Per Part)
+//         </h2>
+
+//         <div style={{ width: "100%", height: 500, overflowX: "auto" }}>
+//           <ResponsiveContainer width={2000} height={500}>
+//             <BarChart
+//               data={inventoryLevels}
+//               layout="vertical"
+//               margin={{ top: 20, right: 30, left: 100, bottom: 20 }}
+//             >
+//               <CartesianGrid stroke="#e0e0e0" />
+//               <XAxis type="number" />
+//               <YAxis
+//                 type="category"
+//                 dataKey="partNumber"
+//                 width={100}
+//                 interval={0} // show all labels
+//               />
+//               <Tooltip />
+//               <Bar dataKey="inventoryLevel" fill="#2196F3" />
+//             </BarChart>
+//           </ResponsiveContainer>
+//         </div>
+//       </div>
+//       {/* Inventory Cost Trend */}
+//       <div className="bg-white shadow p-4 rounded-xl">
+//         <h2 className="text-lg font-medium mb-2">Daily Inventory Cost Trend</h2>
+//         <ResponsiveContainer width="100%" height={300}>
+//           <LineChart
+//             data={[
+//               { day: "Day 1", cost: dailyInventoryCost * 0.9 },
+//               { day: "Day 2", cost: dailyInventoryCost * 1.1 },
+//               { day: "Day 3", cost: dailyInventoryCost },
+//             ]}
+//           >
+//             <CartesianGrid stroke="#e0e0e0" />
+//             <XAxis dataKey="day" />
+//             <YAxis />
+//             <Tooltip />
+//             <Legend />
+//             <Line
+//               type="monotone"
+//               dataKey="cost"
+//               stroke="#FF5722"
+//               strokeWidth={2}
+//             />
+//           </LineChart>
+//         </ResponsiveContainer>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Inventory;
