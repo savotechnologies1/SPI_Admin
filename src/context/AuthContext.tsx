@@ -42,7 +42,7 @@ const AuthContext = createContext<IAuthContext | null>(null);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<IUser | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true); // Start true on app load
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const validateTokenOnLoad = async () => {
