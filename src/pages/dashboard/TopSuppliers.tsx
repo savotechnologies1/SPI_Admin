@@ -1,6 +1,8 @@
 import data from "../../components/Data/topSuppliesData";
 
-const TopSuppliers = () => {
+const TopSuppliers = ({ suppliers }) => {
+  console.log("supplierssuppliers", suppliers);
+
   return (
     <div className=" py-6">
       <h1 className="text-xl font-semibold px-4 ">Top Suppliers</h1>
@@ -15,32 +17,29 @@ const TopSuppliers = () => {
               <th className="px-4 py-3 text-left text-gray-400 font-medium">
                 Product
               </th>
-              <th className="px-4 py-3 text-left text-gray-400 font-medium">
-                Country
-              </th>
+
               <th className="px-4 py-3 text-left text-gray-400 font-medium">
                 Total
               </th>
               <th className="px-4 py-3 text-left text-gray-400 font-medium">
                 Rank
               </th>
-            
             </tr>
           </thead>
           <tbody>
-            {data.map((item, index) => (
+            {suppliers.map((item, index) => (
               <tr
                 key={index}
                 className="border-b border-dashed  border-gray-200"
               >
                 <td className="px-4 py-4">
                   <div className="flex items-center">
-                    <div className="h-10 w-10 rounded-full bg-gray-300 mr-4">
+                    {/* <div className="h-10 w-10 rounded-full bg-gray-300 mr-4">
                       <img src={item.avatar} alt="" />
-                    </div>
+                    </div> */}
                     <div>
                       <p className="text-sm sm:text-base font-medium text-[#052C89]">
-                        {item.name}
+                        {item.supplierName}
                       </p>
                     </div>
                   </div>
@@ -48,16 +47,14 @@ const TopSuppliers = () => {
                 <td className="px-4 py-4 text-sm sm:text-base font-medium text-[#052C89]">
                   {item.product}
                 </td>
-                <td className="px-4 py-4 text-sm sm:text-base font-medium text-[#052C89]">
-                  <img src={item.country} alt="" />
-                </td>
+
                 <td className="px-4 py-4 text-sm sm:text-base font-medium text-[#052C89]">
                   {item.total}
                 </td>
                 <td className="px-2 py-4">
                   <span
                     className={`px-2 py-1 rounded-md text-xs font-medium ${
-                      item.rank === "Top 1"
+                      item.rank === "1"
                         ? "text-green-800 bg-green-100"
                         : item.rank === "Top 2"
                         ? "text-[#5119B7] bg-[#8E33FF29]"

@@ -1,7 +1,9 @@
 import data from "../../components/Data/TopPerformerData";
 import arrow from "../../assets/right_arrow.png";
 
-const TopPerformer = () => {
+const TopPerformer = ({ performers }) => {
+  console.log("performersperformers", performers);
+
   return (
     <div className="  ">
       {/* Header */}
@@ -15,7 +17,7 @@ const TopPerformer = () => {
 
       {/* List */}
       <div className="flex flex-col py-4">
-        {data.map((item, index) => (
+        {performers.map((item, index) => (
           <div
             key={index}
             className="flex items-center justify-between gap-4 p-3 hover:bg-gray-100 rounded-lg transition"
@@ -31,13 +33,13 @@ const TopPerformer = () => {
 
             {/* Details */}
             <div className="flex-grow">
-              <p className="text-base font-semibold">{item.name}</p>
+              <p className="text-base font-semibold">{item.fullName}</p>
               <p className="text-sm text-gray-500">Agent ID: 36254</p>
             </div>
 
             {/* Score */}
             <div className="text-gray-700 font-semibold">
-              {item.img}
+              {item.completedCount}/{item.completedCount}
             </div>
           </div>
         ))}

@@ -1,7 +1,9 @@
 import data from "../../components/Data/newEmpData";
 import arrow from "../../assets/right_arrow.png";
+import icon from "../../assets/icon.png";
+const NewEmployees = ({ employees }) => {
+  console.log("employeesemployees", employees);
 
-const NewEmployees = () => {
   return (
     <div className=" py-6 px-4">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
@@ -18,24 +20,24 @@ const NewEmployees = () => {
       </div>
 
       <div className="flex flex-col  mt-4">
-        {data.map((item) => (
+        {employees.map((item) => (
           <div
             key={item.email}
             className="flex items-center gap-4 p-4 rounded-md  bg-white"
           >
             {/* Employee Avatar */}
             <div className="w-12 h-12">
-              <img
+              {/* <img
                 src={item.avatar}
                 alt={item.name}
                 className="w-full h-full rounded-full object-cover"
-              />
+              /> */}
             </div>
 
             {/* Employee Details */}
             <div className="flex-grow text-start">
               <p className="text-base font-semibold text-[#052C89]">
-                {item.name}
+                {item.fullName}
               </p>
               <p className="text-sm text-gray-500">{item.email}</p>
             </div>
@@ -43,7 +45,7 @@ const NewEmployees = () => {
             {/* Arrow Icon */}
             <div className="w-6 h-6 flex justify-center items-center">
               <img
-                src={item.img}
+                src={icon}
                 alt="Arrow Icon"
                 className="w-full h-full object-contain cursor-pointer"
               />

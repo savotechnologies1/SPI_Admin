@@ -21,60 +21,186 @@ import { fetchProfile } from "../../redux/profileSlice";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../utils/axiosInstance";
+import { dashBoardData } from "./https/dashboardApi";
+
+// const DasboardDetails = () => {
+//   const [photo, setPhoto] = useState<string | null>(null);
+//   const [profileData, setProfileData] = useState([]);
+//   const [profileImg, setProfileImg] = useState<string | null>(null);
+//   const [user, setUser] = useState(null);
+//   const dispatch = useDispatch();
+//   const profile = useSelector((state) => state.profile.data);
+//   const status = useSelector((state) => state.profile.status);
+//   const navigate = useNavigate();
+//   useEffect(() => {
+//     dispatch(fetchProfile());
+//   }, [dispatch]);
+
+//   const dashboardApi = async () => {
+//     try {
+//       const data = await dashBoardData();
+//     } catch (error) {}
+//   };
+//   useEffect(() => {
+//     dashboardApi();
+//     if (profile?.profileImg) {
+//       const imageUrl = `${BASE_URL}/uploads/profileImg/${profile.profileImg}`;
+//       setPhoto(imageUrl);
+//       setProfileImg(profile.profileImg);
+//     }
+//   }, [profile]);
+
+//   // useEffect(() => {
+//   //   const validateToken = async () => {
+//   //     const token = localStorage.getItem("auth_token");
+//   //     if (!token) {
+//   //       navigate("/sign-in");
+//   //       return;
+//   //     }
+
+//   //     try {
+//   //       const res = await axios.get(
+//   //         `${BASE_URL}/api/admin/check-token`,
+//   //         {
+//   //           headers: {
+//   //             Authorization: `Bearer ${token}`,
+//   //           },
+//   //         }
+//   //       );
+
+//   //       if (res.data.message === "Token is valid") {
+//   //         setUser(res.data.user);
+//   //       } else {
+//   //         navigate("/sign-in");
+//   //       }
+//   //     } catch (error) {
+//   //       console.error("Token validation failed:", error);
+//   //       navigate("/sign-in");
+//   //     }
+//   //   };
+
+//   //   validateToken();
+//   // }, [navigate]);
+//   console.log("profileImgprofileImgprofileImg", profileData);
+//   return (
+//     <div className="p-4 mt-5">
+//       <h1 className="text-xl font-semibold mt-4">Welcome back, Admin👋</h1>
+
+//       <div className="py-4">
+//         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 ">
+//           <Card
+//             title="Order Schedule"
+//             value="55+"
+//             img={icon1}
+//             bgColor="bg-green-50"
+//             overlay2={overlay3}
+//             overlay21={overlay31}
+//           />
+//           <Card
+//             title="Total Supplier"
+//             value="320+"
+//             img={icon2}
+//             bgColor="bg-red-50"
+//             overlay2={overlay2}
+//             overlay21={overlay21}
+//           />
+//           <Card
+//             title="Total Production"
+//             value="220+"
+//             img={icon3}
+//             bgColor="bg-red-50"
+//             overlay2={overlay3}
+//             overlay21={overlay31}
+//           />
+//           <Card
+//             title="Total Scrap Order"
+//             value="50+"
+//             img={icon4}
+//             bgColor="bg-red-50"
+//             overlay2={overlay4}
+//             overlay21={overlay41}
+//           />
+//         </div>
+
+//         <div className=" mt-8 bg-gray-100 w-full">
+//           <Chart />
+//         </div>
+
+//         <div className="mt-8  p flex flex-col lg:flex-row gap-10">
+//           <div className="w-full lg:w-[60%] bg-white rounded-xl">
+//             <TopSuppliers />
+//           </div>
+//           <div className="w-full lg:w-[40%] bg-white rounded-xl">
+//             <NewEmployees />
+//           </div>
+//         </div>
+
+//         <div className="py-8  ">
+//           <div className="flex flex-col lg:flex-row lg:items-center justify-between rounded-lg   gap-20 lg:gap-4 w-full ">
+//             <div className="flex flex-col gap-4 w-full lg:w-[40%] p-4 py-10 bg-white  rounded-md shadow-md  ">
+//               {" "}
+//               <TopPerformer />
+//             </div>
+
+//             <div className="w-full  lg:w-[70%] flex lg:items-center  p-6 bg-white rounded-md shadow-md  overflow-x-auto">
+//               <ProcessTable />
+//             </div>
+//           </div>
+//         </div>
+
+//         <div className="py-4">
+//           <OrderStatus />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default DasboardDetails;
 
 const DasboardDetails = () => {
-  const [photo, setPhoto] = useState<string | null>(null);
-  const [profileData, setProfileData] = useState([]);
-  const [profileImg, setProfileImg] = useState<string | null>(null);
-  const [user, setUser] = useState(null);
+  const [photo, setPhoto] = useState(null);
+  const [dashboardDetails, setDashboardDetails] = useState(null);
+  const [profileImg, setProfileImg] = useState(null);
+  const [selectedMonthForApi, setSelectedMonthForApi] = useState(""); // New state for API month filter
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.profile.data);
-  const status = useSelector((state) => state.profile.status);
   const navigate = useNavigate();
+
   useEffect(() => {
     dispatch(fetchProfile());
   }, [dispatch]);
 
+  const dashboardApi = async (month) => {
+    // Accept month as a parameter
+    try {
+      const data = await dashBoardData(month); // Pass month to your API function
+      setDashboardDetails(data);
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    }
+  };
+
   useEffect(() => {
+    // Initial fetch or when profile changes, fetch with the current selected month
+    dashboardApi(selectedMonthForApi);
     if (profile?.profileImg) {
-      const imageUrl = `${BASE_URL}/uploads/profileImg/${profile.profileImg}`;
+      const imageUrl = `${process.env.REACT_APP_BASE_URL}/uploads/profileImg/${profile.profileImg}`; // Use environment variable
       setPhoto(imageUrl);
       setProfileImg(profile.profileImg);
     }
-  }, [profile]);
+  }, [profile, selectedMonthForApi]); // Re-fetch when selectedMonthForApi changes
 
-  // useEffect(() => {
-  //   const validateToken = async () => {
-  //     const token = localStorage.getItem("auth_token");
-  //     if (!token) {
-  //       navigate("/sign-in");
-  //       return;
-  //     }
+  const handleMonthChangeFromChild = (month) => {
+    setSelectedMonthForApi(month); // Update the state which will trigger useEffect and re-fetch data
+  };
 
-  //     try {
-  //       const res = await axios.get(
-  //         `${BASE_URL}/api/admin/check-token`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
+  console.log("Dashboard Details State:", dashboardDetails);
 
-  //       if (res.data.message === "Token is valid") {
-  //         setUser(res.data.user);
-  //       } else {
-  //         navigate("/sign-in");
-  //       }
-  //     } catch (error) {
-  //       console.error("Token validation failed:", error);
-  //       navigate("/sign-in");
-  //     }
-  //   };
+  if (!dashboardDetails) {
+    return <div>Loading dashboard data...</div>;
+  }
 
-  //   validateToken();
-  // }, [navigate]);
-  console.log("profileImgprofileImgprofileImg", profileData);
   return (
     <div className="p-4 mt-5">
       <h1 className="text-xl font-semibold mt-4">Welcome back, Admin👋</h1>
@@ -83,7 +209,7 @@ const DasboardDetails = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 ">
           <Card
             title="Order Schedule"
-            value="55+"
+            value={`${dashboardDetails.orderSchedule.count}+`}
             img={icon1}
             bgColor="bg-green-50"
             overlay2={overlay3}
@@ -91,7 +217,7 @@ const DasboardDetails = () => {
           />
           <Card
             title="Total Supplier"
-            value="320+"
+            value={`${dashboardDetails.totalSupplier.count}+`}
             img={icon2}
             bgColor="bg-red-50"
             overlay2={overlay2}
@@ -99,50 +225,60 @@ const DasboardDetails = () => {
           />
           <Card
             title="Total Production"
-            value="220+"
+            value={`${dashboardDetails.totalProduction.count}+`}
             img={icon3}
             bgColor="bg-red-50"
             overlay2={overlay3}
             overlay21={overlay31}
           />
           <Card
-            title="Production Live"
-            value="50+"
+            title="Total Scrap Order"
+            value={`${dashboardDetails.totalScrapOrder.count}+`}
             img={icon4}
             bgColor="bg-red-50"
             overlay2={overlay4}
             overlay21={overlay41}
           />
         </div>
-
+        {/* 
         <div className=" mt-8 bg-gray-100 w-full">
           <Chart />
-        </div>
 
+        </div> */}
         <div className="mt-8  p flex flex-col lg:flex-row gap-10">
           <div className="w-full lg:w-[60%] bg-white rounded-xl">
-            <TopSuppliers />
+            <Chart />
           </div>
           <div className="w-full lg:w-[40%] bg-white rounded-xl">
-            <NewEmployees />
+            <NewEmployees employees={dashboardDetails.newlyAddedEmployees} />
+          </div>
+        </div>
+        <div className="mt-8  p flex flex-col lg:flex-row gap-10">
+          <div className="w-full lg:w-[60%] bg-white rounded-xl">
+            <TopSuppliers suppliers={dashboardDetails.suppliers} />
+          </div>
+          <div className="flex flex-col gap-4 w-full lg:w-[40%] p-4 py-10 bg-white  rounded-md shadow-md  ">
+            <TopPerformer performers={dashboardDetails.topPerformersSorted} />
           </div>
         </div>
 
         <div className="py-8  ">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between rounded-lg   gap-20 lg:gap-4 w-full ">
-            <div className="flex flex-col gap-4 w-full lg:w-[40%] p-4 py-10 bg-white  rounded-md shadow-md  ">
-              {" "}
-              <TopPerformer />
-            </div>
+            {/* <div className="flex flex-col gap-4 w-full lg:w-[40%] p-4 py-10 bg-white  rounded-md shadow-md  ">
+              <TopPerformer performers={dashboardDetails.topPerformersSorted} />
+            </div> */}
 
-            <div className="w-full  lg:w-[70%] flex lg:items-center  p-6 bg-white rounded-md shadow-md  overflow-x-auto">
+            {/* <div className="w-full  lg:w-[70%] flex lg:items-center  p-6 bg-white rounded-md shadow-md  overflow-x-auto">
               <ProcessTable />
-            </div>
+            </div> */}
           </div>
         </div>
 
         <div className="py-4">
-          <OrderStatus />
+          <OrderStatus
+            orders={dashboardDetails.formattedOrders}
+            onMonthChange={handleMonthChangeFromChild} // Pass the callback
+          />
         </div>
       </div>
     </div>

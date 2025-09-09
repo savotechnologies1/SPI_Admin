@@ -199,7 +199,6 @@ const App = () => {
             <Route path="product-tree" element={<ProductTree />} />
             <Route path="part-table" element={<PartTable />} />
             <Route path="import" element={<Import />} />
-            <Route path="user-access" element={<UserAccess />} />
             <Route path="current-quality" element={<CurrentQuality />} />
             <Route path="settings" element={<Settings />} />
             <Route path="all-supplier" element={<SupplierList />} />

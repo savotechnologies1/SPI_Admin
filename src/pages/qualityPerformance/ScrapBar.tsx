@@ -118,7 +118,7 @@ const ScrapBar = ({ supplierReturnData }) => {
   console.log("datadata", supplierReturnData);
 
   const data = {
-    labels: supplierReturnData.map((p) => p.PartNumber.process.processName),
+    labels: supplierReturnData.map((p) => p.PartNumber?.process?.processName),
     datasets: [
       {
         label: "Manual CT",

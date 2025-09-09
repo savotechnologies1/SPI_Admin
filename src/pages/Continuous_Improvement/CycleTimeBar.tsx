@@ -8,6 +8,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 ChartJS.register(
   CategoryScale,
@@ -114,9 +116,6 @@ ChartJS.register(
 
 // export default CycleTime;
 
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -134,24 +133,35 @@ interface CycleTimeData {
 
 const CycleTime = () => {
   const [chartData, setChartData] = useState<CycleTimeData[]>([]);
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
+
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
+  // default date = aaj
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const startDate = "2025-09-01"; // example, can be dynamic
-        const endDate = "2025-09-05"; // example, can be dynamic
-        const response = await axios.get(
-          `${BASE_URL}/api/admin/cycle-time-comparision-data?startDate=${startDate}&endDate=${endDate}`
-        );
-        setChartData(response.data.data);
-      } catch (error) {
-        console.error("Error fetching cycle time data:", error);
-      }
-    };
-
-    fetchData();
+    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+    setStartDate(today);
+    setEndDate(today);
   }, []);
+
+  const fetchData = async (sDate: string, eDate: string) => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/api/admin/cycle-time-comparision-data?startDate=${sDate}&endDate=${eDate}`
+      );
+      setChartData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching cycle time data:", error);
+    }
+  };
+
+  // jab startDate/endDate change ho to API call
+  useEffect(() => {
+    if (startDate && endDate) {
+      fetchData(startDate, endDate);
+    }
+  }, [startDate, endDate]);
 
   const data = {
     labels: chartData.map((item) => item.processName),
@@ -162,7 +172,7 @@ const CycleTime = () => {
         backgroundColor: "rgba(214, 69, 80, 1)",
         borderColor: "rgba(214, 69, 80, 1)",
         borderWidth: 1,
-        maxBarThickness: 90, // Set maximum bar thickness in pixels
+        maxBarThickness: 90,
       },
       {
         label: "Calculated ideal CT",
@@ -170,7 +180,7 @@ const CycleTime = () => {
         backgroundColor: "rgba(230, 143, 150, 1)",
         borderColor: "rgba(230, 143, 150, 1)",
         borderWidth: 1,
-        maxBarThickness: 90, // Set maximum bar thickness in pixels
+        maxBarThickness: 90,
       },
     ],
   };
@@ -186,13 +196,8 @@ const CycleTime = () => {
           usePointStyle: true,
           boxWidth: 8,
           padding: 10,
-          font: {
-            size: window.innerWidth < 768 ? 10 : 12,
-          },
+          font: { size: window.innerWidth < 768 ? 10 : 12 },
         },
-      },
-      title: {
-        display: false,
       },
       tooltip: {
         bodyFont: { size: window.innerWidth < 768 ? 10 : 12 },
@@ -201,7 +206,6 @@ const CycleTime = () => {
     },
     scales: {
       x: {
-        beginAtZero: true,
         grid: { display: false },
         ticks: { font: { size: window.innerWidth < 768 ? 10 : 12 } },
       },
@@ -218,8 +222,6 @@ const CycleTime = () => {
         },
       },
     },
-    barPercentage: window.innerWidth < 768 ? 0.6 : 0.8,
-    categoryPercentage: window.innerWidth < 768 ? 0.7 : 0.9,
   };
 
   return (
@@ -227,6 +229,23 @@ const CycleTime = () => {
       <h1 className="text-lg md:text-xl lg:text-2xl font-semibold mb-2 md:mb-4">
         Cycle Time Comparison
       </h1>
+
+      {/* Date Filters */}
+      <div className="flex gap-2 mb-4">
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          className="border px-2 py-1 rounded"
+        />
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          className="border px-2 py-1 rounded"
+        />
+      </div>
+
       <div className="w-full h-[300px] sm:h-[350px] md:h-[400px]">
         <Bar data={data} options={options} />
       </div>

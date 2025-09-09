@@ -440,12 +440,7 @@ const sections: Section[] = [
         icon: setting,
         path: "/import",
       },
-      {
-        key: "User Access",
-        label: "User Access",
-        icon: setting,
-        path: "/user-access",
-      },
+
       {
         key: "Setting",
         label: "Settings",

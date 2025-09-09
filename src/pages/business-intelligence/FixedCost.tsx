@@ -310,3 +310,189 @@ const FixedCost = () => {
 };
 
 export default FixedCost;
+
+// RevenueTables.tsx
+// import React from "react";
+
+// type Order = {
+//   orderDate: string;
+//   product: string;
+//   qty: number;
+//   salesRevenue: number;
+//   deliveryDate?: string;
+//   shippedDate?: string;
+// };
+
+// type RevenueTablesProps = {
+//   stockOrders: Order[];
+//   customOrders: Order[];
+//   fulfilledOrders: Order[];
+// };
+
+// const FixedCost: React.FC<RevenueTablesProps> = ({}) => {
+//   const stockOrders = [
+//     {
+//       orderDate: "2025-09-01",
+//       product: "Aloo Paratha",
+//       qty: 10,
+//       salesRevenue: 1000,
+//       deliveryDate: "2025-09-05",
+//     },
+//   ];
+
+//   const customOrders = [
+//     {
+//       orderDate: "2025-09-02",
+//       product: "Paneer Paratha",
+//       qty: 5,
+//       salesRevenue: 500,
+//       deliveryDate: "2025-09-06",
+//     },
+//   ];
+
+//   const fulfilledOrders = [
+//     {
+//       orderDate: "2025-09-01",
+//       product: "Aloo Paratha",
+//       qty: 10,
+//       salesRevenue: 1000,
+//       shippedDate: "2025-09-05",
+//     },
+//   ];
+//   const totalStockRevenue = stockOrders?.reduce(
+//     (sum, o) => sum + o.salesRevenue,
+//     0
+//   );
+//   const totalCustomRevenue = customOrders?.reduce(
+//     (sum, o) => sum + o.salesRevenue,
+//     0
+//   );
+//   const totalRevenue = totalStockRevenue + totalCustomRevenue;
+
+//   return (
+//     <div className="space-y-10 p-4">
+//       {/* Stock Orders Table */}
+//       <div>
+//         <h2 className="text-xl font-semibold mb-2">Stock Orders Summary</h2>
+//         <div className="overflow-x-auto">
+//           <table className="min-w-full border border-gray-300 text-sm">
+//             <thead className="bg-gray-100">
+//               <tr>
+//                 <th className="border px-3 py-2 text-left">Order Date</th>
+//                 <th className="border px-3 py-2 text-left">Product</th>
+//                 <th className="border px-3 py-2 text-right">Qty</th>
+//                 <th className="border px-3 py-2 text-right">Sales Revenue</th>
+//                 <th className="border px-3 py-2 text-left">Delivery Date</th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {stockOrders.map((order, idx) => (
+//                 <tr key={idx} className="hover:bg-gray-50">
+//                   <td className="border px-3 py-2">{order.orderDate}</td>
+//                   <td className="border px-3 py-2">{order.product}</td>
+//                   <td className="border px-3 py-2 text-right">{order.qty}</td>
+//                   <td className="border px-3 py-2 text-right">
+//                     {order.salesRevenue.toLocaleString()}
+//                   </td>
+//                   <td className="border px-3 py-2">{order.deliveryDate}</td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//             <tfoot className="bg-gray-100 font-semibold">
+//               <tr>
+//                 <td className="border px-3 py-2" colSpan={3}>
+//                   Total
+//                 </td>
+//                 <td className="border px-3 py-2 text-right">
+//                   {totalStockRevenue.toLocaleString()}
+//                 </td>
+//                 <td className="border px-3 py-2"></td>
+//               </tr>
+//             </tfoot>
+//           </table>
+//         </div>
+//       </div>
+
+//       {/* Custom Orders Table */}
+//       <div>
+//         <h2 className="text-xl font-semibold mb-2">Custom Orders Summary</h2>
+//         <div className="overflow-x-auto">
+//           <table className="min-w-full border border-gray-300 text-sm">
+//             <thead className="bg-gray-100">
+//               <tr>
+//                 <th className="border px-3 py-2 text-left">Order Date</th>
+//                 <th className="border px-3 py-2 text-left">Product</th>
+//                 <th className="border px-3 py-2 text-right">Qty</th>
+//                 <th className="border px-3 py-2 text-right">Sales Revenue</th>
+//                 <th className="border px-3 py-2 text-left">Delivery Date</th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {customOrders.map((order, idx) => (
+//                 <tr key={idx} className="hover:bg-gray-50">
+//                   <td className="border px-3 py-2">{order.orderDate}</td>
+//                   <td className="border px-3 py-2">{order.product}</td>
+//                   <td className="border px-3 py-2 text-right">{order.qty}</td>
+//                   <td className="border px-3 py-2 text-right">
+//                     {order.salesRevenue.toLocaleString()}
+//                   </td>
+//                   <td className="border px-3 py-2">{order.deliveryDate}</td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//             <tfoot className="bg-gray-100 font-semibold">
+//               <tr>
+//                 <td className="border px-3 py-2" colSpan={3}>
+//                   Total
+//                 </td>
+//                 <td className="border px-3 py-2 text-right">
+//                   {totalCustomRevenue.toLocaleString()}
+//                 </td>
+//                 <td className="border px-3 py-2"></td>
+//               </tr>
+//             </tfoot>
+//           </table>
+//         </div>
+//       </div>
+
+//       {/* Total Revenue */}
+//       <div className="p-4 bg-blue-50 rounded-lg text-lg font-semibold">
+//         Total Revenue (Stock + Custom):{" "}
+//         <span className="text-blue-800">{totalRevenue.toLocaleString()}</span>
+//       </div>
+
+//       {/* Fulfilled Orders Table */}
+//       <div>
+//         <h2 className="text-xl font-semibold mb-2">Fulfilled Orders</h2>
+//         <div className="overflow-x-auto">
+//           <table className="min-w-full border border-gray-300 text-sm">
+//             <thead className="bg-gray-100">
+//               <tr>
+//                 <th className="border px-3 py-2 text-left">Order Date</th>
+//                 <th className="border px-3 py-2 text-left">Product</th>
+//                 <th className="border px-3 py-2 text-right">Qty</th>
+//                 <th className="border px-3 py-2 text-right">Sales Revenue</th>
+//                 <th className="border px-3 py-2 text-left">Shipped Date</th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {fulfilledOrders.map((order, idx) => (
+//                 <tr key={idx} className="hover:bg-gray-50">
+//                   <td className="border px-3 py-2">{order.orderDate}</td>
+//                   <td className="border px-3 py-2">{order.product}</td>
+//                   <td className="border px-3 py-2 text-right">{order.qty}</td>
+//                   <td className="border px-3 py-2 text-right">
+//                     {order.salesRevenue.toLocaleString()}
+//                   </td>
+//                   <td className="border px-3 py-2">{order.shippedDate}</td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default FixedCost;
