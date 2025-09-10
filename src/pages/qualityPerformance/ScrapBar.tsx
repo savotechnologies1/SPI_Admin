@@ -18,23 +18,17 @@ ChartJS.register(
   Legend
 );
 
-const ScrapBar = () => {
+const ScrapBar = ({ qualityData }) => {
   const data = {
-    labels: ["Sanding", "Inspection", "CutTrim", "Termoforming", "Technology"],
+    labels: qualityData.map((item) => item.part.process.processName),
     datasets: [
       {
-        label: "Manual CT",
-        data: [10, 6, 8, 0, 0],
+        label: "Manual ",
+        data: qualityData.map((item) => item.scrapQuantity),
         backgroundColor: "rgba(214, 69, 80, 1)",
         borderColor: "rgba(214, 69, 80, 1)",
         borderWidth: 1,
-      },
-      {
-        label: "Calculated ideal CT",
-        data: [0, 0, 0, 9, 11],
-        backgroundColor: "rgba(230, 143, 150, 1)",
-        borderColor: "rgba(230, 143, 150, 1)",
-        borderWidth: 1,
+        maxBarThickness: 90,
       },
     ],
   };
@@ -89,7 +83,7 @@ const ScrapBar = () => {
         },
         title: {
           display: true,
-          text: "Cycle Time (seconds)",
+          text: "Qty",
           font: {
             size: window.innerWidth < 768 ? 12 : 14,
           },
@@ -103,7 +97,7 @@ const ScrapBar = () => {
   return (
     <div className="w-full mx-auto p-2 md:p-4 bg-white rounded-lg shadow-sm">
       <h1 className="text-lg md:text-xl lg:text-2xl font-semibold mb-2 md:mb-4">
-        Cycle Time Comparison
+        Scrap Chart
       </h1>
       <div className="w-full h-[300px] sm:h-[350px] md:h-[400px]">
         <Bar data={data} options={options} />

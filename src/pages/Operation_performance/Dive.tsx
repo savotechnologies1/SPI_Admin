@@ -247,6 +247,7 @@ const cycleData = [{ name: "Cut Trim", avgCycle: 20 }];
 
 import React, { useEffect } from "react";
 import axios from "axios";
+import DatePicker from "react-datepicker";
 
 const apiResponse = {
   message: "Current status overview fetched successfully",
@@ -781,6 +782,9 @@ const apiResponse = {
 const Dive = () => {
   const [selectedStation, setSelectedStation] = useState<string>("");
   const [selectedEmployee, setSelectedEmployee] = useState<string>("");
+  const [productivity, setProductivity] = useState<string>("");
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [dashboardData, setDashboardData] = useState<any>({
     totalActual: 0,
     processMetrics: [],
@@ -800,16 +804,19 @@ const Dive = () => {
 
       if (processId) params.push(`processId=${processId}`);
       if (employeeId) params.push(`employeeId=${employeeId}`);
+      if (startDate) params.push(`startDate=${startDate.toISOString()}`);
+      if (endDate) params.push(`endDate=${endDate.toISOString()}`);
 
       if (params.length > 0) {
         url += "?" + params.join("&");
       }
 
       const res = await axios.get(url);
+
       const processedData = processApiData(res.data.data);
       setDashboardData(processedData);
+      setProductivity(res.data?.productivity);
 
-      // Auto select if empty
       if (!selectedStation && processedData.stations.length > 0) {
         setSelectedStation(processedData.stations[0]);
       }
@@ -822,8 +829,8 @@ const Dive = () => {
   };
 
   useEffect(() => {
-    getData();
-  }, []);
+    getData(selectedStation, selectedEmployee);
+  }, [startDate, endDate]);
 
   // 🔹 Process API data into UI-friendly structure
   const processApiData = (data: any[]) => {
@@ -923,9 +930,10 @@ const Dive = () => {
   };
 
   // 🔹 Filter data based on selected station & employee
-  const filteredProcessMetrics = dashboardData.processMetrics.filter(
-    (metric) => !selectedStation || metric.text === selectedStation
-  );
+  const filteredProcessMetrics = dashboardData.processMetrics.map((metric) => ({
+    ...metric,
+    isSelected: metric.text === selectedStation,
+  }));
 
   const filteredParts = dashboardData.partsCompleted.filter(
     (p) =>
@@ -933,40 +941,35 @@ const Dive = () => {
       (!selectedEmployee || p.employee === selectedEmployee)
   );
 
-  // 🔹 Top cards
-  const data_1 = [
-    {
-      num: "1",
-      text: "Shift",
-    },
-    {
-      num: dashboardData.totalActual,
-      text: "Actual",
-    },
-  ];
+  console.log("filteredProcessMetricsfilteredProcessMetrics", productivity);
 
   return (
     <div>
-      {/* Top Cards */}
-      {/* <div className="flex flex-col md:flex-row mt-2 gap-4 ">
-        {data_1.map((item, index) => (
-          <div
-            key={index}
-            className="flex justify-between items-center bg-white rounded-md w-60 p-2"
-          >
-            <div>
-              <p className="font-bold text-2xl">{item.num}</p>
-              <p>{item.text}</p>
-            </div>
-          </div>
-        ))}
-      </div> */}
-
+      <div className="flex items-center gap-2 justify-end">
+        <DatePicker
+          selected={startDate}
+          onChange={(date) => setStartDate(date)}
+          dateFormat="dd/MM/yyyy"
+          className="border rounded-md p-1 text-xs"
+        />
+        <span>-</span>
+        <DatePicker
+          selected={endDate}
+          onChange={(date) => setEndDate(date)}
+          dateFormat="dd/MM/yyyy"
+          className="border rounded-md p-1 text-xs"
+        />
+      </div>
       {/* Process Metrics + Station + Employee */}
       <div className="flex justify-between gap-4 flex-col md:flex-row mt-4">
         <div className="md:w-[70%] grid grid-cols-1 md:grid-cols-2 gap-4 ">
           {filteredProcessMetrics.map((item, index) => (
-            <div key={index}>
+            <div
+              key={index}
+              className={`bg-white p-4 rounded-md flex flex-col justify-center gap-4 px-8 ${
+                item.isSelected ? "border-2 border-[#0F2B36]" : ""
+              }`}
+            >
               <div className="bg-white p-4 rounded-md flex flex-col justify-center gap-4 px-8">
                 <h1 className="text-center font-semibold">{item.text}</h1>
                 <div className="flex justify-between">
@@ -1059,7 +1062,6 @@ const Dive = () => {
               <tr className="bg-gray-100 text-gray-600 text-sm whitespace-nowrap">
                 <th className="py-2 px-4 text-left">Process</th>
                 <th className="py-2 px-4 text-left">Part Desc</th>
-                <th className="py-2 px-4 text-left">Employee</th>
               </tr>
             </thead>
             <tbody>
@@ -1069,9 +1071,6 @@ const Dive = () => {
                     {item.process}
                   </td>
                   <td className="py-2 px-4 whitespace-nowrap">{item.desc}</td>
-                  <td className="py-2 px-4 whitespace-nowrap">
-                    {item.employee}
-                  </td>
                 </tr>
               ))}
             </tbody>
@@ -1099,6 +1098,41 @@ const Dive = () => {
             </BarChart>
           </ResponsiveContainer>
         </div>
+      </div>
+      <div className="bg-white rounded-lg shadow-md p-4 md:w-[65%] overflow-x-auto mt-6">
+        <h2 className="text-lg font-semibold mb-4">Producitivity</h2>
+        <table className="w-full">
+          <thead>
+            <tr className="bg-gray-100 text-gray-600 text-sm whitespace-nowrap">
+              <th className="py-2 px-4 text-left">Process Name</th>
+              <th className="py-2 px-4 text-left">Employee Name</th>
+              <th className="py-2 px-4 text-left">Cycle Time</th>
+              <th className="py-2 px-4 text-left">Qty</th>
+              <th className="py-2 px-4 text-left">Scrap</th>
+              <th className="py-2 px-4 text-left">Producitvity</th>
+            </tr>
+          </thead>
+          <tbody>
+            {productivity?.length > 0 ? (
+              productivity.map((item, index) => (
+                <tr key={index} className="border-b">
+                  <td className="py-2 px-4">{item.processName}</td>
+                  <td className="py-2 px-4">{item.employeeName}</td>
+                  <td className="py-2 px-4">{item.CT}</td>
+                  <td className="py-2 px-4">{item.Qty}</td>
+                  <td className="py-2 px-4">{item.Scrap}</td>
+                  <td className="py-2 px-4">{item.Prod}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="text-center py-4">
+                  No data available
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

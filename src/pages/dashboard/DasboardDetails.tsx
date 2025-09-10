@@ -240,27 +240,26 @@ const DasboardDetails = () => {
             overlay21={overlay41}
           />
         </div>
-        {/* 
+
         <div className=" mt-8 bg-gray-100 w-full">
           <Chart />
-
-        </div> */}
-        <div className="mt-8  p flex flex-col lg:flex-row gap-10">
+        </div>
+        {/* <div className="mt-8  p flex flex-col lg:flex-row gap-10">
           <div className="w-full lg:w-[60%] bg-white rounded-xl">
             <Chart />
           </div>
           <div className="w-full lg:w-[40%] bg-white rounded-xl">
             <NewEmployees employees={dashboardDetails.newlyAddedEmployees} />
           </div>
-        </div>
-        <div className="mt-8  p flex flex-col lg:flex-row gap-10">
+        </div> */}
+        {/* <div className="mt-8  p flex flex-col lg:flex-row gap-10">
           <div className="w-full lg:w-[60%] bg-white rounded-xl">
             <TopSuppliers suppliers={dashboardDetails.suppliers} />
           </div>
           <div className="flex flex-col gap-4 w-full lg:w-[40%] p-4 py-10 bg-white  rounded-md shadow-md  ">
             <TopPerformer performers={dashboardDetails.topPerformersSorted} />
           </div>
-        </div>
+        </div> */}
 
         <div className="py-8  ">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between rounded-lg   gap-20 lg:gap-4 w-full ">

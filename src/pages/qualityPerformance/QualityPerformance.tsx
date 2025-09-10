@@ -21,6 +21,7 @@ import {
 import CustomerReturn from "./CustomerReturn";
 import SupplierReturn from "./SupplierReturn";
 import ScrapBar from "./ScrapBar";
+import { useEffect, useState } from "react";
 
 const data_1 = [
   {
@@ -77,6 +78,44 @@ const vacPrestrech = [
 ];
 
 const QualityPerformance = () => {
+  const [qualityData, setQualityData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const BASE_URL = import.meta.env.VITE_SERVER_URL;
+
+  useEffect(() => {
+    const fetchQualityData = async () => {
+      try {
+        const res = await fetch(
+          `${BASE_URL}/api/admin/quality-performance-data`
+        ); // Replace with your API
+        const data = await res.json();
+        if (data && data.data) {
+          setQualityData(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching quality performance:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQualityData();
+  }, []);
+
+  // Example: aggregate scrap and schedule quantities
+  const scrapSummary = qualityData.reduce(
+    (acc, item) => {
+      acc.totalScrap += item.scrapQuantity;
+      acc.totalSchedule += item.scheduleQuantity;
+      return acc;
+    },
+    { totalScrap: 0, totalSchedule: 0 }
+  );
+
+  if (loading) return <p>Loading...</p>;
+
+  console.log("scrapSummaryscrapSummary,scrapSummary", qualityData);
+
   return (
     <div>
       <div className="p-7">
@@ -132,16 +171,13 @@ const QualityPerformance = () => {
         </div>
 
         <div className="mt-6">
-          <CustomerReturn />
-        </div>
-        <div className="mt-6">
-          <SupplierReturn />
+          <SupplierReturn qualityData={qualityData} />
         </div>
         <div className="mt-6 bg-white rounded-md shadow-sm">
-          <ScrapBar />
+          <ScrapBar qualityData={qualityData} />
         </div>
 
-        <div className="bg-white shadow-md rounded-2xl  mt-6 p-4 ">
+        {/* <div className="bg-white shadow-md rounded-2xl  mt-6 p-4 ">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white shadow-md rounded-2xl p-2 md:p-4">
               <h2 className=" md:text-lg font-medium mb-2">
@@ -250,7 +286,7 @@ const QualityPerformance = () => {
               </ResponsiveContainer>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
