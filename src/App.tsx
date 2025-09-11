@@ -79,6 +79,7 @@ import SupplierOrderList from "./pages/supplier_chain/supplierOrderList";
 import EditSupplierOrder from "./pages/supplier_chain/EditSupplierOrder";
 import { Loader } from "lucide-react";
 import EditVacationInfo from "./pages/Employee_Information/Employee_Information/EditVacationInfo";
+import FixedCost from "./pages/fixed-cost-management/FixedCost";
 
 const App = () => {
   const { isLoading, token } = useAuth();
@@ -213,7 +214,6 @@ const App = () => {
             <Route path="supplier-inventory" element={<SupplierInventory />} />
             <Route path="supplier-list" element={<SupplierPartList />} />
             <Route path="scrap-entries" element={<AllScrapEntries />} />
-
             <Route path="/employees" element={<Employees />} />
             <Route path="/add-employee" element={<AddEmployee />} />
             <Route path="/edit-employee/:id" element={<EditEmployee />} />
@@ -247,6 +247,7 @@ const App = () => {
             />
             <Route path="business-analysis" element={<BusinessAnalysis />} />
             <Route path="projecion" element={<Projection />} />
+            <Route path="fixed-cost-management" element={<FixedCost />} />
           </Route>
         </Routes>
       </Router>

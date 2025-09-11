@@ -387,6 +387,13 @@ const sections: Section[] = [
           },
         ],
       },
+
+      {
+        key: "Fixed Cost Mangement",
+        label: "Fixed Cost Mangement",
+        icon: time_clock,
+        path: "/fixed-cost-management",
+      },
     ],
   },
   {

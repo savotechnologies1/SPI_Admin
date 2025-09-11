@@ -22,6 +22,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../utils/axiosInstance";
 import { dashBoardData } from "./https/dashboardApi";
+import Productivity from "./Productivity";
+import DashboardCards from "./DashBoardCard";
 
 // const DasboardDetails = () => {
 //   const [photo, setPhoto] = useState<string | null>(null);
@@ -204,9 +206,9 @@ const DasboardDetails = () => {
   return (
     <div className="p-4 mt-5">
       <h1 className="text-xl font-semibold mt-4">Welcome back, Admin👋</h1>
-
+      <DashboardCards dashboardDetails={dashboardDetails} />
       <div className="py-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 ">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 ">
           <Card
             title="Order Schedule"
             value={`${dashboardDetails.orderSchedule.count}+`}
@@ -239,7 +241,7 @@ const DasboardDetails = () => {
             overlay2={overlay4}
             overlay21={overlay41}
           />
-        </div>
+        </div> */}
 
         <div className=" mt-8 bg-gray-100 w-full">
           <Chart />
@@ -272,10 +274,10 @@ const DasboardDetails = () => {
             </div> */}
           </div>
         </div>
-
+        <Productivity productivity={dashboardDetails.productivityData} />
         <div className="py-4">
           <OrderStatus
-            orders={dashboardDetails.formattedOrders}
+            orders={dashboardDetails}
             onMonthChange={handleMonthChangeFromChild} // Pass the callback
           />
         </div>
