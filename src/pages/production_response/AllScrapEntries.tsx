@@ -167,7 +167,7 @@ const AllScrapEntries: React.FC = () => {
             <tbody>
               {workData.map((item, index) => (
                 <tr key={item.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3">{item.PartNumber.partNumber}</td>
+                  <td className="px-4 py-3">{item?.PartNumber?.partNumber}</td>
 
                   <td className="px-4 py-3">
                     {item.supplier.firstName} {item.supplier.lastName}

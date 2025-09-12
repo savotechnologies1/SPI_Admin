@@ -64,7 +64,7 @@ const PartForm = () => {
   useEffect(() => {
     if (formik.values.searchPart && !formik.values.partId) {
       const filtered = partData.filter((part) =>
-        part.partNumber
+        part?.partNumber
           .toLowerCase()
           .includes(formik.values.searchPart.toLowerCase())
       );
