@@ -392,11 +392,13 @@ const CycleTime = ({ partId }: { partId: string }) => {
             label: "Manual CT",
             data: apiData.map((item: any) => item.manualCT),
             backgroundColor: "rgba(214, 69, 80, 1)",
+            maxBarThickness: 90, // Set maximum bar thickness in pixels
           },
           {
             label: "Ideal CT",
             data: apiData.map((item: any) => item.idealCT),
             backgroundColor: "rgba(34, 197, 94, 1)",
+            maxBarThickness: 90, // Set maximum bar thickness in pixels
           },
         ],
       });

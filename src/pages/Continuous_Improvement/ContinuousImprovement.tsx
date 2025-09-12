@@ -131,13 +131,16 @@ const ContinuousImprovement = () => {
   };
 
   return (
-    <div>
-      <div className="flex">
+    <div className="mt-10 px-6">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 mt-10 px-6">
+        Continuous Improvement
+      </h2>
+      <div className="flex gap-5 mb-6 ">
         {/* Pass selected partId */}
         {selected && <CycleTime partId={selected} />}
 
         <div className="w-[30%] bg-white p-4 rounded-md">
-          <h2 className="text-lg font-semibold mb-4 mt-8">Part</h2>
+          <h2 className="text-lg font-semibold mb-4 mt-8">Part Desc</h2>
           <div className="flex flex-col gap-3">
             {parts.map((part) => (
               <div

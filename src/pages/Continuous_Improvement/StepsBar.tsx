@@ -48,6 +48,7 @@ const StepsBar = ({ partId }: { partId: string }) => {
             backgroundColor: "rgba(5, 44, 137, 0.8)",
             borderColor: "rgba(5, 44, 137, 1)",
             borderWidth: 1,
+            maxBarThickness: 90, // Set maximum bar thickness in pixels
           },
         ],
       });
