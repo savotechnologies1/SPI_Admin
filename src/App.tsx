@@ -80,6 +80,7 @@ import EditSupplierOrder from "./pages/supplier_chain/EditSupplierOrder";
 import { Loader } from "lucide-react";
 import EditVacationInfo from "./pages/Employee_Information/Employee_Information/EditVacationInfo";
 import FixedCost from "./pages/fixed-cost-management/FixedCost";
+import MonitorManagement from "./pages/productionLive/MonitorManagement";
 
 const App = () => {
   const { isLoading, token } = useAuth();
@@ -185,6 +186,7 @@ const App = () => {
             <Route path="inventory-status" element={<InventoryStatus />} />
             <Route path="capacity-status" element={<CapacityStatus />} />
             <Route path="live-production" element={<LiveProductionGoal />} />
+            <Route path="current-monitor" element={<MonitorManagement />} />
             <Route path="current-status" element={<CurrentStatus />} />
             <Route path="current-quality" element={<CurrentQuality />} />
             <Route path="new-customer" element={<NewCustomer />} />

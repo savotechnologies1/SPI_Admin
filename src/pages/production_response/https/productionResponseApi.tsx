@@ -99,11 +99,15 @@ export const completeTraningApi = async (id: string) => {
   }
 };
 
-export const updateStepTime = async (productionId: string, stepId: string) => {
+export const updateStepTime = async (
+  productionId: string,
+  stepId: string,
+  prevStepId: string
+) => {
   try {
     const response = await axiosInstance.put(
-      `/production-response/${productionId}/update-step-time`,
-      { stepId }
+      `/production-response/update-step-time/${productionId}`,
+      { stepId, prevStepId }
     );
 
     if (response.status === 200) {

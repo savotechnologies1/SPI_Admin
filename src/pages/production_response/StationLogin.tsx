@@ -474,10 +474,19 @@ const StationLogin = () => {
     onSubmit: async (values) => {
       const type = submitTypeRef.current;
 
+      // selected process ka object nikal lo
+      const selectedProcess = emoloyeeProcess?.processOverviews?.find(
+        (p: any) => p.processId === values.processId
+      );
+
+      // agar nextJob exist kare to uska partId le lo
+      const partId = selectedProcess?.nextJob?.partId || null;
+
       const data = {
         processId: values.processId,
         stationUserId: values.stationUserId,
         type: type,
+        partId: partId, // 👈 yeh naya add kiya
       };
 
       try {

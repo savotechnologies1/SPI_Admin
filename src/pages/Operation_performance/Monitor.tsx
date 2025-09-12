@@ -172,6 +172,7 @@ const Monitor = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [manualData, setManualData] = useState([]);
   const [monitorData, setMonitorData] = useState([]);
+  const [productionScrapData, setProductionScrapData] = useState([]);
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
   const fetchData = async () => {
@@ -182,8 +183,13 @@ const Monitor = () => {
           endDate: endDate.toISOString(),
         },
       });
+      console.log(
+        "res.data.productionScrap)res.data.productionScrap)",
+        res.data
+      );
       setManualData(res.data.manualTable);
       setMonitorData(res.data.monitorTable);
+      setProductionScrapData(res.data.productionScrap);
     } catch (err) {
       console.error("Error fetching data", err);
     }
@@ -192,7 +198,7 @@ const Monitor = () => {
   useEffect(() => {
     fetchData();
   }, [startDate, endDate]);
-  console.log("manualDatamanualData", manualData);
+  console.log("manualDatamanualData", productionScrapData);
 
   const tableList = [
     { title: "Manual", columns: columnsManual, data: manualData },
@@ -218,7 +224,11 @@ const Monitor = () => {
       </div>
       <div className="flex  justify-between items-center gap-8 p-6">
         {/* <DataTable columns={table.columns} data={table.data} /> */}
-        <DataTable manualData={manualData} monitorData={monitorData} />
+        <DataTable
+          manualData={manualData}
+          monitorData={monitorData}
+          productionScrapData={productionScrapData}
+        />
       </div>
     </>
   );

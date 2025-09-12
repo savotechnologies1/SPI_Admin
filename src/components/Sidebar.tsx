@@ -239,6 +239,11 @@ const sections: Section[] = [
             label: "Current quality performance",
             path: "/current-quality",
           },
+          {
+            key: "currnt-monitor",
+            label: "Current Monitor",
+            path: "/current-monitor",
+          },
         ],
       },
       {

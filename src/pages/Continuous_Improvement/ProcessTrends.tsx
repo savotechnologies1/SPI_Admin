@@ -36,7 +36,7 @@ const machineData = [
 
 export default function ProcessTrends() {
   return (
-    <div className="p-4 md:p-6">
+    <div className="p-4 mt-5  md:p-6">
       <h1 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6">
         Process Trends (Thermoforming)
       </h1>

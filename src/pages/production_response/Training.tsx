@@ -60,18 +60,19 @@ interface JobData {
 const Training = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  console.log("idid", id);
 
   const [jobData, setJobData] = useState<JobData | null>(null);
   const [loading, setLoading] = useState(true);
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
-
-  const handleStepClick = async (stepId: string) => {
+  const handleStepClick = async (stepId: string, prevStepId?: string) => {
     if (!jobData) return;
 
     setCompletedSteps((prev) => new Set(prev).add(stepId));
 
     try {
-      await updateStepTime(jobData.productionId, stepId);
+      // backend call with both stepId and prevStepId
+      await updateStepTime(jobData.productionId, stepId, prevStepId);
     } catch (error) {
       console.error("Failed to update step time", error);
     }
@@ -83,9 +84,11 @@ const Training = () => {
       navigate("/station-login");
       return;
     }
+    console.log("jobIdjobId", jobId);
+    const stationUserId = localStorage.getItem("stationUserId");
     try {
       setLoading(true);
-      const response = await stationProcessDetail(jobId);
+      const response = await stationProcessDetail(jobId, stationUserId);
       const data = response?.data;
       if (data) setJobData(data);
     } catch (error: any) {
@@ -236,31 +239,36 @@ const Training = () => {
 
         <div className="flex flex-col gap-4">
           {part?.WorkInstruction?.flatMap((wi) =>
-            wi.steps.map((step) => (
-              <div
-                key={step.id}
-                onClick={() => handleStepClick(step.id)}
-                className={`flex flex-col md:flex-row items-center gap-4 p-4 bg-white shadow-sm rounded-lg cursor-pointer ${
-                  completedSteps.has(step.id) ? "border-2 border-green-500" : ""
-                }`}
-              >
-                <div className="w-full md:w-auto">
-                  <img
-                    className="rounded-md w-full max-w-xs"
-                    src={
-                      step.images?.[0]?.imagePath
-                        ? `${BASE_URL}/uploads/workInstructionImg/${step.images[0].imagePath}`
-                        : "https://via.placeholder.com/150"
-                    }
-                    alt={step.title}
-                  />
+            wi.steps.map((step, index, arr) => {
+              const prevStepId = index > 0 ? arr[index - 1].id : undefined;
+              return (
+                <div
+                  key={step.id}
+                  onClick={() => handleStepClick(step.id, prevStepId)}
+                  className={`flex flex-col md:flex-row items-center gap-4 p-4 bg-white shadow-sm rounded-lg cursor-pointer ${
+                    completedSteps.has(step.id)
+                      ? "border-2 border-green-500"
+                      : ""
+                  }`}
+                >
+                  <div className="w-full md:w-auto">
+                    <img
+                      className="rounded-md w-full max-w-xs"
+                      src={
+                        step.images?.[0]?.imagePath
+                          ? `${BASE_URL}/uploads/workInstructionImg/${step.images[0].imagePath}`
+                          : "https://via.placeholder.com/150"
+                      }
+                      alt={step.title}
+                    />
+                  </div>
+                  <div className="text-center md:text-left">
+                    <p className="font-semibold text-lg">{step.title}</p>
+                    <p className="text-gray-600">{step.instruction}</p>
+                  </div>
                 </div>
-                <div className="text-center md:text-left">
-                  <p className="font-semibold text-lg">{step.title}</p>
-                  <p className="text-gray-600">{step.instruction}</p>
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
@@ -274,7 +282,7 @@ const Training = () => {
                 : "bg-gray-400 text-gray-700 cursor-not-allowed"
             }`}
           >
-            Complete Training
+            111 Complete Training
           </button>
           <NavLink to="/scrap-entry" className="w-full sm:w-auto">
             <button className="bg-transparent text-brand px-4 py-2 font-semibold border-2 border-black rounded-md w-full">
