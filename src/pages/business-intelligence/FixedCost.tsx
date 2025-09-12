@@ -315,7 +315,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import FixedCostGraph from "./FixedCostGraph";
 import StackedCostGraph from "./StackedCostGraph";
-
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 const FixedCost = () => {
   const [records, setRecords] = useState([]);
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
@@ -341,16 +349,37 @@ const FixedCost = () => {
       console.error("Error deleting record:", error);
     }
   };
-
+  const [graphData, setGraphData] = useState<any>(null);
+  console.log("graphDatagraphData", graphData?.totals);
+  const costing = graphData
+    ? [
+        {
+          name: "Yearly",
+          part1: graphData.totals.totalFixedCost || 0, // Blue bar
+          part2: graphData.totals.totalRevenue || 0, // Green bar
+        },
+      ]
+    : [];
   return (
     <div className="p-6  bg-gray-50 min-h-screen">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
         Fixed Cost Management
       </h2>
-      {/* <StackedCostGraph /> */}
-      {/* Table + Graph Section */}
+      <div className="bg-white shadow-md rounded-2xl p-4 mt-6 w-full mb-10git">
+        <div className="flex justify-between mb-6">
+          {/* <h1 className="fonr-semibold">Fixed Cost</h1> */}
+          <div>Current Year Total cost</div>
+        </div>
+        <ResponsiveContainer width="100%" height={50}>
+          <BarChart layout="vertical" width={500} height={20} data={costing}>
+            <XAxis type="number" hide />
+            <YAxis type="category" dataKey="name" hide />
+            <Bar dataKey="part1" stackId="a" fill="#052C89" />
+            <Bar dataKey="part2" stackId="a" fill="#2ECC71" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Table */}
         <div className="flex-1 bg-white rounded-xl shadow-md overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
             <h3 className="text-lg font-semibold text-gray-700">
@@ -425,7 +454,7 @@ const FixedCost = () => {
 
         {/* Graph */}
         <div className="flex-1 bg-white rounded-xl shadow-md p-6">
-          <FixedCostGraph />
+          <FixedCostGraph onDataFetched={setGraphData} />
         </div>
       </div>
     </div>
