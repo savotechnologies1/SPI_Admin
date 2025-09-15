@@ -6,7 +6,7 @@ import Dive from "./Dive";
 import Monitor from "./Monitor";
 import DatePicker from "react-datepicker";
 
-const tabs = ["Hour by Hour", "Monitor", "Dive"];
+const tabs = ["Hour by Hour", "Dive"];
 
 const OperationPerformance = () => {
   const [activeTab, setActiveTab] = useState("Hour by Hour");
@@ -26,12 +26,7 @@ const OperationPerformance = () => {
             <HourByHour />
           </p>
         );
-      case "Monitor":
-        return (
-          <p>
-            <Monitor />
-          </p>
-        );
+
       case "Dive":
         return (
           <p>

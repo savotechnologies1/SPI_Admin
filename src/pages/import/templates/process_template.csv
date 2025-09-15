@@ -1,0 +1,4 @@
+processName,machineName,cycleTime,ratePerHour,partFamily,isProcessReq,processDesc,type
+Drilling Process1,CNC-Mill-42,120 sec,30.5,Metal Components,TRUE,Precision drilling operation,Machining
+Assembly1,Line-A,3600 sec,1.8,Final Products,FALSE,Final product assembly,Assembly
+Testing1,QA-Station-1,3600 sec,1.8,Electronics,TRUE,,Testing

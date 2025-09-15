@@ -1,0 +1,4 @@
+product_number,part_number,instructionRequired
+shikha-product001,shikha001,TRUE
+shikha-product001,210001,FALSE
+shikha-product001,42d000441121177,TRUE
