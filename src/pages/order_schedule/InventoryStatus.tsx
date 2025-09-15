@@ -315,7 +315,7 @@ const InventoryStatus = () => {
                   {row.safetyStock}
                 </td>
                 <td className="py-3 px-4 text-[#061D22] text-sm">
-                  ${row.currentCost}
+                  ${row.unitCost}
                 </td>
               </tr>
             ))}
