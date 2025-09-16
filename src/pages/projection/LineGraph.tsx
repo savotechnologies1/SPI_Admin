@@ -16,7 +16,6 @@ const CashFlowLineGraph: React.FC = () => {
   const [scheduledData, setScheduledData] = useState<any[]>([]);
   const [allSchedule, setAllSchedule] = useState<any[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<string>("");
-
   const fetchData = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/api/admin/revenue-api`);
@@ -24,26 +23,39 @@ const CashFlowLineGraph: React.FC = () => {
 
       // Convert dailyCashFlow object to array
       const schedule = Object.entries(data.dailyCashFlow || {}).map(
-        ([date, cashNeeded]) => ({ date, cashNeeded })
+        ([date, cashNeeded]) => ({
+          date,
+          cashNeeded: cashNeeded ?? 0, // Ensure 0 if null or undefined
+        })
       );
 
-      // ✅ Sort date-wise ascending
-      const sorted = schedule.sort(
-        (a: any, b: any) =>
-          new Date(a.date).getTime() - new Date(b.date).getTime()
-      );
+      // ✅ Fill missing dates with 0
+      if (schedule.length > 0) {
+        const startDate = new Date(schedule[0].date);
+        const endDate = new Date(schedule[schedule.length - 1].date);
+        const allDates: any[] = [];
 
-      setAllSchedule(sorted);
-
-      // Default: current month
-      const today = new Date();
-      const defaultMonth =
-        today.getFullYear() +
-        "-" +
-        String(today.getMonth() + 1).padStart(2, "0");
-      setSelectedMonth(defaultMonth);
-
-      filterByMonth(defaultMonth, sorted);
+        for (
+          let d = new Date(startDate);
+          d <= endDate;
+          d.setDate(d.getDate() + 1)
+        ) {
+          const dateStr = d.toISOString().split("T")[0];
+          const existing = schedule.find((s) => s.date === dateStr);
+          allDates.push({
+            date: dateStr,
+            cashNeeded: existing ? existing.cashNeeded : 0,
+          });
+        }
+        setAllSchedule(allDates);
+        const today = new Date();
+        const defaultMonth =
+          today.getFullYear() +
+          "-" +
+          String(today.getMonth() + 1).padStart(2, "0");
+        setSelectedMonth(defaultMonth);
+        filterByMonth(defaultMonth, allDates);
+      }
     } catch (error) {
       console.error("Error fetching projection data", error);
     }

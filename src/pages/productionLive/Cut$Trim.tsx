@@ -118,7 +118,7 @@ const getShiftHours = (shift) => {
 };
 
 // inside ProcessTable
-const ProcessTable = ({ processName, hourlyData, total, employees }) => {
+const ProcessTable = ({ processName, hourlyData, employees }) => {
   const currentHour = new Date().getHours();
   let shift = 1;
   if (currentHour >= 6 && currentHour < 14) shift = 1;
@@ -129,6 +129,16 @@ const ProcessTable = ({ processName, hourlyData, total, employees }) => {
 
   const filteredData = hourlyData.filter((item) =>
     allowedHours.includes(item.hour)
+  );
+
+  const shiftTotal = filteredData.reduce(
+    (acc, item) => {
+      acc.target += item.target;
+      acc.actual += item.actual;
+      acc.scrap += item.scrap;
+      return acc;
+    },
+    { target: 0, actual: 0, scrap: 0 }
   );
 
   return (
@@ -148,7 +158,14 @@ const ProcessTable = ({ processName, hourlyData, total, employees }) => {
         </thead>
         <tbody>
           {filteredData.map((item, index) => (
-            <tr key={index} className="border-b">
+            <tr
+              key={index}
+              className={`border-b ${
+                item.hour === `${currentHour.toString().padStart(2, "0")}:00`
+                  ? "bg-yellow-100"
+                  : ""
+              }`}
+            >
               <td className="py-1 px-2 text-xs border">{item.hour}</td>
               <td className="py-1 px-2 text-xs border">{item.target}</td>
               <td className="py-1 px-2 text-xs border">{item.actual}</td>
@@ -157,13 +174,14 @@ const ProcessTable = ({ processName, hourlyData, total, employees }) => {
           ))}
           <tr className="font-semibold">
             <td className="py-1 px-2 text-xs border">Total</td>
-            <td className="py-1 px-2 text-xs border">{total.actual}</td>
-            <td className="py-1 px-2 text-xs border">{total.scrap}</td>
+            <td className="py-1 px-2 text-xs border"></td>
+            <td className="py-1 px-2 text-xs border">{shiftTotal.actual}</td>
+            <td className="py-1 px-2 text-xs border">{shiftTotal.scrap}</td>
           </tr>
         </tbody>
       </table>
 
-      <div>
+      <div className="mt-2">
         <p className="bg-gray-100 text-sm font-semibold p-1">EMP</p>
         <div className="flex flex-col">
           {employees.map((emp, index) => (

@@ -408,7 +408,7 @@ const ProductNumber = () => {
           <label className="font-semibold">Cycle Time</label>
           <div className="flex gap-2">
             <input
-              {...register("cycleTimeValue", {
+              {...register("cycleTime", {
                 required: "Cycle time is required",
                 pattern: {
                   value: /^[1-9]\d*$/,
@@ -429,7 +429,7 @@ const ProductNumber = () => {
               // onInput={(e: ChangeEvent<HTMLInputElement>) => handleNumericInput(e, "cycleTimeValue")}
               className="border p-2 rounded w-full" // py-4 px-4 से p-2 में बदला ताकि अन्य इनपुट्स से मेल खाए
             />
-            <select
+            {/* <select
               {...register("cycleTimeUnit", {
                 required: "Unit is required",
               })}
@@ -442,11 +442,11 @@ const ProductNumber = () => {
               <option value="sec">Sec</option>
               <option value="min">Min</option>
               <option value="hr">Hr</option>
-            </select>
+            </select> */}
           </div>
-          {(errors.cycleTimeValue || errors.cycleTimeUnit) && (
+          {(errors.cycleTime || errors.cycleTime) && (
             <p className="text-red-500 text-sm">
-              {errors.cycleTimeValue?.message || errors.cycleTimeUnit?.message}
+              {errors.cycleTime?.message || errors.cycleTime?.message}
             </p>
           )}
         </div>

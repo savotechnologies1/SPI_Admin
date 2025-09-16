@@ -137,9 +137,8 @@ export const searchCustomOrder = async (searchParams: object) => {
 export const scheduleStockOrder = async (apiData: object) => {
   try {
     const response = await axiosInstance.post("/stock-order-schedule", apiData);
-    if (response.status === 201) {
-      toast.success(response.data.message);
-    }
+    console.log("response.statusresponse.status", response.data.message);
+
     return response;
   } catch (error: unknown) {
     const axiosError = error as AxiosError<{ message: string }>;

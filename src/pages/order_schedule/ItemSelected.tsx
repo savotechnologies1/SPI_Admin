@@ -13,6 +13,7 @@ import { scheduleStockOrder } from "./https/schedulingApis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import send from "../../assets/Send.png";
+import { useNavigate } from "react-router-dom";
 const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   const [selectedItems, setSelectedItems] = useState<ScheduledItem[]>([]);
   const [itemInputs, setItemInputs] = useState<ItemInputState>({});
@@ -67,6 +68,8 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       )
     );
   };
+
+  const navigate = useNavigate();
   const scheduleAllData = async () => {
     try {
       const payloads = selectedItems.flatMap((item) => {
@@ -101,7 +104,16 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       });
 
       console.log("Submitting all scheduled items with payload:", payloads);
-      await scheduleStockOrder(payloads);
+      const response = await scheduleStockOrder(payloads);
+      if (response && response.status === 201) {
+        console.log(
+          "response.data.messageresponse.data.message",
+          response.data.message
+        );
+
+        toast.success(response.data.message);
+        navigate("/stock-order-schedule-list");
+      }
       setSelectedItems([]);
       setItemInputs({});
     } catch (error) {
@@ -197,7 +209,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                   <div className="flex items-center gap-2 text-sm">
                     <p className="text-[#5A6774]">Inventory Qty:</p>
                     <span className="font-bold text-[#637381]  px-2 py-1 rounded-md">
-                      10
+                      0
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">

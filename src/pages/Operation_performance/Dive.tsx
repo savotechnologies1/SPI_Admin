@@ -804,8 +804,9 @@ const Dive = () => {
 
       if (processId) params.push(`processId=${processId}`);
       if (employeeId) params.push(`employeeId=${employeeId}`);
-      if (startDate) params.push(`startDate=${startDate.toISOString()}`);
-      if (endDate) params.push(`endDate=${endDate.toISOString()}`);
+      if (startDate)
+        params.push(`startDate=${startDate.toISOString().slice(0, 10)}`);
+      if (endDate) params.push(`endDate=${endDate.toISOString().slice(0, 10)}`);
 
       if (params.length > 0) {
         url += "?" + params.join("&");

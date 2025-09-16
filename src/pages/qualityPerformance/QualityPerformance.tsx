@@ -22,6 +22,7 @@ import CustomerReturn from "./CustomerReturn";
 import SupplierReturn from "./SupplierReturn";
 import ScrapBar from "./ScrapBar";
 import { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
 
 const data_1 = [
   {
@@ -77,36 +78,167 @@ const vacPrestrech = [
   { name: "Technology", "2022": 20, "2023": 60, "2024": 45 },
 ];
 
+// const QualityPerformance = () => {
+//   const [qualityData, setQualityData] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const BASE_URL = import.meta.env.VITE_SERVER_URL;
+
+//   useEffect(() => {
+//     const fetchQualityData = async () => {
+//       try {
+//         const res = await fetch(
+//           `${BASE_URL}/api/admin/quality-performance-data`
+//         ); // Replace with your API
+//         const data = await res.json();
+//         if (data && data.data) {
+//           setQualityData(data.data);
+//         }
+//       } catch (error) {
+//         console.error("Error fetching quality performance:", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchQualityData();
+//   }, []);
+
+//   // Example: aggregate scrap and schedule quantities
+//   const scrapSummary = qualityData.reduce(
+//     (acc, item) => {
+//       acc.totalScrap += item.scrapQuantity;
+//       acc.totalSchedule += item.scheduleQuantity;
+//       return acc;
+//     },
+//     { totalScrap: 0, totalSchedule: 0 }
+//   );
+
+//   if (loading) return <p>Loading...</p>;
+
+//   console.log("scrapSummaryscrapSummary,scrapSummary", qualityData);
+
+//   return (
+//     <div>
+//       <div className="p-7">
+//         <div>
+//           <h1 className="font-bold text-[20px] md:text-[24px] text-black">
+//             Quality Performance
+//           </h1>
+//         </div>
+//         <div className="flex justify-between mt-2 items-center">
+//           <div className="flex gap-4 items-center ">
+//             <p className={`text-sm  text-black font-semibold`}>
+//               <NavLink to={"/dashboardDetailes"}>Quality Performance :</NavLink>
+//             </p>
+
+//             <div className="flex items-center gap-2">
+//               <DatePicker
+//                 selected={startDate}
+//                 onChange={(date) => setStartDate(date!)}
+//                 dateFormat="dd/MM/yyyy"
+//                 className="border rounded-md p-1 text-xs"
+//               />
+//               <span>-</span>
+//               <DatePicker
+//                 selected={endDate}
+//                 onChange={(date) => setEndDate(date!)}
+//                 dateFormat="dd/MM/yyyy"
+//                 className="border rounded-md p-1 text-xs"
+//               />
+//             </div>
+//           </div>
+//         </div>
+
+//         <div className="mt-6">
+//           <h1 className="font-semibold text-xl">Scrap</h1>
+//           <div className="flex flex-col md:flex-row  mt-2 gap-4  ">
+//             {data_1.map((item) => (
+//               <div className="flex flex-col justify-between  bg-white  rounded-md w-full p-2 gap-2 border bg-gradient-to-l from-[#FFF7ED]">
+//                 {" "}
+//                 <div className="flex items-center gap-2">
+//                   <div>
+//                     <img className="w-[40px]" src={item.scrap_img} alt="" />
+//                   </div>
+//                   <div className="">
+//                     {" "}
+//                     <p className="text-sm text-gray-600">{item.text}</p>
+//                     <p className="font-bold text-xl">{item.num}</p>
+//                   </div>
+//                 </div>
+//                 <div>
+//                   <img src={item.scrap} alt="" />
+//                 </div>
+//                 <div className="text-sm text-gray-600">
+//                   Increase by{" "}
+//                   <span
+//                     className={`font-semibold rounded-md text-xs  ${item.textColor} ${item.bgColor}`}
+//                   >
+//                     {" "}
+//                     {item.increase}
+//                   </span>{" "}
+//                   this week
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+
+//         <div className="mt-6">
+//           <SupplierReturn qualityData={qualityData} />
+//         </div>
+//         <div className="mt-6 bg-white rounded-md shadow-sm">
+//           <ScrapBar qualityData={qualityData} />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default QualityPerformance;
+
 const QualityPerformance = () => {
   const [qualityData, setQualityData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const today = new Date(); // aaj ki date
+  const [startDate, setStartDate] = useState(today);
+  const [endDate, setEndDate] = useState(today);
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
+  const [totalData, setTotalData] = useState();
+  const fetchQualityData = async () => {
+    try {
+      setLoading(true);
+
+      // query string build karo
+      let query = "";
+      if (startDate && endDate) {
+        query = `?startDate=${startDate.toISOString().split("T")[0]}&endDate=${
+          endDate.toISOString().split("T")[0]
+        }`;
+      }
+
+      const res = await fetch(
+        `${BASE_URL}/api/admin/quality-performance-data${query}`
+      );
+      const data = await res.json();
+      if (data && data.data) {
+        setTotalData(data.totalScrapQty);
+        setQualityData(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching quality performance:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchQualityData = async () => {
-      try {
-        const res = await fetch(
-          `${BASE_URL}/api/admin/quality-performance-data`
-        ); // Replace with your API
-        const data = await res.json();
-        if (data && data.data) {
-          setQualityData(data.data);
-        }
-      } catch (error) {
-        console.error("Error fetching quality performance:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchQualityData();
-  }, []);
+  }, [startDate, endDate]);
 
-  // Example: aggregate scrap and schedule quantities
   const scrapSummary = qualityData.reduce(
     (acc, item) => {
-      acc.totalScrap += item.scrapQuantity;
-      acc.totalSchedule += item.scheduleQuantity;
+      acc.totalScrap += item.scrapQuantity || 0;
+      acc.totalSchedule += item.scheduleQuantity || 0;
       return acc;
     },
     { totalScrap: 0, totalSchedule: 0 }
@@ -114,8 +246,40 @@ const QualityPerformance = () => {
 
   if (loading) return <p>Loading...</p>;
 
-  console.log("scrapSummaryscrapSummary,scrapSummary", qualityData);
+  console.log("scrapSummary", totalData);
 
+  const data_1 = [
+    {
+      num: totalData,
+      text: "Scrap Cost",
+      img: img1,
+      scrap: scrap_1,
+      scrap_img: scrap_cost,
+      // increase: "-$10k",
+      bgColor: "bg-orange-50",
+      textColor: "text-red-500",
+    },
+    // {
+    //   num: "01",
+    //   text: "Customer Return",
+    //   img: img2,
+    //   scrap: scrap_2,
+    //   scrap_img: customer_return,
+    //   increase: "+200",
+    //   bgColor: "bg-green-50",
+    //   textColor: "text-green-500",
+    // },
+    // {
+    //   num: "15,000",
+    //   text: "Supplier Return",
+    //   img: img3,
+    //   scrap: scrap_3,
+    //   scrap_img: supplier_return,
+    //   increase: "+200",
+    //   bgColor: "bg-blue-50",
+    //   textColor: "text-green-500",
+    // },
+  ];
   return (
     <div>
       <div className="p-7">
@@ -130,9 +294,21 @@ const QualityPerformance = () => {
               <NavLink to={"/dashboardDetailes"}>Quality Performance :</NavLink>
             </p>
 
-            <span className="text-xs  hover:cursor-pointer">25/08/2024</span>
-            <span>-</span>
-            <span className="text-xs  hover:cursor-pointer">25/11/2025</span>
+            <div className="flex items-center gap-2">
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                dateFormat="dd/MM/yyyy"
+                className="border rounded-md p-1 text-xs"
+              />
+              <span>-</span>
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                dateFormat="dd/MM/yyyy"
+                className="border rounded-md p-1 text-xs"
+              />
+            </div>
           </div>
         </div>
 
@@ -141,30 +317,27 @@ const QualityPerformance = () => {
           <div className="flex flex-col md:flex-row  mt-2 gap-4  ">
             {data_1.map((item) => (
               <div className="flex flex-col justify-between  bg-white  rounded-md w-full p-2 gap-2 border bg-gradient-to-l from-[#FFF7ED]">
-                {" "}
                 <div className="flex items-center gap-2">
                   <div>
                     <img className="w-[40px]" src={item.scrap_img} alt="" />
                   </div>
-                  <div className="">
-                    {" "}
+                  <div>
                     <p className="text-sm text-gray-600">{item.text}</p>
                     <p className="font-bold text-xl">{item.num}</p>
                   </div>
                 </div>
-                <div>
+                {/* <div>
                   <img src={item.scrap} alt="" />
-                </div>
-                <div className="text-sm text-gray-600">
+                </div> */}
+                {/* <div className="text-sm text-gray-600">
                   Increase by{" "}
                   <span
                     className={`font-semibold rounded-md text-xs  ${item.textColor} ${item.bgColor}`}
                   >
-                    {" "}
                     {item.increase}
                   </span>{" "}
                   this week
-                </div>
+                </div> */}
               </div>
             ))}
           </div>
@@ -176,117 +349,6 @@ const QualityPerformance = () => {
         <div className="mt-6 bg-white rounded-md shadow-sm">
           <ScrapBar qualityData={qualityData} />
         </div>
-
-        {/* <div className="bg-white shadow-md rounded-2xl  mt-6 p-4 ">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white shadow-md rounded-2xl p-2 md:p-4">
-              <h2 className=" md:text-lg font-medium mb-2">
-                Forming Temp by Time
-              </h2>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={forming}>
-                  <CartesianGrid stroke="#e0e0e0" />
-                  <XAxis dataKey="name" fontSize={10} />
-                  <YAxis fontSize={10} />
-                  <Tooltip />
-                  <Legend />
-                  <Line
-                    type="bumpX"
-                    dataKey="2022"
-                    stroke="#8884d8"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                  <Line
-                    type="bumpX"
-                    dataKey="2023"
-                    stroke="#ff6b6b"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                  <Line
-                    type="bumpX"
-                    dataKey="2024"
-                    stroke="#00bcd4"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-
-            <div className="bg-white shadow-md rounded-2xl p-2 md:p-4">
-              <h2 className="md:text-lg font-medium mb-2">
-                Cooling Time & Cool Delay by Time
-              </h2>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={coolingTime}>
-                  <CartesianGrid stroke="#e0e0e0" />
-                  <XAxis dataKey="name" fontSize={10} />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line
-                    type="bumpX"
-                    dataKey="2022"
-                    stroke="#8884d8"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                  <Line
-                    type="bumpX"
-                    dataKey="2023"
-                    stroke="#ff6b6b"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                  <Line
-                    type="bumpX"
-                    dataKey="2024"
-                    stroke="#00bcd4"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="bg-white shadow-md rounded-2xl p-2 md:p-4">
-              <h2 className="md:text-lg font-medium mb-2">
-                Vac Prestrech by Time{" "}
-              </h2>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={vacPrestrech}>
-                  <CartesianGrid stroke="#e0e0e0" />
-                  <XAxis dataKey="name" fontSize={10} />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line
-                    type="bumpX"
-                    dataKey="2022"
-                    stroke="#8884d8"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                  <Line
-                    type="bumpX"
-                    dataKey="2023"
-                    stroke="#ff6b6b"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                  <Line
-                    type="bumpX"
-                    dataKey="2024"
-                    stroke="#00bcd4"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   );

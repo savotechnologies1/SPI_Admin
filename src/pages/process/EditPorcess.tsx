@@ -596,7 +596,7 @@ interface ProcessFormData {
   partFamily: string;
   machineName: string;
   processDesc: string;
-  cycleTimeValue: string;
+  cycleTime: string;
   cycleTimeUnit: "sec" | "min" | "hr" | "";
   ratePerHour: string;
   isProcessReq: "true" | "false";
@@ -630,7 +630,7 @@ const EditProcess = () => {
               machineName: processData.machineName,
               partFamily: processData.partFamily,
               processDesc: processData.processDesc,
-              cycleTimeValue: cycleTimeValue || "",
+              cycleTime: cycleTimeValue || "",
               cycleTimeUnit: cycleTimeUnit as "sec" | "min" | "hr" | "",
               ratePerHour: processData.ratePerHour.toString(),
               isProcessReq: processData.isProcessReq ? "true" : "false",
@@ -657,7 +657,7 @@ const EditProcess = () => {
         machineName: data.machineName,
         partFamily: data.partFamily,
         processDesc: data.processDesc,
-        cycleTime: `${data.cycleTimeValue} ${data.cycleTimeUnit}`,
+        cycleTime: `${data.cycleTime}`,
         ratePerHour: parseFloat(data.ratePerHour), // Use parseFloat for decimal numbers
         isProcessReq: data.isProcessReq === "true",
       };
@@ -673,13 +673,13 @@ const EditProcess = () => {
 
   const handleNumericInput = (
     e: ChangeEvent<HTMLInputElement>,
-    fieldName: "cycleTimeValue" | "ratePerHour"
+    fieldName: "cycleTime" | "ratePerHour"
   ) => {
     const value = e.target.value;
     // Allow empty string, positive integers, and positive decimal numbers
     const decimalRegex = /^\d*\.?\d*$/; // Allows empty, 123, 123., .5, 0.5, 12.34, 0
 
-    if (fieldName === "cycleTimeValue") {
+    if (fieldName === "cycleTime") {
       // Keep original validation for cycleTimeValue (positive integers)
       // Allow empty string or numbers starting from 1
       if (!/^(?:[1-9]\d*)?$/.test(value) && value !== "") {
@@ -828,8 +828,45 @@ const EditProcess = () => {
                 </p>
               )}
             </div>
-
             <div className="sm:w-1/2">
+              <label className="font-semibold">Cycle Time</label>
+              <input
+                {...register("cycleTime", {
+                  required: "Cycle time is required",
+                  pattern: {
+                    value: /^[1-9]\d*$/,
+                    message: "Only positive integers are allowed",
+                  },
+                })}
+                type="text"
+                inputMode="numeric"
+                placeholder="Enter cycle time"
+                onKeyDown={(e) => {
+                  if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const value = e.target.value;
+                  if (!/^[1-9]\d*$/.test(value) && value !== "") {
+                    setError("cycleTime", {
+                      type: "manual",
+                      message: "Only positive integers are allowed",
+                    });
+                  } else {
+                    clearErrors("cycleTime");
+                  }
+                }}
+                className="border py-4 px-4 rounded-md w-full"
+              />
+              {errors.cycleTime && (
+                <p className="text-red-500 text-sm">
+                  {errors.cycleTime.message}
+                </p>
+              )}
+            </div>
+
+            {/* <div className="sm:w-1/2">
               <label className="font-semibold">Cycle Time</label>
               <div className="flex gap-2">
                 <input
@@ -876,7 +913,7 @@ const EditProcess = () => {
                     errors.cycleTimeUnit?.message}
                 </p>
               )}
-            </div>
+            </div> */}
 
             <div className="sm:w-1/2">
               <label className="font-semibold">Rate per hour</label>

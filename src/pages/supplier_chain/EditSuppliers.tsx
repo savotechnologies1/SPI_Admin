@@ -195,12 +195,12 @@ const EditSuppliers = () => {
             >
               Save
             </button>
-            <div
+            {/* <div
               onClick={handleDelete}
               className="bg-[#FF5630] rounded-full p-2 cursor-pointer"
             >
               <img className="w-[20px]" src={delete_img} alt="delete" />
-            </div>
+            </div> */}
           </div>
         </div>
       </form>

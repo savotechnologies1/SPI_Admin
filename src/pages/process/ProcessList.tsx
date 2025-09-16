@@ -725,7 +725,7 @@ const ProcessList = () => {
                       {item.processDesc}
                     </td>
                     <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
-                      {item.cycleTime}
+                      {item.cycleTime} min
                     </td>
                     <td className="px-3 py-4 max-w-[150px] whitespace-normal break-words">
                       {item.ratePerHour}

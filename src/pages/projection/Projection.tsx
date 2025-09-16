@@ -490,7 +490,7 @@ const Projection: React.FC = () => {
       const cashFlow = [
         { name: "Total Revenue", value: data.totalRevenue },
         { name: "Total COGS", value: data.totalCOGS },
-        { name: "Gross Profit", value: data.grossProfit },
+        // { name: "Gross Profit", value: data.grossProfit },
         { name: "Fixed Cost", value: data.totalFixedCost },
         { name: "Fulfilled Revenue", value: data.fulfilledRevenue },
         { name: "Unfulfilled Revenue", value: data.unfulfilledRevenue },
@@ -591,7 +591,9 @@ const Projection: React.FC = () => {
           {/* Bar Chart */}
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={cashFlowData}>
+              <BarChart
+                data={cashFlowData.filter((row) => row.value > 0)} // negative ko hata diya
+              >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />

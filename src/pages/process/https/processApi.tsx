@@ -228,8 +228,8 @@ export const processDetail = async (
 };
 
 export const editProcess = async (
-  payload: ProcessData,
-  id: string
+  id: string,
+  payload: ProcessData
 ): Promise<AxiosResponse<ApiResponse<ProcessData>> | undefined> => {
   try {
     const response: AxiosResponse<ApiResponse<ProcessData>> =

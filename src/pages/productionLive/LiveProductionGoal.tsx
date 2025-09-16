@@ -118,7 +118,7 @@ const LiveProductionGoal = () => {
     // Fetch hourly process data
     fetch(`${BASE_URL}/api/admin/production/processes/hourly`)
       .then((res) => res.json())
-      .then((data) => setProcessTablesData(data))
+      .then((data) => setProcessTablesData(data.allProcessData))
       .catch((error) => console.error("Error fetching process data:", error));
   }, []);
 

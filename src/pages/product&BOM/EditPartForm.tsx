@@ -45,7 +45,6 @@ const EditPartForm = () => {
   const [existingImages, setExistingImages] = useState([]);
   const selectedImages = watch("image");
   const [previewImages, setPreviewImages] = useState([]);
-
   const onSubmit = async (data) => {
     const formData = new FormData();
 
@@ -58,10 +57,10 @@ const EditPartForm = () => {
     formData.append("companyName", data.companyName);
     formData.append("minStock", data.minStock);
     formData.append("availStock", data.availStock);
-    formData.append(
-      "cycleTime",
-      `${data.cycleTimeValue} ${data.cycleTimeUnit}`
-    );
+
+    // ✅ hamesha minutes me bhejna
+    formData.append("cycleTime", data.cycleTime);
+
     formData.append("processOrderRequired", data.processOrderRequired);
     formData.append("processId", data.processId);
     formData.append("processDesc", data.processDesc);
@@ -104,27 +103,9 @@ const EditPartForm = () => {
       const response = await getPartNumberDetail(id);
       const data = response.data;
 
-      // ✅ cycleTime को अलग करें
-      let cycleTimeValue = "";
-      let cycleTimeUnit = "";
-      if (data.cycleTime && typeof data.cycleTime === "string") {
-        const parts = data.cycleTime.split(" ");
-        if (parts.length === 2) {
-          cycleTimeValue = parts[0];
-          cycleTimeUnit = parts[1];
-        } else {
-          // अगर सिर्फ नंबर आता है या यूनिट नहीं है, तो सिर्फ वैल्यू सेट करें
-          cycleTimeValue = data.cycleTime;
-          cycleTimeUnit = ""; // या कोई डिफॉल्ट यूनिट
-        }
-      }
-
       reset({
         ...data,
-        // ✅ cycleTime को हटाकर cycleTimeValue और cycleTimeUnit जोड़ें
-        cycleTime: undefined, // मूल cycleTime फ़ील्ड को हटा दें
-        cycleTimeValue: cycleTimeValue,
-        cycleTimeUnit: cycleTimeUnit,
+        cycleTime: data.cycleTime || "", // ✅ direct minutes ka value use hoga
         processOrderRequired: data.processOrderRequired ? "true" : "false",
       });
 
@@ -136,7 +117,7 @@ const EditPartForm = () => {
 
   const handleNumericInput = (
     e: React.ChangeEvent<HTMLInputElement>, // `React.ChangeEvent` का उपयोग करें
-    fieldName: "cycleTimeValue" // यदि कोई अन्य numeric फ़ील्ड है तो उसे भी जोड़ें
+    fieldName: "cycleTime" // यदि कोई अन्य numeric फ़ील्ड है तो उसे भी जोड़ें
   ) => {
     const value = e.target.value;
     // Allow empty string or numbers starting from 1
@@ -286,16 +267,20 @@ const EditPartForm = () => {
             />
           </label>
 
-          {/* Cost */}
-          <div className="col-span-4 md:col-span-1">
-            <label>Cost ($)</label>
+          <label className="block col-span-4 md:col-span-2">
+            Cost
             <input
               type="number"
-              {...register("cost")}
+              step="0.01" // decimal allowed
+              min="0"
+              {...register("cost", {
+                required: "Cost is required",
+                min: { value: 0, message: "Cost cannot be negative" },
+              })}
               placeholder="Enter Cost"
               className="border p-2 rounded w-full"
             />
-          </div>
+          </label>
 
           {/* Lead Time */}
           <div className="col-span-4 md:col-span-1">
@@ -385,52 +370,23 @@ const EditPartForm = () => {
           </div>
 
           {/* Cycle Time */}
+          {/* Cycle Time */}
           <div className="col-span-4 md:col-span-1">
-            <label className="font-semibold">Cycle Time</label>
-            <div className="flex gap-2">
-              <input
-                {...register("cycleTimeValue", {
-                  required: "Cycle time is required",
-                  pattern: {
-                    value: /^[1-9]\d*$/, // केवल positive integers
-                    message: "Only positive integers are allowed",
-                  },
-                  validate: (value) =>
-                    value.trim() !== "" || "Cycle time is required",
-                })}
-                type="text" // 'number' से 'text' में बदला ताकि onInput हैंडलर काम कर सके
-                inputMode="numeric"
-                placeholder="Enter time"
-                onKeyDown={(e) => {
-                  if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
-                    e.preventDefault();
-                  }
-                }}
-                onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  handleNumericInput(e, "cycleTimeValue")
-                }
-                className="border p-2 rounded w-full"
-              />
-              <select
-                {...register("cycleTimeUnit", {
-                  required: "Unit is required",
-                })}
-                className="border p-2 rounded w-1/3"
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  Unit
-                </option>
-                <option value="sec">Sec</option>
-                <option value="min">Min</option>
-                <option value="hr">Hr</option>
-              </select>
-            </div>
-            {(errors.cycleTimeValue || errors.cycleTimeUnit) && (
-              <p className="text-red-500 text-sm">
-                {errors.cycleTimeValue?.message ||
-                  errors.cycleTimeUnit?.message}
-              </p>
+            <label className="font-semibold">Cycle Time (Minutes)</label>
+            <input
+              {...register("cycleTime", {
+                required: "Cycle time is required",
+                pattern: {
+                  value: /^[1-9]\d*$/, // केवल positive integers
+                  message: "Only positive integers are allowed",
+                },
+              })}
+              type="number"
+              placeholder="Enter time in minutes"
+              className="border p-2 rounded w-full"
+            />
+            {errors.cycleTime && (
+              <p className="text-red-500 text-sm">{errors.cycleTime.message}</p>
             )}
           </div>
 

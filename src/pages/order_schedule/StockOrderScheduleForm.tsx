@@ -74,7 +74,7 @@ const StockOrderScheduleForm = () => {
                 </div>
 
                 <div>
-                  <label className="font-semibold">Product Number1</label>
+                  <label className="font-semibold">Product Number</label>
                   <Field
                     name="productNumber"
                     type="text"

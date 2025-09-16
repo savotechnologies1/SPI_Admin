@@ -183,16 +183,16 @@ const AddEmployee = () => {
             <option value="rejected">Rejected</option>
           </select>
         </div>
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <input
             type="checkbox"
             {...register("termsAccepted")}
             className="w-4 h-4"
           />
           <label>I accept Term & Conditions.</label>
-        </div>
+        </div> */}
 
-        <div className="flex justify-between pt-2">
+        <div className="flex justify-end pt-2">
           <button
             type="submit"
             className="bg-brand text-white px-4 py-2 rounded-md"
@@ -206,12 +206,12 @@ const AddEmployee = () => {
           >
             Edit Employee
           </button> */}
-          <button
+          {/* <button
             type="button"
             className="bg-green-600 text-white px-4 py-2 rounded-md"
           >
             Save Employee History
-          </button>
+          </button> */}
         </div>
       </form>
     </div>
