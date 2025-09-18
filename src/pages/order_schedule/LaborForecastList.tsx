@@ -176,7 +176,7 @@ const LaborForecastList = () => {
                   "Available",
                   "Need",
                   "Forc",
-                  "Process Time (min)",
+                  "Process Time (hour)",
                   "Hr Need",
                   "Action",
                 ].map((header, idx) => (
@@ -194,8 +194,8 @@ const LaborForecastList = () => {
                     <p>{item.sub_name}</p>
                   </td>
 
-                  <td className="px-3 py-2">{item.Available}</td>
-                  <td className="px-3 py-2">{item.Need}</td>
+                  <td className="px-3 py-2">{item.Available} qty</td>
+                  <td className="px-3 py-2">{item.Need} qty</td>
 
                   <td className="px-3 py-2">
                     <input
@@ -209,10 +209,10 @@ const LaborForecastList = () => {
                     />
                   </td>
 
-                  <td className="px-3 py-2">{item.cycleTime}</td>
+                  <td className="px-3 py-2">{item.cycleTime} hr</td>
                   <td className="px-3 py-2">
                     {/* ✅ This is now dynamic — not API value */}
-                    {item.Hr_Need}
+                    {item.Hr_Need} hr
                   </td>
 
                   <td className="px-3 py-2">
@@ -262,13 +262,13 @@ const LaborForecastList = () => {
                         <div className="text-sm">
                           <span className="text-gray-500">Prod Need:</span>
                           <span className="font-medium ml-1">
-                            {item.ProdNeed}
+                            {item.ProdNeed} qty
                           </span>
                         </div>
                         <div className="text-sm col-span-2">
                           <span className="text-gray-500">Hr Need:</span>
                           <span className="font-medium ml-1">
-                            {item.Hr_Need.toFixed(2)}
+                            {item.Hr_Need.toFixed(2)} hr
                           </span>
                         </div>
                       </div>
