@@ -223,7 +223,7 @@ const App = () => {
             <Route path="vacation-approval" element={<VacationApproval />} />
             <Route path="time-clock" element={<TimeClockList />} />
             <Route path="update" element={<TimeClockUpdate />} />
-            <Route path="clock-in-out" element={<ClockInOut />} />
+            {/* <Route path="clock-in-out" element={<ClockInOut />} /> */}
             <Route path="vaction-request" element={<VacationRequest />} />
             <Route
               path="edit-vaction-request/:id"

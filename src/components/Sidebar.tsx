@@ -364,11 +364,11 @@ const sections: Section[] = [
         icon: time_clock,
         hasSubmenu: true,
         submenu: [
-          {
-            key: "Clockinout",
-            label: "Clock in and out",
-            path: "/clock-in-out",
-          },
+          // {
+          //   key: "Clockinout",
+          //   label: "Clock in and out",
+          //   path: "/clock-in-out",
+          // },
           {
             key: "VacationRequest",
             label: "Vacation Request",
