@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import ItemSelected from "./ItemSelected";
 import { searchStockOrder } from "./https/schedulingApis";
@@ -12,13 +12,30 @@ const StockOrderScheduleForm = () => {
   const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await searchStockOrder(); // call without filters
+        setSearchResults(response.data || []);
+      } catch (error) {
+        console.error("Failed to fetch initial stock orders:", error);
+        setSearchResults([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchInitialData();
+  }, []);
+
   const handleSearchSubmit = async (
     values: StockOrderScheduleInterface,
     { setSubmitting }: FormikHelpers<StockOrderScheduleInterface>
   ) => {
     setIsLoading(true);
     try {
-      const response = await searchStockOrder(values);
+      const response = await searchStockOrder(values); // Filtered search
       setSearchResults(response.data || []);
     } catch (error) {
       console.error("Failed to search stock orders:", error);
@@ -43,7 +60,9 @@ const StockOrderScheduleForm = () => {
         >
           {({ isSubmitting, resetForm }) => (
             <Form>
+              {/* Form Fields */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-6 ">
+                {/* Customer Name */}
                 <div>
                   <label className="font-semibold">Customer Name</label>
                   <Field
@@ -59,6 +78,7 @@ const StockOrderScheduleForm = () => {
                   />
                 </div>
 
+                {/* Ship Date */}
                 <div>
                   <label className="font-semibold">Ship Date</label>
                   <Field
@@ -73,6 +93,7 @@ const StockOrderScheduleForm = () => {
                   />
                 </div>
 
+                {/* Product Number */}
                 <div>
                   <label className="font-semibold">Product Number</label>
                   <Field
@@ -84,6 +105,7 @@ const StockOrderScheduleForm = () => {
                 </div>
               </div>
 
+              {/* Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mt-4 bg-white px-6 justify-between items-center">
                 <button
                   type="submit"
@@ -109,7 +131,7 @@ const StockOrderScheduleForm = () => {
         </Formik>
       </div>
 
-      {/* Pass the search results to the ItemSelected component */}
+      {/* Results */}
       <ItemSelected availableItems={searchResults} isLoading={isLoading} />
     </>
   );

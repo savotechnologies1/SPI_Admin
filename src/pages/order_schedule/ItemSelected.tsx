@@ -18,14 +18,14 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   const [selectedItems, setSelectedItems] = useState<ScheduledItem[]>([]);
   const [itemInputs, setItemInputs] = useState<ItemInputState>({});
 
-  console.log("selectedItemsselectedItems", selectedItems);
+  console.log("selectedItemsselectedItems", itemInputs);
 
   const scheduleItem = (itemToAdd: SearchResultItem) => {
     const inputs = itemInputs[itemToAdd.id];
-    console.log("itemToAdditemToAdd", itemToAdd);
 
     const qtyToSchedule = parseInt(inputs?.qty || "0", 10);
-    const deliveryDate = inputs?.deliveryDate || new Date();
+    // const deliveryDate = inputs?.deliveryDate || new Date();
+    const shipDate = inputs?.shipDate || new Date();
 
     if (isNaN(qtyToSchedule) || qtyToSchedule <= 0) {
       toast.error("Please enter a valid quantity to schedule.");
@@ -44,7 +44,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
     const newScheduledItem: ScheduledItem = {
       ...itemToAdd,
       scheduledQty: qtyToSchedule,
-      deliveryDate: deliveryDate,
+      shipDate: shipDate,
     };
 
     setSelectedItems((prev) => [...prev, newScheduledItem]);
@@ -62,9 +62,9 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   };
 
   const updateScheduledDate = (itemId: string, date: Date) => {
-    setSelectedItems(
-      selectedItems.map((item) =>
-        item.id === itemId ? { ...item, deliveryDate: date } : item
+    setSelectedItems((prev) =>
+      prev.map((item) =>
+        item.id === itemId ? { ...item, shipDate: date } : item
       )
     );
   };
@@ -76,7 +76,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
         const productPayload = {
           order_id: item.id,
           orderDate: item.orderDate,
-          delivery_date: item.deliveryDate,
+          delivery_date: item.shipDate,
           submitted_date: new Date(),
           customersId: item.customer.id,
           status: "new",
@@ -90,7 +90,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
         const componentPayloads = item.part.components.map((comp) => ({
           order_id: item.id,
           orderDate: item.orderDate,
-          delivery_date: item.deliveryDate,
+          delivery_date: item.shipDate,
           submitted_date: new Date(),
           customersId: item.customer.id,
           status: "new",
@@ -126,7 +126,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   console.log("selectedItemsselectedItems", selectedItems);
   const handleInputChange = (
     itemId: string,
-    field: "qty" | "deliveryDate",
+    field: "qty" | "shipDate",
     value: string | Date
   ) => {
     setItemInputs((prev) => ({
@@ -134,10 +134,10 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       [itemId]: {
         ...prev[itemId],
         qty: field === "qty" ? (value as string) : prev[itemId]?.qty ?? "",
-        deliveryDate:
-          field === "deliveryDate"
+        shipDate:
+          field === "shipDate"
             ? (value as Date)
-            : prev[itemId]?.deliveryDate ?? new Date(),
+            : prev[itemId]?.shipDate ?? new Date(),
       },
     }));
   };
@@ -254,9 +254,13 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                       Delivery Date
                     </label>
                     <DatePicker
-                      selected={itemInputs[item.id]?.deliveryDate || new Date()}
+                      selected={
+                        itemInputs[item.id]?.shipDate ?? // user-selected date
+                        item.shipDate ?? // API pre-filled date
+                        null // fallback
+                      }
                       onChange={(date) =>
-                        handleInputChange(item.id, "deliveryDate", date as Date)
+                        handleInputChange(item.id, "shipDate", date as Date)
                       }
                       dateFormat="dd MMM yyyy"
                       className="border py-2 px-4 rounded-md font-semibold w-full sm:w-44 text-center"
@@ -346,7 +350,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                       Delivery Date
                     </label>
                     <DatePicker
-                      selected={item.deliveryDate}
+                      selected={item.shipDate} // ✅ Correct field
                       onChange={(date) =>
                         updateScheduledDate(item.id, date as Date)
                       }

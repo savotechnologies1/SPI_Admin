@@ -83,7 +83,7 @@ const CustomerList = () => {
   };
 
   return (
-    <div className="p-4 md:p-7">
+    <div className="p-4 md:p-7 my-8">
       <div>
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <div>
@@ -150,7 +150,7 @@ const CustomerList = () => {
                 <div className="flex-1 w-full relative border p-2 md:p-3 rounded-md">
                   <input
                     type="text"
-                    placeholder="Search by email..."
+                    placeholder="Search by name and email ..."
                     onChange={handleChange}
                     className="w-full rounded-md border-gray-300 pl-6 text-xs md:text-sm lg:text-base outline-none"
                   />

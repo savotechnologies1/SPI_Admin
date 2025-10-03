@@ -5,18 +5,19 @@ export const stockOrderValidation = Yup.object().shape({
   shipDate: Yup.date()
     .required("Ship Date is required")
     .min(Yup.ref("orderDate"), "Ship date can't be before the order date"),
-  customerId: Yup.string().required(
-    "Please select a customer or add a new one."
-  ),
+  // customerId: Yup.string().required(
+  //   "Please select a customer or add a new one."
+  // ),
+  // customerId: Yup.string().required(
+  //   "Please select a customer or add a new one."
+  // ),
   customerName: Yup.string().required("Customer Name is required"),
-  customerEmail: Yup.string()
-    .email("Invalid email format")
-    .required("Customer Email is required"),
+  customerEmail: Yup.string().email("Invalid email format"),
+
   customerPhone: Yup.string()
     .matches(/^[0-9]+$/, "Phone number must be only digits")
     .min(7, "Phone number must be at least 7 digits")
-    .max(15, "Phone number must be at most 15 digits")
-    .required("Customer Phone is required"),
+    .max(15, "Phone number must be at most 15 digits"),
   cost: Yup.number()
     .typeError("Cost must be a number")
     .positive("Cost must be positive")
@@ -33,12 +34,13 @@ export const customOrderValidation = Yup.object().shape({
   shipDate: Yup.date()
     .required("Ship date is required")
     .min(Yup.ref("orderDate"), "Ship date cannot be before order date"),
-  customerId: Yup.string().required("Please select or add a customer"),
+  // customerId: Yup.string().required("Please select or add a customer"),
   customerName: Yup.string().required("Customer name is required"),
-  customerEmail: Yup.string()
-    .email("Invalid email format")
-    .required("Customer email is required"),
-  customerPhone: Yup.string().required("Customer phone is required"),
+  customerEmail: Yup.string().email("Invalid email format"),
+  customerPhone: Yup.string()
+    .matches(/^[0-9]+$/, "Phone number must be only digits")
+    .min(7, "Phone number must be at least 7 digits")
+    .max(15, "Phone number must be at most 15 digits"),
   productId: Yup.string().required("Product number is required"),
   // part_id: Yup.string().required("Part Number is required"),
   productQuantity: Yup.number()

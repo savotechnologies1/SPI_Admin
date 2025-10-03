@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IoIosArrowForward, IoMdMenu } from "react-icons/io";
-
+import { IoTimeSharp } from "react-icons/io5";
 import logo from "../assets/logo.png";
 import radius from "../assets/Radius.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,20 +19,45 @@ import {
   faVectorSquare,
 } from "@fortawesome/free-solid-svg-icons";
 // import { useSelector } from "react-redux";
-
+import {
+  MdAssessment,
+  MdFileDownload,
+  MdGroups,
+  MdTimeline,
+} from "react-icons/md";
+import { GiCrystalBall, GiMoneyStack } from "react-icons/gi";
+import {
+  FaChartBar,
+  FaChartLine,
+  FaCogs,
+  FaSyncAlt,
+  FaTrashAlt,
+  FaWarehouse,
+} from "react-icons/fa";
+import { FaBoxOpen, FaClipboardCheck, FaHandshake } from "react-icons/fa";
+import { BiBarChartAlt2, BiImport } from "react-icons/bi";
 const dashboard = <FontAwesomeIcon icon={faGaugeSimpleHigh} />;
 const order = <FontAwesomeIcon icon={faChartSimple} />;
+const business_intelligence = <FaChartBar className="text-xl" />;
 
 const supply_chain = <FontAwesomeIcon icon={faUser} />;
-const time_clock = <FontAwesomeIcon icon={faUser} />;
+const time_clock = <IoTimeSharp />;
+const employee = <MdGroups className="text-xl" />;
+const fixedCost = <GiMoneyStack className="text-xl" />;
 const production_live = <FontAwesomeIcon icon={faVectorSquare} />;
-const production_response = <FontAwesomeIcon icon={faCalendarMinus} />;
-
+const production_response = <FaWarehouse className="text-xl" />;
+const scrap_entries = <FaTrashAlt className="text-xl" />;
+const productbom = <FaBoxOpen className="text-xl" />;
+const process = <FaCogs className="text-xl" />;
 const setting = <FontAwesomeIcon icon={faGear} />;
-const operation = <FontAwesomeIcon icon={faBagShopping} />;
-const invoice = <FontAwesomeIcon icon={faFileInvoiceDollar} />;
-const blog = <FontAwesomeIcon icon={faNewspaper} />;
+const operation = <FaChartLine className="text-xl" />;
+const invoice = <FaClipboardCheck className="text-xl" />;
+const blog = <FaSyncAlt className="text-xl" />;
+const business_analysis = <MdAssessment className="text-xl" />;
 const work = <FontAwesomeIcon icon={faBriefcase} />;
+const customer_relation = <FaHandshake className="text-xl" />;
+const projection = <BiBarChartAlt2 className="text-xl" />;
+const import_icon = <MdFileDownload className="text-xl" />;
 const logout = <FontAwesomeIcon icon={faRightFromBracket} color="red" />;
 interface SubmenuItem {
   key: string;
@@ -255,13 +280,13 @@ const sections: Section[] = [
       {
         key: "Scrap Entries",
         label: "Scrap Entries",
-        icon: production_response,
+        icon: scrap_entries,
         path: "/scrap-entries",
       },
       {
         key: "Product & BOM  ",
         label: "Product & BOM ",
-        icon: operation,
+        icon: productbom,
         hasSubmenu: true,
         submenu: [
           {
@@ -289,7 +314,7 @@ const sections: Section[] = [
       {
         key: "Process ",
         label: "Process",
-        icon: operation,
+        icon: process,
         hasSubmenu: true,
         submenu: [
           {
@@ -342,7 +367,7 @@ const sections: Section[] = [
       {
         key: "Employee Information",
         label: "Employee Information ",
-        icon: time_clock,
+        icon: employee,
         hasSubmenu: true,
         submenu: [
           {
@@ -396,7 +421,7 @@ const sections: Section[] = [
       {
         key: "Fixed Cost Mangement",
         label: "Fixed Cost Mangement",
-        icon: time_clock,
+        icon: fixedCost,
         path: "/fixed-cost-management",
       },
     ],
@@ -425,31 +450,31 @@ const sections: Section[] = [
       {
         key: "Customer relation",
         label: "Customer relation",
-        icon: order,
+        icon: customer_relation,
         path: "/customer-relation",
       },
       {
         key: "Business Intelligence ",
         label: "Business Intelligence  ",
-        icon: order,
+        icon: business_intelligence,
         path: "/business-intelligence",
       },
       {
         key: "Business Analysis",
         label: "Business Analysis ",
-        icon: blog,
+        icon: business_analysis,
         path: "/business-analysis",
       },
       {
         key: "projecion ",
         label: "Projecion  ",
-        icon: production_response,
+        icon: projection,
         path: "/projecion",
       },
       {
         key: "Import",
         label: "Import",
-        icon: setting,
+        icon: import_icon,
         path: "/import",
       },
 

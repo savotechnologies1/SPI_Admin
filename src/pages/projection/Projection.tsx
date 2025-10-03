@@ -567,26 +567,28 @@ const Projection: React.FC = () => {
           <h2 className="text-lg font-bold  mb-4">Cash Flow Needed</h2>
 
           {/* Table */}
-          <table className="w-full border-collapse border border-gray-200 mb-6 text-sm">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border border-gray-200 p-2 text-left">Item</th>
-                <th className="border border-gray-200 p-2 text-right">
-                  Amount
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {cashFlowData.map((row, i) => (
-                <tr key={i}>
-                  <td className="border border-gray-200 p-2">{row.name}</td>
-                  <td className="border border-gray-200 p-2 text-right">
-                    ${row.value.toLocaleString()}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="min-w-full border-collapse border border-gray-200 text-sm sm:text-base">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border border-gray-200 p-2 text-left">Item</th>
+                  <th className="border border-gray-200 p-2 text-right">
+                    Amount
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {cashFlowData.map((row, i) => (
+                  <tr key={i} className="hover:bg-gray-50">
+                    <td className="border border-gray-200 p-2">{row.name}</td>
+                    <td className="border border-gray-200 p-2 text-right">
+                      ${row.value.toLocaleString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           {/* Bar Chart */}
           <div className="h-64">

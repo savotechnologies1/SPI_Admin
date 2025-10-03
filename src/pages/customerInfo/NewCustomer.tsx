@@ -59,7 +59,7 @@ const NewCustomer = () => {
   };
 
   return (
-    <div className="p-4 md:p-7">
+    <div className="p-4 md:p-7 my-6">
       <div>
         <h1 className="font-bold text-[20px] md:text-[24px] text-black">
           Create a new Customer

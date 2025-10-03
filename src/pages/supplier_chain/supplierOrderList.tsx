@@ -184,7 +184,7 @@ const SupplierOrderList: React.FC = () => {
   };
 
   return (
-    <div className=" bg-gray-100 min-h-screen p-8">
+    <div className=" bg-gray-100 min-h-screen p-8 my-6">
       <div className="flex justify-between">
         <h1 className="font-semibold text-[20px] md:text-[24px] text-black mb-2">
           All Supplier Orders

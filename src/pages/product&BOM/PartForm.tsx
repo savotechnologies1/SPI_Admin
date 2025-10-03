@@ -845,7 +845,7 @@ const PartForm = () => {
           </div> */}
 
           <div className="col-span-4 md:col-span-1">
-            <label className="font-semibold">Cycle Time</label>
+            <label>Cycle Time (minutes)</label>
             <div className="flex gap-2">
               <input
                 {...register("cycleTime", {

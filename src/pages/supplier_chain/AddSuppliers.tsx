@@ -22,7 +22,7 @@ const AddSuppliers = () => {
     }
   };
   return (
-    <div className="p-7">
+    <div className="p-7 my-5">
       <div>
         <h1 className="font-bold text-[20px] md:text-[24px] text-black">
           Add new Supplier
