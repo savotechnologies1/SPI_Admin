@@ -41,7 +41,7 @@ const order = <FontAwesomeIcon icon={faChartSimple} />;
 const business_intelligence = <FaChartBar className="text-xl" />;
 
 const supply_chain = <FontAwesomeIcon icon={faUser} />;
-const time_clock = <IoTimeSharp />;
+const time_clock = <IoTimeSharp className="text-xl" />;
 const employee = <MdGroups className="text-xl" />;
 const fixedCost = <GiMoneyStack className="text-xl" />;
 const production_live = <FontAwesomeIcon icon={faVectorSquare} />;

@@ -478,9 +478,15 @@ export default function PartTable() {
                       {part.partDescription}
                     </td>
                     <td className="border-b border-dashed p-2">${part.cost}</td>
+
                     <td className="border-b border-dashed p-2">
-                      {part.leadTime} Days
+                      {part.leadTime
+                        ? `${part.leadTime} ${
+                            part.leadTime > 1 ? "days" : "day"
+                          }`
+                        : "Not Available"}
                     </td>
+
                     <td className="border-b border-dashed p-2">
                       {part.supplierOrderQty}
                     </td>

@@ -25,6 +25,8 @@ const SupplierList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
   const rowsPerPage = 5;
   const navigate = useNavigate();
   const handleNextPage = () => {
@@ -46,20 +48,16 @@ const SupplierList = () => {
       throw error;
     }
   };
-  const handleDelete = async (id) => {
-    // eslint-disable-next-line no-useless-catch
+  const handleDelete = async (id: string) => {
     try {
-      const response = await deleteSupplier(id);
-      fetchCustomerList(currentPage);
-      navigate("/all-supplier");
-      // if (response.status === 200) {
-      //   navigate("/all-supplier");
-      // }
-    } catch (error: unknown) {
-      throw error;
+      await deleteSupplier(id);
+      await new Promise((r) => setTimeout(r, 500));
+      await fetchCustomerList(1);
+    } catch (error) {
+      console.error("Error deleting supplier:", error);
     }
-    // You can trigger an API call or confirmation modal here
   };
+
   useEffect(() => {
     fetchCustomerList(currentPage);
   }, [currentPage, searchVal]);
@@ -224,13 +222,11 @@ const SupplierList = () => {
                       <button className="text-brand hover:underline">
                         <FaTrash
                           className="text-red-500 cursor-pointer h-7"
-                          onClick={() => setShowConfirm(true)}
+                          onClick={() => setConfirmDeleteId(item.id)}
                         />
-                        {showConfirm && (
-                          <div
-                            className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
-                                    flex items-center justify-center z-50"
-                          >
+
+                        {confirmDeleteId === item.id && (
+                          <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
                             <div className="bg-white p-6 rounded-xl shadow-lg">
                               <h2 className="text-lg font-semibold mb-4">
                                 Are you sure?
@@ -241,15 +237,15 @@ const SupplierList = () => {
                               <div className="flex justify-end space-x-3">
                                 <button
                                   className="px-4 py-2 bg-gray-300 rounded"
-                                  onClick={() => setShowConfirm(false)}
+                                  onClick={() => setConfirmDeleteId(null)}
                                 >
                                   Cancel
                                 </button>
                                 <button
                                   className="px-4 py-2 bg-red-500 text-white rounded"
-                                  onClick={() => {
-                                    handleDelete(item.id);
-                                    setShowConfirm(false);
+                                  onClick={async () => {
+                                    await handleDelete(item.id);
+                                    setConfirmDeleteId(null);
                                   }}
                                 >
                                   Delete

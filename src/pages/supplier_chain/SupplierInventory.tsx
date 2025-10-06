@@ -113,7 +113,7 @@ const SupplierInventory = () => {
     <div className="p-6 bg-gray-100 min-h-screen mt-5">
       <div>
         <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
-          Supplier Part List & Inventory List
+          Supplier Inventory List
         </h1>
       </div>
 
@@ -166,7 +166,7 @@ const SupplierInventory = () => {
                   <td className="p-3">{item.supplierName}</td>
                   <td className="p-3">{item.qtyAvail}</td>
                   <td className="p-3">{item.safetyStock}</td>
-                  <td className="p-3">{item.currentCost}</td>
+                  <td className="p-3">$ {item.currentCost}</td>
                   <td className="p-3 flex items-center gap-4">
                     {/* <FiEdit2
                       onClick={() => handleEditClick(index)}

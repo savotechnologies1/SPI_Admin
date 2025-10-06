@@ -350,12 +350,12 @@ const Production = () => {
     },
     {
       text: "Total Scrap Cost",
-      num: `₹${totals.totalScrapCost}`,
+      num: `$${totals.totalScrapCost}`,
       scrap_img: "/icons/scrap.png",
     },
     {
       text: "Total Supplier Return",
-      num: `₹${totals.totalSupplierReturnCost}`,
+      num: `$${totals.totalSupplierReturnCost}`,
       scrap_img: "/icons/return.png",
     },
   ];

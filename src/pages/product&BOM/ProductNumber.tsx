@@ -286,7 +286,6 @@ const ProductNumber = () => {
             ))}
           </select>
         </label>
-
         <label className="col-span-2">
           Product Number
           <input
@@ -303,7 +302,6 @@ const ProductNumber = () => {
             </p>
           )}
         </label>
-
         <label className="col-span-4">
           Description
           <textarea
@@ -342,10 +340,10 @@ const ProductNumber = () => {
           Order Quantity by Supplier
           <input
             type="number"
+            defaultValue={0}
             {...register("supplierOrderQty", {
               valueAsNumber: true,
-
-              required: "Supplier ordre quntity is required",
+              required: "Supplier order quantity is required",
             })}
             placeholder="Order Qty"
             className="border p-2 rounded w-full"
@@ -403,9 +401,9 @@ const ProductNumber = () => {
             placeholder="Cycle Time"
             className="border p-2 rounded w-full"
           />
-        </label> */}
+        </label> */}{" "}
         <div className="col-span-4 md:col-span-1">
-          <label className="font-semibold">Cycle Time</label>
+          <label>Cycle Time (minutes)</label>
           <div className="flex gap-2">
             <input
               {...register("cycleTime", {
@@ -486,7 +484,6 @@ const ProductNumber = () => {
             </p>
           )}
         </div>
-
         <div className="col-span-4 md:col-span-1">
           <label>Process</label>
           <select
@@ -504,9 +501,7 @@ const ProductNumber = () => {
             <p className="text-red-500 text-sm">{errors.processId.message}</p>
           )}
         </div>
-
         {/* Process Order Required */}
-
         <label className="block col-span-4 md:col-span-1">
           Process Description
           <textarea
@@ -546,7 +541,6 @@ const ProductNumber = () => {
             ))}
           </div>
         )}
-
         <label className="block col-span-4 md:col-span-2 cursor-pointer border bg-gray-100 p-4 rounded text-center">
           <input
             type="file"
@@ -561,7 +555,6 @@ const ProductNumber = () => {
               : "Tap or Click to Add Pictures"}
           </div>
         </label>
-
         {/* BOM Section */}
         <div className="col-span-4 mt-4">
           <p className="font-semibold text-lg mb-2">Bill of Material (BOM)</p>
@@ -712,7 +705,6 @@ const ProductNumber = () => {
             </table>
           </div>
         )}
-
         <div className="col-span-4 flex justify-end">
           <button
             type="submit"

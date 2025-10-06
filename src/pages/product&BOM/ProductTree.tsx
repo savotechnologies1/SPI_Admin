@@ -402,9 +402,12 @@ export default function ProductTree() {
                   </td>
                   <td className="border-b border-dashed p-2">
                     {product.leadTime
-                      ? `${product?.leadTime} days`
+                      ? `${product.leadTime} ${
+                          product.leadTime > 1 ? "days" : "day"
+                        }`
                       : "Not Available"}
                   </td>
+
                   <td className="border-b border-dashed p-2">
                     {product.minStock
                       ? `${product?.minStock} `

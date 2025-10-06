@@ -819,7 +819,7 @@ const EditProductForm = () => {
         partDescription: data.partDescription || "",
         cost: data.cost || "",
         leadTime: data.leadTime || "",
-        supplierOrderQty: data.supplierOrderQty || "",
+        supplierOrderQty: data.supplierOrderQty || 0,
         companyName: data.companyName || "",
         minStock: data.minStock || "",
         availStock: data.availStock ?? "",
@@ -1090,15 +1090,16 @@ const EditProductForm = () => {
             />{" "}
           </div>
           <div className="col-span-4 md:col-span-1">
-            {" "}
-            <label> Order Quantity by Supplier</label>{" "}
+            <label>Order Quantity by Supplier</label>
             <input
               type="number"
+              defaultValue={0}
               {...register("supplierOrderQty")}
               placeholder="Order Qty"
               className="border p-2 rounded w-full"
-            />{" "}
+            />
           </div>
+
           <div className="col-span-4 md:col-span-1">
             {" "}
             <label>Company Name</label>{" "}

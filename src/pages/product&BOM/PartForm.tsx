@@ -795,10 +795,10 @@ const PartForm = () => {
                   const supplierOrderQty = watch("supplierOrderQty");
                   if (supplierOrderQty === null || isNaN(supplierOrderQty))
                     return true;
-                  return (
-                    value <= supplierOrderQty ||
-                    "Minimum Stock must be less than Order Quantity"
-                  );
+                  // return (
+                  //   value <= supplierOrderQty ||
+                  //   "Minimum Stock must be less than Order Quantity"
+                  // );
                 },
               })}
               placeholder="Minimum Stock"
