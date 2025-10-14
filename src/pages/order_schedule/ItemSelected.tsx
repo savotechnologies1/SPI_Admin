@@ -105,7 +105,6 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
         return [productPayload, ...componentPayloads];
       });
 
-      console.log("Submitting all scheduled items with payload:", payloads);
       const response = await scheduleStockOrder(payloads);
       if (response && response.status === 201) {
         toast.success(response.data.message);

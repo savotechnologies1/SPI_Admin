@@ -33,6 +33,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import cloud from "../../assets/cloud_check.png";
 import { importApi } from "./https/importsApi";
+import { toast } from "react-toastify";
 
 type TemplateType =
   | "process"
@@ -90,8 +91,8 @@ const partTemplate = [
     "minStock",
     "availStock",
     "supplierOrderQty",
-    "cycleTime",
-    "processId",
+    "cycleTime(minutes)",
+    "processName",
     "processDesc",
     "processOrderRequired",
     "instructionRequired",
@@ -108,8 +109,8 @@ const partTemplate = [
     "2",
     "48",
     "50",
-    "1 hr",
-    "06df10",
+    "10",
+    "boiling",
     "boiling",
     "TRUE",
     "0",
@@ -126,8 +127,8 @@ const partTemplate = [
     "2",
     "48",
     "50",
-    "1 hr",
-    "0e8651trrtyty2a",
+    "10",
+    "boiling",
     "boiling",
     "TRUE",
     "0",
@@ -135,25 +136,17 @@ const partTemplate = [
     "part",
   ],
 ];
-
 const productTemplate = [
-  ["productId", "productName", "category", "price", "description", "fileName"],
   [
-    "p001",
-    "Product A",
-    "Electronics",
-    "1200",
-    "High quality product A",
-    "product",
+    "product_number",
+    "part_number",
+    "partFamily",
+    "partDescription",
+    "instructionRequired",
+    "fileName",
   ],
-  [
-    "p002",
-    "Product B",
-    "Furniture",
-    "3000",
-    "Durable wooden product",
-    "product",
-  ],
+  ["Product A", "Part A", "abc", "abc desc", "TRUE", "product"],
+  ["Product B", "Part B", "abc", "abc desc", "FALSE", "product"],
 ];
 
 // Employee Template
@@ -214,11 +207,10 @@ const customerTemplate = [
     "fileName",
   ],
   [
-    "blb",
-    "birle",
-    "blb@gmail.com",
+    "test",
+    "test",
+    "test@gmail.com",
     "117, peace point indore",
-    "5",
     "9977366963",
     "customer",
   ],
@@ -226,8 +218,8 @@ const customerTemplate = [
 
 // Supplier Template
 const supplierTemplate = [
-  ["firstName", "lastName", "email", "address", "billingTerms", "type"],
-  ["blb", "birle", "blb@gmail.com", "117, peace point indore", "5", "fileName"],
+  ["firstName", "lastName", "email", "address", "billingTerms", "fileName"],
+  ["test", "test", "test@gmail.com", "test address", "5", "supplier"],
 ];
 
 // const Import: React.FC = () => {
@@ -543,7 +535,6 @@ const Import: React.FC = () => {
     link.download = `${selected}_template.csv`;
     link.click();
   };
-
   const handleUpload = async () => {
     if (!file || !selected) {
       alert("Please select a template type and file first!");
@@ -551,6 +542,7 @@ const Import: React.FC = () => {
     }
 
     setIsUploading(true);
+    setErrors([]); // Clear previous errors
     const formData = new FormData();
     formData.append("ImportFile", file);
 
@@ -569,20 +561,20 @@ const Import: React.FC = () => {
       } else if (selected === "supplier") {
         url = "supp/import";
       }
+
       const response = await importApi(url, formData);
 
-      const summary = response?.data?.summary;
-
-      if (summary && summary.errorCount > 0 && summary.errors?.length) {
-        setErrors(summary.errors);
-        alert("Some rows failed. Please download error file.");
-      } else {
+      // Backend will return 201 on full success or 400 on any row fail (your logic)
+      if (response?.status === 201) {
+        toast.success(response.data.message || "Upload successful");
         setErrors([]);
-        alert("File uploaded successfully ✅");
+      } else if (response?.status === 400 && response.data?.errors?.length) {
+        setErrors(response.data.errors);
+        toast.error("Upload failed due to validation errors");
       }
     } catch (error: any) {
       console.error("Upload failed:", error);
-      alert(error.response?.data?.error || "Upload failed!");
+      toast.error("Upload failed. Please check your file and try again.");
     } finally {
       setIsUploading(false);
     }

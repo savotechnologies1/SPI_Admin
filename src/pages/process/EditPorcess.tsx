@@ -772,25 +772,6 @@ const EditProcess = () => {
             </div>
 
             <div className="sm:w-1/2">
-              <label className="font-semibold">Part Family</label>
-              <input
-                {...register("partFamily", {
-                  required: "Part Family is required",
-                  validate: (value) =>
-                    value.trim() !== "" || "Part Family is required",
-                })}
-                type="text"
-                placeholder="Enter your part family"
-                className="border py-4 px-4 rounded-md w-full"
-              />
-              {errors.partFamily && (
-                <p className="text-red-500 text-sm">
-                  {errors.partFamily.message}
-                </p>
-              )}
-            </div>
-
-            <div className="sm:w-1/2">
               <label className="font-semibold">Machine Name</label>
               <input
                 {...register("machineName", {
@@ -805,6 +786,24 @@ const EditProcess = () => {
               {errors.machineName && (
                 <p className="text-red-500 text-sm">
                   {errors.machineName.message}
+                </p>
+              )}
+            </div>
+            <div className="sm:w-1/2">
+              <label className="font-semibold">Part Family</label>
+              <input
+                {...register("partFamily", {
+                  required: "Part Family is required",
+                  validate: (value) =>
+                    value.trim() !== "" || "Part Family is required",
+                })}
+                type="text"
+                placeholder="Enter your part family"
+                className="border py-4 px-4 rounded-md w-full"
+              />
+              {errors.partFamily && (
+                <p className="text-red-500 text-sm">
+                  {errors.partFamily.message}
                 </p>
               )}
             </div>
