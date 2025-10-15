@@ -61,7 +61,10 @@ const ProductNumber = () => {
       isSaved: false,
     },
   ]);
+  const processOrderRequired = watch("processOrderRequired");
 
+  // Convert string to boolean for easier checks
+  const isProcessRequired = processOrderRequired === "true";
   const [suggestions, setSuggestions] = useState<{ [index: number]: string[] }>(
     {}
   );
@@ -448,6 +451,7 @@ const ProductNumber = () => {
             </p>
           )}
         </div>
+        {/* Process Order Required */}
         <div className="col-span-4 md:col-span-1">
           <label>Process Order Required</label>
           <select
@@ -466,6 +470,42 @@ const ProductNumber = () => {
             </p>
           )}
         </div>
+        {/* Process */}
+        <div className="col-span-4 md:col-span-1">
+          <label>Process</label>
+          <select
+            {...register("processId", {
+              required: isProcessRequired ? "Process is required" : false,
+            })}
+            className="border p-2 rounded w-full"
+          >
+            <option value="">Select Process</option>
+            {processData.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+          {errors.processId && (
+            <p className="text-red-500 text-sm">{errors.processId.message}</p>
+          )}
+        </div>
+        {/* Process Description */}
+        <label className="block col-span-4 md:col-span-1">
+          Process Description
+          <textarea
+            {...register("processDesc", {
+              required: isProcessRequired
+                ? "Process Description is required"
+                : false,
+            })}
+            placeholder="Process Description"
+            className="border p-2 rounded w-full"
+          />
+          {errors.processDesc && (
+            <p className="text-red-500 text-sm">{errors.processDesc.message}</p>
+          )}
+        </label>
         <div className="col-span-4 md:col-span-1">
           <label>Work Instruction </label>
           <select
@@ -484,32 +524,6 @@ const ProductNumber = () => {
             </p>
           )}
         </div>
-        <div className="col-span-4 md:col-span-1">
-          <label>Process</label>
-          <select
-            {...register("processId", { required: "Process is required" })}
-            className="border p-2 rounded w-full"
-          >
-            <option value="">Select Process</option>
-            {processData.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.name}
-              </option>
-            ))}
-          </select>
-          {errors.processId && (
-            <p className="text-red-500 text-sm">{errors.processId.message}</p>
-          )}
-        </div>
-        {/* Process Order Required */}
-        <label className="block col-span-4 md:col-span-1">
-          Process Description
-          <textarea
-            {...register("processDesc")}
-            placeholder="Process Description"
-            className="border p-2 rounded w-full"
-          />
-        </label>
         {/* <label className="block col-span-4 md:col-span-2 cursor-pointer border bg-gray-100 p-4 rounded text-center">
           <input
             type="file"

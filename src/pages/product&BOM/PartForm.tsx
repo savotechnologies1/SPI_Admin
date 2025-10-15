@@ -549,7 +549,9 @@ const PartForm = () => {
   const rowsPerPage = 5;
   const processId = watch("processId");
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const processOrderRequired = watch("processOrderRequired");
 
+  const isProcessRequired = processOrderRequired === "true";
   if (!context) {
     throw new Error("PartContext must be used within a PartProvider");
   }
@@ -909,10 +911,14 @@ const PartForm = () => {
               </p>
             )}
           </div>
+
+          {/* Process */}
           <div className="col-span-4 md:col-span-2">
             <label>Process</label>
             <select
-              {...register("processId", { required: "Process is required" })}
+              {...register("processId", {
+                required: isProcessRequired ? "Process is required" : false,
+              })}
               className="border p-2 rounded w-full"
             >
               <option value="">Select Process</option>
@@ -926,13 +932,24 @@ const PartForm = () => {
               <p className="text-red-500 text-sm">{errors.processId.message}</p>
             )}
           </div>
+
+          {/* Process Description */}
           <label className="block col-span-4 md:col-span-2">
             Process Description
             <textarea
-              {...register("processDesc")}
+              {...register("processDesc", {
+                required: isProcessRequired
+                  ? "Process description is required"
+                  : false,
+              })}
               placeholder="Process Description"
               className="border p-2 rounded w-full"
             />
+            {errors.processDesc && (
+              <p className="text-red-500 text-sm">
+                {errors.processDesc.message}
+              </p>
+            )}
           </label>
           {selectedImages.length > 0 && (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 col-span-4 mt-4">

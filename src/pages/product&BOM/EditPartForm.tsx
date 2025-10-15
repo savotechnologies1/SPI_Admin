@@ -138,7 +138,7 @@ const EditPartForm = () => {
       console.error("Failed to delete image:", error);
     }
   };
-
+  const processOrderRequired = watch("processOrderRequired");
   // Update preview image URLs on image selection
   useEffect(() => {
     if (selectedImages?.length) {
@@ -267,7 +267,7 @@ const EditPartForm = () => {
             />
           </label>
 
-          <label className="block col-span-4 md:col-span-2">
+          <label className="block col-span-4 md:col-span-1">
             Cost
             <input
               type="number"
@@ -323,15 +323,15 @@ const EditPartForm = () => {
               {...register("minStock", {
                 // required: "Minimum Stock is required",
                 valueAsNumber: true,
-                validate: (value) => {
-                  const supplierOrderQty = watch("supplierOrderQty");
-                  if (supplierOrderQty === null || isNaN(supplierOrderQty))
-                    return true;
-                  return (
-                    value <= supplierOrderQty ||
-                    "Minimum Stock must be less than Order Quantity"
-                  );
-                },
+                // validate: (value) => {
+                //   const supplierOrderQty = watch("supplierOrderQty");
+                //   if (supplierOrderQty === null || isNaN(supplierOrderQty))
+                //     return true;
+                //   return (
+                //     value <= supplierOrderQty ||
+                //     "Minimum Stock must be less than Order Quantity"
+                //   );
+                // },
               })}
               placeholder="Minimum Stock"
               className="border p-2 rounded w-full"
@@ -349,15 +349,15 @@ const EditPartForm = () => {
               {...register("availStock", {
                 // required: "Available Stock is required",
                 valueAsNumber: true,
-                validate: (value) => {
-                  const supplierOrderQty = watch("supplierOrderQty");
-                  if (supplierOrderQty === null || isNaN(supplierOrderQty))
-                    return true;
-                  return (
-                    value <= supplierOrderQty ||
-                    "Available Stock must be less than Order Quantity"
-                  );
-                },
+                // validate: (value) => {
+                //   const supplierOrderQty = watch("supplierOrderQty");
+                //   if (supplierOrderQty === null || isNaN(supplierOrderQty))
+                //     return true;
+                //   return (
+                //     value <= supplierOrderQty ||
+                //     "Available Stock must be less than Order Quantity"
+                //   );
+                // },
               })}
               placeholder="Available Stock"
               className="border p-2 rounded w-full"
@@ -369,8 +369,6 @@ const EditPartForm = () => {
             )}
           </div>
 
-          {/* Cycle Time */}
-          {/* Cycle Time */}
           <div className="col-span-4 md:col-span-1">
             <label className="font-semibold">Cycle Time (Minutes)</label>
             <input
@@ -391,6 +389,8 @@ const EditPartForm = () => {
           </div>
 
           {/* Process Order Required */}
+
+          {/* Process Order Required */}
           <div className="col-span-4 md:col-span-1">
             <label>Process Order Required</label>
             <select
@@ -408,7 +408,10 @@ const EditPartForm = () => {
           <label className="block col-span-4 md:col-span-2">
             Process
             <select
-              {...register("processId")}
+              {...register("processId", {
+                required:
+                  processOrderRequired === true ? "Process is required" : false,
+              })}
               className="border p-2 rounded w-full"
             >
               <option value="">Select Process</option>
@@ -418,16 +421,29 @@ const EditPartForm = () => {
                 </option>
               ))}
             </select>
+            {errors.processId && (
+              <p className="text-red-500 text-sm">{errors.processId.message}</p>
+            )}
           </label>
 
           {/* Process Description */}
           <label className="block col-span-4 md:col-span-2">
             Process Description
             <textarea
-              {...register("processDesc")}
+              {...register("processDesc", {
+                required:
+                  processOrderRequired === true
+                    ? "Process description is required"
+                    : false,
+              })}
               placeholder="Process Description"
               className="border p-2 rounded w-full"
             />
+            {errors.processDesc && (
+              <p className="text-red-500 text-sm">
+                {errors.processDesc.message}
+              </p>
+            )}
           </label>
 
           {/* Images */}

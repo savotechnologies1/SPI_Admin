@@ -870,7 +870,8 @@ const EditProductForm = () => {
       fetchProductDetail();
     }
   }, [id, reset]);
-
+  const processOrderRequired = watch("processOrderRequired");
+  const isProcessRequired = processOrderRequired === "true";
   const fetchProcessList = async () => {
     try {
       const response = await selectProcess();
@@ -1134,7 +1135,7 @@ const EditProductForm = () => {
           </div>
           <div className="col-span-4 md:col-span-1">
             {" "}
-            <label>Cycle Time</label>{" "}
+            <label>Cycle Time(Minutes)</label>
             <input
               type="number"
               step="1"
@@ -1143,18 +1144,66 @@ const EditProductForm = () => {
               className="border p-2 rounded w-full"
             />{" "}
           </div>
+
+          {/* Process Order Required */}
           <div className="col-span-4 md:col-span-1">
-            {" "}
-            <label>Process Order Required</label>{" "}
+            <label>Process Order Required</label>
             <select
-              {...register("processOrderRequired")}
+              {...register("processOrderRequired", {
+                required: "Please select Yes or No",
+              })}
               className="border p-2 rounded w-full"
             >
-              {" "}
-              <option value="">Select</option> <option value="true">Yes</option>{" "}
-              <option value="false">No</option>{" "}
-            </select>{" "}
+              <option value="">Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+            {errors.processOrderRequired && (
+              <p className="text-red-500 text-sm">
+                {errors.processOrderRequired.message}
+              </p>
+            )}
           </div>
+
+          {/* Process */}
+          <div className="col-span-4 md:col-span-2">
+            <label>Process</label>
+            <select
+              {...register("processId", {
+                required: isProcessRequired ? "Process is required" : false,
+              })}
+              className="border p-2 rounded w-full"
+            >
+              <option value="">Select Process</option>
+              {processData.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+            {errors.processId && (
+              <p className="text-red-500 text-sm">{errors.processId.message}</p>
+            )}
+          </div>
+
+          {/* Process Description */}
+          <label className="block col-span-4 md:col-span-2">
+            Process Description
+            <textarea
+              {...register("processDesc", {
+                required: isProcessRequired
+                  ? "Process description is required"
+                  : false,
+              })}
+              placeholder="Process Description"
+              className="border p-2 rounded w-full"
+            />
+            {errors.processDesc && (
+              <p className="text-red-500 text-sm">
+                {errors.processDesc.message}
+              </p>
+            )}
+          </label>
           <div className="col-span-4 md:col-span-1">
             {" "}
             <label>Work Instruction </label>{" "}
@@ -1167,31 +1216,6 @@ const EditProductForm = () => {
               <option value="false">No</option>{" "}
             </select>{" "}
           </div>
-          <div className="col-span-4 md:col-span-2">
-            {" "}
-            <label>Process</label>{" "}
-            <select
-              {...register("processId")}
-              className="border p-2 rounded w-full"
-            >
-              {" "}
-              <option value="">Select Process</option>{" "}
-              {processData.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}{" "}
-            </select>
-          </div>
-          <label className="block col-span-4 md:col-span-2">
-            Process Description{" "}
-            <textarea
-              {...register("processDesc")}
-              placeholder="Process Description"
-              className="border p-2 rounded w-full"
-            />{" "}
-          </label>
-
           {/* Image Upload Section (Unchanged) */}
           <div className="col-span-4">
             <label className="block font-medium mb-2">

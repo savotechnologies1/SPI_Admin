@@ -18,8 +18,8 @@ const FixedCost = () => {
   });
 
   return (
-    <div className="p-6 max-w-6xl  bg-gray-50 min-h-screen">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
+    <div className="p-6 max-w-6xl  bg-gray-50 min-h-screen mt-8">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 ">
         Fixed Cost Management
       </h2>
 
@@ -55,7 +55,7 @@ const FixedCost = () => {
                 <Field
                   type="text"
                   name="category"
-                  placeholder="e.g., Office Rent"
+                  placeholder="Cost category"
                   className={`border rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition ${
                     errors.category && touched.category
                       ? "border-red-500"
@@ -77,7 +77,7 @@ const FixedCost = () => {
                 <Field
                   type="text"
                   name="name"
-                  placeholder="e.g., Office Rent"
+                  placeholder="Expense Name"
                   className={`border rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition ${
                     errors.name && touched.name
                       ? "border-red-500"
@@ -100,7 +100,7 @@ const FixedCost = () => {
                   <span className="absolute left-3 top-3 text-gray-500">$</span>
                   <Field
                     type="number"
-                    name="cost"
+                    name="Expense Cost / Year"
                     className={`border rounded-lg p-3 w-full pl-7 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition ${
                       errors.cost && touched.cost
                         ? "border-red-500"
