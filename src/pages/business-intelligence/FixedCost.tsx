@@ -324,6 +324,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { toast } from "react-toastify";
 const FixedCost = () => {
   const [records, setRecords] = useState([]);
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
@@ -343,7 +344,8 @@ const FixedCost = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/fixed-cost/${id}`);
+      await axios.delete(`${BASE_URL}/api/admin/fixed-cost-delete/${id}`);
+      toast.success("Fixed cost deleted successfully!");
       setRecords(records.filter((r) => r.id !== id));
     } catch (error) {
       console.error("Error deleting record:", error);
@@ -365,7 +367,7 @@ const FixedCost = () => {
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
         Fixed Cost Management
       </h2>
-      <div className="bg-white shadow-md rounded-2xl p-4 mt-6 w-full mb-10git">
+      <div className="bg-white shadow-md rounded-2xl p-4 mt-6 w-full mb-10">
         <div className="flex justify-between mb-6">
           {/* <h1 className="fonr-semibold">Fixed Cost</h1> */}
           <div>Current Year Total cost</div>

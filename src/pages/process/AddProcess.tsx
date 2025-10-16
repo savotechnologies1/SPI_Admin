@@ -933,7 +933,6 @@ import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { addProcess } from "./https/processApi";
-import delete_img from "../../assets/delete_1.png";
 
 const AddProcess = () => {
   const {

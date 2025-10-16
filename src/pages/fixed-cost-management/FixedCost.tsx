@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 import axios from "axios";
+import { toast } from "react-toastify";
 const FixedCost = () => {
   const [records, setRecords] = useState([]);
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
@@ -38,6 +39,8 @@ const FixedCost = () => {
                 `${BASE_URL}/api/admin/fixed-data-calulation`,
                 values
               );
+              console.log("responseresponse", response);
+              toast.success("Fixed cost added successfully!");
               setRecords([...records, response.data]); // add saved record with id
               resetForm();
             } catch (error) {
@@ -100,7 +103,7 @@ const FixedCost = () => {
                   <span className="absolute left-3 top-3 text-gray-500">$</span>
                   <Field
                     type="number"
-                    name="Expense Cost / Year"
+                    name="cost"
                     className={`border rounded-lg p-3 w-full pl-7 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition ${
                       errors.cost && touched.cost
                         ? "border-red-500"

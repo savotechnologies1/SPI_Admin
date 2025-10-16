@@ -394,11 +394,11 @@ const sections: Section[] = [
           //   label: "Clock in and out",
           //   path: "/clock-in-out",
           // },
-          {
-            key: "VacationRequest",
-            label: "Vacation Request",
-            path: "/vaction-request",
-          },
+          // {
+          //   key: "VacationRequest",
+          //   label: "Vacation Request",
+          //   path: "/vaction-request",
+          // },
           {
             key: "Vacation Request approval",
             label: "Vacation Request approval",

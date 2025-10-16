@@ -30,7 +30,7 @@ const Employees = () => {
   const [employeeId, setEmployeeId] = useState("");
   // const rowsPerPage = 5;
   // const totalPages = Math.ceil(data.length / rowsPerPage);
-
+  const [deleteId, setDeleteId] = useState(null);
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
@@ -47,7 +47,7 @@ const Employees = () => {
   const handleTabs = (value: string) => {
     setActiveTab(value);
   };
-
+  const normalizedTab = activeTab?.trim().toLowerCase();
   const navigate = useNavigate();
 
   const handleEdit = (id) => {
@@ -66,7 +66,10 @@ const Employees = () => {
         page,
         rowsPerPage,
         selectedValue,
-        searchVal
+        searchVal,
+        activeTab.trim().toLowerCase() === "all"
+          ? ""
+          : activeTab.trim().toLowerCase()
       );
       setCustomerData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
@@ -77,18 +80,20 @@ const Employees = () => {
 
   useEffect(() => {
     fetchEmployeeList(currentPage);
-  }, [currentPage, selectedValue, searchVal]);
+  }, [currentPage, selectedValue, searchVal, activeTab]);
 
-  const normalizedTab = activeTab?.trim().toLowerCase();
+  console.log("customerDa222tacustomerData", customerData);
   const statusCounts = customerData.reduce(
     (acc, item) => {
       const status = item.status?.toLowerCase().trim();
+      console.log("******************", status);
       acc[status] = (acc[status] || 0) + 1;
       acc["all"] += 1;
       return acc;
     },
     { all: 0 }
   );
+
   const categorys = [
     { tab: "All", text: statusCounts["all"] || 0 },
     { tab: "Active", text: statusCounts["active"] || 0 },
@@ -100,7 +105,10 @@ const Employees = () => {
     try {
       const response = await deleteEmployee(id);
       if (response?.status == 200) {
-        await fetchEmployeeList(currentPage);
+        await new Promise((r) => setTimeout(r, 500));
+        setShowConfirm(false);
+        setDeleteId(null);
+        await fetchEmployeeList(1);
         navigate("/employees");
       }
     } catch (error: unknown) {
@@ -119,7 +127,7 @@ const Employees = () => {
     setShowModal(true);
   };
   return (
-    <div className="p-4 mt-5 md:p-7">
+    <div className="p-4 mt-5 md:p-7 ">
       <div>
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <div>
@@ -345,41 +353,42 @@ const Employees = () => {
                           <button className="text-brand hover:underline">
                             <FaTrash
                               className="text-red-500 cursor-pointer h-7"
-                              onClick={() => setShowConfirm(true)}
+                              onClick={() => setDeleteId(item.id)} // Set the id of employee to delete
                             />
-                            {showConfirm && (
-                              <div
-                                className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
-                                    flex items-center justify-center z-50"
-                              >
-                                <div className="bg-white p-6 rounded-xl shadow-lg">
-                                  <h2 className="text-lg font-semibold mb-4">
-                                    Are you sure?
-                                  </h2>
-                                  <p className="mb-4">
-                                    Do you really want to delete this employee?
-                                  </p>
-                                  <div className="flex justify-end space-x-3">
-                                    <button
-                                      className="px-4 py-2 bg-gray-300 rounded"
-                                      onClick={() => setShowConfirm(false)}
-                                    >
-                                      Cancel
-                                    </button>
-                                    <button
-                                      className="px-4 py-2 bg-red-500 text-white rounded"
-                                      onClick={() => {
-                                        handleDelete(item.id);
-                                        setShowConfirm(false);
-                                      }}
-                                    >
-                                      Delete
-                                    </button>
-                                  </div>
+                          </button>
+
+                          {deleteId === item.id && (
+                            <div
+                              className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
+        flex items-center justify-center z-50"
+                            >
+                              <div className="bg-white p-6 rounded-xl shadow-lg">
+                                <h2 className="text-lg font-semibold mb-4">
+                                  Are you sure?
+                                </h2>
+                                <p className="mb-4">
+                                  Do you really want to delete this employee?
+                                </p>
+                                <div className="flex justify-end space-x-3">
+                                  <button
+                                    className="px-4 py-2 bg-gray-300 rounded"
+                                    onClick={() => setDeleteId(null)} // Cancel clears deleteId (closes modal)
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    className="px-4 py-2 bg-red-500 text-white rounded"
+                                    onClick={async () => {
+                                      await handleDelete(item.id);
+                                      setDeleteId(null); // Close modal after deletion
+                                    }}
+                                  >
+                                    Delete
+                                  </button>
                                 </div>
                               </div>
-                            )}
-                          </button>
+                            </div>
+                          )}
                         </td>
                       </tr>
                     ))}

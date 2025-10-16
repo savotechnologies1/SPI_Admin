@@ -17,15 +17,15 @@ export const addEmployee = async (apiData: object) => {
 export const employeeList = async (
   page = 1,
   limit = 5,
-  isShopFloor: boolean,
-  searchVal: string
+  isShopFloor: string,
+  searchVal: string,
+  status = "" // 👈 Add status
 ) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/all-employee?page=${page}&limit=${limit}&processLogin=${isShopFloor}&search=${searchVal}`
+      `/all-employee?page=${page}&limit=${limit}&processLogin=${isShopFloor}&search=${searchVal}&status=${status}`
     );
-    console.log("response.dataresponse.data", response.data);
+    console.log("response.data", response.data);
     return response.data;
   } catch (error) {
     throw error;
