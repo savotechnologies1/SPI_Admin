@@ -1051,7 +1051,7 @@ const AddProcess = () => {
               )}
             </div>
             <div className="sm:w-1/2">
-              <label className="font-semibold">Cycle Time</label>
+              <label className="font-semibold">Cycle Time (minutes)</label>
               <input
                 {...register("cycleTime", {
                   required: "Cycle time is required",

@@ -687,10 +687,7 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
           apiItem.productFamily?.[0];
         processName =
           mainProduct?.process?.processName || "No Process Specified";
-        console.log("processNameprocessName", processName);
 
-        // --- YAHAN BADLAV KIYA GAYA HAI ---
-        // processDetails se juda logic (allProcesses, text2) hata diya gaya hai
         return {
           id: apiItem.id,
           img1: "https://via.placeholder.com/150",
@@ -725,83 +722,6 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
     setSelectedItems((prev) => prev.filter((i) => i.id !== itemToRemove.id));
     toast.warn(`Order ${itemToRemove.orderNumber} removed from schedule.`);
   };
-  // const scheduleAllData = async () => {
-  //   try {
-  //     const payloads = selectedItems.flatMap((item) => {
-  //       const productPayload = {
-  //         order_id: item.id,
-  //         orderDate: item.orderDate,
-  //         delivery_date: item.deliveryDate,
-  //         submitted_date: new Date(),
-  //         customersId: item.customer.id,
-  //         status: "new",
-  //         quantity: item.scheduledQty,
-  //         product_id: item.part.part_id,
-  //         part_id: item.part.part_id,
-  //         // type: item.part.type,
-  //         type: "part",
-  //       };
-
-  //       const componentPayloads = item.part.components.map((comp) => ({
-  //         order_id: item.id,
-  //         orderDate: item.orderDate,
-  //         delivery_date: item.deliveryDate,
-  //         submitted_date: new Date(),
-  //         customersId: item.customer.id,
-  //         status: "new",
-  //         quantity: item.scheduledQty,
-  //         product_id: item.part.part_id,
-  //         part_id: comp?.part?.part_id,
-  //         type: "product",
-  //       }));
-
-  //       return [productPayload, ...componentPayloads];
-  //     });
-
-  //     console.log("Submitting all scheduled items with payload:", payloads);
-  //     await scheduleStockOrder(payloads);
-  //     setSelectedItems([]);
-  //     setItemInputs({});
-  //   } catch (error) {
-  //     console.error("Failed to schedule all items:", error);
-  //     toast.error(
-  //       "An error occurred while scheduling the items. Please try again."
-  //     );
-  //   }
-  // };
-  // `scheduleAllData` mein koi badlav ki zaroorat nahi hai, yeh pehle se hi sahi hai
-  // const scheduleAllData = async () => {
-  //   if (selectedItems.length === 0) {
-  //     toast.warn("There are no items selected to schedule.");
-  //     return;
-  //   }
-  //   try {
-  //     const payloads = selectedItems.flatMap((item) => {
-  //       const parentProduct = item.originalData.productFamily?.find(
-  //         (p) => p.isParent
-  //       );
-  //       if (!parentProduct) return [];
-
-  //       return item.originalData.productFamily.map((partInFamily) => ({
-  //         order_id: item.originalData.id,
-  //         orderDate: item.originalData.orderDate,
-  //         delivery_date: item.originalData.shipDate,
-  //         submitted_date: new Date(),
-  //         customersId: item.originalData.customer.id,
-  //         status: "new",
-  //         quantity: item.originalData.productQuantity,
-  //         product_id: parentProduct.part_id,
-  //         part_id: partInFamily.part_id,
-  //         type: partInFamily.type,
-  //       }));
-  //     });
-  //     console.log("Payload for CUSTOM orders:", payloads);
-  //     await scheduleCustomOrder(payloads);
-  //   } catch (error) {
-  //     console.error("Failed to schedule custom items:", error);
-  //     toast.error("An error occurred while scheduling. Please try again.");
-  //   }
-  // };
 
   const scheduleAllData = async () => {
     if (selectedItems.length === 0) {
@@ -867,7 +787,7 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
       console.log("Payload for CUSTOM orders:", payloads);
       const response = await scheduleCustomOrder(payloads);
       if (response.status === 201) {
-        navigate("/stock-order-schedule-list");
+        navigate("/order-schedule-list");
       }
     } catch (error) {
       console.error("Failed to schedule custom items:", error);
@@ -893,11 +813,11 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
       key={item.id}
       className="flex items-center justify-between bg-white px-4 py-6 rounded-lg shadow-md"
     >
-      <img
+      {/* <img
         src={item.img1 || "/placeholder.png"}
         alt="Product"
         className="w-12 h-12 rounded"
-      />
+      /> */}
       <div className="flex-1 px-4">
         <p className="text-sm 2xl:text-base font-bold">{item.orderNumber}</p>
         <div className="flex items-center text-xs text-gray-600 mt-2 space-x-2">

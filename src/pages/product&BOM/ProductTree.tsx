@@ -391,10 +391,10 @@ export default function ProductTree() {
                   key={`${productIndex}-${product.part_id}`}
                   className="hover:bg-gray-100 text-center"
                 >
-                  <td className="border-b border-dashed p-2">
+                  <td className="border-b border-dashed p-2 max-w-[120px] truncate md:break-words">
                     {product.partNumber}
                   </td>
-                  <td className="border-b border-dashed p-2">
+                  <td className="border-b border-dashed p-2 max-w-[200px] break-words">
                     {product.partDescription || "Not Available"}
                   </td>
                   <td className="border-b border-dashed p-2">
@@ -409,60 +409,55 @@ export default function ProductTree() {
                   </td>
 
                   <td className="border-b border-dashed p-2">
-                    {product.minStock
-                      ? `${product?.minStock} `
-                      : "Not Available"}
+                    {product.minStock ? `${product?.minStock} ` : "0"}
                   </td>
                   <td className="border-b border-dashed p-2">
-                    {product.availStock
-                      ? `${product?.availStock} `
-                      : "Not Available"}
+                    {product.availStock ? `${product?.availStock} ` : "0"}
                   </td>
-                  <td className="flex items-center gap-4 border-b border-dashed p-2">
-                    <img
-                      src={edit}
-                      alt="Edit"
-                      onClick={() => handleClick(product.part_id)}
-                      className="w-4 h-4 md:w-5 md:h-5"
-                    />
-                    <button className="text-brand hover:underline">
-                      <FaTrash
-                        className="text-red-500 cursor-pointer"
-                        onClick={() => setShowConfirm(true)}
+                  <td className="p-2 border-b border-dashed">
+                    <div className="flex items-center justify-center gap-3">
+                      <img
+                        src={edit}
+                        alt="Edit"
+                        onClick={() => handleClick(product.part_id)}
+                        className="w-4 h-4 md:w-5 md:h-5 cursor-pointer"
                       />
-                      {showConfirm && (
-                        <div
-                          className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
-                                          flex items-center justify-center z-50"
-                        >
-                          <div className="bg-white p-6 rounded-xl shadow-lg">
-                            <h2 className="text-lg font-semibold mb-4">
-                              Are you sure?
-                            </h2>
-                            <p className="mb-4">
-                              Do you really want to delete this product ?
-                            </p>
-                            <div className="flex justify-end space-x-3">
-                              <button
-                                className="px-4 py-2 bg-gray-300 rounded"
-                                onClick={() => setShowConfirm(false)}
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                className="px-4 py-2 bg-red-500 text-white rounded"
-                                onClick={() => {
-                                  handleDelete(product.part_id);
-                                  setShowConfirm(false);
-                                }}
-                              >
-                                Delete
-                              </button>
+                      <div className="relative">
+                        <FaTrash
+                          className="text-red-500 cursor-pointer"
+                          onClick={() => setShowConfirm(true)}
+                        />
+                        {showConfirm && (
+                          <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+                            <div className="bg-white p-6 rounded-xl shadow-lg w-72 md:w-96">
+                              <h2 className="text-lg font-semibold mb-4">
+                                Are you sure?
+                              </h2>
+                              <p className="mb-4">
+                                Do you really want to delete this product?
+                              </p>
+                              <div className="flex justify-end space-x-3">
+                                <button
+                                  className="px-4 py-2 bg-gray-300 rounded"
+                                  onClick={() => setShowConfirm(false)}
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  className="px-4 py-2 bg-red-500 text-white rounded"
+                                  onClick={() => {
+                                    handleDelete(product.part_id);
+                                    setShowConfirm(false);
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
-                    </button>
+                        )}
+                      </div>
+                    </div>
                   </td>
                 </tr>
               ))}

@@ -535,7 +535,7 @@ const PartForm = () => {
     defaultValues: {
       supplierOrderQty: 0,
       availStock: 0,
-      minStock: 0,
+      minStock: null,
     },
   });
 
@@ -562,7 +562,7 @@ const PartForm = () => {
       setPartData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
-      toast.error("Failed to fetch part data");
+      console.log(error);
     }
   };
 
@@ -572,7 +572,7 @@ const PartForm = () => {
         const processList = await selectProcess();
         setProcessData(processList);
       } catch (error) {
-        toast.error("Failed to fetch processes");
+        console.log(error);
       }
       getAllPartList(currentPage);
     };
@@ -791,7 +791,7 @@ const PartForm = () => {
             <input
               type="number"
               {...register("minStock", {
-                // required: "Minimum Stock is required",
+                required: "Minimum Stock is required",
                 valueAsNumber: true,
                 validate: (value) => {
                   const supplierOrderQty = watch("supplierOrderQty");

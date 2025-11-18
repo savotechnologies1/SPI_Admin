@@ -135,7 +135,7 @@ const CustomOrderForm = () => {
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             try {
               await addCustomOrder(values);
-              toast.success("Custom order created successfully!");
+
               resetForm({
                 values: {
                   ...initialFormValues,
@@ -146,7 +146,6 @@ const CustomOrderForm = () => {
               setSingleUnitCost(null);
             } catch (error) {
               console.error("Submission error:", error);
-              toast.error("Failed to create order. Please try again.");
             } finally {
               setSubmitting(false);
             }

@@ -339,7 +339,6 @@ export default function PartTable() {
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
       console.error("Failed to fetch data:", error);
-      toast.error("Failed to fetch data. Please try again.");
     }
   };
 
@@ -466,19 +465,18 @@ export default function PartTable() {
                 customerData.map((part) => (
                   <tr
                     key={part.part_id}
-                    className="hover:bg-gray-100 text-center"
+                    className="hover:bg-gray-100 text-center md:text-center break-words"
                   >
-                    <td className="border-b border-dashed p-2">
+                    <td className="border-b border-dashed p-2 max-w-[120px] truncate md:break-words">
                       {part.partNumber}
                     </td>
-                    <td className="border-b border-dashed p-2">
+                    <td className="border-b border-dashed p-2 max-w-[150px] truncate md:break-words">
                       {part.partFamily}
                     </td>
-                    <td className="border-b border-dashed p-2">
-                      {part.partDescription}
+                    <td className="border-b border-dashed p-2 max-w-[200px] break-words">
+                      {part.partDescription || "—"}
                     </td>
                     <td className="border-b border-dashed p-2">${part.cost}</td>
-
                     <td className="border-b border-dashed p-2">
                       {part.leadTime
                         ? `${part.leadTime} ${
@@ -486,7 +484,6 @@ export default function PartTable() {
                           }`
                         : "Not Available"}
                     </td>
-
                     <td className="border-b border-dashed p-2">
                       {part.supplierOrderQty}
                     </td>
@@ -496,24 +493,26 @@ export default function PartTable() {
                     <td className="border-b border-dashed p-2">
                       {part.availStock}
                     </td>
-                    <td className="flex items-center gap-4 border-b border-dashed p-2">
-                      <img
-                        src={edit}
-                        alt="Edit"
-                        onClick={() => handleClick(part.part_id, part.type)}
-                        className="w-4 h-4 md:w-5 md:h-5 cursor-pointer"
-                      />
-                      <FaTrash
-                        className="text-red-500 cursor-pointer"
-                        onClick={() => setDeleteTargetId(part.part_id)}
-                      />
+                    <td className="border-b border-dashed p-2 text-center">
+                      <div className="flex items-center justify-center space-x-2 md:space-x-4">
+                        <img
+                          src={edit}
+                          alt="Edit"
+                          onClick={() => handleClick(part.part_id, part.type)}
+                          className="w-5 h-5 md:w-6 md:h-6 cursor-pointer"
+                        />
+                        <FaTrash
+                          className="text-red-500 w-5 h-5 md:w-6 md:h-6 cursor-pointer"
+                          onClick={() => setDeleteTargetId(part.part_id)}
+                        />
+                      </div>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={9}
                     className="text-center py-4 text-sm text-gray-500"
                   >
                     No data found

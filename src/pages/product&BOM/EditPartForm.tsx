@@ -450,21 +450,23 @@ const EditPartForm = () => {
           <div className="col-span-4">
             <label className="block font-medium mb-2">Uploaded Images</label>
             {previewImages.length > 0 && (
-              <div className="col-span-4 flex gap-2 flex-wrap mt-2">
-                {previewImages.map((imgUrl, i) => (
-                  <div key={i} className="relative">
-                    <img
-                      src={imgUrl}
-                      alt={`Preview ${i}`}
-                      className="w-20 h-20 object-cover border rounded"
-                    />
-                    <MdCancel
-                      className="absolute -top-2 -right-2 cursor-pointer text-red-600 bg-white rounded-full"
-                      size={20}
-                      onClick={() => handleRemoveSelectedImage(i)}
-                    />
-                  </div>
-                ))}
+              <div className="col-span-4 mt-2 ">
+                <div className="flex gap-2">
+                  {previewImages.map((imgUrl, i) => (
+                    <div key={i} className="relative flex-shrink-0">
+                      <img
+                        src={imgUrl}
+                        alt={`Preview ${i}`}
+                        className="w-20 h-20 object-cover border rounded"
+                      />
+                      <MdCancel
+                        className="absolute -top-2 -right-2 cursor-pointer text-red-600 bg-white rounded-full"
+                        size={20}
+                        onClick={() => handleRemoveSelectedImage(i)}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 

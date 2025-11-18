@@ -442,7 +442,7 @@ const RunWithScan = () => {
             <img className="w-24 md:w-40" src={belt} alt="Belt icon" />
             <div className="text-white text-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full whitespace-nowrap flex justify-between">
               <div className="gap-2 flex flex-col">
-                <p className="text-3xl 2xl:text-5xl font-semibold">
+                <p className="text-3xl font-semibold break-words p-2 w-[300px] max-w-[800px]">
                   {part?.partDescription || "No Description"}
                 </p>
                 <div className="flex gap-4">

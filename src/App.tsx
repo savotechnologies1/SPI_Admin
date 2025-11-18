@@ -172,7 +172,7 @@ const App = () => {
               element={<StockOrderSchedule />}
             />
             <Route
-              path="stock-order-schedule-list"
+              path="order-schedule-list"
               element={<StockOrderScheduleList />}
             />
             <Route

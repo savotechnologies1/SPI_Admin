@@ -135,7 +135,7 @@ const sections: Section[] = [
               {
                 key: "Order Schedule List",
                 label: "Order Schedule List",
-                path: "/stock-order-schedule-list",
+                path: "/order-schedule-list",
               },
               {
                 key: "Custom Order Schedule",

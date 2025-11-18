@@ -44,7 +44,7 @@ const ProductNumber = () => {
     defaultValues: {
       supplierOrderQty: 0,
       availStock: 0,
-      minStock: 0,
+      minStock: null,
     },
   });
   const processId = watch("processId");
@@ -57,10 +57,11 @@ const ProductNumber = () => {
       qty: "",
       process: "",
       cycleTime: "",
-      workInstruction: "",
+      workInstruction: "", // ✅ use empty string
       isSaved: false,
     },
   ]);
+
   const processOrderRequired = watch("processOrderRequired");
 
   // Convert string to boolean for easier checks
@@ -132,10 +133,10 @@ const ProductNumber = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
   const handleBOMChange = (index: number, field: string, value: string) => {
     const updated = [...bomEntries];
-    updated[index][field] = value;
+    updated[index][field] = value; // now workInstruction will be string
+    setBomEntries(updated);
 
     if (field === "partNumber") {
       const filtered = partData

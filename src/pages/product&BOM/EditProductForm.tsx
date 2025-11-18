@@ -840,12 +840,13 @@ const EditProductForm = () => {
           id: part.id || "",
           part_id: part.part_id || "",
           partNumber: part.partNumber || "",
-          partQuantity: part.partQuantity || "",
+          partQuantity: part.partQuantity ?? "", // <-- change here
           process: part.process?.processName || "",
           processId: part.process?.id || "",
           cycleTime: part.process?.cycleTime?.toString() || "",
           instructionRequired: part.instructionRequired ? "Yes" : "No",
         }));
+
         setBomItems(preFilledBOMs);
       } else {
         // If no parts, ensure there's one blank row to start with

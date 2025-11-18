@@ -339,7 +339,7 @@ const Tables = ({ startDate, endDate }) => {
                     key={colIndex}
                     className="border border-gray-300 px-4 py-2 text-center"
                   >
-                    {row[col] !== null ? row[col].toString() : "-"}
+                    {row[col] !== null ? row[col]?.toString() : "-"}
                   </td>
                 ))}
               </tr>
