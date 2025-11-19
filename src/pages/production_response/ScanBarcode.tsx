@@ -29,7 +29,7 @@ const ScanBarcode = () => {
       </div>
 
       <p className="mt-3 text-sm text-gray-700">
-        📦 <strong>Scanned Barcode:</strong> {barcode ?? "Not scanned yet"}
+        <strong>Scanned Barcode:</strong> {barcode ?? "Not scanned yet"}
       </p>
     </div>
   );

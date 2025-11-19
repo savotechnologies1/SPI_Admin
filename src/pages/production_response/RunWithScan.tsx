@@ -440,20 +440,23 @@ const RunWithScan = () => {
         <div className="container mx-auto p-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="relative w-full md:w-auto">
             <img className="w-24 md:w-40" src={belt} alt="Belt icon" />
-            <div className="text-white text-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full whitespace-nowrap flex justify-between">
-              <div className="gap-2 flex flex-col">
-                <p className="text-3xl font-semibold break-words p-2 w-[300px] max-w-[800px]">
+            <div className="absolute inset-0 flex items-center justify-center px-2 md:px-4">
+              <div className="text-white text-center w-[361px] space-y-2">
+                {/* Title */}
+                <p className="text-lg md:text-2xl font-semibold truncate">
                   {part?.partDescription || "No Description"}
                 </p>
-                <div className="flex gap-4">
-                  <p className="md:text-xl font-semibold">
-                    {order?.orderNumber}
-                  </p>
-                  <p className=" ">{formatDate(jobData.order_date)}</p>
+
+                {/* Order No + Date */}
+                <div className="flex justify-center gap-4 text-sm md:text-lg">
+                  <p className="font-semibold">{order?.orderNumber}</p>
+                  <p>{formatDate(jobData.order_date)}</p>
                 </div>
-                <div className="flex gap-4">
-                  <p className="md:text-xl font-semibold ">Upcoming : </p>
-                  <p className="">{formatDate(upcommingOrder)}</p>
+
+                {/* Upcoming Date */}
+                <div className="flex justify-center gap-4 text-sm md:text-lg">
+                  <p className="font-semibold">Upcoming</p>
+                  <p>: {formatDate(upcommingOrder)}</p>
                 </div>
               </div>
             </div>

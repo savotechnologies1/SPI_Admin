@@ -440,7 +440,10 @@ const CustomOrderForm = () => {
                 {/* Part Number Field */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 bg-white px-6">
                   <div className="col-span-1">
-                    <label className="font-semibold">Part Number</label>
+                    <label className="font-semibold">
+                      {" "}
+                      Assign To Part Number
+                    </label>
                     <select
                       name="part_id"
                       value={values.part_id}
@@ -520,7 +523,7 @@ const CustomOrderForm = () => {
                             </div>
                             <div className="md:col-span-1">
                               <label className="font-semibold">
-                                Assign To Part Number
+                                Part Number
                               </label>
                               <Field
                                 name={`newParts[${index}].part`}

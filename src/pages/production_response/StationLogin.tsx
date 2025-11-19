@@ -521,8 +521,8 @@ const StationLogin = () => {
       <div className="justify-between flex flex-row items-center px-4 py-2"></div>
       <button
         type="button"
-        onClick={() => navigate(-1)} // Go back one page
-        className="w-full flex items-center justify-start ml-7 py-2 rounded-md hover:bg-gray-100 transition font-bold"
+        onClick={() => navigate(-1)}
+        className="flex items-center justify-start ml-7 py-2 rounded-md hover:bg-gray-100 transition font-bold w-auto"
       >
         <FaArrowLeft className="mr-2" />
         Back

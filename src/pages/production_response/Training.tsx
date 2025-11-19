@@ -7,6 +7,7 @@ import {
   stationProcessDetail,
   updateStepTime,
 } from "./https/productionResponseApi";
+import CommentBox from "./CommentBox";
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 interface Image {
@@ -183,20 +184,23 @@ const Training = () => {
         <div className="container mx-auto p-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="relative w-full md:w-auto">
             <img className="w-24 md:w-40" src={belt} alt="Belt icon" />
-            <div className="text-white text-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full whitespace-nowrap flex justify-between">
-              <div className="gap-2 flex flex-col">
-                <p className="text-3xl 2xl:text-5xl font-semibold">
+            <div className="absolute inset-0 flex items-center justify-center px-2 md:px-4">
+              <div className="text-white text-center w-[361px] space-y-2">
+                {/* Title */}
+                <p className="text-lg md:text-2xl font-semibold truncate">
                   {part?.partDescription || "No Description"}
                 </p>
-                <div className="flex gap-4">
-                  <p className="md:text-xl font-semibold">
-                    {order?.orderNumber}
-                  </p>
-                  <p className=" ">{formatDate(jobData.order_date)}</p>
+
+                {/* Order No + Date */}
+                <div className="flex justify-center gap-4 text-sm md:text-lg">
+                  <p className="font-semibold">{order?.orderNumber}</p>
+                  <p>{formatDate(jobData.order_date)}</p>
                 </div>
-                <div className="flex gap-4">
-                  <p className="md:text-xl font-semibold ">Upcoming : </p>
-                  <p className="">{formatDate(upcommingOrder)}</p>
+
+                {/* Upcoming Date */}
+                <div className="flex justify-center gap-4 text-sm md:text-lg">
+                  <p className="font-semibold">Upcoming</p>
+                  <p>: {formatDate(upcommingOrder)}</p>
                 </div>
               </div>
             </div>
@@ -221,41 +225,23 @@ const Training = () => {
       </div>
 
       <div className="container mx-auto p-4 md:p-6 flex-grow">
-        <div className="flex flex-col md:flex-row items-center gap-3 mb-6">
-          <input
-            type="text"
-            placeholder="Write your comments"
-            className="border border-gray-400 py-2 px-4 rounded-md w-full text-sm"
-          />
-          <div className="flex gap-3 w-full">
-            <button className="bg-brand text-white px-4 py-2 rounded-sm w-full md:w-auto">
-              Add Picture
-            </button>
-            <button className="bg-brand text-white px-4 py-2 rounded-sm w-full md:w-auto">
-              Send
-            </button>
-          </div>
-        </div>
+        <div className="container mx-auto p-4 md:p-6 flex-grow">
+          <CommentBox employeeInfo={employeeInfo} />
 
-        <div className="flex flex-col gap-4">
-          {part?.WorkInstruction?.flatMap((wi) =>
-            wi.steps.map((step, index, arr) => {
-              const prevStepId = index > 0 ? arr[index - 1].id : undefined;
-              return (
+          <div className="py-4 flex flex-col gap-4">
+            {part.WorkInstruction && part.WorkInstruction.length > 0 ? (
+              part.WorkInstruction.flatMap(
+                (instructionSet) => instructionSet.steps
+              ).map((step, index) => (
                 <div
-                  key={step.id}
-                  onClick={() => handleStepClick(step.id, prevStepId)}
-                  className={`flex flex-col md:flex-row items-center gap-4 p-4 bg-white shadow-sm rounded-lg cursor-pointer ${
-                    completedSteps.has(step.id)
-                      ? "border-2 border-green-500"
-                      : ""
-                  }`}
+                  key={step.id || index}
+                  className="flex flex-col md:flex-row gap-4 md:gap-20 items-center bg-white rounded-lg shadow-sm p-4"
                 >
                   <div className="w-full md:w-auto">
                     <img
-                      className="rounded-md w-full max-w-xs"
+                      className="rounded-md w-full max-w-xs md:max-w-none"
                       src={
-                        step.images?.[0]?.imagePath
+                        step.images && step.images.length > 0
                           ? `${BASE_URL}/uploads/workInstructionImg/${step.images[0].imagePath}`
                           : "https://via.placeholder.com/150"
                       }
@@ -267,9 +253,13 @@ const Training = () => {
                     <p className="text-gray-600">{step.instruction}</p>
                   </div>
                 </div>
-              );
-            })
-          )}
+              ))
+            ) : (
+              <div className="text-center text-gray-500 p-4">
+                No work instructions available for this part.
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
@@ -282,13 +272,13 @@ const Training = () => {
                 : "bg-gray-400 text-gray-700 cursor-not-allowed"
             }`}
           >
-            111 Complete Training
+            Complete Training
           </button>
-          <NavLink to="/scrap-entry" className="w-full sm:w-auto">
+          {/* <NavLink to="/scrap-entry" className="w-full sm:w-auto">
             <button className="bg-transparent text-brand px-4 py-2 font-semibold border-2 border-black rounded-md w-full">
               Scrap
             </button>
-          </NavLink>
+          </NavLink> */}
         </div>
       </div>
       <div className="bg-[#243C75]  bottom-0 w-full">
