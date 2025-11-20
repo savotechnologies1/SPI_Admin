@@ -772,7 +772,9 @@ const RunSchedule = () => {
             </div>
             <div className="flex flex-col items-center text-white">
               <p className="text-sm md:text-base font-semibold"> Qty</p>
-              <p className="text-sm md:text-base">{jobData.completedQty}</p>
+              <p className="text-sm md:text-base">
+                {jobData.employeeCompletedQty}
+              </p>
             </div>
             <div className="flex flex-col items-center text-white">
               <p className="text-sm md:text-base font-semibold">Cycle Time</p>
