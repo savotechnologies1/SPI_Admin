@@ -140,12 +140,11 @@ const StockOrderScheduleList: React.FC = () => {
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
+  const handleDelete = async (id: string, orderId: string) => {
+    if (!id || !orderId) return;
 
-  const handleDelete = async (id: string) => {
-    if (!id) return;
     try {
-      await deleteScheduleOrder(id);
-      // Refetch data for the current page after deletion
+      await deleteScheduleOrder(id, { orderId });
       fetchScheduleList(currentPage, selectedType, debouncedSearchVal);
     } catch (error) {
       console.error("Failed to delete:", error);
@@ -299,7 +298,7 @@ const StockOrderScheduleList: React.FC = () => {
                             <button
                               className="px-4 py-2 bg-red-500 text-white rounded"
                               onClick={() => {
-                                handleDelete(selectedId);
+                                handleDelete(selectedId, item.order_id);
                                 setSelectedId(null);
                               }}
                             >

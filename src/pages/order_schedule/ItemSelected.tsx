@@ -108,7 +108,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       const response = await scheduleStockOrder(payloads);
       if (response && response.status === 201) {
         toast.success(response.data.message);
-        navigate("/stock-order-schedule-list");
+        navigate("/order-schedule-list");
       }
       setSelectedItems([]);
       setItemInputs({});

@@ -673,10 +673,10 @@ const RunSchedule = () => {
                 Date: {formatDate(jobData.delivery_date)}
               </p>
               <p className=" text-sm md:text-base">
-                Qty: {jobData.completedQty}
+                Qty: {jobData.employeeCompletedQty}
               </p>
               <p className=" text-sm md:text-base">
-                Scrap Qty: {jobData.scrapQty}
+                Scrap Qty: {jobData.employeeScrapQty}
               </p>
             </div>
           </div>

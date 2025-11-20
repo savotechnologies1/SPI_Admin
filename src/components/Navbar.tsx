@@ -285,35 +285,8 @@ const Navbar = () => {
     <div className="fixed top-0 right-0 w-full z-30 items-center">
       <div className="flex items-center justify-end bg-white p-4 shadow w-full">
         <div className="flex items-center space-x-4 justify-between relative">
-          {/* <div className="rounded-lg bg-[#E9ECF1] md:flex p-2 hidden items-center gap-2">
-            <div className="">
-              <img src={search} alt="" />
-            </div>
-            <div className=" flex items-center justify-between">
-              <input
-                className="px- rounded-lg bg-transparent w-full outline-none"
-                type="text"
-                placeholder=""
-              />
-              <div className="P-2 bg-white rounded-md">
-                <p className="px-2 ">SEARCH</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex space-x-4">
-            <img
-              src={language}
-              alt="avatar"
-              className="w-10 cursor-pointer"
-              onClick={() => {
-                isLanguageOpen(true);
-              }}
-            />
-          </div> */}
+        
           <div className="flex space-x-4 relative">
-            {" "}
-            {/* Added relative for positioning the badge */}
             <img
               src={notification}
               alt="notification"

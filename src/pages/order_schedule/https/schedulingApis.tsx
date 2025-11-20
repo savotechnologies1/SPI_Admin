@@ -230,16 +230,20 @@ export const deleteEmployee = async (id: string) => {
   }
 };
 
-export const deleteScheduleOrder = async (id: string) => {
+export const deleteScheduleOrder = async (id: string, orderId: string) => {
   try {
-    const response = await axiosInstance.patch(`/delete-schedule-order/${id}`);
+    console.log("orderIdorderId", orderId.orderId);
+    const response = await axiosInstance.delete(
+      `/delete-schedule-order/${id}?orderId=${orderId.orderId}`
+    );
     console.log("response222", response);
     if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response;
   } catch (error: unknown) {
-    toast.error(error.response.data.message);
+    console.log("errorerror", error);
+    toast.error(error.response?.data?.message);
   }
 };
 // Is at cycleTime should have to add time picker
