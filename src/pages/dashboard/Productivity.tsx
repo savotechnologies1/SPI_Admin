@@ -23,7 +23,7 @@ const Productivity = ({ productivity }) => {
                 <td className="py-2 px-4">{item.process}</td>
                 <td className="py-2 px-4">{item.employee}</td>
                 <td className="py-2 px-4">{item.cycleTime}</td>
-                <td className="py-2 px-4">{item.qty}</td>
+                <td className="py-2 px-4">{item.totalQty}</td>
                 <td className="py-2 px-4">{item.scrap}</td>
                 <td className="py-2 px-4">{item.productivity}</td>
                 <td className="py-2 px-4">{item.efficiency}</td>

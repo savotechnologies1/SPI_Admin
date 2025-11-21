@@ -13,7 +13,7 @@ import Account from "./Account";
 import { useSelector } from "react-redux";
 import { getProfile } from "../pages/settings/https/profileApi";
 import profile from "../assets/profile.png";
-
+import { FaBell } from "react-icons/fa";
 // const Navbar = () => {
 //   const [isLanguage, isLanguageOpen] = useState(false);
 //   const [isNotification, isNotificationOpen] = useState(false);
@@ -220,7 +220,8 @@ const Navbar = () => {
   const fetchUnreadNotificationCount = async () => {
     try {
       const res = await getAllStationNotification(false); // Fetch only unread
-      setUnreadCount(res.counts.unread || 0);
+      console.log("resresresresresresresresresresresresres", res);
+      setUnreadCount(res.counts.all || 0);
     } catch (error) {
       console.error("Error fetching unread notification count:", error);
     }
@@ -285,8 +286,33 @@ const Navbar = () => {
     <div className="fixed top-0 right-0 w-full z-30 items-center">
       <div className="flex items-center justify-end bg-white p-4 shadow w-full">
         <div className="flex items-center space-x-4 justify-between relative">
-        
           <div className="flex space-x-4 relative">
+            <div className="relative">
+              <FaBell
+                size={27}
+                color="#1e40af45" // bell color (blue). Change as needed.
+                className="cursor-pointer"
+                onClick={() => {
+                  isNotificationOpen(true);
+                  fetchUnreadNotificationCount();
+                }}
+              />
+
+              {/* Notification Count Badge */}
+              {unreadCount > 0 && (
+                <span
+                  className="
+        absolute -top-2 -right-2 
+        bg-red-600 text-white text-xs 
+        w-5 h-5 flex items-center justify-center 
+        rounded-full shadow-md
+      "
+                >
+                  {unreadCount}
+                </span>
+              )}
+            </div>
+            {/* 
             <img
               src={notification}
               alt="notification"
@@ -300,7 +326,7 @@ const Navbar = () => {
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                 {unreadCount}
               </span>
-            )}
+            )} */}
           </div>
           <div className="flex space-x-4">
             <img

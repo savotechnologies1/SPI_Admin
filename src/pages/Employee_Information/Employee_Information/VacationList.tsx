@@ -665,7 +665,7 @@ const VacationList = () => {
                           {item.hours}
                         </td>
                         <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
-                          {item.notes} {item.status}
+                          {item.notes}
                         </td>
                         <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
                           {/* <select

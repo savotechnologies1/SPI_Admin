@@ -7,12 +7,12 @@ export const selecEmployeeProcessApi = async () => {
     const response = await axiosInstance.get(
       `/select-schedule-employee-process`
     );
-    if (response.status === 200) {
-      toast.success(response.data.message);
-    }
+    // if (response.status === 200) {
+    //   toast.success(response.data.message);
+    // }
     return response.data;
   } catch (error: any) {
-    toast.error(error.response.data.message);
+    // toast.error(error.response.data.message);
   }
 };
 

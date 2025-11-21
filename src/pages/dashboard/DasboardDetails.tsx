@@ -168,7 +168,7 @@ const DasboardDetails = () => {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.profile.data);
   const navigate = useNavigate();
-
+  const apiUrl = import.meta.env.VITE_SERVER_URL;
   useEffect(() => {
     dispatch(fetchProfile());
   }, [dispatch]);
@@ -187,7 +187,7 @@ const DasboardDetails = () => {
     // Initial fetch or when profile changes, fetch with the current selected month
     dashboardApi(selectedMonthForApi);
     if (profile?.profileImg) {
-      const imageUrl = `${process.env.REACT_APP_BASE_URL}/uploads/profileImg/${profile.profileImg}`; // Use environment variable
+      const imageUrl = `${apiUrl}/uploads/profileImg/${profile.profileImg}`; // Use environment variable
       setPhoto(imageUrl);
       setProfileImg(profile.profileImg);
     }
@@ -201,6 +201,7 @@ const DasboardDetails = () => {
   if (!dashboardDetails) {
     return (
       <div className="flex justify-center items-center h-64">
+        {/* <h3>Not Any Data Available</h3> */}
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
       </div>
     );

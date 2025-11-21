@@ -486,7 +486,7 @@ const EditWorkInstruction = () => {
                         </div>
                         <div className="w-full sm:w-1/2">
                           <label className="font-semibold block mb-2">
-                            Upload Video
+                            Upload Video (Optional)
                           </label>
                           <label
                             htmlFor={`video-${index}`}

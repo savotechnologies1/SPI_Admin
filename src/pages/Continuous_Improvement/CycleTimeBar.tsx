@@ -364,8 +364,8 @@ ChartJS.register(
 
 // export default CycleTime;
 import { useEffect, useState } from "react";
-// import { Bar } from "react-chartjs-2";
 import axios from "axios";
+// import { Bar } from "react-chartjs-2";
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -379,12 +379,11 @@ const CycleTime = ({ partId }: { partId: string }) => {
   const fetchCycleTimeData = async (partId: string) => {
     try {
       const res = await axios.get(
-        `${BASE_URL}/api/admin/cycle-time-comparision-data?startDate=2025-09-01&endDate=2025-09-12&partId=${partId}`
+        `${BASE_URL}/api/frontLine/cycle-time-comparision-data?startDate=2025-09-01&endDate=2025-09-12&partId=${partId}`
       );
 
-      console.log("res.datares.data", res.data);
-
       const apiData = res.data.data.processWiseCT;
+
       setChartData({
         labels: apiData.map((item: any) => item.processName),
         datasets: [
@@ -392,13 +391,13 @@ const CycleTime = ({ partId }: { partId: string }) => {
             label: "Manual CT",
             data: apiData.map((item: any) => item.manualCT),
             backgroundColor: "rgba(214, 69, 80, 1)",
-            maxBarThickness: 90, // Set maximum bar thickness in pixels
+            maxBarThickness: 50, // Responsive bar thickness
           },
           {
             label: "Ideal CT",
             data: apiData.map((item: any) => item.idealCT),
             backgroundColor: "rgba(34, 197, 94, 1)",
-            maxBarThickness: 90, // Set maximum bar thickness in pixels
+            maxBarThickness: 50,
           },
         ],
       });
@@ -420,11 +419,13 @@ const CycleTime = ({ partId }: { partId: string }) => {
   };
 
   return (
-    <div className="w-full mx-auto p-2 md:p-4 bg-white rounded-lg shadow-sm mt-7">
-      <h1 className="text-lg md:text-xl lg:text-2xl font-semibold mb-2 md:mb-4">
+    <div className="w-full mx-auto p-3 sm:p-4 md:p-6 bg-white rounded-lg shadow-sm mt-6 sm:mt-7">
+      <h1 className="text-lg sm:text-xl md:text-2xl font-semibold mb-3 sm:mb-4">
         Cycle Time Comparison
       </h1>
-      <div className="w-full h-[300px] sm:h-[350px] md:h-[400px]">
+
+      {/* CHART WRAPPER HEIGHT RESPONSIVE */}
+      <div className="w-full h-[260px] sm:h-[320px] md:h-[400px] lg:h-[450px]">
         {chartData ? (
           <Bar data={chartData} options={options} />
         ) : (

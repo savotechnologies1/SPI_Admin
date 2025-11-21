@@ -13,6 +13,7 @@ import {
 } from "./https/partProductApis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
+import { MdCancel } from "react-icons/md";
 
 // interface FormDataType {
 //   partFamily: string;
@@ -963,7 +964,18 @@ const PartForm = () => {
                     alt={`preview-${index}`}
                     className="object-cover w-full h-32"
                   />
-                  <button
+                  <MdCancel
+                    className="absolute top-2 right-2 cursor-pointer text-red-600 bg-white rounded-full"
+                    size={20}
+                    onClick={() => {
+                      const updatedImages = selectedImages.filter(
+                        (_, i) => i !== index
+                      );
+                      setSelectedImages(updatedImages);
+                      setValue("image", updatedImages); // Update form value
+                    }}
+                  />
+                  {/* <button
                     type="button"
                     className="absolute top-1 right-1 bg-red-500 text-white text-xs px-2 py-1 rounded"
                     onClick={() => {
@@ -975,7 +987,7 @@ const PartForm = () => {
                     }}
                   >
                     ❌
-                  </button>
+                  </button> */}
                 </div>
               ))}
             </div>

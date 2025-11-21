@@ -122,7 +122,7 @@ const ContinuousImprovement = () => {
 
   const fetchParts = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/api/admin/get-parts`);
+      const res = await axios.get(`${BASE_URL}/api/frontLine/get-parts`);
       setParts(res.data);
       if (res.data.length > 0) setSelected(res.data[0].part_id); // default select first
     } catch (error) {
@@ -131,25 +131,31 @@ const ContinuousImprovement = () => {
   };
 
   return (
-    <div className="mt-10 px-6">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 mt-10 px-6">
+    <div className="mt-10 px-4 sm:px-6">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 mt-10">
         Continuous Improvement
       </h2>
-      <div className="flex gap-5 mb-6 ">
-        {/* Pass selected partId */}
-        {selected && <CycleTime partId={selected} />}
 
-        <div className="w-[30%] bg-white p-4 rounded-md">
-          <h2 className="text-lg font-semibold mb-4 mt-8">Part Desc</h2>
+      {/* PARENT RESPONSIVE WRAPPER */}
+      <div className="flex flex-col lg:flex-row gap-6 mb-6">
+        {/* Chart Section - full width on mobile, left side on desktop */}
+        <div className="w-full lg:w-[70%]">
+          {selected && <CycleTime partId={selected} />}
+        </div>
+
+        {/* Part Description Box - full width on mobile, right side on desktop */}
+        <div className="w-full lg:w-[30%] bg-white p-4 rounded-md">
+          <h2 className="text-lg font-semibold mb-4 mt-2">Part Desc</h2>
+
           <div className="flex flex-col gap-3">
             {parts.map((part) => (
               <div
                 key={part.part_id}
-                className="flex items-center gap-2 cursor-pointer"
+                className="flex items-start gap-2 cursor-pointer"
                 onClick={() => setSelected(part.part_id)}
               >
                 <div
-                  className={`w-5 h-5 flex items-center justify-center border ${
+                  className={`w-5 h-5 flex items-center justify-center border shrink-0 ${
                     selected === part.part_id ? "bg-[#0F2B36] text-black" : ""
                   }`}
                 >
@@ -157,8 +163,9 @@ const ContinuousImprovement = () => {
                     <span className="w-3 bg-white rounded-sm"></span>
                   )}
                 </div>
+
                 <span
-                  className={`text-sm ${
+                  className={`text-sm break-words whitespace-normal line-clamp-2 ${
                     selected === part.part_id ? "text-black" : "text-gray-700"
                   }`}
                 >
@@ -169,6 +176,8 @@ const ContinuousImprovement = () => {
           </div>
         </div>
       </div>
+
+      {/* Steps Graph */}
       {selected && <StepsBar partId={selected} />}
     </div>
   );

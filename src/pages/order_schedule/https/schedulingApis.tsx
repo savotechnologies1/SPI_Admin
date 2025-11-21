@@ -246,5 +246,3 @@ export const deleteScheduleOrder = async (id: string, orderId: string) => {
     toast.error(error.response?.data?.message);
   }
 };
-// Is at cycleTime should have to add time picker
-// => add picture
