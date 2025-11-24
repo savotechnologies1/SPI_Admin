@@ -26,10 +26,10 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
     // const deliveryDate = inputs?.deliveryDate || new Date();
     const shipDate = inputs?.shipDate || itemToAdd.shipDate || new Date();
 
-    if (isNaN(qtyToSchedule) || qtyToSchedule <= 0) {
-      toast.error("Please enter a valid quantity to schedule.");
-      return;
-    }
+    // if (isNaN(qtyToSchedule) || qtyToSchedule <= 0) {
+    //   toast.error("Please enter a valid quantity to schedule.");
+    //   return;
+    // }
     // if (qtyToSchedule > itemToAdd.productQuantity) {
     //   toast.warn(
     //     `Cannot schedule more than the available quantity of ${itemToAdd.productQuantity}.`

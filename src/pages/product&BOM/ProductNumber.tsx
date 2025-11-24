@@ -573,6 +573,7 @@ const ProductNumber = () => {
         {/* BOM Section */}
         <div className="col-span-4 mt-4">
           <p className="font-semibold text-lg mb-2">Bill of Material (BOM)</p>
+
           {bomEntries.map((entry, index) => (
             <div
               key={index}
@@ -580,8 +581,11 @@ const ProductNumber = () => {
               ref={(el) => (inputRefs.current[index] = el)}
             >
               <p className="font-semibold mb-2">Part #{index + 1}</p>
+
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* Part Number */}
                 <div className="relative">
+                  <label className="text-sm font-medium">Part Number</label>
                   <input
                     type="text"
                     value={entry.partNumber}
@@ -589,9 +593,10 @@ const ProductNumber = () => {
                     onChange={(e) =>
                       handleBOMChange(index, "partNumber", e.target.value)
                     }
-                    className="border p-2 rounded w-full"
-                    placeholder="Part Number"
+                    className="border p-2 rounded w-full mt-1"
+                    placeholder="Enter Part Number"
                   />
+
                   {!entry.isSaved && suggestions[index]?.length > 0 && (
                     <ul className="absolute z-10 bg-white border rounded w-full max-h-40 overflow-y-auto shadow-md">
                       {suggestions[index].map((item, i) => (
@@ -607,51 +612,72 @@ const ProductNumber = () => {
                   )}
                 </div>
 
-                <input
-                  type="number"
-                  value={entry.qty}
-                  disabled={entry.isSaved}
-                  onChange={(e) =>
-                    handleBOMChange(index, "qty", e.target.value)
-                  }
-                  placeholder="Qty"
-                  className="border p-2 rounded w-full"
-                />
+                {/* Qty */}
+                <div>
+                  <label className="text-sm font-medium">Quantity</label>
+                  <input
+                    type="number"
+                    value={entry.qty}
+                    disabled={entry.isSaved}
+                    onChange={(e) =>
+                      handleBOMChange(index, "qty", e.target.value)
+                    }
+                    placeholder="Enter Qty"
+                    className="border p-2 rounded w-full mt-1"
+                  />
+                </div>
 
-                <input
-                  type="text"
-                  value={entry.process}
-                  disabled={entry.isSaved}
-                  onChange={(e) =>
-                    handleBOMChange(index, "process", e.target.value)
-                  }
-                  placeholder="Process"
-                  className="border p-2 rounded w-full"
-                />
+                {/* Process */}
+                <div>
+                  <label className="text-sm font-medium">Process</label>
+                  <input
+                    type="text"
+                    value={entry.process}
+                    disabled={entry.isSaved}
+                    onChange={(e) =>
+                      handleBOMChange(index, "process", e.target.value)
+                    }
+                    placeholder="Enter Process"
+                    className="border p-2 rounded w-full mt-1"
+                  />
+                </div>
 
-                <input
-                  type="number"
-                  value={entry.cycleTime}
-                  disabled={entry.isSaved}
-                  onChange={(e) =>
-                    handleBOMChange(index, "cycleTime", e.target.value)
-                  }
-                  placeholder="Cycle Time"
-                  className="border p-2 rounded w-full"
-                />
+                {/* Cycle Time */}
+                <div>
+                  <label className="text-sm font-medium">
+                    {" "}
+                    Cycle Time (minutes)
+                  </label>
+                  <input
+                    type="number"
+                    value={entry.cycleTime}
+                    disabled={entry.isSaved}
+                    onChange={(e) =>
+                      handleBOMChange(index, "cycleTime", e.target.value)
+                    }
+                    placeholder="Enter Cycle Time"
+                    className="border p-2 rounded w-full mt-1"
+                  />
+                </div>
 
-                <select
-                  value={entry.workInstruction}
-                  disabled={entry.isSaved}
-                  onChange={(e) =>
-                    handleBOMChange(index, "workInstruction", e.target.value)
-                  }
-                  className="border p-2 rounded w-full"
-                >
-                  <option value="">Work Instruction</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
-                </select>
+                {/* Work Instruction */}
+                <div>
+                  <label className="text-sm font-medium">
+                    Work Instruction
+                  </label>
+                  <select
+                    value={entry.workInstruction}
+                    disabled={entry.isSaved}
+                    onChange={(e) =>
+                      handleBOMChange(index, "workInstruction", e.target.value)
+                    }
+                    className="border p-2 rounded w-full mt-1"
+                  >
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
               </div>
 
               {entry.isSaved && (

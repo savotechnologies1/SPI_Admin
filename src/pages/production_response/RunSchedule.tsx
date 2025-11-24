@@ -642,23 +642,23 @@ const RunSchedule = () => {
             />
 
             {/* Centered Text */}
-            <div className="absolute inset-0 flex items-center justify-center px-2 md:px-4">
-              <div className="text-white text-center w-[361px] space-y-2">
+            <div className="absolute inset-0 flex items-center justify-center px-3 md:px-6">
+              <div className="text-white text-center max-w-sm md:max-w-md space-y-3">
                 {/* Title */}
-                <p className="text-lg md:text-2xl font-semibold truncate">
+                <p className="text-lg md:text-2xl font-semibold break-words leading-snug">
                   {part?.partDescription || "No Description"}
                 </p>
 
                 {/* Order No + Date */}
-                <div className="flex justify-center gap-4 text-sm md:text-lg">
+                <div className="flex justify-center gap-3 md:gap-6 text-sm md:text-lg">
                   <p className="font-semibold">{order?.orderNumber}</p>
                   <p>{formatDate(jobData.order_date)}</p>
                 </div>
 
                 {/* Upcoming Date */}
-                <div className="flex justify-center gap-4 text-sm md:text-lg">
+                <div className="flex justify-center gap-3 md:gap-6 text-sm md:text-lg">
                   <p className="font-semibold">Upcoming</p>
-                  <p>: {formatDate(upcommingOrder)}</p>
+                  <p>{formatDate(upcommingOrder)}</p>
                 </div>
               </div>
             </div>
@@ -693,22 +693,29 @@ const RunSchedule = () => {
             ).map((step, index) => (
               <div
                 key={step.id || index}
-                className="flex flex-col md:flex-row gap-4 md:gap-20 items-center bg-white rounded-lg shadow-sm p-4"
+                className="flex flex-col md:flex-row gap-4 md:gap-10 items-start bg-white rounded-lg shadow-sm p-4"
               >
-                <div className="w-full md:w-auto">
+                {/* FIXED IMAGE SIZE */}
+                <div className="flex-shrink-0">
                   <img
-                    className="rounded-md w-full max-w-xs md:max-w-none"
+                    className="rounded-md w-40 h-40 object-cover"
                     src={
-                      step.images && step.images.length > 0
+                      step.images?.length > 0
                         ? `${BASE_URL}/uploads/workInstructionImg/${step.images[0].imagePath}`
                         : "https://via.placeholder.com/150"
                     }
                     alt={step.title}
                   />
                 </div>
-                <div className="text-center md:text-left">
-                  <p className="font-semibold text-lg">{step.title}</p>
-                  <p className="text-gray-600">{step.instruction}</p>
+
+                {/* TEXT SECTION */}
+                <div className="flex-1 text-center md:text-left">
+                  <p className="font-semibold text-lg break-words">
+                    {step.title}
+                  </p>
+                  <p className="text-gray-600 break-words">
+                    {step.instruction}
+                  </p>
                 </div>
               </div>
             ))

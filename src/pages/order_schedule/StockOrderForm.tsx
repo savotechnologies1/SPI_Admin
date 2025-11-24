@@ -643,10 +643,8 @@ const StockOrderForm = () => {
         validationSchema={stockOrderValidation}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           try {
-            console.log("Submitting values:", values);
             const response = await addStockOrder(values);
             if (response.status === 201) {
-              // toast.success("Stock order created successfully!");
               navigate("/stock-order-schedule");
             }
             resetForm({

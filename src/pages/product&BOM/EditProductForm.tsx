@@ -1274,9 +1274,9 @@ const EditProductForm = () => {
             </div>
           </div>
 
-          {/* --- FIX: Simplified Bill of Material Section --- */}
           <div className="col-span-4 mt-4">
             <p className="font-semibold text-lg mb-2">Bill of Material (BOM)</p>
+
             {bomItems.map((item, index) => (
               <div
                 key={index}
@@ -1285,18 +1285,19 @@ const EditProductForm = () => {
                 <div className="sm:col-span-11 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4">
                   {/* Part Number with Suggestions */}
                   <div className="relative sm:col-span-2 md:col-span-1">
+                    <label className="text-sm font-medium">Part Number</label>
                     <input
                       type="text"
                       value={item.partNumber}
                       onChange={(e) =>
                         handleBOMChange(index, "partNumber", e.target.value)
                       }
-                      placeholder="Part Number"
-                      className="border p-2 rounded w-full"
+                      placeholder="Enter Part Number"
+                      className="border p-2 rounded w-full mt-1"
                     />
+
                     {suggestions[index]?.length > 0 && (
                       <ul className="absolute z-10 bg-white border rounded w-full max-h-40 overflow-y-auto shadow-md">
-                        {" "}
                         {suggestions[index].map((sugg, i) => (
                           <li
                             key={i}
@@ -1309,49 +1310,70 @@ const EditProductForm = () => {
                       </ul>
                     )}
                   </div>
+
                   {/* Quantity */}
-                  <input
-                    type="number"
-                    step="1"
-                    value={item.partQuantity}
-                    onChange={(e) =>
-                      handleBOMChange(index, "partQuantity", e.target.value)
-                    }
-                    placeholder="Qty"
-                    className="border p-2 rounded w-full"
-                  />
+                  <div>
+                    <label className="text-sm font-medium">Quantity</label>
+                    <input
+                      type="number"
+                      step="1"
+                      value={item.partQuantity}
+                      onChange={(e) =>
+                        handleBOMChange(index, "partQuantity", e.target.value)
+                      }
+                      placeholder="Enter Quantity"
+                      className="border p-2 rounded w-full mt-1"
+                    />
+                  </div>
+
                   {/* Process */}
-                  <input
-                    type="text"
-                    value={item.process}
-                    readOnly
-                    placeholder="Process"
-                    className="border p-2 rounded w-full bg-gray-100"
-                  />
+                  <div>
+                    <label className="text-sm font-medium">Process</label>
+                    <input
+                      type="text"
+                      value={item.process}
+                      readOnly
+                      placeholder="Process"
+                      className="border p-2 rounded w-full mt-1 bg-gray-100"
+                    />
+                  </div>
+
                   {/* Cycle Time */}
-                  <input
-                    type="number"
-                    value={item.cycleTime}
-                    readOnly
-                    placeholder="Cycle Time"
-                    className="border p-2 rounded w-full bg-gray-100"
-                  />
+                  <div>
+                    <label className="text-sm font-medium">
+                      Cycle Time (minutes)
+                    </label>
+                    <input
+                      type="number"
+                      value={item.cycleTime}
+                      readOnly
+                      placeholder="Cycle Time"
+                      className="border p-2 rounded w-full mt-1 bg-gray-100"
+                    />
+                  </div>
+
                   {/* Work Instruction */}
-                  <select
-                    value={item.instructionRequired}
-                    onChange={(e) =>
-                      handleBOMChange(
-                        index,
-                        "instructionRequired",
-                        e.target.value
-                      )
-                    }
-                    className="border p-2 rounded w-full"
-                  >
-                    <option value="Yes">Instruction: Yes</option>
-                    <option value="No">Instruction: No</option>
-                  </select>
+                  <div>
+                    <label className="text-sm font-medium">
+                      Work Instruction
+                    </label>
+                    <select
+                      value={item.instructionRequired}
+                      onChange={(e) =>
+                        handleBOMChange(
+                          index,
+                          "instructionRequired",
+                          e.target.value
+                        )
+                      }
+                      className="border p-2 rounded w-full mt-1"
+                    >
+                      <option value="Yes">Instruction: Yes</option>
+                      <option value="No">Instruction: No</option>
+                    </select>
+                  </div>
                 </div>
+
                 {/* Delete Button */}
                 <div className="sm:col-span-1 flex justify-end">
                   <button
@@ -1364,6 +1386,7 @@ const EditProductForm = () => {
                 </div>
               </div>
             ))}
+
             {/* Add More Button */}
             <div className="flex gap-3 mt-2">
               <button
@@ -1375,6 +1398,7 @@ const EditProductForm = () => {
               </button>
             </div>
           </div>
+
           {/* ------------------------------------------- */}
 
           <div className="col-span-4 flex justify-end">
