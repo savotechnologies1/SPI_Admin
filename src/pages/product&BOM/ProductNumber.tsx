@@ -612,7 +612,6 @@ const ProductNumber = () => {
                   )}
                 </div>
 
-                {/* Qty */}
                 <div>
                   <label className="text-sm font-medium">Quantity</label>
                   <input

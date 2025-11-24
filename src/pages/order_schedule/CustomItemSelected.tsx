@@ -755,12 +755,12 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
       })
     );
 
-    if (itemsWithZeroQty.length > 0) {
-      toast.error(
-        "One or more items have total quantity 0. Please fix the quantities before scheduling."
-      );
-      return;
-    }
+    // if (itemsWithZeroQty.length > 0) {
+    //   toast.error(
+    //     "One or more items have total quantity 0. Please fix the quantities before scheduling."
+    //   );
+    //   return;
+    // }
 
     // ✅ Step 3: Proceed to schedule
     try {
