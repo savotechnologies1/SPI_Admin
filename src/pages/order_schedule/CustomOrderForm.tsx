@@ -16,6 +16,7 @@ import {
   selectPartNumber,
   selectProcess,
 } from "./https/schedulingApis";
+import { useNavigate } from "react-router-dom";
 
 // ========================================================================
 // MOCK DATA & INTERFACES (Replace with your actual imports and API calls)
@@ -105,6 +106,7 @@ const CustomOrderForm = () => {
     }
   };
 
+  const navigate = useNavigate();
   const initialFormValues = {
     orderNumber: generateNewOrderNumber(),
     orderDate: new Date().toISOString().split("T")[0],
@@ -134,7 +136,21 @@ const CustomOrderForm = () => {
           validationSchema={customOrderValidation}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             try {
-              await addCustomOrder(values);
+              // Filter out empty process entries
+              const filteredParts = values.newParts.filter((p) => {
+                return (
+                  (p.processId && p.processId !== "") ||
+                  (p.part && p.part.trim() !== "") ||
+                  (p.totalTime && Number(p.totalTime) > 0)
+                );
+              });
+
+              const finalData = {
+                ...values,
+                newParts: filteredParts,
+              };
+
+              await addCustomOrder(finalData);
 
               resetForm({
                 values: {
@@ -142,6 +158,8 @@ const CustomOrderForm = () => {
                   orderNumber: generateNewOrderNumber(),
                 },
               });
+
+              navigate("/custom-order-schedule");
               setSelectedCustomerId(null);
               setSingleUnitCost(null);
             } catch (error) {
