@@ -418,12 +418,21 @@ const RunWithScan = () => {
         Loading...
       </div>
     );
-  if (!jobData)
+
+  if (!jobData) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        No job data available.
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+        <p>No job data available.</p>
+
+        <button
+          onClick={() => navigate(-1)}
+          className="px-4 py-2 bg-brand text-white rounded-md hover:bg-brand"
+        >
+          Go Back to station login
+        </button>
       </div>
     );
+  }
   const { part, order, employeeInfo, process, upcommingOrder } = jobData;
   return (
     <div className="bg-[#F5F6FA] min-h-screen flex flex-col">

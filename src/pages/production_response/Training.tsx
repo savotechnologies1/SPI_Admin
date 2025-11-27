@@ -148,12 +148,18 @@ const Training = () => {
 
   if (!jobData) {
     return (
-      <div className="min-h-screen flex justify-center items-center">
-        No job data found.
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+        <p>No any traning available.</p>
+
+        <button
+          onClick={() => navigate(-1)}
+          className="px-4 py-2 bg-brand text-white rounded-md hover:bg-brand"
+        >
+          Go Back to station login
+        </button>
       </div>
     );
   }
-
   const formatCycleTime = (dateString) => {
     if (!dateString) return "N/A";
 
