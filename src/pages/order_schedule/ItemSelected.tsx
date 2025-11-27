@@ -223,13 +223,14 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                       max={item.part.availStock}
                     />
 
-                    {Number(itemInputs[item.id]?.qty) >
-                      item.part.availStock && (
-                      <p className="text-red-400 text-sm mt-1">
-                        Enter quantity less than or equal to available stock (
-                        {item.part.availStock})
-                      </p>
-                    )}
+                    {/* {itemInputs[item.id]?.qty &&
+                      Number(itemInputs[item.id]?.qty) >
+                        Number(item.part.availStock) && (
+                        <p className="text-red-400 text-sm mt-1">
+                          Enter quantity less than or equal to available stock (
+                          {item.part.availStock})
+                        </p>
+                      )} */}
                   </div>
                 </div>
 
@@ -261,63 +262,6 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
             ))}
           </div>
         </div>
-
-        {/* Right Section */}
-        {/* <div className="bg-white rounded-xl p-4 shadow">
-          <h1 className="bg-[#CBCBCB] text-center p-2 font-semibold mb-4">
-            Stock orders selected to be scheduled
-          </h1>
-          <div className="space-y-4">
-            {selectedItems.length === 0 && (
-              <p className="text-center text-gray-500">
-                No items scheduled yet.
-              </p>
-            )}
-            {selectedItems.map((item) => (
-              <div
-                key={item.id}
-                className="p-4 bg-white shadow-md flex flex-col md:flex-row justify-between gap-4 md:items-center"
-              >
-                <div className="space-y-1 flex-1 min-w-0">
-                  <p className="font-semibold">{item.part.partDescription}</p>
-                  <p className="text-sm">{item.part.partNumber}</p>
-                  <p className="text-sm">
-                    {item.part.components.map((data) => (
-                      <div className="flex justify-between">
-                        <p className="text-sm"> {data.part.partNumber}</p>
-                        <p className="text-sm"> {data.part.partNumber}</p>
-                      </div>
-                    ))}
-                  </p>
-                  <p className="text-sm font-bold">
-                    Scheduled Qty: {item.scheduledQty}
-                  </p>
-                </div>
-
-                <div className="flex flex-col">
-                  <label className="text-[#1C252E] text-sm">
-                    Delivery Date
-                  </label>
-                  <DatePicker
-                    selected={item.deliveryDate}
-                    onChange={(date) =>
-                      updateScheduledDate(item.id, date as Date)
-                    }
-                    dateFormat="dd MMM yyyy"
-                    className="border py-2 px-4 rounded-md font-semibold w-full sm:w-44"
-                  />
-                </div>
-
-                <button
-                  className="p-3 bg-red-100 rounded-full cursor-pointer hover:bg-red-200"
-                  onClick={() => removeItem(item.id)}
-                >
-                  <FaTrashAlt className="text-red-500" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div> */}
 
         <div className="bg-white rounded-xl p-4 shadow">
           <h1 className="bg-[#CBCBCB] text-center p-2 font-semibold mb-4">
@@ -389,7 +333,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                             </td>
                           </tr>
                           {item.part.components
-                            .filter((data) => data?.part) // keep only those with part info
+                            .filter((data) => data?.part)
                             .map((data) => (
                               <tr
                                 key={data.part.partNumber}

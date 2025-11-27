@@ -16,7 +16,7 @@ const StockOrderScheduleForm = () => {
     const fetchInitialData = async () => {
       setIsLoading(true);
       try {
-        const response = await searchStockOrder(); // call without filters
+        const response = await searchStockOrder(); 
         setSearchResults(response.data || []);
       } catch (error) {
         console.error("Failed to fetch initial stock orders:", error);
