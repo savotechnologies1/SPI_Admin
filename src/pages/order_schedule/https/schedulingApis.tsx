@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
 import { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const addStockOrder = async (apiData: object) => {
   // eslint-disable-next-line no-useless-catch
@@ -83,17 +84,27 @@ export const selectProcess = async () => {
     return [];
   }
 };
-
 export const addCustomOrder = async (apiData: object) => {
-  // eslint-disable-next-line no-useless-catch
   try {
+    const navigate = useNavigate();
     const response = await axiosInstance.post("/add-custom-orders", apiData);
+    console.log("responseresponse", response);
     if (response.status === 201) {
       toast.success(response.data.message);
+      navigate("/custom-order-schedule");
     }
+
     return response;
-  } catch (error: unknown) {
-    toast.error(error.data.message);
+  } catch (err: unknown) {
+    console.log("errorerrorerror", err);
+    // Check if error is AxiosError
+    if (err instanceof AxiosError) {
+      console.log("999999errerrerrerrerr", err.response?.data.message);
+      const msg = err.data?.message || "Something went wrong";
+      toast.error(err.response?.data.message);
+    } else {
+      toast.error("Unexpected error occurred");
+    }
   }
 };
 

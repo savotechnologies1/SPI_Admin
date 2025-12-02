@@ -539,6 +539,7 @@ const RunSchedule = () => {
         console.log("Station login successful!");
       }
 
+      console.log("jobDatajobData", jobData);
       let productId = null;
       if (jobData.type === "product") {
         productId = jobData.productId || jobData.order.productId;
@@ -550,8 +551,8 @@ const RunSchedule = () => {
         jobData.order_type,
         jobData.part_id,
         jobData.employeeInfo.id,
-        jobData.productId || jobData.order.productId,
-        jobData.type,
+        jobData?.productId || jobData?.order?.productId,
+        jobData.type || "part",
         `Admin`
       );
       fetchJobDetails(id);

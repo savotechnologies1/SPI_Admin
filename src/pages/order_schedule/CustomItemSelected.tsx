@@ -711,7 +711,7 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
       const updatedSelectedItems = [...selectedItems];
       updatedSelectedItems[existingItemIndex] = itemToAdd;
       setSelectedItems(updatedSelectedItems);
-      toast.info(`Order ${itemToAdd.orderNumber} updated in the schedule.`);
+      // toast.info(`Order ${itemToAdd.orderNumber} updated in the schedule.`);
     } else {
       setSelectedItems((prev) => [...prev, itemToAdd]);
       toast.success(`Order ${itemToAdd.orderNumber} added to the schedule.`);
@@ -890,7 +890,7 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
           <h2 className="font-semibold mb-4 bg-[#CBCBCB] text-center p-2 rounded-md">
             Custom orders selected to be scheduled
           </h2>
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             {selectedItems.length === 0 ? (
               <p className="text-center text-gray-500 p-4 bg-white rounded-xl shadow">
                 No items selected yet.
@@ -905,7 +905,7 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
                     <div>
                       <p className="font-semibold">{item.orderNumber}</p>
                       <p className="text-sm text-gray-500">
-                        {item.originalData.customer.firstName}{" "}
+                        {item.originalData.customer.firstName}
                         {item.originalData.customer.lastName}
                       </p>
                     </div>
@@ -960,6 +960,133 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
                   </div>
                 </div>
               ))
+            )}
+          </div> */}
+          <div className="space-y-4">
+            {selectedItems.length === 0 ? (
+              <p className="text-center text-gray-500 p-4 bg-white rounded-xl shadow">
+                No items selected yet.
+              </p>
+            ) : (
+              selectedItems.map((item) => {
+                // 1. MERGING LOGIC: Create a combined list
+                // Pehle saare standard parts le lete hain
+                let mergedParts = [...(item.originalData.productFamily || [])];
+
+                // Ab custom parts ko check karte hain
+                item.originalData.customPart?.forEach((customItem) => {
+                  // Check karte hain agar ye part pehle se mergedList mein hai (Matching by PartNumber or Part_ID)
+                  const existingIndex = mergedParts.findIndex(
+                    (p) => p.partNumber === customItem.partNumber // Ya phir: p.part_id === customItem.part_id
+                  );
+
+                  if (existingIndex > -1) {
+                    // REPLACE: Agar match mila, toh us index par customItem daal do (Flagging it as custom)
+                    mergedParts[existingIndex] = {
+                      ...customItem,
+                      isCustomSource: true,
+                    };
+                  } else {
+                    // ADD: Agar match nahi mila, toh list mein add kar do
+                    mergedParts.push({ ...customItem, isCustomSource: true });
+                  }
+                });
+
+                return (
+                  <div
+                    key={item.id}
+                    className="p-4 bg-white shadow-md rounded-lg"
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <p className="font-semibold">{item.orderNumber}</p>
+                        <p className="text-sm text-gray-500">
+                          {item.originalData.customer.firstName}{" "}
+                          {item.originalData.customer.lastName}
+                        </p>
+                      </div>
+                      <button
+                        className="p-3 bg-red-100 rounded-full cursor-pointer hover:bg-red-200"
+                        onClick={() => removeItem(item)}
+                        title="Remove from Schedule"
+                      >
+                        <FaTrashAlt className="text-red-500" />
+                      </button>
+                    </div>
+
+                    <div className="overflow-x-auto border rounded-md">
+                      <table className="min-w-full text-sm text-left">
+                        <thead className="bg-gray-100 border-b">
+                          <tr>
+                            <th className="px-4 py-2 font-bold text-gray-700">
+                              Part / Component
+                            </th>
+                            <th className="px-4 py-2 font-bold text-gray-700">
+                              Description / Process
+                            </th>
+                            <th className="px-4 py-2 font-bold text-gray-700">
+                              Total Qty
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {mergedParts.length === 0 ? (
+                            <tr>
+                              <td
+                                colSpan={3}
+                                className="px-4 py-4 text-center text-gray-400 italic"
+                              >
+                                No parts details found.
+                              </td>
+                            </tr>
+                          ) : (
+                            mergedParts.map((part, idx) => {
+                              // Logic to determine Quantity per unit based on source
+                              // Standard parts use 'quantityRequired' or 'minStock'
+                              // Custom parts usually use 'quantity'
+                              const qtyPerUnit = part.isCustomSource
+                                ? part.quantity
+                                : part.type === "product"
+                                ? part.quantityRequired
+                                : part.minStock;
+
+                              const finalTotalQty =
+                                item.originalData.productQuantity *
+                                (qtyPerUnit || 1);
+
+                              return (
+                                <tr
+                                  key={part.part_id || part.id || idx} // Fallback key if IDs are messy
+                                  className={
+                                    part.isParent
+                                      ? "bg-blue-50 font-semibold text-blue-800"
+                                      : part.isCustomSource
+                                      ? "hover:bg-gray-50" // Highlight replaced/custom parts
+                                      : "hover:bg-gray-50"
+                                  }
+                                >
+                                  <td className="px-4 py-2 flex items-center gap-2">
+                                    {part.partNumber}
+                                  </td>
+                                  <td className="px-4 py-2">
+                                    {part.partDescription ||
+                                      part.process?.processName ||
+                                      part.processName ||
+                                      "-"}
+                                  </td>
+                                  <td className="px-4 py-2 font-medium">
+                                    {finalTotalQty}
+                                  </td>
+                                </tr>
+                              );
+                            })
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                );
+              })
             )}
           </div>
         </div>
