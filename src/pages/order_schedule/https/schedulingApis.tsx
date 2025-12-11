@@ -86,25 +86,15 @@ export const selectProcess = async () => {
 };
 export const addCustomOrder = async (apiData: object) => {
   try {
-    const navigate = useNavigate();
     const response = await axiosInstance.post("/add-custom-orders", apiData);
     console.log("responseresponse", response);
-    if (response.status === 201) {
-      toast.success(response.data.message);
-      navigate("/custom-order-schedule");
-    }
 
     return response;
   } catch (err: unknown) {
     console.log("errorerrorerror", err);
-    // Check if error is AxiosError
-    if (err instanceof AxiosError) {
-      console.log("999999errerrerrerrerr", err.response?.data.message);
-      const msg = err.data?.message || "Something went wrong";
-      toast.error(err.response?.data.message);
-    } else {
-      toast.error("Unexpected error occurred");
-    }
+    console.log("999999errerrerrerrerr", err.response?.data.message);
+    const msg = err.data?.message || "Something went wrong";
+    toast.error(err.response?.data.message);
   }
 };
 

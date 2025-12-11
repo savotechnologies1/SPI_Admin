@@ -790,15 +790,18 @@ const CustomOrderForm = () => {
               };
 
               const res = await addCustomOrder(finalData);
-              console.log("resresr1111111111111111111111es", res);
+              console.log("resresr1111111111111111111111es");
               resetForm({
                 values: {
                   ...initialFormValues,
                   orderNumber: generateNewOrderNumber(),
                 },
               });
+              if (res.status === 201) {
+                toast.success(res.data.message);
 
-              // navigate("/custom-order-schedule");
+                navigate("/custom-order-schedule");
+              }
               setSelectedCustomerId(null);
               setSingleUnitCost(null);
             } catch (error) {
