@@ -60,7 +60,6 @@ import BusinessIntelligence from "./pages/business-intelligence/BusinessIntellig
 import BusinessAnalysis from "./pages/business-analysis/BusinessAnalysis";
 import Projection from "./pages/projection/Projection";
 import StockOrder from "./pages/order_schedule/StockOrder";
-import CustomOrder from "./pages/order_schedule/CustomOrder";
 import StockOrderSchedule from "./pages/order_schedule/StockOrderSchedule";
 import CustomOrderSchedule from "./pages/order_schedule/CustomOrderSchedule";
 import CustomOrderDetails from "./pages/order_schedule/CustomOrderDetails";
@@ -81,6 +80,7 @@ import { Loader } from "lucide-react";
 import EditVacationInfo from "./pages/Employee_Information/Employee_Information/EditVacationInfo";
 import FixedCost from "./pages/fixed-cost-management/FixedCost";
 import MonitorManagement from "./pages/productionLive/MonitorManagement";
+import CustomOrder from "./pages/order_schedule/CustomOrder";
 
 const App = () => {
   const { isLoading, token } = useAuth();
