@@ -462,6 +462,7 @@ const RunSchedule = () => {
   const { id } = useParams<{ id: string }>();
   const [jobData, setJobData] = useState<JobData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [noJob, setNoJob] = useState(false);
 
   const fetchJobDetails = async (jobId: string | undefined) => {
     if (!jobId) {
@@ -479,7 +480,8 @@ const RunSchedule = () => {
       }
     } catch (error: any) {
       if (error?.status === 404) {
-        navigate("/station-login");
+        setNoJob(true);
+        // navigate("/station-login");
       }
     } finally {
       setLoading(false);
@@ -611,7 +613,7 @@ const RunSchedule = () => {
     );
   }
 
-  if (!jobData) {
+  if (noJob) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
         <p>No job data available.</p>

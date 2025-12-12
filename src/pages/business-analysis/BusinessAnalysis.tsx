@@ -64,7 +64,7 @@ const BusinessAnalysis = () => {
   return (
     <div className="p-7">
       <h1 className="font-bold text-[20px] md:text-[24px] text-black">
-        Business Intelligence
+        Business Analysis
       </h1>
       <div className="flex justify-between mt-2 items-center">
         <div className="flex gap-4 items-center ">
@@ -83,13 +83,11 @@ const BusinessAnalysis = () => {
         <div className="flex flex-col md:flex-row  mt-2 gap-4  ">
           {data_1.map((item) => (
             <div className="flex flex-col justify-between  bg-white  rounded-md w-full p-2 gap-2 border bg-gradient-to-l from-[#FFF7ED]">
-              {" "}
               <div className="flex items-center gap-2">
                 <div>
                   <img className="w-[40px]" src={item.scrap_img} alt="" />
                 </div>
                 <div className="">
-                  {" "}
                   <p className="text-sm text-gray-600">{item.text}</p>
                   <p className="font-bold text-xl">{item.num}</p>
                 </div>
