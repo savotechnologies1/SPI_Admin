@@ -816,6 +816,7 @@ const Dive = () => {
 
       const processedData = processApiData(res.data.data);
       setDashboardData(processedData);
+      console.log("res.datares.data", res.data);
       setProductivity(res.data?.productivity);
 
       if (!selectedStation && processedData.stations.length > 0) {
@@ -942,7 +943,10 @@ const Dive = () => {
       (!selectedEmployee || p.employee === selectedEmployee)
   );
 
-  console.log("filteredProcessMetricsfilteredProcessMetrics", productivity);
+  console.log(
+    "filteredProcessMetricsfilteredProcessMetrics",
+    filteredProcessMetrics
+  );
 
   return (
     <div>

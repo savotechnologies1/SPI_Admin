@@ -1233,7 +1233,6 @@ const Inventory = () => {
     fetchInventory();
   }, [period]);
 
-  // 🔹 Normalize data (fill missing days/months/weeks with 0)
   const normalizeChartData = () => {
     let chartData: { name: string; cost: number }[] = [];
 
@@ -1285,6 +1284,10 @@ const Inventory = () => {
 
   const chartData = normalizeChartData();
 
+  console.log(
+    "totalInventoryCosttotalInventoryCosttotalInventoryCost",
+    totalInventoryCost
+  );
   return (
     <div className="p-4">
       <h1 className="font-semibold text-2xl">Inventory</h1>
@@ -1306,7 +1309,7 @@ const Inventory = () => {
       {/* 🔹 KPI */}
       <div className="mb-5 p-4 border rounded shadow bg-white">
         <h2 className="text-lg font-semibold">
-          Total Inventory Cost: $ {totalInventoryCost.toFixed(2)}
+          Total Inventory Cost: $ {totalInventoryCost}
         </h2>
       </div>
 

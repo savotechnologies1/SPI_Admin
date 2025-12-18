@@ -304,10 +304,13 @@ const Production = () => {
         label: "Production Efficiency (%)",
         data: chartData.map((item) => item.efficiency),
         borderColor: "#052C89",
-        fill: true,
         backgroundColor: "rgba(5, 44, 137, 0.1)",
+        fill: true, // area under line
+        tension: 0.4, // smooth curve
         yAxisID: "y1",
         pointBackgroundColor: "#052C89",
+        pointRadius: 5, // bigger dots
+        pointHoverRadius: 7, // hover effect
       },
     ],
   };

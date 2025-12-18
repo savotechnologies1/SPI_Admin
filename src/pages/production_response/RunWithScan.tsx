@@ -433,7 +433,22 @@ const RunWithScan = () => {
       </div>
     );
   }
-  const { part, order, employeeInfo, process, upcommingOrder } = jobData;
+
+  const {
+    part,
+    order,
+    employeeInfo,
+    process,
+    upcommingParts,
+    upcommingOrder,
+    order_date,
+  } = jobData;
+  console.log("partpart", jobData);
+  const rows = [
+    { part: part.partNumber, date: order_date },
+    { part: upcommingParts, date: upcommingOrder },
+  ];
+
   return (
     <div className="bg-[#F5F6FA] min-h-screen flex flex-col">
       <div className="bg-[#243C75] relative ">
@@ -446,26 +461,54 @@ const RunWithScan = () => {
             <IoLogOutOutline size={16} className="md:size-[20px]" />
           </button>
         </div>
-        <div className="container mx-auto p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="relative w-full md:w-auto">
-            <img className="w-24 md:w-40" src={belt} alt="Belt icon" />
-            <div className="absolute inset-0 flex items-center justify-center px-2 md:px-4">
-              <div className="text-white text-center w-[361px] space-y-2">
-                {/* Title */}
-                <p className="text-lg md:text-2xl font-semibold truncate">
-                  {part?.partDescription || "No Description"}
+        <div className="container  p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="w-full lg:w-1/2 xl:w-2/3 relative flex flex-col ">
+            {/* Process name */}
+
+            {/* Belt image and table container */}
+            <div className="relative w-full max-w-xl mx-auto">
+              <div className="w-full  mb-8 sm:mb-8 md:mb-8">
+                <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold break-words leading-snug text-white px-2">
+                  Process Name :
+                  <span className="text-md font-medium">
+                    {part?.process.processName || "No Available"}
+                  </span>
                 </p>
+              </div>
 
-                {/* Order No + Date */}
-                <div className="flex justify-center gap-4 text-sm md:text-lg">
-                  <p className="font-semibold">{order?.orderNumber}</p>
-                  <p>{formatDate(jobData.order_date)}</p>
-                </div>
+              <img
+                src={belt}
+                alt="Belt icon"
+                className="w-20 sm:w-24 md:w-28 lg:w-32 object-contain"
+              />
 
-                {/* Upcoming Date */}
-                <div className="flex justify-center gap-4 text-sm md:text-lg">
-                  <p className="font-semibold">Upcoming</p>
-                  <p>: {formatDate(upcommingOrder)}</p>
+              {/* Table overlay on image */}
+              <div className="absolute inset-0 flex items-center justify-center px-2 sm:px-3 md:px-4 mt-5">
+                <div className=" bg-opacity-50 rounded-md overflow-x-auto w-full">
+                  <table className="border border-white text-white text-center w-full min-w-[280px]">
+                    <thead>
+                      <tr className="font-semibold">
+                        <th className="border border-white px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm md:text-base">
+                          Part
+                        </th>
+                        <th className="border border-white px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm md:text-base">
+                          Schedule date
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.map((row, i) => (
+                        <tr key={i}>
+                          <td className="border border-white px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm md:text-base">
+                            {row.part}
+                          </td>
+                          <td className="border border-white px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm md:text-base">
+                            {formatDate(row.date)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>

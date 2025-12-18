@@ -323,7 +323,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                         <tbody>
                           <tr className="bg-gray-50 font-semibold border-b">
                             <td className="px-4 py-2">
-                              part {item.part.partNumber}
+                              {item.part.partNumber}
                             </td>
                             <td className="px-4 py-2">
                               {item.part.partDescription}

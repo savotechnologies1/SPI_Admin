@@ -582,7 +582,7 @@ const Projection: React.FC = () => {
                   <tr key={i} className="hover:bg-gray-50">
                     <td className="border border-gray-200 p-2">{row.name}</td>
                     <td className="border border-gray-200 p-2 text-right">
-                      ${row.value.toLocaleString()}
+                      ${row?.value?.toLocaleString()}
                     </td>
                   </tr>
                 ))}

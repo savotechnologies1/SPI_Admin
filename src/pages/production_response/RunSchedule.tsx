@@ -524,7 +524,6 @@ const RunSchedule = () => {
     if (!jobData || isCompleting) return;
     setIsCompleting(true);
     try {
-      // This part for station login remains the same
       if (jobData.type === "product") {
         const stationLoginData = {
           processId: jobData.processId,
@@ -628,7 +627,20 @@ const RunSchedule = () => {
     );
   }
 
-  const { part, order, employeeInfo, process, upcommingOrder } = jobData;
+  const {
+    part,
+    order,
+    employeeInfo,
+    process,
+    upcommingParts,
+    upcommingOrder,
+    order_date,
+  } = jobData;
+  console.log("partpart", jobData);
+  const rows = [
+    { part: part.partNumber, date: order_date },
+    { part: upcommingParts, date: upcommingOrder },
+  ];
 
   return (
     <div className="bg-[#F5F6FA] min-h-screen flex flex-col">
@@ -642,37 +654,74 @@ const RunSchedule = () => {
             <IoLogOutOutline size={16} className="md:size-[20px]" />
           </button>
         </div>
-        <div className="container mx-auto p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="relative w-full md:w-auto flex items-center justify-center">
-            {/* Belt Image */}
-            <img
-              className="w-24 md:w-40 object-contain"
-              src={belt}
-              alt="Belt icon"
-            />
+        <div className="container  p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="w-full lg:w-1/2 xl:w-2/3 relative flex flex-col ">
+            {/* Process name */}
 
-            {/* Centered Text */}
-            <div className="absolute inset-0 flex items-center justify-center px-3 md:px-6">
-              <div className="text-white text-center max-w-sm md:max-w-md space-y-3">
-                {/* Title */}
-                <p className="text-lg md:text-2xl font-semibold break-words leading-snug">
-                  {part?.partDescription || "No Description"}
+            {/* Belt image and table container */}
+            <div className="relative w-full max-w-xl mx-auto">
+              <div className="w-full  mb-8 sm:mb-8 md:mb-8">
+                <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold break-words leading-snug text-white px-2">
+                  Process Name :
+                  <span className="text-md font-medium">
+                    {part?.process.processName || "No Available"}
+                  </span>
                 </p>
+              </div>
 
-                {/* Order No + Date */}
+              <img
+                src={belt}
+                alt="Belt icon"
+                className="w-20 sm:w-24 md:w-28 lg:w-32 object-contain"
+              />
+
+              {/* Table overlay on image */}
+              <div className="absolute inset-0 flex items-center justify-center px-2 sm:px-3 md:px-4 mt-5">
+                <div className=" bg-opacity-50 rounded-md overflow-x-auto w-full">
+                  <table className="border border-white text-white text-center w-full min-w-[280px]">
+                    <thead>
+                      <tr className="font-semibold">
+                        <th className="border border-white px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm md:text-base">
+                          Part
+                        </th>
+                        <th className="border border-white px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm md:text-base">
+                          Schedule date
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.map((row, i) => (
+                        <tr key={i}>
+                          <td className="border border-white px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm md:text-base">
+                            {row.part}
+                          </td>
+                          <td className="border border-white px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm md:text-base">
+                            {formatDate(row.date)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* <div className="absolute inset-0 flex items-center justify-center px-3 md:px-6">
+              <div className="text-white text-center max-w-sm md:max-w-md space-y-3">
+                <p className="text-lg md:text-2xl font-semibold break-words leading-snug">
+                  {part?.process.processName || "No Aavailable"}
+                </p>
                 <div className="flex justify-center gap-3 md:gap-6 text-sm md:text-lg">
                   <p className="font-semibold">{order?.orderNumber}</p>
                   <p>{formatDate(jobData.order_date)}</p>
                 </div>
 
-                {/* Upcoming Date */}
                 <div className="flex justify-center gap-3 md:gap-6 text-sm md:text-lg">
                   <p className="font-semibold">Upcoming</p>
                   <p>{formatDate(upcommingOrder)}</p>
                 </div>
               </div>
-            </div>
-          </div>
+            </div> */}
 
           <div className="text-white flex gap-4 md:gap-20 flex-wrap justify-center">
             <div>
