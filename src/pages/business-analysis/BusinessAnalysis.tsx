@@ -289,7 +289,7 @@ import shape_2 from "../../assets/shape_2.png";
 import shape_3 from "../../assets/shape_3.png";
 import green from "../../assets/green.png";
 import orange from "../../assets/orange.png";
-
+const BASE_URL = import.meta.env.VITE_SERVER_URL;
 // Dummy icons/images imports retained if needed for other parts of app,
 // but unused in this specific excel-view
 // import scrap_cost from "../assets/scrap_cost.png";
@@ -311,7 +311,7 @@ const BusinessAnalysis = () => {
     const fetchMetrics = async () => {
       try {
         const res = await fetch(
-          `http://localhost:8080/api/admin/business-analysis?startDate=${formatDate(
+          `${BASE_URL}/api/admin/business-analysis?startDate=${formatDate(
             startDate
           )}&endDate=${formatDate(endDate)}`
         );
