@@ -349,15 +349,6 @@ const EditPartForm = () => {
               {...register("availStock", {
                 // required: "Available Stock is required",
                 valueAsNumber: true,
-                // validate: (value) => {
-                //   const supplierOrderQty = watch("supplierOrderQty");
-                //   if (supplierOrderQty === null || isNaN(supplierOrderQty))
-                //     return true;
-                //   return (
-                //     value <= supplierOrderQty ||
-                //     "Available Stock must be less than Order Quantity"
-                //   );
-                // },
               })}
               placeholder="Available Stock"
               className="border p-2 rounded w-full"

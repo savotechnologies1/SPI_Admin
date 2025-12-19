@@ -344,7 +344,6 @@ const BusinessAnalysis = () => {
 
   return (
     <div className="p-7 bg-gray-50 min-h-screen">
-      {/* 🔹 Header + Date Picker */}
       <div className="flex flex-col md:flex-row justify-between mb-6 items-start md:items-center">
         <h1 className="font-bold text-[24px] text-black">Business Analysis</h1>
 
@@ -367,7 +366,6 @@ const BusinessAnalysis = () => {
         </div>
       </div>
 
-      {/* 🔹 Main Content Area - replicating the Excel Layout */}
       <div className="bg-white border border-gray-300 shadow-lg p-8 max-w-5xl mx-auto min-h-[600px]">
         <Tables metrics={metrics} />
       </div>

@@ -13,6 +13,7 @@ import {
   selectPartNamber,
   selectProcess,
 } from "./https/partProductApis";
+import { toast } from "react-toastify";
 
 interface Part {
   partFamily: string;
@@ -57,7 +58,7 @@ const ProductNumber = () => {
       qty: "",
       process: "",
       cycleTime: "",
-      workInstruction: "", // ✅ use empty string
+      workInstruction: "",
       isSaved: false,
     },
   ]);
@@ -212,7 +213,24 @@ const ProductNumber = () => {
   };
 
   const onSubmitProduct = async (data: Part) => {
+    const hasUnsavedBOM = bomEntries.some(
+      (entry) =>
+        !entry.isSaved && // जो सेव नहीं है
+        (entry.partNumber.trim() !== "" ||
+          entry.qty !== "" ||
+          entry.process !== "") // और जिसमें डेटा भरा है
+    );
+    if (hasUnsavedBOM) {
+      toast.error(
+        "Please save the BOM entries before adding the product number."
+      );
+      return; // आगे का कोड रन नहीं होगा (सबमिट रुक जाएगा)
+    }
     const savedBOMs = bomEntries.filter((entry) => entry.isSaved);
+    if (savedBOMs.length === 0) {
+      toast.error("At least one BOM entry must be saved.");
+      return;
+    }
 
     const formData = new FormData();
 
@@ -255,6 +273,13 @@ const ProductNumber = () => {
       setPreviewImages([]);
     }
   }, [selectedImages]);
+
+  useEffect(() => {
+    if (!isProcessRequired) {
+      setValue("processId", "");
+      setValue("processDesc", "");
+    }
+  }, [isProcessRequired, setValue]);
   return (
     <div className="p-4 md:p-7">
       <h1 className="font-bold text-[20px] md:text-[24px] text-black">
@@ -345,10 +370,10 @@ const ProductNumber = () => {
           <input
             type="number"
             defaultValue={0}
-            {...register("supplierOrderQty", {
-              valueAsNumber: true,
-              required: "Supplier order quantity is required",
-            })}
+            // {...register("supplierOrderQty", {
+            //   valueAsNumber: true,
+            //   required: "Supplier order quantity is required",
+            // })}
             placeholder="Order Qty"
             className="border p-2 rounded w-full"
           />
@@ -386,10 +411,10 @@ const ProductNumber = () => {
           Available Stock
           <input
             type="number"
-            {...register("availStock", {
-              valueAsNumber: true,
-              required: "Available stock is required",
-            })}
+            // {...register("availStock", {
+            //   valueAsNumber: true,
+            //   required: "Available stock is required",
+            // })}
             placeholder="Available Stock"
             className="border p-2 rounded w-full"
           />
@@ -471,42 +496,50 @@ const ProductNumber = () => {
             </p>
           )}
         </div>
-        {/* Process */}
-        <div className="col-span-4 md:col-span-1">
-          <label>Process</label>
-          <select
-            {...register("processId", {
-              required: isProcessRequired ? "Process is required" : false,
-            })}
-            className="border p-2 rounded w-full"
-          >
-            <option value="">Select Process</option>
-            {processData.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.name}
-              </option>
-            ))}
-          </select>
-          {errors.processId && (
-            <p className="text-red-500 text-sm">{errors.processId.message}</p>
-          )}
-        </div>
-        {/* Process Description */}
-        <label className="block col-span-4 md:col-span-1">
-          Process Description
-          <textarea
-            {...register("processDesc", {
-              required: isProcessRequired
-                ? "Process Description is required"
-                : false,
-            })}
-            placeholder="Process Description"
-            className="border p-2 rounded w-full"
-          />
-          {errors.processDesc && (
-            <p className="text-red-500 text-sm">{errors.processDesc.message}</p>
-          )}
-        </label>
+        {/* ✅ बदलाव 2: यहाँ कंडीशनल रेंडरिंग शुरू होती है */}
+        {isProcessRequired && (
+          <>
+            {/* Process Selection */}
+            <div className="col-span-4 md:col-span-1">
+              <label>Process</label>
+              <select
+                {...register("processId", {
+                  required: "Process is required",
+                })}
+                className="border p-2 rounded w-full"
+              >
+                <option value="">Select Process</option>
+                {processData.map((item: any) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+              {errors.processId && (
+                <p className="text-red-500 text-sm">
+                  {errors.processId.message}
+                </p>
+              )}
+            </div>
+
+            {/* Process Description */}
+            <label className="block col-span-4 md:col-span-1">
+              Process Description
+              <textarea
+                {...register("processDesc", {
+                  required: "Process Description is required",
+                })}
+                placeholder="Process Description"
+                className="border p-2 rounded w-full"
+              />
+              {errors.processDesc && (
+                <p className="text-red-500 text-sm">
+                  {errors.processDesc.message}
+                </p>
+              )}
+            </label>
+          </>
+        )}
         <div className="col-span-4 md:col-span-1">
           <label>Work Instruction </label>
           <select
@@ -748,7 +781,12 @@ const ProductNumber = () => {
         <div className="col-span-4 flex justify-end">
           <button
             type="submit"
-            className="mt-6 bg-brand text-white py-2 px-6 rounded"
+            disabled={bomEntries.some((e) => !e.isSaved && e.partNumber !== "")}
+            className={`mt-6 py-2 px-6 rounded ${
+              bomEntries.some((e) => !e.isSaved && e.partNumber !== "")
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-brand text-white"
+            }`}
           >
             Add Product Number
           </button>

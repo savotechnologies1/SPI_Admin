@@ -596,22 +596,7 @@ const PartForm = () => {
     };
     fetchProcessDetail();
   }, [processId, setValue]);
-  // PartForm कॉम्पोनेंट के अंदर, useForm हुक के बाद
-  // const handleNumericInput = (
-  //   e: ChangeEvent<HTMLInputElement>,
-  //   fieldName: "cycleTime" // | "ratePerHour" अगर आप इसे जोड़ते हैं
-  // ) => {
-  //   const value = e.target.value;
-  //   // Allow empty string or numbers starting from 1
-  //   if (!/^(?:[1-9]\d*)?$/.test(value) && value !== "") {
-  //     setError(fieldName, {
-  //       type: "manual",
-  //       message: "Only positive integers are allowed",
-  //     });
-  //   } else {
-  //     clearErrors(fieldName);
-  //   }
-  // };
+
   const onSubmit = async (data: FormDataType) => {
     try {
       const formData = new FormData();
@@ -818,15 +803,6 @@ const PartForm = () => {
               {...register("availStock", {
                 // required: "Available Stock is required",
                 valueAsNumber: true,
-                validate: (value) => {
-                  const supplierOrderQty = watch("supplierOrderQty");
-                  if (supplierOrderQty === null || isNaN(supplierOrderQty))
-                    return true;
-                  return (
-                    value <= supplierOrderQty ||
-                    "Available Stock must be less than Order Quantity"
-                  );
-                },
               })}
               placeholder="Available Stock"
               className="border p-2 rounded w-full"
@@ -846,7 +822,6 @@ const PartForm = () => {
               className="border p-2 rounded w-full"
             />
           </div> */}
-
           <div className="col-span-4 md:col-span-1">
             <label>Cycle Time (minutes)</label>
             <div className="flex gap-2">
@@ -868,10 +843,8 @@ const PartForm = () => {
                     e.preventDefault();
                   }
                 }}
-                // ध्यान दें: handleNumericInput फंक्शन को आपको PartForm में भी परिभाषित करना होगा।
-                // onInput={(e: ChangeEvent<HTMLInputElement>) => handleNumericInput(e, "cycleTimeValue")}
-                className="border p-2 rounded w-full" // py-4 px-4 से p-2 में बदला ताकि अन्य इनपुट्स से मेल खाए
-              />
+                className="border p-2 rounded w-full"
+              />{" "}
               {/* <select
                 {...register("cycleTimeUnit", {
                   required: "Unit is required",
@@ -893,7 +866,11 @@ const PartForm = () => {
                   errors.cycleTimeUnit?.message}
               </p>
             )} */}
-          </div>
+
+            {errors.cycleTime && (
+              <p className="text-red-500 text-sm">{errors.cycleTime.message}</p>
+            )}
+          </div>{" "}
           <div className="col-span-4 md:col-span-1">
             <label>Process Order Required</label>
             <select
@@ -912,46 +889,48 @@ const PartForm = () => {
               </p>
             )}
           </div>
+          {/* यहाँ कंडीशनल रेंडरिंग है */}
+          {isProcessRequired && (
+            <>
+              <div className="col-span-4 md:col-span-2">
+                <label>Process</label>
+                <select
+                  {...register("processId", {
+                    required: "Process is required",
+                  })}
+                  className="border p-2 rounded w-full"
+                >
+                  <option value="">Select Process</option>
+                  {processData.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.processId && (
+                  <p className="text-red-500 text-sm">
+                    {errors.processId.message}
+                  </p>
+                )}
+              </div>
 
-          {/* Process */}
-          <div className="col-span-4 md:col-span-2">
-            <label>Process</label>
-            <select
-              {...register("processId", {
-                required: isProcessRequired ? "Process is required" : false,
-              })}
-              className="border p-2 rounded w-full"
-            >
-              <option value="">Select Process</option>
-              {processData.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-            {errors.processId && (
-              <p className="text-red-500 text-sm">{errors.processId.message}</p>
-            )}
-          </div>
-
-          {/* Process Description */}
-          <label className="block col-span-4 md:col-span-2">
-            Process Description
-            <textarea
-              {...register("processDesc", {
-                required: isProcessRequired
-                  ? "Process description is required"
-                  : false,
-              })}
-              placeholder="Process Description"
-              className="border p-2 rounded w-full"
-            />
-            {errors.processDesc && (
-              <p className="text-red-500 text-sm">
-                {errors.processDesc.message}
-              </p>
-            )}
-          </label>
+              <label className="block col-span-4 md:col-span-2">
+                Process Description
+                <textarea
+                  {...register("processDesc", {
+                    required: "Process description is required",
+                  })}
+                  placeholder="Process Description"
+                  className="border p-2 rounded w-full"
+                />
+                {errors.processDesc && (
+                  <p className="text-red-500 text-sm">
+                    {errors.processDesc.message}
+                  </p>
+                )}
+              </label>
+            </>
+          )}
           {selectedImages.length > 0 && (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 col-span-4 mt-4">
               {selectedImages.map((file, index) => (
@@ -962,7 +941,7 @@ const PartForm = () => {
                   <img
                     src={URL.createObjectURL(file)}
                     alt={`preview-${index}`}
-                    className="object-cover w-full h-32"
+                    className="w-20 h-20 object-cover border rounded"
                   />
                   <MdCancel
                     className="absolute top-2 right-2 cursor-pointer text-red-600 bg-white rounded-full"
@@ -975,24 +954,10 @@ const PartForm = () => {
                       setValue("image", updatedImages); // Update form value
                     }}
                   />
-                  {/* <button
-                    type="button"
-                    className="absolute top-1 right-1 bg-red-500 text-white text-xs px-2 py-1 rounded"
-                    onClick={() => {
-                      const updatedImages = selectedImages.filter(
-                        (_, i) => i !== index
-                      );
-                      setSelectedImages(updatedImages);
-                      setValue("image", updatedImages); // Update form value
-                    }}
-                  >
-                    ❌
-                  </button> */}
                 </div>
               ))}
             </div>
           )}
-
           <label className="block col-span-4 md:col-span-2 cursor-pointer border bg-gray-100 p-4 rounded text-center">
             {watch("image")?.length
               ? `${watch("image").length} image(s) selected`
