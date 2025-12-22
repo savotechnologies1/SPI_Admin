@@ -585,8 +585,6 @@ const ProcessList = () => {
 
   const fetchProcessList = async (page = 1) => {
     try {
-      // The `processList` function in processApi.ts returns `ApiResponse<ProcessData[]>`
-      // and its `data` property contains `data` and `pagination`.
       const response: ProcessListResponse = await processList(
         page,
         rowsPerPage,

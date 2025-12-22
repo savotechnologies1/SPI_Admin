@@ -303,7 +303,6 @@ const BusinessAnalysis = () => {
   );
   const [endDate, setEndDate] = useState(new Date());
 
-  // 🔹 Format date for backend (YYYY-MM-DD)
   const formatDate = (date) => date.toISOString().split("T")[0];
 
   // 🔹 Fetch metrics
@@ -320,7 +319,6 @@ const BusinessAnalysis = () => {
       } catch (error) {
         console.error("API Error:", error);
 
-        // Fallback dummy data for visualization if API fails
         setMetrics({
           totalRevenue: 175592.0,
           totalCOGS: 118212.3,

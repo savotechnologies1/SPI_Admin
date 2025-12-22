@@ -622,17 +622,20 @@ const EditProcess = () => {
           const response = await processDetail(id);
           if (response && response.status === 200) {
             const processData = response.data.data;
+            console.log("processDataprocessData", processData);
             const [cycleTimeValue, cycleTimeUnit] =
               processData.cycleTime.split(" ");
-
             reset({
-              processName: processData.processName,
-              machineName: processData.machineName,
-              partFamily: processData.partFamily,
-              processDesc: processData.processDesc,
+              processName: processData.processName || "",
+              machineName: processData.machineName || "",
+              partFamily: processData.partFamily || "",
+              processDesc: processData.processDesc || "",
               cycleTime: cycleTimeValue || "",
               cycleTimeUnit: cycleTimeUnit as "sec" | "min" | "hr" | "",
-              ratePerHour: processData.ratePerHour.toString(),
+              ratePerHour:
+                processData.ratePerHour !== null
+                  ? processData.ratePerHour.toString()
+                  : "",
               isProcessReq: processData.isProcessReq ? "true" : "false",
             });
           }

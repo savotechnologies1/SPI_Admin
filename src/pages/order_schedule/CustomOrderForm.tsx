@@ -786,7 +786,7 @@ const CustomOrderForm = () => {
 
               const finalData = {
                 ...values,
-                bomList: formattedBOM, // Backend ye read karega
+                bomList: formattedBOM, 
               };
 
               const res = await addCustomOrder(finalData);

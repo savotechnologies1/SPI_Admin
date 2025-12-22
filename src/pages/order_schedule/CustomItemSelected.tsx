@@ -762,7 +762,6 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
     //   return;
     // }
 
-    // ✅ Step 3: Proceed to schedule
     try {
       const payloads = selectedItems.flatMap((item) => {
         const parentProduct = item.originalData.productFamily?.find(
