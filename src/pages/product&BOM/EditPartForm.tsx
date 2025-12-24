@@ -105,7 +105,9 @@ const EditPartForm = () => {
 
       reset({
         ...data,
-        cycleTime: data.cycleTime || "", // ✅ direct minutes ka value use hoga
+        partFamily:data.partFamily,
+        processId: data.processId || "", // सुनिश्चित करें कि ID string है
+        cycleTime: data.cycleTime || "",
         processOrderRequired: data.processOrderRequired ? "true" : "false",
       });
 
@@ -233,6 +235,7 @@ const EditPartForm = () => {
           {/* Part Family */}
           <label className="block col-span-4 md:col-span-2">
             Part Family
+            {/* Part Family Dropdown */}
             <select
               {...register("partFamily")}
               className="border p-2 rounded w-full"
@@ -240,6 +243,7 @@ const EditPartForm = () => {
               <option value="">Select Part Family</option>
               {processData.map((item) => (
                 <option key={item.id} value={item.partFamily}>
+                  {/* सुनिश्चित करें कि item.partFamily मौजूद है */}
                   {item.partFamily}
                 </option>
               ))}

@@ -605,7 +605,7 @@ interface BOMEntry {
   process: string;
   cycleTime: number | string;
   workInstruction: string;
-  isSaved: boolean; // To toggle edit/view mode
+  isSaved: boolean;
 }
 
 const CustomOrderForm = () => {
@@ -736,24 +736,39 @@ const CustomOrderForm = () => {
       }
     }
   };
-  const handleSuggestionClick = (
-    index: number,
-    selectedPart: PartNumberInterface
-  ) => {
+  const handleSuggestionClick = (index: number, selectedPart: any) => {
     const updatedBOM = [...bomEntries];
+
+    // 1. Pehle API se aaya hua process name nikalen
+    const apiProcessName = selectedPart.process?.processName;
+
+    // 2. processList (jo aapne fetch ki hai) mein se wo process dhundein jiska naam match karta ho
+    const matchingProcess = processList.find(
+      (p) => p.name?.toLowerCase() === apiProcessName?.toLowerCase()
+    );
+
+    // 3. Agar match mil gaya to uski ID use karein, nahi to khaali chhodein
+    const pId = matchingProcess ? matchingProcess.id : "";
+
     updatedBOM[index] = {
       ...updatedBOM[index],
       partNumber: selectedPart.partNumber,
       partId: selectedPart.part_id,
-      process: selectedPart.process?.processName || "Default",
-      processId: selectedPart.process?.id || selectedPart.processId,
+      processId: pId, // Ab yahan ID sahi jayegi to dropdown select ho jayega
       cycleTime: selectedPart.cycleTime || "",
       qty: "1",
-      instructionRequired: selectedPart.instructionRequired || "No",
+      // Backend se false aa raha hai, hume "No" chahiye dropdown ke liye
+      instructionRequired:
+        selectedPart.instructionRequired === true ? "Yes" : "No",
     };
 
     setBomEntries(updatedBOM);
     setSuggestions((prev) => ({ ...prev, [index]: [] }));
+  };
+  const handleBOMProcessChange = (index: number, processId: string) => {
+    const updatedBOM = [...bomEntries];
+    updatedBOM[index] = { ...updatedBOM[index], processId: processId };
+    setBomEntries(updatedBOM);
   };
   const handleSaveBOMs = () => {
     const updated = bomEntries.map((entry) => ({ ...entry, isSaved: true }));
@@ -786,7 +801,7 @@ const CustomOrderForm = () => {
 
               const finalData = {
                 ...values,
-                bomList: formattedBOM, 
+                bomList: formattedBOM,
               };
 
               const res = await addCustomOrder(finalData);
@@ -1094,62 +1109,60 @@ const CustomOrderForm = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 bg-white px-6 "></div>
-
+                {/* Inside your Formik return, find the Assign Part Number section */}
                 <div className="col-span-4 mt-6 px-6">
                   <h3 className="text-xl font-bold mb-4 text-gray-800 border-b pb-2">
                     Assign Part Number
                   </h3>
 
-                  {bomEntries.map((entry, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-50 border p-4 rounded-lg mb-4 shadow-sm relative"
-                      ref={(el) => (inputRefs.current[index] = el)}
-                    >
-                      <div className="flex justify-between items-center mb-2">
-                        <p className="font-semibold text-blue-800">
-                          Part #{index + 1}
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteBOM(index)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <RiDeleteBin6Line size={20} />
-                        </button>
-                      </div>
+                  {bomEntries.map((entry, index) => {
+                    // 'entry' is defined STARTING HERE
+                    return (
+                      <div
+                        key={index}
+                        className="bg-gray-50 border p-4 rounded-lg mb-4 shadow-sm relative"
+                        ref={(el) => (inputRefs.current[index] = el)}
+                      >
+                        <div className="flex justify-between items-center mb-2">
+                          <p className="font-semibold text-blue-800">
+                            Part #{index + 1}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteBOM(index)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <RiDeleteBin6Line size={20} />
+                          </button>
+                        </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                        <div className="relative">
-                          <label className="text-sm font-medium text-gray-600">
-                            Part Number
-                          </label>
-                          <input
-                            type="text"
-                            value={entry.partNumber}
-                            disabled={entry.isSaved}
-                            onChange={(e) =>
-                              handleBOMChange(
-                                index,
-                                "partNumber",
-                                e.target.value
-                              )
-                            }
-                            className="border p-2 rounded w-full mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                            placeholder="Type to search..."
-                            autoComplete="off"
-                          />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                          {/* 1. Part Number Search */}
+                          <div className="relative">
+                            <label className="text-sm font-medium text-gray-600">
+                              Part Number
+                            </label>
+                            <input
+                              type="text"
+                              value={entry.partNumber}
+                              onChange={(e) =>
+                                handleBOMChange(
+                                  index,
+                                  "partNumber",
+                                  e.target.value
+                                )
+                              }
+                              className="border p-2 rounded w-full mt-1"
+                              placeholder="Search part..."
+                            />
 
-                          {/* Suggestion Dropdown */}
-                          {!entry.isSaved &&
-                            suggestions[index] &&
-                            suggestions[index].length > 0 && (
-                              <ul className="absolute z-20 bg-white border rounded w-full max-h-48 overflow-y-auto shadow-xl mt-1">
+                            {/* Suggestions Dropdown */}
+                            {suggestions[index]?.length > 0 && (
+                              <ul className="absolute z-50 bg-white border rounded w-full max-h-48 overflow-y-auto shadow-xl mt-1">
                                 {suggestions[index].map((part) => (
                                   <li
-                                    key={part.part_id || part.id} // Ensure unique key
-                                    className="px-4 py-2 hover:bg-blue-100 cursor-pointer text-sm border-b last:border-0"
+                                    key={part.part_id || (part as any).id}
+                                    className="px-4 py-2 hover:bg-blue-100 cursor-pointer text-sm border-b"
                                     onClick={() =>
                                       handleSuggestionClick(index, part)
                                     }
@@ -1157,115 +1170,97 @@ const CustomOrderForm = () => {
                                     <span className="font-bold">
                                       {part.partNumber}
                                     </span>
-                                    {/* Optional: Show extra info in dropdown */}
-                                    {/* <span className="text-xs text-gray-500 ml-2">
-                                      ({part.processName || "N/A"})
-                                    </span> */}
                                   </li>
                                 ))}
                               </ul>
                             )}
-                        </div>
+                          </div>
 
-                        {/* 2. Quantity */}
-                        <div>
-                          <label className="text-sm font-medium text-gray-600">
-                            Quantity
-                          </label>
-                          <input
-                            type="number"
-                            value={entry.qty}
-                            disabled={entry.isSaved}
-                            onChange={(e) =>
-                              handleBOMChange(index, "qty", e.target.value)
-                            }
-                            placeholder="Qty"
-                            className="border p-2 rounded w-full mt-1"
-                          />
-                        </div>
+                          {/* 2. Quantity */}
+                          <div>
+                            <label className="text-sm font-medium text-gray-600">
+                              Quantity
+                            </label>
+                            <input
+                              type="number"
+                              value={entry.qty}
+                              onChange={(e) =>
+                                handleBOMChange(index, "qty", e.target.value)
+                              }
+                              className="border p-2 rounded w-full mt-1"
+                            />
+                          </div>
 
-                        {/* 3. Process (Prefilled) */}
-                        <div>
-                          <label className="text-sm font-medium text-gray-600">
-                            Process
-                          </label>
-                          <input
-                            type="text"
-                            value={entry.process}
-                            disabled={entry.isSaved}
-                            onChange={(e) =>
-                              handleBOMChange(index, "process", e.target.value)
-                            }
-                            placeholder="Process Name"
-                            className="border p-2 rounded w-full mt-1 bg-gray-50"
-                          />
-                        </div>
+                          {/* 3. Process Dropdown - Correctly linked to entry.processId */}
+                          <div>
+                            <label className="text-sm font-medium text-gray-600">
+                              Process
+                            </label>
+                            <select
+                              value={entry.processId || ""} // Yeh entry.processId se match karega
+                              onChange={(e) =>
+                                handleBOMChange(
+                                  index,
+                                  "processId",
+                                  e.target.value
+                                )
+                              }
+                              className="border p-2 rounded w-full mt-1 bg-white"
+                            >
+                              <option value="">Select Process</option>
+                              {processList.map((p) => (
+                                <option key={p.id} value={p.id}>
+                                  {p.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
 
-                        {/* 4. Cycle Time (Prefilled) */}
-                        <div>
-                          <label className="text-sm font-medium text-gray-600">
-                            Cycle Time (mins)
-                          </label>
-                          <input
-                            type="number"
-                            value={entry.cycleTime}
-                            disabled={entry.isSaved}
-                            onChange={(e) =>
-                              handleBOMChange(
-                                index,
-                                "cycleTime",
-                                e.target.value
-                              )
-                            }
-                            placeholder="0"
-                            className="border p-2 rounded w-full mt-1"
-                          />
-                        </div>
+                          {/* 4. Cycle Time */}
+                          <div>
+                            <label className="text-sm font-medium text-gray-600">
+                              Cycle Time
+                            </label>
+                            <input
+                              type="number"
+                              value={entry.cycleTime}
+                              onChange={(e) =>
+                                handleBOMChange(
+                                  index,
+                                  "cycleTime",
+                                  e.target.value
+                                )
+                              }
+                              className="border p-2 rounded w-full mt-1"
+                            />
+                          </div>
 
-                        {/* 5. Work Instruction */}
-                        <div>
-                          <label className="text-sm font-medium text-gray-600">
-                            Work Instruction
-                          </label>
-                          <select
-                            value={entry.instructionRequired}
-                            disabled={entry.isSaved}
-                            onChange={(e) =>
-                              handleBOMChange(
-                                index,
-                                "instructionRequired",
-                                e.target.value
-                              )
-                            }
-                            className="border p-2 rounded w-full mt-1"
-                          >
-                            <option value="">Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                          </select>
+                          {/* 5. Instruction */}
+                          <div>
+                            <label className="text-sm font-medium text-gray-600">
+                              Instruction
+                            </label>
+                            <select
+                              value={entry.instructionRequired}
+                              onChange={(e) =>
+                                handleBOMChange(
+                                  index,
+                                  "instructionRequired",
+                                  e.target.value
+                                )
+                              }
+                              className="border p-2 rounded w-full mt-1"
+                            >
+                              <option value="">Select</option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                            </select>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-
-                  <div className="flex gap-3 mt-4 mb-6">
-                    <button
-                      type="button"
-                      onClick={handleAddBOMRow}
-                      className="bg-brand text-white p-2 text-sm rounded-md px-4
-                      py-2 flex items-center hover:bg-blue-800"
-                    >
-                      <Plus size={18} /> Add
-                    </button>
-                    {/* Optional Save Button if you want to lock rows */}
-                    {/* <button
-                      type="button"
-                      onClick={handleSaveBOMs}
-                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow transition"
-                    >
-                      Save BOM
-                    </button> */}
-                  </div>
+                    );
+                    // 'entry' becomes undefined AFTER THIS LINE
+                  })}
                 </div>
                 <div className="bg-white px-6 mt-4">
                   <h3 className="text-lg font-semibold mb-2 border-b pb-2">

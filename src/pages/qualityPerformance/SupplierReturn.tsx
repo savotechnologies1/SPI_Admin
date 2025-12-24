@@ -1,13 +1,3 @@
-import data from "../../components/Data/customerReturnData";
-import client_icon from "../../assets/client.png";
-import date_icon from "../../assets/date.png";
-import pin from "../../assets/pin.png";
-import copy from "../../assets/copy.png";
-import filter from "../../assets/byte_filter.png";
-import fullscren from "../../assets/fullscreen.png";
-import more from "../../assets/more.png";
-import React from "react";
-
 const SupplierReturn = ({ qualityData }) => {
   console.log("qualityData", qualityData);
 
@@ -40,11 +30,13 @@ const SupplierReturn = ({ qualityData }) => {
               <tr key={index}>
                 {/* Access process correctly from item.part.process */}
                 <td className="px-4 py-4 text-sm sm:text-base">
-                  {item.part.process.processName}
+                  {item && item.part && item.part.process
+                    ? item.part.process.processName
+                    : "-"}
                 </td>
 
                 <td className="px-4 py-4 text-sm sm:text-base">
-                  {item.part.partDescription}
+                  {item?.part?.partDescription}
                 </td>
 
                 {/* <td className="px-4 py-4 text-sm sm:text-base">
@@ -52,7 +44,7 @@ const SupplierReturn = ({ qualityData }) => {
                 </td> */}
 
                 <td className="px-4 py-4 text-sm sm:text-base">
-                  {item.scrapQuantity}
+                  {item?.scrapQuantity}
                 </td>
               </tr>
             ))}

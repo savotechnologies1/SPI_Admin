@@ -20,7 +20,7 @@ ChartJS.register(
 
 const ScrapBar = ({ qualityData }) => {
   const data = {
-    labels: qualityData.map((item) => item.part.process.processName),
+    labels: qualityData.map((item) => item?.part?.process?.processName),
     datasets: [
       {
         label: "Manual ",
