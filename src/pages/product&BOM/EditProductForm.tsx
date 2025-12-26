@@ -1051,7 +1051,6 @@ const EditProductForm = () => {
               </p>
             )}
           </label>
-          {/* ... all other main product inputs ... */}
           <label className="col-span-4">
             {" "}
             Description{" "}

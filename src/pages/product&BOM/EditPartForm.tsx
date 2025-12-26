@@ -58,7 +58,6 @@ const EditPartForm = () => {
     formData.append("minStock", data.minStock);
     formData.append("availStock", data.availStock);
 
-    // ✅ hamesha minutes me bhejna
     formData.append("cycleTime", data.cycleTime);
 
     formData.append("processOrderRequired", data.processOrderRequired);
@@ -105,8 +104,8 @@ const EditPartForm = () => {
 
       reset({
         ...data,
-        partFamily:data.partFamily,
-        processId: data.processId || "", // सुनिश्चित करें कि ID string है
+        partFamily: data.partFamily,
+        processId: data.processId || "",
         cycleTime: data.cycleTime || "",
         processOrderRequired: data.processOrderRequired ? "true" : "false",
       });
@@ -118,11 +117,10 @@ const EditPartForm = () => {
   };
 
   const handleNumericInput = (
-    e: React.ChangeEvent<HTMLInputElement>, // `React.ChangeEvent` का उपयोग करें
-    fieldName: "cycleTime" // यदि कोई अन्य numeric फ़ील्ड है तो उसे भी जोड़ें
+    e: React.ChangeEvent<HTMLInputElement>,
+    fieldName: "cycleTime"
   ) => {
     const value = e.target.value;
-    // Allow empty string or numbers starting from 1
     if (!/^(?:[1-9]\d*)?$/.test(value) && value !== "") {
       setError(fieldName, {
         type: "manual",

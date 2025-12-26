@@ -636,7 +636,7 @@ const PartForm = () => {
       await deletePartNumber(id);
       toast.success("Part deleted successfully!");
       getAllPartList(currentPage);
-      setItemToDeleteId(null); // Close the dialog
+      setItemToDeleteId(null); 
     } catch (error) {
       toast.error("Failed to delete part");
     }
