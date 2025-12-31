@@ -13,6 +13,7 @@ import { scheduleStockOrder } from "./https/schedulingApis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import send from "../../assets/Send.png";
+import { useNavigate } from "react-router-dom";
 const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   const [selectedItems, setSelectedItems] = useState<ScheduledItem[]>([]);
   const [itemInputs, setItemInputs] = useState<ItemInputState>({});
@@ -67,6 +68,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       )
     );
   };
+  const navigate = useNavigate();
   const scheduleAllData = async () => {
     try {
       const payloads = selectedItems.flatMap((item) => {
@@ -100,8 +102,9 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
         return [productPayload, ...componentPayloads];
       });
 
-      console.log("Submitting all scheduled items with payload:", payloads);
-      await scheduleStockOrder(payloads);
+      const response = await scheduleStockOrder(payloads);
+      navigate("/order-schedule-list");
+      toast.success(response?.data.message);
       setSelectedItems([]);
       setItemInputs({});
     } catch (error) {

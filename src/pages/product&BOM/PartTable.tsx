@@ -409,7 +409,7 @@ export default function PartTable() {
       </div>
       <div className="flex justify-end">
         <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
-          <select
+          {/* <select
             id="work-instruction-filter"
             className="border w-full md:w-2/3 px-3 py-2 rounded-md"
             value={selectedValue}
@@ -418,7 +418,7 @@ export default function PartTable() {
             <option value="all">All</option>
             <option value="part">All parts</option>
             <option value="product">All products</option>
-          </select>
+          </select> */}
           <input
             type="text"
             placeholder="Search by part number..."

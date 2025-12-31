@@ -496,7 +496,6 @@ const ProductNumber = () => {
             </p>
           )}
         </div>
-        {/* ✅ बदलाव 2: यहाँ कंडीशनल रेंडरिंग शुरू होती है */}
         {isProcessRequired && (
           <>
             {/* Process Selection */}
@@ -558,17 +557,6 @@ const ProductNumber = () => {
             </p>
           )}
         </div>
-        {/* <label className="block col-span-4 md:col-span-2 cursor-pointer border bg-gray-100 p-4 rounded text-center">
-          <input
-            type="file"
-            className="hidden"
-            multiple
-            onChange={(e) => setSelectedImages(e.target.files)}
-          />
-          {selectedImages?.length
-            ? `${selectedImages.length} image(s) selected`
-            : "Tap or Click to Add Pictures"}
-        </label> */}
         {previewImages.length > 0 && (
           <div className="col-span-4 flex gap-3 flex-wrap mt-2">
             {previewImages.map((img, idx) => (

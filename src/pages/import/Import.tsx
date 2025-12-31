@@ -29,7 +29,7 @@
 
 // export default Import
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
 import cloud from "../../assets/cloud_check.png";
 import { importApi } from "./https/importsApi";
@@ -136,63 +136,71 @@ const partTemplate = [
 const productTemplate = [
   [
     "product_number",
-    "part_number",
     "partFamily",
-    "partNumber",
     "partDescription",
     "cost",
     "leadTime",
+    "supplierOrderQty",
+    "companyName",
     "minStock",
     "availStock",
-    "supplierOrderQty",
     "cycleTime",
-    "processName",
-    "processDesc",
     "processOrderRequired",
     "instructionRequired",
-    "companyName",
+    "processName",
+    "processDesc",
+    "bom_partNumber",
+    "bom_qty",
+    "bom_process",
+    "bom_cycleTime",
+    "bom_workInstruction",
     "fileName",
   ],
   [
-    "Product A",
-    "PR-100",
-    "Cut trim Components",
-    "Product A desc",
-    "20",
-    "2",
-    "2",
-    "48",
-    "50",
+    "PROD-100",
+    "Assembly",
+    "Full Laptop",
+    "500",
     "10",
-    "Cut trim",
-    "Cut trim description",
+    "50",
+    "TechCorp",
+    "5",
+    "20",
+    "60",
     "TRUE",
-    "0",
-    "SPI Custom",
     "TRUE",
+    "Assembly",
+    "Desc",
+    "COMP-001",
+    "2",
+    "Cutting",
+    "15",
+    "Yes", // BOM Entry 1
     "product",
   ],
   [
-    "Product B",
-    "PR-101",
-    "Molding family",
-    "Product B desc",
-    "20",
-    "2",
-    "2",
-    "48",
-    "50",
+    "PROD-100",
+    "Assembly",
+    "Full Laptop",
+    "500",
     "10",
-    "Cut trim",
-    "Cut trim description",
+    "50",
+    "TechCorp",
+    "5",
+    "20",
+    "60",
     "TRUE",
-    "0",
-    "SPI Custom",
     "TRUE",
+    "Assembly",
+    "Desc",
+    "COMP-002",
+    "1",
+    "Polishing",
+    "10",
+    "No", // BOM Entry 2
     "product",
   ],
 ];
-// Employee Template (Dummy Data)
 const employeeTemplate = [
   [
     "firstName",
@@ -571,6 +579,19 @@ const Import: React.FC = () => {
     link.download = `${selected}_import_errors.csv`;
     link.click();
   };
+  const hasConfirmedRef = useRef(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState("");
+
+  const handleConfirm = () => {
+    setShowConfirmModal(false);
+    handleUpload(true); // 🔁 "Apply Changes" click karne par true ke saath dobara upload
+  };
+
+  const handleCancel = () => {
+    setShowConfirmModal(false);
+    toast.info("Import cancelled by user.");
+  };
 
   // Download CSV template
   const handleDownload = () => {
@@ -586,51 +607,185 @@ const Import: React.FC = () => {
     link.download = `${selected}_template.csv`;
     link.click();
   };
-  const handleUpload = async () => {
+
+  // const handleUpload = async (isConfirmed: boolean = false) => {
+  //   if (!file || !selected) {
+  //     toast.error("Please select a template type and file first!");
+  //     return;
+  //   }
+
+  //   setIsUploading(true);
+
+  //   const formData = new FormData();
+  //   formData.append("ImportFile", file);
+
+  //   // Yahan fix: strictly check boolean taaki event object se confusion na ho
+  //   if (isConfirmed === true) {
+  //     formData.append("confirmChanges", "true");
+  //   } else {
+  //     formData.append("confirmChanges", "false");
+  //   }
+
+  //   try {
+  //     let url = "";
+  //     if (selected === "process") url = "process/import";
+  //     else if (selected === "part") url = "parts/import";
+  //     else if (selected === "product") url = "product-tree/import";
+  //     else if (selected === "employee") url = "emp/import";
+  //     else if (selected === "customer") url = "cust/import";
+  //     else if (selected === "supplier") url = "supp/import";
+
+  //     const response = await importApi(url, formData);
+  //     const responseData = response?.data;
+  //     const status = response?.status;
+
+  //     if (status === 409 && responseData?.requiresConfirmation) {
+  //       console.log("responseDataresponseData", responseData);
+  //       // Backend se aaye messages ko merge karke popup mein dikhana
+  //       const conflictMessages = responseData.conflicts
+  //         ? responseData.conflicts.map((c: any) => c.message).join("\n\n")
+  //         : "Changes detected in existing products.";
+
+  //       setConfirmMessage(conflictMessages);
+  //       setShowConfirmModal(true); // ✅ Modal show hoga
+  //     }
+  //     // Status 200/201 (Success) handles here
+  //     if (response?.status === 201 || response?.status === 200) {
+  //       toast.success(response.data.message || "Upload successful ✅");
+  //       setFile(null);
+  //       setErrors([]);
+  //     }
+  //   } catch (error: any) {
+  //     console.log("errorerrorerror", error);
+  //     // 🛑 FIXED: Jab 409 error aayega, Axios seedha yahan bhejega
+  //     const responseData = error.response?.data;
+  //     const status = error.response?.status;
+
+  //     if (status === 409 && responseData?.requiresConfirmation) {
+  //       console.log("responseDataresponseData", responseData);
+  //       // Backend se aaye messages ko merge karke popup mein dikhana
+  //       const conflictMessages = responseData.conflicts
+  //         ? responseData.conflicts.map((c: any) => c.message).join("\n\n")
+  //         : "Changes detected in existing products.";
+
+  //       setConfirmMessage(conflictMessages);
+  //       setShowConfirmModal(true); // ✅ Modal show hoga
+  //     } else if (responseData?.errors) {
+  //       setErrors(responseData.errors);
+  //       toast.error("Upload failed due to validation errors.");
+  //     } else {
+  //       toast.error(responseData?.message || "Upload failed. Check your file.");
+  //     }
+  //   } finally {
+  //     setIsUploading(false);
+  //   }
+  // };
+  const handleUpload = async (isConfirmed: boolean = false) => {
     if (!file || !selected) {
-      alert("Please select a template type and file first!");
+      toast.error("Please select a template type and file first!");
       return;
     }
 
     setIsUploading(true);
-    setErrors([]); // Clear previous errors
+    if (!isConfirmed) setErrors([]);
+
     const formData = new FormData();
     formData.append("ImportFile", file);
+    if (isConfirmed) formData.append("confirmChanges", "true");
 
     try {
       let url = "";
-      if (selected === "process") {
-        url = "process/import";
-      } else if (selected === "part") {
-        url = "parts/import";
-      } else if (selected === "product") {
-        url = "product-tree/import";
-      } else if (selected === "employee") {
-        url = "emp/import";
-      } else if (selected === "customer") {
-        url = "cust/import";
-      } else if (selected === "supplier") {
-        url = "supp/import";
-      }
+      if (selected === "process") url = "process/import";
+      else if (selected === "part") url = "parts/import";
+      else if (selected === "product") url = "product-tree/import";
+      else if (selected === "employee") url = "emp/import";
+      else if (selected === "customer") url = "cust/import";
+      else if (selected === "supplier") url = "supp/import";
 
       const response = await importApi(url, formData);
-
-      // Backend will return 201 on full success or 400 on any row fail (your logic)
-      if (response?.status === 201) {
-        toast.success(response.data.message || "Upload successful");
-        setErrors([]);
-      } else if (response?.status === 400 && response.data?.errors?.length) {
-        setErrors(response.data.errors);
-        toast.error("Upload failed due to validation errors");
+      const summary = response?.data?.summary;
+      const responseData = response?.data;
+      if (response?.status === 409 && responseData?.requiresConfirmation) {
+        const conflictMessages = responseData.conflicts
+          ? responseData.conflicts.map((c: any) => c.message).join("\n\n")
+          : "Changes detected in existing products.";
+        setConfirmMessage(conflictMessages);
+        setShowConfirmModal(true);
+        setIsUploading(false);
+        return;
+      }
+      if (summary?.errorCount > 0) {
+        setErrors(summary.errors);
+        toast.warning(
+          `Imported ${summary.success} rows, but ${summary.errorCount} rows failed.`
+        );
+      } else {
+        toast.success(response.data.message || "Product Upload successful.");
+        setFile(null);
       }
     } catch (error: any) {
-      console.error("Upload failed:", error);
-      toast.error("Upload failed. Please check your file and try again.");
+      const responseData = error.response?.data;
+      const status = error.response?.status;
+
+      // 1. Handle Confirmation (409)
+
+      // 2. Handle Validation Summary Errors (400)
+      if (responseData?.summary?.errors) {
+        setErrors(responseData.summary.errors);
+        toast.error(responseData.message || "Import failed due to errors.");
+      }
+      // 3. Handle Generic Errors
+      else {
+        toast.error(
+          responseData?.message || "Upload failed. Please check your file."
+        );
+      }
     } finally {
       setIsUploading(false);
     }
   };
+  const ConfirmationModal = ({ open, message, onConfirm, onCancel }) => {
+    if (!open) return null;
 
+    return (
+      <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden border-t-4 border-blue-600">
+          <div className="p-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+              <span className="bg-blue-100 text-blue-600 p-2 rounded-full mr-3">
+                ⚠️
+              </span>
+              Existing Data Found
+            </h2>
+
+            <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-700 whitespace-pre-line mb-6 max-h-64 overflow-y-auto border">
+              {message}
+            </div>
+
+            <p className="text-sm text-gray-500 mb-6 italic">
+              * Clicking "Apply Changes" will overwrite the values in the
+              database.
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={onCancel}
+                className="px-5 py-2 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-all"
+              >
+                No, Keep Old
+              </button>
+              <button
+                onClick={onConfirm}
+                className="px-5 py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 shadow-md transition-all"
+              >
+                Apply Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
   const templateOptions = [
     { id: "process", label: "Add Process", icon: "⚙️" },
     { id: "part", label: "Add Parts", icon: "🔩" },
@@ -880,9 +1035,11 @@ const Import: React.FC = () => {
                 </button>
               </div>
             )}
-
             <button
-              onClick={handleUpload}
+              onClick={(e) => {
+                e.preventDefault();
+                handleUpload(false); // Shuruat hamesha false flag se hogi
+              }}
               disabled={!file || !selected || isUploading}
               className={`mt-6 w-full py-3 rounded-lg font-medium transition-all flex items-center justify-center ${
                 !file || !selected || isUploading
@@ -984,6 +1141,12 @@ const Import: React.FC = () => {
             )}
           </div>
         </div>
+        <ConfirmationModal
+          open={showConfirmModal}
+          message={confirmMessage}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
       </div>
     </div>
   );

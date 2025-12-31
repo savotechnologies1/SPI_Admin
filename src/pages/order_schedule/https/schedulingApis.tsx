@@ -105,6 +105,9 @@ export const searchStockOrder = async (searchParams: object) => {
     const response = await axiosInstance.get("/search-stock-order", {
       params: searchParams,
     });
+
+    console.log("responseresponseresponse", response.data.message);
+
     return response.data || [];
   } catch (error) {
     const axiosError = error as AxiosError<{ message: string }>;
