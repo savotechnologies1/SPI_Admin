@@ -739,6 +739,7 @@ const EditProductForm = () => {
     instructionRequired: string;
     processId: string;
     processDesc: string;
+    isProductSchedule: boolean;
   }
 
   const {
@@ -787,6 +788,7 @@ const EditProductForm = () => {
     formData.append("instructionRequired", data.instructionRequired);
     formData.append("processId", data.processId);
     formData.append("processDesc", data.processDesc);
+    formData.append("isProductSchedule", data.isProductSchedule);
 
     if (imageFiles.length > 0) {
       for (let file of imageFiles) {
@@ -826,6 +828,7 @@ const EditProductForm = () => {
         cycleTime: data.cycleTime || "",
         processOrderRequired: String(data.processOrderRequired),
         instructionRequired: String(data.instructionRequired),
+        isProductSchedule: data.isProductSchedule,
         processId: data.processId || "",
         processDesc: data.processDesc || "",
       });
@@ -1019,8 +1022,6 @@ const EditProductForm = () => {
           onSubmit={handleSubmit(onSubmitProduct)}
           className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4"
         >
-          {/* Main Product Fields (Your existing code here is fine) */}
-          {/* ... partFamily, productNumber, description, etc. ... */}
           <label className="block col-span-4 md:col-span-2">
             Part Family
             <select
@@ -1187,7 +1188,7 @@ const EditProductForm = () => {
           </div>
 
           {/* Process Description */}
-          <label className="block col-span-4 md:col-span-2">
+          {/* <label className="block col-span-4 md:col-span-2">
             Process Description
             <textarea
               {...register("processDesc", {
@@ -1203,12 +1204,21 @@ const EditProductForm = () => {
                 {errors.processDesc.message}
               </p>
             )}
-          </label>
+          </label> */}
           <div className="col-span-4 md:col-span-1">
-            {" "}
-            <label>Work Instruction </label>{" "}
+            <label>Work Instruction </label>
             <select
               {...register("instructionRequired")}
+              className="border p-2 rounded w-full"
+            >
+              <option value="">Select</option> <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>{" "}
+          </div>
+          <div className="col-span-4 md:col-span-1">
+            <label>Product Schedule </label>
+            <select
+              {...register("isProductSchedule")}
               className="border p-2 rounded w-full"
             >
               {" "}

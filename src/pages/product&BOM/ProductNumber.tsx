@@ -28,6 +28,7 @@ interface Part {
   minStock?: number;
   processOrderRequired: Boolean;
   instructionRequired: Boolean;
+  isProductSchedule: Boolean;
   processId: string;
 }
 
@@ -522,7 +523,7 @@ const ProductNumber = () => {
             </div>
 
             {/* Process Description */}
-            <label className="block col-span-4 md:col-span-1">
+            {/* <label className="block col-span-4 md:col-span-1">
               Process Description
               <textarea
                 {...register("processDesc", {
@@ -536,7 +537,7 @@ const ProductNumber = () => {
                   {errors.processDesc.message}
                 </p>
               )}
-            </label>
+            </label> */}
           </>
         )}
         <div className="col-span-4 md:col-span-1">
@@ -554,6 +555,24 @@ const ProductNumber = () => {
           {errors.instructionRequired && (
             <p className="text-red-500 text-sm">
               {errors.instructionRequired.message}
+            </p>
+          )}
+        </div>
+        <div className="col-span-4 md:col-span-1">
+          <label>Product Schedule </label>
+          <select
+            {...register("isProductSchedule", {
+              required: "Please select Yes or No",
+            })}
+            className="border p-2 rounded w-full"
+          >
+            <option value="">Select</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+          {errors.isProductSchedule && (
+            <p className="text-red-500 text-sm">
+              {errors.isProductSchedule.message}
             </p>
           )}
         </div>

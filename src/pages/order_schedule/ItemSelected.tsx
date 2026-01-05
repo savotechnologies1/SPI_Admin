@@ -402,7 +402,9 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                                 </td>
                                 <td className="px-4 py-2 font-medium">
                                   {(item?.scheduledQty || 0) *
-                                    (data.part.minStock || 0)}
+                                    (data?.part?.type === "part"
+                                      ? data?.partQuantity || 0
+                                      : data?.part?.minStock || 0)}
                                 </td>
                               </tr>
                             ))}
