@@ -638,7 +638,7 @@ const RunSchedule = () => {
   } = jobData;
   console.log("partpart", jobData);
   const rows = [
-    { part: part.partNumber, date: order_date },
+    { part: part?.partNumber, date: order_date },
     { part: upcommingParts, date: upcommingOrder },
   ];
 
@@ -746,8 +746,8 @@ const RunSchedule = () => {
         <CommentBox employeeInfo={employeeInfo} />
 
         <div className="py-4 flex flex-col gap-4">
-          {part.WorkInstruction && part.WorkInstruction.length > 0 ? (
-            part.WorkInstruction.flatMap(
+          {part?.WorkInstruction && part?.WorkInstruction.length > 0 ? (
+            part?.WorkInstruction.flatMap(
               (instructionSet) => instructionSet.steps
             ).map((step, index) => (
               <div

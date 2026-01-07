@@ -549,7 +549,42 @@ const Import: React.FC = () => {
         return [];
     }
   };
+  const handleConflictDownload = (conflicts) => {
+    if (!conflicts || !conflicts.length) return;
 
+    // 1. CSV Headers define karein
+    const headers = [
+      "Product Number",
+      "Field Name",
+      "Old Value (DB)",
+      "New Value (CSV)",
+    ].join(",");
+
+    // 2. Data ko rows me convert karein
+    // Hum flatMap use karenge taaki har ek change ke liye ek alag row bane
+    const rows = conflicts
+      .flatMap((item) => {
+        return item.changes.map((change) => {
+          return [
+            `"${item.productNumber}"`,
+            `"${change.field}"`,
+            `"${change.oldValue}"`,
+            `"${change.newValue}"`,
+          ].join(",");
+        });
+      })
+      .join("\n");
+
+    const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + rows;
+
+    // 3. Download link trigger karein (Aapka logic)
+    const link = document.createElement("a");
+    link.href = encodeURI(csvContent);
+    link.download = `Product_Import_Conflicts.csv`;
+    document.body.appendChild(link); // Safe side ke liye body me add karein
+    link.click();
+    document.body.removeChild(link);
+  };
   // File change handler
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -672,6 +707,7 @@ const Import: React.FC = () => {
   //     setIsUploading(false);
   //   }
   // };
+  const [conflictData, setConflictData] = useState(null);
   const handleUpload = async (isConfirmed: boolean = false) => {
     if (!file || !selected) {
       toast.error("Please select a template type and file first!");
@@ -704,6 +740,7 @@ const Import: React.FC = () => {
         setConfirmMessage(conflictMessages);
         setShowConfirmModal(true);
         setIsUploading(false);
+        setConflictData(responseData.conflicts);
         return;
       }
       if (summary?.errorCount > 0) {
@@ -760,6 +797,12 @@ const Import: React.FC = () => {
             </p>
 
             <div className="flex justify-end gap-3">
+              <button
+                onClick={() => handleConflictDownload(conflictData)}
+                className="bg-blue-600 text-white px-4 py-2 mt-2 rounded"
+              >
+                Download Conflict Detail (Excel)
+              </button>
               <button
                 onClick={onCancel}
                 className="px-5 py-2 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-all"
@@ -1128,6 +1171,18 @@ const Import: React.FC = () => {
                     />
                   </svg>
                   Download Error Report
+                </button>
+              </div>
+            )}
+            {conflictData && (
+              <div className="bg-yellow-100 p-4 border-l-4 border-yellow-500 my-4">
+                <p className="font-bold">Conflicts Found!</p>
+                <p>Database aur CSV ke values me farq hai.</p>
+                <button
+                  onClick={() => handleConflictDownload(conflictData)}
+                  className="bg-blue-600 text-white px-4 py-2 mt-2 rounded"
+                >
+                  Download Excel
                 </button>
               </div>
             )}
