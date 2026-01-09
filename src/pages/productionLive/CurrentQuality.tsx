@@ -170,15 +170,8 @@ const CurrentQuality = () => {
   }, [fetchDashboardData]);
 
   // Data for the 3 Cards
+  console.log("summarysummary", summary);
   const statsData = [
-    {
-      num: summary.count || "0",
-      text: "Total Processes",
-      // img: img1, // Apne images use karein
-      increase: "Live",
-      bgColor: "bg-orange-50",
-      textColor: "text-orange-500",
-    },
     {
       num: `${summary.totalActual} / ${summary.totalScheduled}`,
       text: "Actual / Scheduled",
@@ -244,7 +237,7 @@ const CurrentQuality = () => {
       {/* Summary Cards */}
       <div className="mt-6">
         <h1 className="font-semibold text-xl mb-4">Quality Summary</h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {statsData.map((item, index) => (
             <div
               key={index}
