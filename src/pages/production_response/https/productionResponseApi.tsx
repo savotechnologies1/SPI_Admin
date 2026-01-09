@@ -7,9 +7,6 @@ export const selecEmployeeProcessApi = async () => {
     const response = await axiosInstance.get(
       `/select-schedule-employee-process`
     );
-    // if (response.status === 200) {
-    //   toast.success(response.data.message);
-    // }
     return response.data;
   } catch (error: any) {
     // toast.error(error.response.data.message);
@@ -180,7 +177,6 @@ export const allScrapEntries = async (
   selectedValue: string,
   debouncedSearchVal: string
 ) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
       `/all-scrap-entry?page=${page}&limit=${limit}&filterScrap=${selectedValue}&search=${debouncedSearchVal}`
@@ -216,7 +212,6 @@ export const selectProductNumber = async () => {
 };
 
 export const scrapEntryDetail = async (id: string) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(`/scrap-entry-detail/${id}`);
     return response;

@@ -46,10 +46,6 @@ const OperationPerformance = () => {
         </h1>
         <div className="flex justify-between mt-2 items-center">
           <div className="flex gap-4 items-center ">
-            <span className="text-xs sm:text-[18px] font-bold hover:cursor-pointer">
-              Operational Performance:
-            </span>
-
             {/* <span className="text-xs sm:text-[16px] hover:cursor-pointer">
               25/11/2025 (3:19 PM)
             </span> */}

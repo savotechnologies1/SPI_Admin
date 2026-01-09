@@ -324,47 +324,51 @@ const OrderStatus = ({ orders }) => {
         <h2 className="text-lg font-semibold mb-4">
           Open Orders (Total: {orders?.openOrders?.total || 0})
         </h2>
-        <table className="w-full">
-          <thead>
-            <tr className="bg-gray-100 text-gray-600 text-sm whitespace-nowrap">
-              <th className="py-2 px-4 text-left">Date</th>
-              <th className="py-2 px-4 text-left">Order</th>
-              <th className="py-2 px-4 text-left">First Name</th>
-              <th className="py-2 px-4 text-left">Last Name</th>
-              <th className="py-2 px-4 text-left">Product</th>
-              <th className="py-2 px-4 text-left">Qty</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders?.openOrders?.list?.length > 0 ? (
-              orders.openOrders.list.map((item, index) => (
-                <tr key={index} className="border-b text-sm">
-                  <td className="py-2 px-4">
-                    {new Date(item.date).toLocaleDateString()}
-                  </td>
-                  <td className="py-2 px-4">{item.order}</td>
-                  <td className="py-2 px-4">{item.firstName}</td>
-                  <td className="py-2 px-4">{item.lastName}</td>
-                  <td className="py-2 px-4">{item.product || "-"}</td>
-                  <td className="py-2 px-4">{item.qty}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="6" className="text-center py-4">
-                  No data available
-                </td>
+        <div className="max-h-[400px] overflow-y-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gray-100 text-gray-600 text-sm whitespace-nowrap">
+                <th className="py-2 px-4 text-left">Date</th>
+                <th className="py-2 px-4 text-left">Order</th>
+                <th className="py-2 px-4 text-left">First Name</th>
+                <th className="py-2 px-4 text-left">Last Name</th>
+                <th className="py-2 px-4 text-left">Product</th>
+                <th className="py-2 px-4 text-left">Qty</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {orders?.openOrders?.list?.length > 0 ? (
+                orders.openOrders.list.map((item, index) => (
+                  <tr key={index} className="border-b text-sm">
+                    <td className="py-2 px-4">
+                      {new Date(item.date).toLocaleDateString()}
+                    </td>
+                    <td className="py-2 px-4">{item.order}</td>
+                    <td className="py-2 px-4">{item.firstName}</td>
+                    <td className="py-2 px-4">{item.lastName}</td>
+                    <td className="py-2 px-4">{item.product || "-"}</td>
+                    <td className="py-2 px-4">{item.qty}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="text-center py-4">
+                    No data available
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Fulfilled Orders */}
-      <div className="bg-white rounded-lg shadow-md p-4 md:w-[100%] overflow-x-auto mt-6">
+      <div className="bg-white rounded-lg shadow-md p-4 md:w-full mt-6">
         <h2 className="text-lg font-semibold mb-4">
           Fulfilled Orders (Total: {orders?.fulfilledOrders?.total || 0})
         </h2>
+
+        {/* Table Header */}
         <table className="w-full">
           <thead>
             <tr className="bg-gray-100 text-gray-600 text-sm whitespace-nowrap">
@@ -376,29 +380,35 @@ const OrderStatus = ({ orders }) => {
               <th className="py-2 px-4 text-left">Qty</th>
             </tr>
           </thead>
-          <tbody>
-            {orders?.fulfilledOrders?.list?.length > 0 ? (
-              orders.fulfilledOrders.list.map((item, index) => (
-                <tr key={index} className="border-b text-sm">
-                  <td className="py-2 px-4">
-                    {new Date(item.date).toLocaleDateString()}
-                  </td>
-                  <td className="py-2 px-4">{item.order}</td>
-                  <td className="py-2 px-4">{item.firstName}</td>
-                  <td className="py-2 px-4">{item.lastName}</td>
-                  <td className="py-2 px-4">{item.product || "-"}</td>
-                  <td className="py-2 px-4">{item.qty}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="6" className="text-center py-4">
-                  No data available
-                </td>
-              </tr>
-            )}
-          </tbody>
         </table>
+
+        {/* Scrollable Body (10 rows approx) */}
+        <div className="max-h-[400px] overflow-y-auto">
+          <table className="w-full">
+            <tbody>
+              {orders?.fulfilledOrders?.list?.length > 0 ? (
+                orders.fulfilledOrders.list.map((item, index) => (
+                  <tr key={index} className="border-b text-sm">
+                    <td className="py-2 px-4">
+                      {new Date(item.date).toLocaleDateString()}
+                    </td>
+                    <td className="py-2 px-4">{item.order}</td>
+                    <td className="py-2 px-4">{item.firstName}</td>
+                    <td className="py-2 px-4">{item.lastName}</td>
+                    <td className="py-2 px-4">{item.product || "-"}</td>
+                    <td className="py-2 px-4">{item.qty}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="text-center py-4">
+                    No data available
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

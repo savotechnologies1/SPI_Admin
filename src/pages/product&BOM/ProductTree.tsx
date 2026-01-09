@@ -265,7 +265,6 @@ export default function ProductTree() {
     navigate(`/edit-product/${id}`);
   };
 
-  // Define types for state variables
   const [customerData, setCustomerData] = useState<Product[]>([]);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -273,7 +272,6 @@ export default function ProductTree() {
   const rowsPerPage = 15;
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
-  // Use ChangeEvent to type the event handler
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     try {
       setSearchVal(e.target.value);
@@ -285,9 +283,7 @@ export default function ProductTree() {
   const fetchCustomerList = async (page = 1) => {
     try {
       const response = await productTree(page, rowsPerPage, searchVal);
-      // Ensure the data matches the Product[] type
       setCustomerData(response.data);
-      // Use optional chaining for safer access
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
       throw error;

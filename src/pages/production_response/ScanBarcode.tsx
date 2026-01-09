@@ -21,8 +21,7 @@ const ScanBarcode = () => {
           onUpdate={(err, result) => {
             if (result) {
               setBarcode(result.text);
-              console.log("📦 Scanned:", result.text);
-              // Optional: call API here to auto-complete
+              console.log(" Scanned:", result.text);
             }
           }}
         />

@@ -124,26 +124,20 @@ const ContinuousImprovement = () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/frontLine/get-parts`);
       setParts(res.data);
-      if (res.data.length > 0) setSelected(res.data[0].part_id); // default select first
+      if (res.data.length > 0) setSelected(res.data[0].part_id); 
     } catch (error) {
       console.error("Error fetching parts:", error);
     }
   };
-
   return (
     <div className="mt-10 px-4 sm:px-6">
       <h2 className="text-2xl font-bold mb-6 text-gray-800 mt-10">
         Continuous Improvement
       </h2>
-
-      {/* PARENT RESPONSIVE WRAPPER */}
       <div className="flex flex-col lg:flex-row gap-6 mb-6">
-        {/* Chart Section - full width on mobile, left side on desktop */}
         <div className="w-full lg:w-[70%]">
           {selected && <CycleTime partId={selected} />}
         </div>
-
-        {/* Part Description Box - full width on mobile, right side on desktop */}
         <div className="w-full lg:w-[30%] bg-white p-4 rounded-md">
           <h2 className="text-lg font-semibold mb-4 mt-2">Part Desc</h2>
 
@@ -184,3 +178,5 @@ const ContinuousImprovement = () => {
 };
 
 export default ContinuousImprovement;
+
+

@@ -381,6 +381,7 @@ import {
 } from "./https/productionResponseApi";
 import { useEffect, useState } from "react";
 import CommentBox from "./CommentBox";
+import { toast } from "react-toastify";
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -479,6 +480,8 @@ const RunSchedule = () => {
         setJobData(data);
       }
     } catch (error: any) {
+      console.log("errorerror", error.response.data.message);
+      toast.error(error.response.data.message);
       if (error?.status === 404) {
         setNoJob(true);
         // navigate("/station-login");
@@ -639,7 +642,10 @@ const RunSchedule = () => {
   console.log("partpart", jobData);
   const rows = [
     { part: part?.partNumber, date: order_date },
-    { part: upcommingParts, date: upcommingOrder },
+    {
+      part: upcommingParts || part?.partDescription,
+      date: upcommingOrder || order_date,
+    },
   ];
 
   return (
@@ -693,7 +699,8 @@ const RunSchedule = () => {
                       {rows.map((row, i) => (
                         <tr key={i}>
                           <td className="border border-white px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm md:text-base">
-                            {row.part}
+                            {row.part}{" "}
+                            {/* Yahan sirf row.part likhein, description alag se mat likhein */}
                           </td>
                           <td className="border border-white px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm md:text-base">
                             {formatDate(row.date)}

@@ -365,6 +365,7 @@ ChartJS.register(
 // export default CycleTime;
 import { useEffect, useState } from "react";
 import axios from "axios";
+import DatePicker from "react-datepicker";
 // import { Bar } from "react-chartjs-2";
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
@@ -379,7 +380,7 @@ const CycleTime = ({ partId }: { partId: string }) => {
   const fetchCycleTimeData = async (partId: string) => {
     try {
       const res = await axios.get(
-        `${BASE_URL}/api/frontLine/cycle-time-comparision-data?startDate=2025-09-01&endDate=2025-09-12&partId=${partId}`
+        `${BASE_URL}/api/frontLine/cycle-time-comparision-data?startDate=2026-09-01&endDate=2026-09-12&partId=${partId}`
       );
 
       const apiData = res.data.data.processWiseCT;

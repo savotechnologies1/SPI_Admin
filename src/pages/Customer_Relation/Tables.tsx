@@ -318,34 +318,36 @@ const Tables = ({ startDate, endDate }) => {
     return (
       <div className="border rounded-lg shadow bg-white p-4">
         <h2 className="text-lg font-semibold mb-4">{title}</h2>
-        <table className="table-auto border-collapse border border-gray-300 w-full">
-          <thead>
-            <tr>
-              {columns.map((col, i) => (
-                <th
-                  key={i}
-                  className="border border-gray-300 px-4 py-2 bg-gray-100"
-                >
-                  {col}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, rowIndex) => (
-              <tr key={rowIndex} className="hover:bg-gray-50">
-                {columns.map((col, colIndex) => (
-                  <td
-                    key={colIndex}
-                    className="border border-gray-300 px-4 py-2 text-center"
+        <div className="max-h-[250px] overflow-y-auto">
+          <table className="table-auto border-collapse border border-gray-300 w-full">
+            <thead>
+              <tr>
+                {columns.map((col, i) => (
+                  <th
+                    key={i}
+                    className="border border-gray-300 px-4 py-2 bg-gray-100"
                   >
-                    {row[col] !== null ? row[col]?.toString() : "-"}
-                  </td>
+                    {col}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((row, rowIndex) => (
+                <tr key={rowIndex} className="hover:bg-gray-50">
+                  {columns.map((col, colIndex) => (
+                    <td
+                      key={colIndex}
+                      className="border border-gray-300 px-4 py-2 text-center"
+                    >
+                      {row[col] !== null ? row[col]?.toString() : "-"}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   };

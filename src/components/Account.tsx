@@ -248,7 +248,7 @@ const Account = ({ onClose }: AccountProps) => {
                 }
                 alt="Profile"
                 onClick={() => setIsOpen(!isOpen)}
-                className="rounded-full w-[100px] border-2 border-green-400 mb-2 py-4"
+                className="rounded-full w-[100px] border-2 border-green-400 mb-2 "
               />
             </div>
             <div className="ml-3">
@@ -259,7 +259,6 @@ const Account = ({ onClose }: AccountProps) => {
             </div>
           </div>
 
-          {/* Menu Items */}
           <div className="flex flex-col justify-between">
             <div>
               <ul className="space-y-2 px-2 py-4 h-[500px]">

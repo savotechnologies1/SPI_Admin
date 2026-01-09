@@ -9,7 +9,6 @@ import {
   createProductNumber,
   getPartDetail,
   getProcessDetail,
-  partNumberList,
   selectPartNamber,
   selectProcess,
 } from "./https/partProductApis";
@@ -52,7 +51,6 @@ const ProductNumber = () => {
   const processId = watch("processId");
   const [processData, setProcessData] = useState([]);
   const [partData, setPartData] = useState<any[]>([]);
-  const [savedBOMs, setSavedBOMs] = useState<any[]>([]);
   const [bomEntries, setBomEntries] = useState([
     {
       partNumber: "",
@@ -65,8 +63,6 @@ const ProductNumber = () => {
   ]);
 
   const processOrderRequired = watch("processOrderRequired");
-
-  // Convert string to boolean for easier checks
   const isProcessRequired = processOrderRequired === "true";
   const [suggestions, setSuggestions] = useState<{ [index: number]: string[] }>(
     {}
@@ -79,7 +75,7 @@ const ProductNumber = () => {
     if (!selectedImages) return;
 
     const imageArray = Array.from(selectedImages);
-    imageArray.splice(index, 1); // Remove the clicked image
+    imageArray.splice(index, 1);
 
     const updatedFileList = new DataTransfer();
     imageArray.forEach((file) => updatedFileList.items.add(file));
@@ -110,7 +106,6 @@ const ProductNumber = () => {
     };
     fetchProcessDetail();
   }, [processId, setValue]);
-  // Fetch process list and parts
   useEffect(() => {
     (async () => {
       try {
@@ -216,16 +211,16 @@ const ProductNumber = () => {
   const onSubmitProduct = async (data: Part) => {
     const hasUnsavedBOM = bomEntries.some(
       (entry) =>
-        !entry.isSaved && // जो सेव नहीं है
+        !entry.isSaved &&
         (entry.partNumber.trim() !== "" ||
           entry.qty !== "" ||
-          entry.process !== "") // और जिसमें डेटा भरा है
+          entry.process !== "")
     );
     if (hasUnsavedBOM) {
       toast.error(
         "Please save the BOM entries before adding the product number."
       );
-      return; // आगे का कोड रन नहीं होगा (सबमिट रुक जाएगा)
+      return;
     }
     const savedBOMs = bomEntries.filter((entry) => entry.isSaved);
     if (savedBOMs.length === 0) {
@@ -249,8 +244,9 @@ const ProductNumber = () => {
 
     try {
       const response = await createProductNumber(formData);
-      if (response?.status === 201) {
+      if (response?.status === 200) {
         navigate("/product-tree");
+        toast.success("Product created successfully !");
       }
 
       if (addPart) addPart(data);
