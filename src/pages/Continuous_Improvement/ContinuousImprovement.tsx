@@ -124,11 +124,12 @@ const ContinuousImprovement = () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/frontLine/get-parts`);
       setParts(res.data);
-      if (res.data.length > 0) setSelected(res.data[0].part_id); 
+      if (res.data.length > 0) setSelected(res.data[0].part_id);
     } catch (error) {
       console.error("Error fetching parts:", error);
     }
   };
+
   return (
     <div className="mt-10 px-4 sm:px-6">
       <h2 className="text-2xl font-bold mb-6 text-gray-800 mt-10">
@@ -178,5 +179,3 @@ const ContinuousImprovement = () => {
 };
 
 export default ContinuousImprovement;
-
-

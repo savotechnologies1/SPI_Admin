@@ -641,12 +641,16 @@ const RunSchedule = () => {
   } = jobData;
   console.log("partpart", jobData);
   const rows = [
-    { part: part?.partNumber, date: order_date },
-    {
-      part: upcommingParts || part?.partDescription,
-      date: upcommingOrder || order_date,
-    },
+    { part: part?.partNumber || part?.partDescription, date: order_date },
   ];
+
+  // Agar upcoming order ka data hai, tabhi doosri row add karein
+  if (upcommingOrder && upcommingParts) {
+    rows.push({
+      part: upcommingParts,
+      date: upcommingOrder,
+    });
+  }
 
   return (
     <div className="bg-[#F5F6FA] min-h-screen flex flex-col">

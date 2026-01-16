@@ -62,23 +62,31 @@ const Training = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   console.log("idid", id);
-
   const [jobData, setJobData] = useState<JobData | null>(null);
   const [loading, setLoading] = useState(true);
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
-  const handleStepClick = async (stepId: string, prevStepId?: string) => {
+  const allSteps =
+    jobData?.part?.WorkInstruction?.flatMap((wi) => wi.steps) || [];
+
+  // Check if all steps are selected
+
+  const handleStepClick = async (stepId: string) => {
     if (!jobData) return;
 
-    setCompletedSteps((prev) => new Set(prev).add(stepId));
+    // UI update
+    setCompletedSteps((prev) => {
+      const newSet = new Set(prev);
+      newSet.add(stepId);
+      return newSet;
+    });
 
     try {
-      // backend call with both stepId and prevStepId
-      await updateStepTime(jobData.productionId, stepId, prevStepId);
+      // Backend call
+      await updateStepTime(jobData.productionId, stepId);
     } catch (error) {
       console.error("Failed to update step time", error);
     }
   };
-
   const fetchJobDetails = async (jobId: string | undefined) => {
     if (!jobId) {
       setLoading(false);
@@ -106,9 +114,7 @@ const Training = () => {
   };
 
   const allCompleted =
-    jobData?.part?.WorkInstruction?.every((wi) =>
-      wi.steps.every((step) => completedSteps.has(step.id))
-    ) ?? false;
+    allSteps.length > 0 && completedSteps.size === allSteps.length;
 
   const handleCompleteOrder = async () => {
     if (!jobData) return;
@@ -267,62 +273,61 @@ const Training = () => {
       </div>
 
       <div className="container mx-auto p-4 md:p-6 flex-grow">
-        <div className="container mx-auto p-4 md:p-6 flex-grow">
-          <CommentBox employeeInfo={employeeInfo} />
+        <CommentBox employeeInfo={employeeInfo} />
 
-          <div className="py-4 flex flex-col gap-4">
-            {part.WorkInstruction && part.WorkInstruction.length > 0 ? (
-              part.WorkInstruction.flatMap(
-                (instructionSet) => instructionSet.steps
-              ).map((step, index) => (
-                <div
-                  key={step.id || index}
-                  className="flex flex-col md:flex-row gap-4 md:gap-20 items-center bg-white rounded-lg shadow-sm p-4"
-                >
-                  <div className="w-full md:w-auto">
-                    <img
-                      className="rounded-md w-full max-w-xs md:max-w-none"
-                      src={
-                        step.images && step.images.length > 0
-                          ? `${BASE_URL}/uploads/workInstructionImg/${step.images[0].imagePath}`
-                          : "https://via.placeholder.com/150"
-                      }
-                      alt={step.title}
-                    />
-                  </div>
-                  <div className="text-center md:text-left">
-                    <p className="font-semibold text-lg">{step.title}</p>
-                    <p className="text-gray-600">{step.instruction}</p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center text-gray-500 p-4">
-                No work instructions available for this part.
+        <div className="py-4 flex flex-col gap-4">
+          {allSteps.map((step, index) => (
+            <div
+              key={step.id || index}
+              onClick={() => handleStepClick(step.id)} // Card click logic
+              className={`flex flex-col md:flex-row gap-4 md:gap-20 items-center bg-white rounded-lg shadow-sm p-4 cursor-pointer transition-all
+                ${
+                  completedSteps.has(step.id)
+                    ? "border-2 border-green-500 bg-green-50"
+                    : "border-2 border-transparent"
+                }
+              `}
+            >
+              <div className="w-full md:w-auto">
+                <img
+                  className="rounded-md w-40 h-24 object-cover"
+                  src={
+                    step.images?.[0]
+                      ? `${BASE_URL}/uploads/workInstructionImg/${step.images[0].imagePath}`
+                      : "https://via.placeholder.com/150"
+                  }
+                  alt={step.title}
+                />
               </div>
-            )}
-          </div>
+              <div className="text-center md:text-left">
+                <p className="font-semibold text-lg">{step.title}</p>
+                <p className="text-gray-600">{step.instruction}</p>
+              </div>
+              {completedSteps.has(step.id) && (
+                <div className="ml-auto text-green-600 font-bold">
+                  ✓ Selected
+                </div>
+              )}
+            </div>
+          ))}
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
+        {/* Action Buttons */}
+        <div className="flex flex-col items-center gap-3 mt-6">
           <button
             onClick={handleCompleteOrder}
             disabled={!allCompleted}
-            className={`px-4 py-2 rounded-md text-sm font-semibold w-full sm:w-auto ${
+            className={`px-10 py-3 rounded-md font-bold transition-all ${
               allCompleted
-                ? "bg-brand text-white cursor-pointer"
+                ? "bg-green-600 text-white cursor-pointer shadow-lg"
                 : "bg-gray-400 text-gray-700 cursor-not-allowed"
             }`}
           >
             Complete Training
           </button>
-          {/* <NavLink to="/scrap-entry" className="w-full sm:w-auto">
-            <button className="bg-transparent text-brand px-4 py-2 font-semibold border-2 border-black rounded-md w-full">
-              Scrap
-            </button>
-          </NavLink> */}
         </div>
       </div>
+
       <div className="bg-[#243C75]  bottom-0 w-full">
         <div className="container mx-auto p-3 md:p-4 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-white flex gap-4 md:gap-10 items-center flex-wrap justify-center">
