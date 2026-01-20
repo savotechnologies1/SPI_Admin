@@ -107,7 +107,7 @@ const StockOrderScheduleList: React.FC = () => {
         page,
         rowsPerPage,
         type,
-        searchTerm
+        searchTerm,
       );
 
       setWorkData(response.data.data || []);
@@ -159,7 +159,7 @@ const StockOrderScheduleList: React.FC = () => {
       return "Invalid Date";
     }
   };
-
+  console.log("workData", workData);
   return (
     <div className="p-6 bg-gray-100 min-h-screen mt-5">
       <div className="flex justify-between">
@@ -225,92 +225,71 @@ const StockOrderScheduleList: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {workData.map((item) => (
-                <tr key={item.id} className="border-b hover:bg-gray-50">
-                  {/* SAFELY access order data */}
-                  <td className="px-4 py-3">
-                    {item.order?.orderNumber || "N/A"}
-                  </td>
+              {workData
+                // 1. Agar backend se hi parts alag-alag aa rahe hain (jo ki aa rahe hain),
+                // toh aapko manually flatMap karne ki zaroorat nahi hai.
+                // Lekin agar aapko tree expansion chahiye hi, toh filter ko ID par lagayein, part_id par nahi.
+                .filter(
+                  (value, index, self) =>
+                    index === self.findIndex((t) => t.id === value.id), // 🔥 Fix: ID par filter karein, part_id par nahi
+                )
+                .map((rowItem) => (
+                  <tr key={rowItem.id} className="border-b hover:bg-gray-50">
+                    <td className="px-4 py-3">
+                      {/* Aapke JSON mein order_id hai, direct order object shayad missing hai */}
+                      {rowItem.order?.orderNumber ||
+                        rowItem.order_id?.slice(0, 8) ||
+                        "N/A"}
+                    </td>
 
-                  {/* SAFELY access the main product's part number */}
-                  <td className="px-4 py-3">
-                    {item.order?.part?.partNumber ||
-                      item.order?.product?.partNumber ||
-                      "N/A"}
-                  </td>
+                    {/* Product Number */}
+                    <td className="px-4 py-3">
+                      {rowItem.order?.productNumber || "product-1"}
+                    </td>
 
-                  {/* This is the part for this specific schedule line */}
-                  <td className="px-4 py-3">
-                    {item.part?.partNumber || "N/A"}
-                  </td>
+                    {/* Part Number (340543 wala part yahan dikhega) */}
+                    <td className="px-4 py-3">
+                      {rowItem.part?.partNumber || "N/A"}
+                    </td>
 
-                  {/* SAFELY format the order date */}
-                  <td className="px-4 py-3">
-                    {formatDate(item.order?.orderDate)}
-                  </td>
-
-                  {/* Format the delivery date */}
-                  <td className="px-4 py-3">
-                    {formatDate(item.delivery_date)}
-                  </td>
-                  <td className="px-4 py-3">
-                    {formatDate(item.completed_date)}
-                  </td>
-                  <td className="px-4 py-3">
-                    {item.completed_by === null
-                      ? "Not Available"
-                      : item.completed_by}
-                  </td>
-                  <td className="px-4 py-3">
-                    {item?.completedByEmployee?.firstName}{" "}
-                    {item?.completedByEmployee?.lastName}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
-                      {item.status || "Unknown"}
-                    </span>
-                  </td>
-
-                  <td className="px-2 py-3 md:px-3 md:py-4">
-                    <FaTrash
-                      className="text-red-500 cursor-pointer h-5 w-5"
-                      onClick={() => setSelectedId(item.id)}
-                    />
-
-                    {/* Your delete confirmation modal is fine */}
-
-                    {selectedId === item.id && (
-                      <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-                        <div className="bg-white p-6 rounded-xl shadow-lg">
-                          <h2 className="text-lg font-semibold mb-4">
-                            Are you sure?
-                          </h2>
-                          <p className="mb-4">
-                            Do you really want to delete this schedule order.
-                          </p>
-                          <div className="flex justify-end space-x-3">
-                            <button
-                              className="px-4 py-2 bg-gray-300 rounded"
-                              onClick={() => setSelectedId(null)}
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              className="px-4 py-2 bg-red-500 text-white rounded"
-                              onClick={() => {
-                                handleDelete(selectedId, item.order_id);
-                                setSelectedId(null);
-                              }}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                    <td className="px-4 py-3">
+                      {formatDate(rowItem.order_date)}
+                    </td>
+                    <td className="px-4 py-3">
+                      {formatDate(rowItem.delivery_date)}
+                    </td>
+                    <td className="px-4 py-3">
+                      {formatDate(rowItem.completed_date)}
+                    </td>
+                    <td className="px-4 py-3">
+                      {rowItem.completed_by || "Not Available"}
+                    </td>
+                    <td className="px-4 py-3">
+                      {/* JSON: completedByEmployee.firstName */}
+                      {rowItem?.completedByEmployee
+                        ? `${rowItem.completedByEmployee.firstName} ${rowItem.completedByEmployee.lastName}`
+                        : "N/A"}
+                    </td>
+                    <td className="px-4 py-3">
+                      {/* Status logic */}
+                      <span
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${
+                          rowItem.status === "completed"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-blue-100 text-blue-800"
+                        }`}
+                      >
+                        {rowItem?.status || "new"}
+                      </span>
+                    </td>
+                    <td className="px-2 py-3 md:px-3 md:py-4">
+                      <FaTrash
+                        className="text-red-500 cursor-pointer h-5 w-5"
+                        onClick={() => setSelectedId(rowItem.id)}
+                      />
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

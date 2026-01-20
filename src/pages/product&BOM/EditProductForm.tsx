@@ -769,7 +769,7 @@ const EditProductForm = () => {
   const [existingImages, setExistingImages] = useState<any[]>([]);
   const [partData, setPartData] = useState<any[]>([]);
   const [suggestions, setSuggestions] = useState<{ [index: number]: string[] }>(
-    {}
+    {},
   );
 
   const onSubmitProduct = async (data: any) => {
@@ -836,7 +836,7 @@ const EditProductForm = () => {
       if (data.productImages?.length) {
         setExistingImages(data.productImages);
       }
-
+      console.log("data.partdata.part", data.part);
       // --- FIX: Populate the single bomItems state ---
       if (Array.isArray(data.parts) && data.parts.length > 0) {
         const preFilledBOMs = data.parts.map((part) => ({
@@ -929,7 +929,7 @@ const EditProductForm = () => {
     if (field === "partNumber") {
       const filtered = partData
         .filter((item) =>
-          item.partNumber.toLowerCase().includes(value.toLowerCase())
+          item.partNumber.toLowerCase().includes(value.toLowerCase()),
         )
         .map((item) => item.partNumber);
       setSuggestions((prev) => ({ ...prev, [index]: filtered }));
@@ -950,8 +950,7 @@ const EditProductForm = () => {
       updatedItems[index].processId =
         partDetail.processId || partDetail.process?.id || "";
       updatedItems[index].cycleTime = partDetail.cycleTime?.toString() || "";
-      updatedItems[index].partQuantity =
-        partDetail.availStock?.toString() || "";
+      updatedItems[index].partQuantity = partDetail.minStock?.toString() || "";
       updatedItems[index].instructionRequired = partDetail.instructionRequired
         ? "Yes"
         : "No";
@@ -1241,7 +1240,7 @@ const EditProductForm = () => {
                 const files = Array.from(e.target.files || []);
                 setImageFiles(files);
                 const imageUrls = files.map((file) =>
-                  URL.createObjectURL(file)
+                  URL.createObjectURL(file),
                 );
                 setSelectedImages(imageUrls);
               }}
@@ -1372,7 +1371,7 @@ const EditProductForm = () => {
                         handleBOMChange(
                           index,
                           "instructionRequired",
-                          e.target.value
+                          e.target.value,
                         )
                       }
                       className="border p-2 rounded w-full mt-1"

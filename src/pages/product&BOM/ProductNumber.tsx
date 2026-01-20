@@ -65,7 +65,7 @@ const ProductNumber = () => {
   const processOrderRequired = watch("processOrderRequired");
   const isProcessRequired = processOrderRequired === "true";
   const [suggestions, setSuggestions] = useState<{ [index: number]: string[] }>(
-    {}
+    {},
   );
   const inputRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [selectedImages, setSelectedImages] = useState<FileList | null>(null);
@@ -138,7 +138,7 @@ const ProductNumber = () => {
     if (field === "partNumber") {
       const filtered = partData
         .filter((item) =>
-          item.partNumber.toLowerCase().includes(value.toLowerCase())
+          item.partNumber.toLowerCase().includes(value.toLowerCase()),
         )
         .map((item) => item.partNumber);
       setSuggestions((prev) => ({ ...prev, [index]: filtered }));
@@ -157,7 +157,7 @@ const ProductNumber = () => {
       updated[index].process = partDetail.process?.processName || "";
       updated[index].processId = partDetail.process?.id || "";
       updated[index].cycleTime = partDetail.cycleTime?.toString() || "";
-      updated[index].qty = partDetail.availStock?.toString() || "";
+      updated[index].qty = partDetail.minStock?.toString() || "";
 
       setBomEntries(updated);
       setSuggestions((prev) => ({ ...prev, [index]: [] }));
@@ -214,11 +214,11 @@ const ProductNumber = () => {
         !entry.isSaved &&
         (entry.partNumber.trim() !== "" ||
           entry.qty !== "" ||
-          entry.process !== "")
+          entry.process !== ""),
     );
     if (hasUnsavedBOM) {
       toast.error(
-        "Please save the BOM entries before adding the product number."
+        "Please save the BOM entries before adding the product number.",
       );
       return;
     }
@@ -259,7 +259,7 @@ const ProductNumber = () => {
   useEffect(() => {
     if (selectedImages && selectedImages.length > 0) {
       const imageUrls = Array.from(selectedImages).map((file) =>
-        URL.createObjectURL(file)
+        URL.createObjectURL(file),
       );
       setPreviewImages(imageUrls);
 

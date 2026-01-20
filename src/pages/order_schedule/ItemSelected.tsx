@@ -57,7 +57,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   };
   const removeItem = (itemIdToRemove: string) => {
     setSelectedItems(
-      selectedItems.filter((item) => item.id !== itemIdToRemove)
+      selectedItems.filter((item) => item.id !== itemIdToRemove),
     );
   };
   const flattenBOM = (components, parentQty) => {
@@ -83,8 +83,8 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   const updateScheduledDate = (itemId: string, date: Date) => {
     setSelectedItems(
       selectedItems.map((item) =>
-        item.id === itemId ? { ...item, deliveryDate: date } : item
-      )
+        item.id === itemId ? { ...item, deliveryDate: date } : item,
+      ),
     );
   };
   const navigate = useNavigate();
@@ -108,7 +108,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
         // 2. Saare nested components ko flatten karke payload mein convert karein
         const allNestedParts = flattenBOM(
           item.part.components,
-          item.scheduledQty
+          item.scheduledQty,
         );
 
         const componentPayloads = allNestedParts.map((comp) => ({
@@ -141,17 +141,17 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   const handleInputChange = (
     itemId: string,
     field: "qty" | "deliveryDate",
-    value: string | Date
+    value: string | Date,
   ) => {
     setItemInputs((prev) => ({
       ...prev,
       [itemId]: {
         ...prev[itemId],
-        qty: field === "qty" ? (value as string) : prev[itemId]?.qty ?? "",
+        qty: field === "qty" ? (value as string) : (prev[itemId]?.qty ?? ""),
         deliveryDate:
           field === "deliveryDate"
             ? (value as Date)
-            : prev[itemId]?.deliveryDate ?? new Date(),
+            : (prev[itemId]?.deliveryDate ?? new Date()),
       },
     }));
   };
@@ -245,13 +245,13 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                       max={item.productQuantity}
                     />
 
-                    {Number(itemInputs[item.id]?.qty) >
+                    {/* {Number(itemInputs[item.id]?.qty) >
                       item.productQuantity && (
                       <p className="text-red-400 text-sm mt-1">
                         Enter quantity less than or equal to available stock (
                         {item.productQuantity})
                       </p>
-                    )}
+                    )} */}
                   </div>
                 </div>
 
@@ -415,7 +415,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                           {/* Recursive Flattened Components Rows */}
                           {flattenBOM(
                             item.part.components,
-                            item.scheduledQty || 0
+                            item.scheduledQty || 0,
                           )
                             .filter((data) => data?.part)
                             .map((data, idx) => (

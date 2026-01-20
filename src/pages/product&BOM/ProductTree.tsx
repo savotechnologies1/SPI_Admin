@@ -408,7 +408,7 @@ export default function ProductTree() {
                     {product.minStock ? `${product?.minStock} ` : "0"}
                   </td>
                   <td className="border-b border-dashed p-2">
-                    {product.availStock ? `${product?.availStock} ` : "0"}
+                    {product.minStock ? `${product?.minStock} ` : "0"}
                   </td>
                   <td className="p-2 border-b border-dashed">
                     <div className="flex items-center justify-center gap-3">
