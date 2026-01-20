@@ -367,10 +367,10 @@ const ProductNumber = () => {
           <input
             type="number"
             defaultValue={0}
-            // {...register("supplierOrderQty", {
-            //   valueAsNumber: true,
-            //   required: "Supplier order quantity is required",
-            // })}
+            {...register("supplierOrderQty", {
+              valueAsNumber: true,
+              // required: "Supplier order quantity is required",
+            })}
             placeholder="Order Qty"
             className="border p-2 rounded w-full"
           />
@@ -408,10 +408,10 @@ const ProductNumber = () => {
           Available Stock
           <input
             type="number"
-            // {...register("availStock", {
-            //   valueAsNumber: true,
-            //   required: "Available stock is required",
-            // })}
+            {...register("availStock", {
+              valueAsNumber: true,
+              // required: "Available stock is required",
+            })}
             placeholder="Available Stock"
             className="border p-2 rounded w-full"
           />
