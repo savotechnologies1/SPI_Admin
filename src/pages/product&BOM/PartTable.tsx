@@ -305,7 +305,7 @@ export default function PartTable() {
   const partContext = useContext(PartContext);
   if (!partContext) {
     throw new Error(
-      "PartContext is undefined. Ensure it is properly provided."
+      "PartContext is undefined. Ensure it is properly provided.",
     );
   }
   const navigate = useNavigate();
@@ -316,6 +316,7 @@ export default function PartTable() {
   const [searchVal, setSearchVal] = useState("");
   const [selectedValue, setSelectedValue] = useState("all");
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const rowsPerPage = 10;
 
@@ -333,7 +334,7 @@ export default function PartTable() {
         page,
         rowsPerPage,
         searchVal,
-        selectedValue
+        selectedValue,
       );
       setCustomerData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
@@ -461,6 +462,12 @@ export default function PartTable() {
               </tr>
             </thead>
             <tbody>
+              {isLoading && (
+                <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-brand"></div>
+                </div>
+              )}
+
               {customerData.length > 0 ? (
                 customerData.map((part) => (
                   <tr

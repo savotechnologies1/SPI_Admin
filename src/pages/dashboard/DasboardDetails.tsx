@@ -15,7 +15,6 @@ const DasboardDetails = () => {
   const [selectedMonthForApi, setSelectedMonthForApi] = useState("");
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.profile.data);
-  const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_SERVER_URL;
   useEffect(() => {
     dispatch(fetchProfile());

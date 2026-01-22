@@ -557,7 +557,7 @@ const RunSchedule = () => {
         jobData.employeeInfo.id,
         jobData?.productId || jobData?.order?.productId,
         jobData.type || "part",
-        `Admin`
+        `Admin`,
       );
       fetchJobDetails(id);
     } catch (error: any) {
@@ -580,7 +580,7 @@ const RunSchedule = () => {
         jobData.order_id,
         jobData.order_type,
         jobData.part_id,
-        jobData.employeeInfo.id
+        jobData.employeeInfo.id,
       );
       fetchJobDetails(id);
     } catch (error: any) {
@@ -759,7 +759,7 @@ const RunSchedule = () => {
         <div className="py-4 flex flex-col gap-4">
           {part?.WorkInstruction && part?.WorkInstruction.length > 0 ? (
             part?.WorkInstruction.flatMap(
-              (instructionSet) => instructionSet.steps
+              (instructionSet) => instructionSet.steps,
             ).map((step, index) => (
               <div
                 key={step.id || index}

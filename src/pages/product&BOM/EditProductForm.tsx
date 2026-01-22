@@ -1146,6 +1146,25 @@ const EditProductForm = () => {
           </div>
 
           {/* Process Order Required */}
+          {/* <div className="col-span-4 md:col-span-1">
+            <label>Process Order Required</label>
+            <select
+              {...register("processOrderRequired", {
+                required: "Please select Yes or No",
+              })}
+              className="border p-2 rounded w-full"
+            >
+              <option value="">Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+            {errors.processOrderRequired && (
+              <p className="text-red-500 text-sm">
+                {errors.processOrderRequired.message}
+              </p>
+            )}
+          </div> */}
+          {/* Process Order Required Dropdown */}
           <div className="col-span-4 md:col-span-1">
             <label>Process Order Required</label>
             <select
@@ -1165,8 +1184,31 @@ const EditProductForm = () => {
             )}
           </div>
 
-          {/* Process */}
-          <div className="col-span-4 md:col-span-2">
+          {/* Yahan Condition Lagayi hai */}
+          {isProcessRequired && (
+            <div className="col-span-4 md:col-span-2">
+              <label>Process</label>
+              <select
+                {...register("processId", {
+                  required: "Process is required",
+                })}
+                className="border p-2 rounded w-full"
+              >
+                <option value="">Select Process</option>
+                {processData.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {`${item.name}`} ({`${item.machineName}`})
+                  </option>
+                ))}
+              </select>
+              {errors.processId && (
+                <p className="text-red-500 text-sm">
+                  {errors.processId.message}
+                </p>
+              )}
+            </div>
+          )}
+          {/* <div className="col-span-4 md:col-span-2">
             <label>Process</label>
             <select
               {...register("processId", {
@@ -1177,14 +1219,14 @@ const EditProductForm = () => {
               <option value="">Select Process</option>
               {processData.map((item) => (
                 <option key={item.id} value={item.id}>
-                  {item.name}
+                  {`${item.name}`} ({`${item.machineName}`})
                 </option>
               ))}
             </select>
             {errors.processId && (
               <p className="text-red-500 text-sm">{errors.processId.message}</p>
             )}
-          </div>
+          </div> */}
 
           {/* Process Description */}
           {/* <label className="block col-span-4 md:col-span-2">

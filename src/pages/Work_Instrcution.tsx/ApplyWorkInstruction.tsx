@@ -130,7 +130,7 @@ const ApplyWorkInstruction = () => {
             <Select
               options={processData.map((item) => ({
                 value: item.id,
-                label: item.name,
+                label: `${item.name} (${item.machineName})`,
               }))}
               onChange={(opt) => handleSelectChange(opt, "processId")}
               isClearable

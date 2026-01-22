@@ -73,7 +73,7 @@ const AddWorkInstruction = () => {
 
   const validationSchema = Yup.object().shape({
     instructionTitle: Yup.string().required(
-      "Work instruction title is required"
+      "Work instruction title is required",
     ),
     processId: Yup.string().required("Process is required"),
     productId: Yup.string().required("Product is required"),
@@ -94,7 +94,7 @@ const AddWorkInstruction = () => {
             .min(1, "At least one image is required")
             .required("Image is required"),
           // Video is optional, so no validation needed unless specified
-        })
+        }),
       )
       .min(1, "At least one step is required"),
   });
@@ -134,7 +134,7 @@ const AddWorkInstruction = () => {
       }));
       formData.append(
         "instructionSteps",
-        JSON.stringify(instructionStepsMetadata)
+        JSON.stringify(instructionStepsMetadata),
       );
 
       // Append files separately, associating them by index.
@@ -144,14 +144,14 @@ const AddWorkInstruction = () => {
           // A common pattern is to name the field based on the step index
           formData.append(
             `instructionSteps[${index}][workInstructionImgs]`,
-            imgFile
+            imgFile,
           );
         });
 
         if (step.workInstructionVideo) {
           formData.append(
             `instructionSteps[${index}][workInstructionVideo]`,
-            step.workInstructionVideo
+            step.workInstructionVideo,
           );
         }
       });
@@ -170,14 +170,18 @@ const AddWorkInstruction = () => {
   const { values, setFieldValue, errors, touched } = formik;
 
   const processOptions = useMemo<SelectOption[]>(
-    () => processData.map((item) => ({ value: item.id, label: item.name })),
-    [processData]
+    () =>
+      processData.map((item) => ({
+        value: item.id,
+        label: `${item.name} (${item.machineName})`,
+      })),
+    [processData],
   );
 
   const productOptions = useMemo<SelectOption[]>(
     () =>
       productData.map((item) => ({ value: item.id, label: item.partNumber })),
-    [productData]
+    [productData],
   );
 
   useEffect(() => {
@@ -228,7 +232,7 @@ const AddWorkInstruction = () => {
                 }
                 value={
                   processOptions.find(
-                    (opt) => opt.value === values.processId
+                    (opt) => opt.value === values.processId,
                   ) || null
                 }
                 isClearable
@@ -248,7 +252,7 @@ const AddWorkInstruction = () => {
                 }
                 value={
                   productOptions.find(
-                    (opt) => opt.value === values.productId
+                    (opt) => opt.value === values.productId,
                   ) || null
                 }
                 isClearable
@@ -351,7 +355,7 @@ const AddWorkInstruction = () => {
                             onChange={(e) =>
                               setFieldValue(
                                 `steps.${index}.workInstructionImg`,
-                                Array.from(e.target.files || [])
+                                Array.from(e.target.files || []),
                               )
                             }
                           />
@@ -375,11 +379,11 @@ const AddWorkInstruction = () => {
                                   onClick={() => {
                                     const updatedImgs =
                                       step.workInstructionImg.filter(
-                                        (_, i) => i !== idx
+                                        (_, i) => i !== idx,
                                       );
                                     setFieldValue(
                                       `steps.${index}.workInstructionImg`,
-                                      updatedImgs
+                                      updatedImgs,
                                     );
                                   }}
                                   className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
@@ -408,7 +412,7 @@ const AddWorkInstruction = () => {
                             onChange={(e) =>
                               setFieldValue(
                                 `steps.${index}.workInstructionVideo`,
-                                e.target.files?.[0] || null
+                                e.target.files?.[0] || null,
                               )
                             }
                           />
@@ -416,7 +420,7 @@ const AddWorkInstruction = () => {
                             <div className="relative inline-block mt-2">
                               <video
                                 src={URL.createObjectURL(
-                                  step.workInstructionVideo
+                                  step.workInstructionVideo,
                                 )}
                                 controls
                                 preload="metadata"
@@ -430,7 +434,7 @@ const AddWorkInstruction = () => {
                                 onClick={() =>
                                   setFieldValue(
                                     `steps.${index}.workInstructionVideo`,
-                                    null
+                                    null,
                                   )
                                 }
                                 className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"

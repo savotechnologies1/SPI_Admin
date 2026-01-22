@@ -268,12 +268,18 @@ const formatDate = (dateString: string | undefined): string => {
 };
 const formatCycleTime = (dateString) => {
   if (!dateString) return "N/A";
+
   try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) {
+    const startTime = new Date(dateString);
+    if (isNaN(startTime.getTime())) {
       return "Invalid Time";
     }
-    return date.toLocaleTimeString("en-US");
+
+    const now = new Date();
+    const diffMs = now - startTime; // milliseconds difference
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+
+    return `${diffMinutes} min`;
   } catch (error) {
     console.error("Could not format cycle time:", dateString, error);
     return "N/A";
@@ -304,7 +310,7 @@ const RunWithScan = () => {
         setLoading(false);
       }
     },
-    [navigate]
+    [navigate],
   );
   useEffect(() => {
     fetchJobDetails(id);
@@ -343,7 +349,7 @@ const RunWithScan = () => {
         jobData.part_id,
         jobData.employeeInfo.id,
         jobData.productId || jobData.order.productId,
-        jobData.type
+        jobData.type,
       );
       fetchJobDetails(id);
     } catch (error: any) {
@@ -368,7 +374,7 @@ const RunWithScan = () => {
         jobData.order_id,
         jobData.order_type,
         jobData.part_id,
-        jobData.employeeInfo.id
+        jobData.employeeInfo.id,
       );
       fetchJobDetails(id);
     } catch (error: any) {
@@ -534,7 +540,7 @@ const RunWithScan = () => {
         <div className="py-4 flex flex-col gap-4">
           {part.WorkInstruction && part.WorkInstruction.length > 0 ? (
             part.WorkInstruction.flatMap(
-              (instructionSet) => instructionSet.steps
+              (instructionSet) => instructionSet.steps,
             ).map((step, index) => (
               <div
                 key={step.id || index}

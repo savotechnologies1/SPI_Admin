@@ -1,7 +1,7 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { PartContext } from "../../components/Context/PartContext";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaCircle, FaTrash } from "react-icons/fa";
+import { FaCircle, FaTrash, FaSpinner } from "react-icons/fa";
 import edit from "../../assets/edit_icon.png";
 import add from "../../assets/add.png";
 import { deleteProductNumber, productTree } from "./https/partProductApis";
@@ -271,7 +271,7 @@ export default function ProductTree() {
   const [searchVal, setSearchVal] = useState<string>("");
   const rowsPerPage = 15;
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
-
+  const [isLoading, setIsLoading] = useState<boolean>(false); // Loader state
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     try {
       setSearchVal(e.target.value);
@@ -279,14 +279,16 @@ export default function ProductTree() {
       throw error;
     }
   };
-
   const fetchCustomerList = async (page = 1) => {
+    setIsLoading(true); // Start loading
     try {
       const response = await productTree(page, rowsPerPage, searchVal);
-      setCustomerData(response.data);
+      setCustomerData(response.data || []);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
-      throw error;
+      console.error(error);
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -382,81 +384,106 @@ export default function ProductTree() {
               </tr>
             </thead>
             <tbody>
-              {customerData?.map((product, productIndex) => (
-                <tr
-                  key={`${productIndex}-${product.part_id}`}
-                  className="hover:bg-gray-100 text-center"
-                >
-                  <td className="border-b border-dashed p-2 max-w-[120px] truncate md:break-words">
-                    {product.partNumber}
-                  </td>
-                  <td className="border-b border-dashed p-2 max-w-[200px] break-words">
-                    {product.partDescription || "Not Available"}
-                  </td>
-                  <td className="border-b border-dashed p-2">
-                    $ {product.cost ? `${product.cost} ` : "Not Available"}
-                  </td>
-                  <td className="border-b border-dashed p-2">
-                    {product.leadTime
-                      ? `${product.leadTime} ${
-                          product.leadTime > 1 ? "days" : "day"
-                        }`
-                      : "Not Available"}
-                  </td>
-
-                  <td className="border-b border-dashed p-2">
-                    {product.minStock ? `${product?.minStock} ` : "0"}
-                  </td>
-                  <td className="border-b border-dashed p-2">
-                    {product.minStock ? `${product?.minStock} ` : "0"}
-                  </td>
-                  <td className="p-2 border-b border-dashed">
-                    <div className="flex items-center justify-center gap-3">
-                      <img
-                        src={edit}
-                        alt="Edit"
-                        onClick={() => handleClick(product.part_id)}
-                        className="w-4 h-4 md:w-5 md:h-5 cursor-pointer"
-                      />
-                      <div className="relative">
-                        <FaTrash
-                          className="text-red-500 cursor-pointer"
-                          onClick={() => setShowConfirm(true)}
-                        />
-                        {showConfirm && (
-                          <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-                            <div className="bg-white p-6 rounded-xl shadow-lg w-72 md:w-96">
-                              <h2 className="text-lg font-semibold mb-4">
-                                Are you sure?
-                              </h2>
-                              <p className="mb-4">
-                                Do you really want to delete this product?
-                              </p>
-                              <div className="flex justify-end space-x-3">
-                                <button
-                                  className="px-4 py-2 bg-gray-300 rounded"
-                                  onClick={() => setShowConfirm(false)}
-                                >
-                                  Cancel
-                                </button>
-                                <button
-                                  className="px-4 py-2 bg-red-500 text-white rounded"
-                                  onClick={() => {
-                                    handleDelete(product.part_id);
-                                    setShowConfirm(false);
-                                  }}
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
+              {isLoading ? (
+                // --- LOADER ---
+                <tr>
+                  <td colSpan={7} className="p-10 text-center">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <FaSpinner className="animate-spin text-brand text-2xl" />
+                      <span className="text-gray-500 font-medium">
+                        Loading products...
+                      </span>
                     </div>
                   </td>
                 </tr>
-              ))}
+              ) : customerData.length === 0 ? (
+                // --- NO DATA MSG ---
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="p-10 text-center text-gray-500 italic font-medium"
+                  >
+                    No products found.
+                  </td>
+                </tr>
+              ) : (
+                // --- DATA LIST ---
+                customerData.map((product, productIndex) => (
+                  <tr
+                    key={`${productIndex}-${product.part_id}`}
+                    className="hover:bg-gray-100 text-center"
+                  >
+                    <td className="border-b border-dashed p-2 max-w-[120px] truncate md:break-words">
+                      {product.partNumber}
+                    </td>
+                    <td className="border-b border-dashed p-2 max-w-[200px] break-words">
+                      {product.partDescription || "Not Available"}
+                    </td>
+                    <td className="border-b border-dashed p-2">
+                      $ {product.cost ? `${product.cost} ` : "Not Available"}
+                    </td>
+                    <td className="border-b border-dashed p-2">
+                      {product.leadTime
+                        ? `${product.leadTime} ${
+                            product.leadTime > 1 ? "days" : "day"
+                          }`
+                        : "Not Available"}
+                    </td>
+
+                    <td className="border-b border-dashed p-2">
+                      {product.minStock ? `${product?.minStock} ` : "0"}
+                    </td>
+                    <td className="border-b border-dashed p-2">
+                      {product.availStock ? `${product?.availStock} ` : "0"}
+                    </td>
+                    <td className="p-2 border-b border-dashed">
+                      <div className="flex items-center justify-center gap-3">
+                        <img
+                          src={edit}
+                          alt="Edit"
+                          onClick={() => handleClick(product.part_id)}
+                          className="w-4 h-4 md:w-5 md:h-5 cursor-pointer"
+                        />
+                        <div className="relative">
+                          <FaTrash
+                            className="text-red-500 cursor-pointer"
+                            onClick={() => setShowConfirm(true)}
+                          />
+                          {showConfirm && (
+                            <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+                              <div className="bg-white p-6 rounded-xl shadow-lg w-72 md:w-96">
+                                <h2 className="text-lg font-semibold mb-4">
+                                  Are you sure?
+                                </h2>
+                                <p className="mb-4">
+                                  Do you really want to delete this product?
+                                </p>
+                                <div className="flex justify-end space-x-3">
+                                  <button
+                                    className="px-4 py-2 bg-gray-300 rounded"
+                                    onClick={() => setShowConfirm(false)}
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    className="px-4 py-2 bg-red-500 text-white rounded"
+                                    onClick={() => {
+                                      handleDelete(product.part_id);
+                                      setShowConfirm(false);
+                                    }}
+                                  >
+                                    Delete
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

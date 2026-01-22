@@ -41,7 +41,7 @@ const StationLogin = () => {
     onSubmit: async (values) => {
       const type = submitTypeRef.current;
       const selectedProcess = emoloyeeProcess?.processOverviews?.find(
-        (p: any) => p.processId === values.processId
+        (p: any) => p.processId === values.processId,
       );
       const partId = selectedProcess?.nextJob?.partId || null;
       const data = {
@@ -72,7 +72,7 @@ const StationLogin = () => {
         }
       } catch (error) {
         toast.error(
-          "An unexpected error occurred. Please check your connection."
+          "An unexpected error occurred. Please check your connection.",
         );
       }
     },

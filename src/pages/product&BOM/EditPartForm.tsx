@@ -63,6 +63,7 @@ const EditPartForm = () => {
     formData.append("processOrderRequired", data.processOrderRequired);
     formData.append("processId", data.processId);
     formData.append("processDesc", data.processDesc);
+    formData.append("instructionRequired", data.instructionRequired);
 
     if (data.image?.length) {
       for (let file of data.image) {
@@ -118,7 +119,7 @@ const EditPartForm = () => {
 
   const handleNumericInput = (
     e: React.ChangeEvent<HTMLInputElement>,
-    fieldName: "cycleTime"
+    fieldName: "cycleTime",
   ) => {
     const value = e.target.value;
     if (!/^(?:[1-9]\d*)?$/.test(value) && value !== "") {
@@ -139,11 +140,12 @@ const EditPartForm = () => {
     }
   };
   const processOrderRequired = watch("processOrderRequired");
+  console.log("processOrderRequired", processOrderRequired);
   // Update preview image URLs on image selection
   useEffect(() => {
     if (selectedImages?.length) {
       const newPreviews = Array.from(selectedImages).map((file) =>
-        URL.createObjectURL(file)
+        URL.createObjectURL(file),
       );
       setPreviewImages(newPreviews);
 
@@ -380,11 +382,17 @@ const EditPartForm = () => {
               <p className="text-red-500 text-sm">{errors.cycleTime.message}</p>
             )}
           </div>
-
-          {/* Process Order Required */}
-
-          {/* Process Order Required */}
           <div className="col-span-4 md:col-span-1">
+            <label>Work Instruction Required</label>
+            <select
+              {...register("instructionRequired")}
+              className="border p-2 rounded w-full"
+            >
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+          <div className="col-span-3 md:col-span-1">
             <label>Process Order Required</label>
             <select
               {...register("processOrderRequired", {
@@ -398,7 +406,7 @@ const EditPartForm = () => {
           </div>
 
           {/* Process */}
-          <label className="block col-span-4 md:col-span-2">
+          {/* <label className="block col-span-4 md:col-span-2">
             Process
             <select
               {...register("processId", {
@@ -410,34 +418,62 @@ const EditPartForm = () => {
               <option value="">Select Process</option>
               {processData.map((item) => (
                 <option key={item.id} value={item.id}>
-                  {item.name}
+                  {`${item.name}`} ({`${item.machineName}`})
                 </option>
               ))}
             </select>
             {errors.processId && (
               <p className="text-red-500 text-sm">{errors.processId.message}</p>
             )}
-          </label>
+          </label> */}
+          {/* Process Order Required */}
+
+          {/* Conditional Fields: Sirf tab dikhenge jab processOrderRequired true ho */}
+          {processOrderRequired === true && (
+            <>
+              {/* Process */}
+              <label className="block col-span-4 md:col-span-1">
+                Process
+                <select
+                  {...register("processId", {
+                    required: "Process is required",
+                  })}
+                  className="border p-2 rounded w-full"
+                >
+                  <option value="">Select Process</option>
+                  {processData.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {`${item.name}`} ({`${item.machineName}`})
+                    </option>
+                  ))}
+                </select>
+                {errors.processId && (
+                  <p className="text-red-500 text-sm">
+                    {errors.processId.message}
+                  </p>
+                )}
+              </label>
+
+              {/* Process Description */}
+              <label className="block col-span-4 md:col-span-1">
+                Process Description
+                <textarea
+                  {...register("processDesc", {
+                    required: "Process description is required",
+                  })}
+                  placeholder="Process Description"
+                  className="border p-2 rounded w-full"
+                />
+                {errors.processDesc && (
+                  <p className="text-red-500 text-sm">
+                    {errors.processDesc.message}
+                  </p>
+                )}
+              </label>
+            </>
+          )}
 
           {/* Process Description */}
-          <label className="block col-span-4 md:col-span-2">
-            Process Description
-            <textarea
-              {...register("processDesc", {
-                required:
-                  processOrderRequired === true
-                    ? "Process description is required"
-                    : false,
-              })}
-              placeholder="Process Description"
-              className="border p-2 rounded w-full"
-            />
-            {errors.processDesc && (
-              <p className="text-red-500 text-sm">
-                {errors.processDesc.message}
-              </p>
-            )}
-          </label>
 
           {/* Images */}
           <div className="col-span-4">
