@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { PartContext } from "../../components/Context/PartContext";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaCircle, FaEdit, FaTrash } from "react-icons/fa";
+import { FaCircle, FaEdit, FaSpinner, FaTrash } from "react-icons/fa";
 import edit from "../../assets/edit_icon.png";
 import add from "../../assets/add.png";
 import { bomList, deletePartNumber } from "./https/partProductApis";
@@ -316,7 +316,7 @@ export default function PartTable() {
   const [searchVal, setSearchVal] = useState("");
   const [selectedValue, setSelectedValue] = useState("all");
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Loader state
 
   const rowsPerPage = 10;
 
@@ -327,8 +327,8 @@ export default function PartTable() {
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
-
   const fetchCustomerList = async (page: number) => {
+    setIsLoading(true); // 1. API shuru hote hi loader on
     try {
       const response = await bomList(
         page,
@@ -340,9 +340,10 @@ export default function PartTable() {
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
       console.error("Failed to fetch data:", error);
+    } finally {
+      setIsLoading(false); // 2. API khatam hote hi (chahe success ho ya error) loader off
     }
   };
-
   const handleDelete = async (id: string) => {
     try {
       const response = await deletePartNumber(id);
@@ -462,54 +463,65 @@ export default function PartTable() {
               </tr>
             </thead>
             <tbody>
-              {isLoading && (
-                <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-brand"></div>
-                </div>
-              )}
-
-              {customerData.length > 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={9} className="p-10 text-center">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <FaSpinner className="animate-spin text-brand text-2xl" />
+                      <span className="text-gray-500 font-medium">
+                        Loading parts...
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              ) : customerData.length > 0 ? (
                 customerData.map((part) => (
                   <tr
                     key={part.part_id}
-                    className="hover:bg-gray-100 text-center md:text-center break-words"
+                    className="hover:bg-gray-100 text-center break-words"
                   >
-                    <td className="border-b border-dashed p-2 max-w-[120px] truncate md:break-words">
+                    <td className="border-b border-dashed p-2 max-w-[120px] truncate">
                       {part.partNumber}
                     </td>
-                    <td className="border-b border-dashed p-2 max-w-[150px] truncate md:break-words">
+
+                    <td className="border-b border-dashed p-2 max-w-[150px] truncate">
                       {part.partFamily}
                     </td>
+
                     <td className="border-b border-dashed p-2 max-w-[200px] break-words">
                       {part.partDescription || "—"}
                     </td>
+
                     <td className="border-b border-dashed p-2">${part.cost}</td>
+
                     <td className="border-b border-dashed p-2">
                       {part.leadTime
-                        ? `${part.leadTime} ${
-                            part.leadTime > 1 ? "days" : "day"
-                          }`
+                        ? `${part.leadTime} ${part.leadTime > 1 ? "days" : "day"}`
                         : "Not Available"}
                     </td>
+
                     <td className="border-b border-dashed p-2">
                       {part.supplierOrderQty}
                     </td>
+
                     <td className="border-b border-dashed p-2">
                       {part.minStock}
                     </td>
+
                     <td className="border-b border-dashed p-2">
                       {part.availStock}
                     </td>
+
                     <td className="border-b border-dashed p-2 text-center">
-                      <div className="flex items-center justify-center space-x-2 md:space-x-4">
+                      <div className="flex items-center justify-center gap-3">
                         <img
                           src={edit}
                           alt="Edit"
                           onClick={() => handleClick(part.part_id, part.type)}
-                          className="w-5 h-5 md:w-6 md:h-6 cursor-pointer"
+                          className="w-5 h-5 cursor-pointer"
                         />
                         <FaTrash
-                          className="text-red-500 w-5 h-5 md:w-6 md:h-6 cursor-pointer"
+                          className="text-red-500 w-5 h-5 cursor-pointer"
                           onClick={() => setDeleteTargetId(part.part_id)}
                         />
                       </div>
@@ -520,9 +532,9 @@ export default function PartTable() {
                 <tr>
                   <td
                     colSpan={9}
-                    className="text-center py-4 text-sm text-gray-500"
+                    className="p-10 text-center text-gray-500 italic font-medium"
                   >
-                    No data found
+                    No parts found
                   </td>
                 </tr>
               )}
@@ -531,7 +543,6 @@ export default function PartTable() {
         </div>
       </div>
 
-      {/* Confirmation Modal (Rendered once) */}
       {deleteTargetId && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg">

@@ -190,7 +190,7 @@ const CapacityStatus = () => {
     const fetchCapacityStatus = async () => {
       try {
         const res = await axios.get(
-          `${BASE_URL}/api/admin/capacity-status-data`
+          `${BASE_URL}/api/admin/capacity-status-data`,
         );
         setBarChartData(res.data.barChartData); // 👈 ne
         setScheduleData(res.data.scheduleData);
@@ -204,7 +204,7 @@ const CapacityStatus = () => {
 
     fetchCapacityStatus();
   }, []);
-
+  console.log("processCompletionprocessComp111letion", processCompletion);
   return (
     <div className="p-6 bg-gray-100 min-h-screen mt-5">
       <div>

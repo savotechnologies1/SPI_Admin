@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import edit from "../../assets/edit_icon.png";
-import { FaCircle, FaTrash } from "react-icons/fa";
+import { FaCircle, FaSpinner, FaTrash } from "react-icons/fa";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import add from "../../assets/add.png";
 import { Trash2 } from "lucide-react";
@@ -21,65 +21,12 @@ interface WorkInstructionItem {
   statusColor: string;
 }
 
-const mockData: WorkInstructionItem[] = [
-  {
-    id: "1",
-    imageUrl: "/avatar1.jpg",
-    name: "John Smith",
-    partDesc: "Cut Trim",
-    stepNumber: "Step 1",
-    description: "Remove burn and sharp edges",
-    submitDate: "18/09/2016",
-    statusColor: "green",
-  },
-  {
-    id: "2",
-    imageUrl: "/avatar2.jpg",
-    name: "Emily Johnson",
-    partDesc: "Cut Trim",
-    stepNumber: "Step 2",
-    description: "Remove burn and sharp edges",
-    submitDate: "12/06/2020",
-    statusColor: "yellow",
-  },
-  {
-    id: "3",
-    imageUrl: "/avatar3.jpg",
-    name: "Michael Brown",
-    partDesc: "Cut Trim",
-    stepNumber: "Step 3",
-    description: "Remove burn and sharp edges",
-    submitDate: "15/08/2017",
-    statusColor: "red",
-  },
-  {
-    id: "4",
-    imageUrl: "/avatar4.jpg",
-    name: "Sarah Wilson",
-    partDesc: "Cut Trim",
-    stepNumber: "Step 4",
-    description: "Remove burn and sharp edges",
-    submitDate: "07/05/2016",
-    statusColor: "gray",
-  },
-  {
-    id: "5",
-    imageUrl: "/avatar5.jpg",
-    name: "David Lee",
-    partDesc: "Cut Trim",
-    stepNumber: "Step 5",
-    description: "Remove burn and sharp edges",
-    submitDate: "28/10/2012",
-    statusColor: "green",
-  },
-];
-
 const WorkInstructionList: React.FC = () => {
   const [openOptionsIndex, setOpenOptionsIndex] = useState<number | null>(null);
   const rowsPerPage = 5;
   const [showConfirm, setShowConfirm] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [isLoading, setIsLoading] = useState(false); // Loader state
   const toggleOptions = (index: number) => {
     setOpenOptionsIndex((prev) => (prev === index ? null : index));
   };
@@ -151,17 +98,20 @@ const WorkInstructionList: React.FC = () => {
   const fetchWorkInstructionList = async (
     page = 1,
     searchTerm = "",
-    type = ""
+    type = "",
   ) => {
+    setIsLoading(true); // 1. Start Loader
+
     try {
       const response = await workInstructionList(
         page,
         rowsPerPage,
         searchTerm,
-        type
+        type,
       );
       setWorkData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
+      setIsLoading(false); // 1. Start Loader
     } catch (error) {
       console.error("Failed to fetch work instructions:", error);
     }
@@ -180,7 +130,7 @@ const WorkInstructionList: React.FC = () => {
         await fetchWorkInstructionList(
           currentPage,
           selectedValue,
-          debouncedSearchVal
+          debouncedSearchVal,
         );
       }
     } catch (error) {
@@ -252,67 +202,92 @@ const WorkInstructionList: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {workData.map((item, index) => (
-                <tr key={item.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3">{item.instructionTitle}</td>
-                  <td className="px-4 py-3">{item.process.processName}</td>
-                  <td className="px-4 py-3">{item.PartNumber.partNumber}</td>
-                  <td className="px-4 py-3">{item.steps.length}</td>
-
-                  <td className="px-4 py-3">
-                    <span className="px-2 py-1 rounded text-xs font-semibold bg-gray-200 text-gray-600">
-                      {new Date(item.createdAt).toLocaleDateString()}
-                    </span>
-                  </td>
-
-                  <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
-                    <button
-                      className="text-brand hover:underline"
-                      onClick={() => editWorkInstruction(item.id)}
-                    >
-                      <img
-                        src={edit}
-                        alt="Edit"
-                        className="w-4 h-4 md:w-5 md:h-5"
-                      />
-                    </button>
-                    <FaTrash
-                      className="text-red-500 cursor-pointer h-7"
-                      onClick={() => setSelectedId(item.id)}
-                    />
-
-                    {selectedId === item.id && (
-                      <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-                        <div className="bg-white p-6 rounded-xl shadow-lg">
-                          <h2 className="text-lg font-semibold mb-4">
-                            Are you sure?
-                          </h2>
-                          <p className="mb-4">
-                            Do you really want to delete this work instruction?
-                          </p>
-                          <div className="flex justify-end space-x-3">
-                            <button
-                              className="px-4 py-2 bg-gray-300 rounded"
-                              onClick={() => setSelectedId(null)}
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              className="px-4 py-2 bg-red-500 text-white rounded"
-                              onClick={() => {
-                                handleDelete(selectedId, item.type);
-                                setSelectedId(null);
-                              }}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+              {isLoading ? (
+                /* --- LOADER ROW --- */
+                <tr>
+                  <td colSpan={6} className="py-20 text-center">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <FaSpinner className="animate-spin text-brand text-3xl" />
+                      <p className="text-gray-500 font-medium">
+                        Loading data...
+                      </p>
+                    </div>
                   </td>
                 </tr>
-              ))}
+              ) : workData.length === 0 ? (
+                /* --- EMPTY STATE --- */
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="py-20 text-center text-gray-400 italic"
+                  >
+                    No work instructions found.
+                  </td>
+                </tr>
+              ) : (
+                workData.map((item, index) => (
+                  <tr key={item.id} className="border-b hover:bg-gray-50">
+                    <td className="px-4 py-3">{item.instructionTitle}</td>
+                    <td className="px-4 py-3">{item.process.processName}</td>
+                    <td className="px-4 py-3">{item.PartNumber.partNumber}</td>
+                    <td className="px-4 py-3">{item.steps.length}</td>
+
+                    <td className="px-4 py-3">
+                      <span className="px-2 py-1 rounded text-xs font-semibold bg-gray-200 text-gray-600">
+                        {new Date(item.createdAt).toLocaleDateString()}
+                      </span>
+                    </td>
+
+                    <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
+                      <button
+                        className="text-brand hover:underline"
+                        onClick={() => editWorkInstruction(item.id)}
+                      >
+                        <img
+                          src={edit}
+                          alt="Edit"
+                          className="w-4 h-4 md:w-5 md:h-5"
+                        />
+                      </button>
+                      <FaTrash
+                        className="text-red-500 cursor-pointer h-7"
+                        onClick={() => setSelectedId(item.id)}
+                      />
+
+                      {selectedId === item.id && (
+                        <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+                          <div className="bg-white p-6 rounded-xl shadow-lg">
+                            <h2 className="text-lg font-semibold mb-4">
+                              Are you sure?
+                            </h2>
+                            <p className="mb-4">
+                              Do you really want to delete this work
+                              instruction?
+                            </p>
+                            <div className="flex justify-end space-x-3">
+                              <button
+                                className="px-4 py-2 bg-gray-300 rounded"
+                                onClick={() => setSelectedId(null)}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                className="px-4 py-2 bg-red-500 text-white rounded"
+                                onClick={() => {
+                                  handleDelete(selectedId, item.type);
+                                  setSelectedId(null);
+                                }}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

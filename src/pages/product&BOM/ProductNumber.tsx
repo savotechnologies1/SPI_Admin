@@ -27,7 +27,7 @@ interface Part {
   minStock?: number;
   processOrderRequired: Boolean;
   instructionRequired: Boolean;
-  isProductSchedule: Boolean;
+  // isProductSchedule: Boolean;
   processId: string;
 }
 
@@ -554,7 +554,7 @@ const ProductNumber = () => {
             </p>
           )}
         </div>
-        <div className="col-span-4 md:col-span-1">
+        {/* <div className="col-span-4 md:col-span-1">
           <label>Product Schedule </label>
           <select
             {...register("isProductSchedule", {
@@ -571,7 +571,7 @@ const ProductNumber = () => {
               {errors.isProductSchedule.message}
             </p>
           )}
-        </div>
+        </div> */}
         {previewImages.length > 0 && (
           <div className="col-span-4 flex gap-3 flex-wrap mt-2">
             {previewImages.map((img, idx) => (

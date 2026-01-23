@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaCircle, FaTrash } from "react-icons/fa";
+import { FaCircle, FaSpinner, FaTrash } from "react-icons/fa";
 import search_2 from "../../../assets/search_2.png";
 import more from "../../../assets/more.png";
 import edit from "../../../assets/edit_icon.png";
@@ -28,8 +28,7 @@ const Employees = () => {
   const [selectedValue, setSelectedValue] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [employeeId, setEmployeeId] = useState("");
-  // const rowsPerPage = 5;
-  // const totalPages = Math.ceil(data.length / rowsPerPage);
+  const [isLoading, setIsLoading] = useState(false); // Loader State
   const [deleteId, setDeleteId] = useState(null);
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -61,6 +60,7 @@ const Employees = () => {
   };
 
   const fetchEmployeeList = async (page = 1) => {
+    setIsLoading(true); // API shuru
     try {
       const response = await employeeList(
         page,
@@ -69,15 +69,16 @@ const Employees = () => {
         searchVal,
         activeTab.trim().toLowerCase() === "all"
           ? ""
-          : activeTab.trim().toLowerCase()
+          : activeTab.trim().toLowerCase(),
       );
-      setCustomerData(response.data);
+      setCustomerData(response.data || []);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
-      throw error;
+      console.error("Error fetching employees:", error);
+    } finally {
+      setIsLoading(false); // API khatam
     }
   };
-
   useEffect(() => {
     fetchEmployeeList(currentPage);
   }, [currentPage, selectedValue, searchVal, activeTab]);
@@ -91,7 +92,7 @@ const Employees = () => {
       acc["all"] += 1;
       return acc;
     },
-    { all: 0 }
+    { all: 0 },
   );
 
   const categorys = [
@@ -191,14 +192,14 @@ const Employees = () => {
                           category.tab.trim() === "All"
                             ? "text-white bg-brand"
                             : category.tab.trim() === "Active"
-                            ? "text-green-800 bg-green-100"
-                            : category.tab.trim() === "Pending"
-                            ? "text-[#B76E00] bg-[#FFAB0029]"
-                            : category.tab.trim() === "Banned"
-                            ? "text-red-800 bg-red-100"
-                            : category.tab.trim() === "Rejected"
-                            ? "text-gray-800 bg-gray-100"
-                            : "text-gray-800 bg-gray-100"
+                              ? "text-green-800 bg-green-100"
+                              : category.tab.trim() === "Pending"
+                                ? "text-[#B76E00] bg-[#FFAB0029]"
+                                : category.tab.trim() === "Banned"
+                                  ? "text-red-800 bg-red-100"
+                                  : category.tab.trim() === "Rejected"
+                                    ? "text-gray-800 bg-gray-100"
+                                    : "text-gray-800 bg-gray-100"
                         }`}
                       >
                         {category.text}
@@ -274,6 +275,146 @@ const Employees = () => {
                   </tr>
                 </thead>
 
+                <tbody className="relative min-h-[200px]">
+                  {isLoading ? (
+                    /* --- LOADER --- */
+                    <tr>
+                      <td colSpan={9} className="py-20 text-center">
+                        <div className="flex flex-col items-center justify-center gap-2">
+                          <FaSpinner className="animate-spin text-brand text-3xl" />
+                          <p className="text-gray-500 font-medium">
+                            Loading Employees...
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : customerData.length === 0 ? (
+                    /* --- NO DATA MESSAGE --- */
+                    <tr>
+                      <td
+                        colSpan={9}
+                        className="py-20 text-center text-gray-500 italic"
+                      >
+                        No employees found matching your criteria.
+                      </td>
+                    </tr>
+                  ) : (
+                    /* --- DATA ROWS --- */
+                    customerData.map((item, index) => (
+                      <tr
+                        key={index}
+                        className="border-b border-dashed border-gray-200"
+                      >
+                        <td className="px-2 py-3 md:px-3 md:py-4">
+                          <div className="flex items-center">
+                            <div>
+                              <p className="text-xs md:text-sm lg:text-base font-medium">
+                                {item.firstName} {item.lastName}
+                              </p>
+                              <p className="text-xs text-gray-400 truncate max-w-[100px] md:max-w-none">
+                                {item.email}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
+                          ${item.hourlyRate}
+                        </td>
+                        <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden md:table-cell">
+                          {item.employeeId}
+                        </td>
+                        <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
+                          {item.shift}
+                        </td>
+                        <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
+                          {item.startDate}
+                        </td>
+                        <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
+                          {item.pin}
+                        </td>
+                        <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
+                          {item.processLogin === true ? "yes" : "no"}
+                        </td>
+                        <td className="px-2 py-3 md:px-3 md:py-4">
+                          <span
+                            className={`px-2 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium ${
+                              item.status === "active"
+                                ? "text-green-800 bg-green-100"
+                                : item.status === "pending"
+                                  ? "text-[#B76E00] bg-yellow-100"
+                                  : item.status === "banned"
+                                    ? "text-[#B71D18] bg-[#FF563029]"
+                                    : item.status === "rejected"
+                                      ? "text-[#637381] bg-gray-100"
+                                      : "text-gray-800 bg-gray-100"
+                            }`}
+                          >
+                            {item.status}
+                          </span>
+                        </td>
+                        <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
+                          <Mail
+                            onClick={() => handleMailClick(item.id)}
+                            className="text-brand"
+                          />
+
+                          <button
+                            onClick={() => {
+                              handleEdit(item.id);
+                            }}
+                            className="text-brand hover:underline"
+                          >
+                            <img
+                              src={edit}
+                              alt="Edit"
+                              className="w-4 h-4 md:w-5 md:h-5"
+                            />
+                          </button>
+                          <button className="text-brand hover:underline">
+                            <FaTrash
+                              className="text-red-500 cursor-pointer h-7"
+                              onClick={() => setDeleteId(item.id)} // Set the id of employee to delete
+                            />
+                          </button>
+
+                          {deleteId === item.id && (
+                            <div
+                              className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
+        flex items-center justify-center z-50"
+                            >
+                              <div className="bg-white p-6 rounded-xl shadow-lg">
+                                <h2 className="text-lg font-semibold mb-4">
+                                  Are you sure?
+                                </h2>
+                                <p className="mb-4">
+                                  Do you really want to delete this employee?
+                                </p>
+                                <div className="flex justify-end space-x-3">
+                                  <button
+                                    className="px-4 py-2 bg-gray-300 rounded"
+                                    onClick={() => setDeleteId(null)} // Cancel clears deleteId (closes modal)
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    className="px-4 py-2 bg-red-500 text-white rounded"
+                                    onClick={async () => {
+                                      await handleDelete(item.id);
+                                      setDeleteId(null); // Close modal after deletion
+                                    }}
+                                  >
+                                    Delete
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+                {/* 
                 <tbody>
                   {customerData
                     .filter((item) => {
@@ -392,7 +533,7 @@ const Employees = () => {
                         </td>
                       </tr>
                     ))}
-                </tbody>
+                </tbody> */}
               </table>
 
               {showModal && (

@@ -149,7 +149,7 @@ const productTemplate = [
     "cycleTime",
     "processOrderRequired",
     "instructionRequired",
-    "isProductSchedule",
+    // "isProductSchedule",
     "processName",
     "fileName",
   ],
@@ -168,7 +168,6 @@ const productTemplate = [
     "60",
     "TRUE",
     "TRUE",
-    "TRUE",
     "Assembly",
     "product",
   ],
@@ -185,7 +184,6 @@ const productTemplate = [
     "5",
     "20",
     "60",
-    "TRUE",
     "TRUE",
     "TRUE",
     "Assembly",
@@ -746,7 +744,7 @@ const Import: React.FC = () => {
       if (summary?.errorCount > 0) {
         setErrors(summary.errors);
         toast.warning(
-          `Imported ${summary.success} rows, but ${summary.errorCount} rows failed.`
+          `Imported ${summary.success} rows, but ${summary.errorCount} rows failed.`,
         );
       } else {
         toast.success(response.data.message || "Product Upload successful.");
@@ -766,7 +764,7 @@ const Import: React.FC = () => {
       // 3. Handle Generic Errors
       else {
         toast.error(
-          responseData?.message || "Upload failed. Please check your file."
+          responseData?.message || "Upload failed. Please check your file.",
         );
       }
     } finally {

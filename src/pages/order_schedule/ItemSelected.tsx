@@ -17,13 +17,13 @@ import { useNavigate } from "react-router-dom";
 const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   const [selectedItems, setSelectedItems] = useState<ScheduledItem[]>([]);
   const [itemInputs, setItemInputs] = useState<ItemInputState>({});
+  const [loading, setLoading] = useState(false);
 
   console.log("selectedItemsselectedItems", selectedItems);
 
   const scheduleItem = (itemToAdd: SearchResultItem) => {
     const inputs = itemInputs[itemToAdd.id];
     console.log("itemToAdditemToAdd", itemToAdd);
-
     const qtyToSchedule = parseInt(inputs?.qty || "0", 10);
     const deliveryDate = inputs?.deliveryDate || new Date();
 
@@ -88,10 +88,62 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
     );
   };
   const navigate = useNavigate();
+  // const scheduleAllData = async () => {
+  //   try {
+  //     const payloads = selectedItems.flatMap((item) => {
+  //       // 1. Main Product ka payload
+  //       const productPayload = {
+  //         order_id: item.id,
+  //         orderDate: item.orderDate,
+  //         delivery_date: item.deliveryDate,
+  //         submitted_date: new Date(),
+  //         customersId: item.customer.id,
+  //         status: "new",
+  //         quantity: item.scheduledQty,
+  //         product_id: item.part.part_id,
+  //         part_id: item.part.part_id,
+  //         type: "part",
+  //       };
+
+  //       // 2. Saare nested components ko flatten karke payload mein convert karein
+  //       const allNestedParts = flattenBOM(
+  //         item.part.components,
+  //         item.scheduledQty,
+  //       );
+
+  //       const componentPayloads = allNestedParts.map((comp) => ({
+  //         order_id: item.id,
+  //         orderDate: item.orderDate,
+  //         delivery_date: item.deliveryDate,
+  //         submitted_date: new Date(),
+  //         customersId: item.customer.id,
+  //         status: "new",
+  //         quantity: comp.calculatedQty, // Sahi calculated qty
+  //         product_id: item.part.part_id,
+  //         part_id: comp?.part?.part_id,
+  //         type: comp?.part?.type === "product" ? "product" : "part",
+  //       }));
+
+  //       return [productPayload, ...componentPayloads];
+  //     });
+
+  //     const response = await scheduleStockOrder(payloads);
+  //     navigate("/order-schedule-list");
+  //     toast.success(response?.data.message);
+  //     setSelectedItems([]);
+  //     setItemInputs({});
+  //   } catch (error) {
+  //     console.error("Failed to schedule all items:", error);
+  //     toast.error("An error occurred while scheduling.");
+  //   }
+  // };
+
   const scheduleAllData = async () => {
+    // 1. Loading start karein
+    setLoading(true);
+
     try {
       const payloads = selectedItems.flatMap((item) => {
-        // 1. Main Product ka payload
         const productPayload = {
           order_id: item.id,
           orderDate: item.orderDate,
@@ -105,7 +157,6 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
           type: "part",
         };
 
-        // 2. Saare nested components ko flatten karke payload mein convert karein
         const allNestedParts = flattenBOM(
           item.part.components,
           item.scheduledQty,
@@ -118,7 +169,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
           submitted_date: new Date(),
           customersId: item.customer.id,
           status: "new",
-          quantity: comp.calculatedQty, // Sahi calculated qty
+          quantity: comp.calculatedQty,
           product_id: item.part.part_id,
           part_id: comp?.part?.part_id,
           type: comp?.part?.type === "product" ? "product" : "part",
@@ -128,13 +179,18 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       });
 
       const response = await scheduleStockOrder(payloads);
-      navigate("/order-schedule-list");
-      toast.success(response?.data.message);
+      toast.success(response?.data.message || "Order Scheduled Successfully");
+
+      // Sab clear karein aur navigate karein
       setSelectedItems([]);
       setItemInputs({});
+      navigate("/order-schedule-list");
     } catch (error) {
       console.error("Failed to schedule all items:", error);
       toast.error("An error occurred while scheduling.");
+    } finally {
+      // 2. API call khatam hone par loader band karein
+      setLoading(false);
     }
   };
   console.log("selectedItemsselectedItems", selectedItems);
@@ -162,16 +218,50 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
         <div className="bg-white p-2 rounded-3xl">
           <FontAwesomeIcon icon={faCartShopping} />
         </div>
-        <div className="flex relative  ">
+        <div className="flex relative">
           <button
-            className="py-2 px-10  border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer"
+            className={`py-2 px-10 border-gray-100 bg-brand text-white flex gap-2 items-center h-fit ${
+              loading ? "opacity-70 cursor-not-allowed" : "hover:cursor-pointer"
+            }`}
             onClick={scheduleAllData}
+            disabled={loading} // Loading ke waqt button disable rahega
           >
-            Schedule Order
+            {loading ? (
+              <>
+                {/* Aap yahan koi bhi SVG spinner laga sakte hain */}
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Scheduling...
+              </>
+            ) : (
+              "Schedule Order"
+            )}
           </button>
-          <div className="absolute top-3 right-2 pl-2 ">
-            <img src={send} alt="" />
-          </div>
+
+          {/* Icon ko hide kar sakte hain loading ke waqt agar chahein */}
+          {!loading && (
+            <div className="absolute top-3 right-2 pl-2 pointer-events-none">
+              <img src={send} alt="send" />
+            </div>
+          )}
         </div>
       </div>
       {/* <div className="flex gap-4 justify-end items-center">

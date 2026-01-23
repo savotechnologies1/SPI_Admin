@@ -65,14 +65,14 @@ const AllScrapEntries: React.FC = () => {
   const fetchWorkInstructionList = async (
     page = 1,
     searchTerm = "",
-    type = ""
+    type = "",
   ) => {
     try {
       const response = await allScrapEntries(
         page,
         rowsPerPage,
         selectedValue,
-        debouncedSearchVal
+        debouncedSearchVal,
       );
       setWorkData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
@@ -93,7 +93,7 @@ const AllScrapEntries: React.FC = () => {
       await fetchWorkInstructionList(
         currentPage,
         selectedValue,
-        debouncedSearchVal
+        debouncedSearchVal,
       );
     } catch (error: unknown) {
       console.error("Error deleting process:", error);
@@ -176,8 +176,8 @@ const AllScrapEntries: React.FC = () => {
                     {item.scrapStatus == true ? "yes" : "no"}
                   </td>
                   <td className="px-4 py-3">
-                    {item.createdByEmployee !== null
-                      ? `${item?.createdByEmployee.firstName} ${item?.createdByEmployee.lastName}`
+                    {item.employeeDetails !== null
+                      ? `${item?.employeeDetails.firstName} ${item?.employeeDetails.lastName}`
                       : `${
                           item?.createdByAdmin?.name
                             ? item?.createdByAdmin?.name

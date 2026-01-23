@@ -828,7 +828,7 @@ const EditProductForm = () => {
         cycleTime: data.cycleTime || "",
         processOrderRequired: String(data.processOrderRequired),
         instructionRequired: String(data.instructionRequired),
-        isProductSchedule: data.isProductSchedule,
+        // isProductSchedule: data.isProductSchedule,
         processId: data.processId || "",
         processDesc: data.processDesc || "",
       });
@@ -1256,7 +1256,7 @@ const EditProductForm = () => {
               <option value="false">No</option>
             </select>{" "}
           </div>
-          <div className="col-span-4 md:col-span-1">
+          {/* <div className="col-span-4 md:col-span-1">
             <label>Product Schedule </label>
             <select
               {...register("isProductSchedule")}
@@ -1266,7 +1266,7 @@ const EditProductForm = () => {
               <option value="">Select</option> <option value="true">Yes</option>{" "}
               <option value="false">No</option>{" "}
             </select>{" "}
-          </div>
+          </div> */}
           {/* Image Upload Section (Unchanged) */}
           <div className="col-span-4">
             <label className="block font-medium mb-2">

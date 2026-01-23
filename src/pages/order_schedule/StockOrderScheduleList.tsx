@@ -85,7 +85,7 @@ const StockOrderScheduleList: React.FC = () => {
   const [searchVal, setSearchVal] = useState("");
   const [selectedType, setSelectedType] = useState("all"); // Filter state
   const [selectedId, setSelectedId] = useState<string | null>(null);
-
+  const [isLoading, setIsLoading] = useState(false);
   const rowsPerPage = 10;
   const debouncedSearchVal = useDebounce(searchVal, 500);
 
@@ -101,6 +101,7 @@ const StockOrderScheduleList: React.FC = () => {
 
   // Fetcher function
   const fetchScheduleList = async (page = 1, type = "all", searchTerm = "") => {
+    setIsLoading(true); // 2. API call shuru hone par loading true
     try {
       // Pass all parameters to the API call
       const response = await scheduleStockOrderListApi(
@@ -109,9 +110,9 @@ const StockOrderScheduleList: React.FC = () => {
         type,
         searchTerm,
       );
-
       setWorkData(response.data.data || []);
       setTotalPages(response.data.pagination?.totalPages || 1);
+      setIsLoading(false); // 3. API call khatam hone par loading false
     } catch (error) {
       console.error("Failed to fetch schedule list:", error);
     }
@@ -214,6 +215,7 @@ const StockOrderScheduleList: React.FC = () => {
                 <th className="px-4 py-3">order number</th>
                 <th className="px-4 py-3">Product Number</th>
                 <th className="px-4 py-3">Part Number</th>
+                <th className="px-4 py-3">Process</th>
                 {/* <th className="px-4 py-3">Process </th> */}
                 <th className="px-4 py-3">OrderDate</th>
                 <th className="px-4 py-3">Delivery Date</th>
@@ -225,71 +227,94 @@ const StockOrderScheduleList: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {workData
-                // 1. Agar backend se hi parts alag-alag aa rahe hain (jo ki aa rahe hain),
-                // toh aapko manually flatMap karne ki zaroorat nahi hai.
-                // Lekin agar aapko tree expansion chahiye hi, toh filter ko ID par lagayein, part_id par nahi.
-                .filter(
-                  (value, index, self) =>
-                    index === self.findIndex((t) => t.id === value.id), // 🔥 Fix: ID par filter karein, part_id par nahi
-                )
-                .map((rowItem) => (
-                  <tr key={rowItem.id} className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-3">
-                      {/* Aapke JSON mein order_id hai, direct order object shayad missing hai */}
-                      {rowItem.order?.orderNumber ||
-                        rowItem.order_id?.slice(0, 8) ||
-                        "N/A"}
-                    </td>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={11} className="text-center py-10">
+                    <div className="flex justify-center items-center gap-2">
+                      <div className="w-6 h-6 border-4 border-brand border-t-transparent rounded-full animate-spin"></div>
+                      <span>Loading orders...</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : workData.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={11}
+                    className="text-center py-10 text-gray-500 font-medium"
+                  >
+                    No Schedule Orders Found.
+                  </td>
+                </tr>
+              ) : (
+                workData
+                  // 1. Agar backend se hi parts alag-alag aa rahe hain (jo ki aa rahe hain),
+                  // toh aapko manually flatMap karne ki zaroorat nahi hai.
+                  // Lekin agar aapko tree expansion chahiye hi, toh filter ko ID par lagayein, part_id par nahi.
+                  .filter(
+                    (value, index, self) =>
+                      index === self.findIndex((t) => t.id === value.id), // 🔥 Fix: ID par filter karein, part_id par nahi
+                  )
+                  .map((rowItem) => (
+                    <tr key={rowItem.id} className="border-b hover:bg-gray-50">
+                      <td className="px-4 py-3">
+                        {/* Aapke JSON mein order_id hai, direct order object shayad missing hai */}
+                        {rowItem.order?.orderNumber ||
+                          rowItem.order_id?.slice(0, 8) ||
+                          "N/A"}
+                      </td>
 
-                    {/* Product Number */}
-                    <td className="px-4 py-3">
-                      {rowItem.order?.productNumber || "product-1"}
-                    </td>
+                      {/* Product Number */}
+                      <td className="px-4 py-3">
+                        {rowItem.order?.productNumber || "product-1"}
+                      </td>
 
-                    {/* Part Number (340543 wala part yahan dikhega) */}
-                    <td className="px-4 py-3">
-                      {rowItem.part?.partNumber || "N/A"}
-                    </td>
+                      {/* Part Number (340543 wala part yahan dikhega) */}
 
-                    <td className="px-4 py-3">
-                      {formatDate(rowItem.order_date)}
-                    </td>
-                    <td className="px-4 py-3">
-                      {formatDate(rowItem.delivery_date)}
-                    </td>
-                    <td className="px-4 py-3">
-                      {formatDate(rowItem.completed_date)}
-                    </td>
-                    <td className="px-4 py-3">
-                      {rowItem.completed_by || "Not Available"}
-                    </td>
-                    <td className="px-4 py-3">
-                      {/* JSON: completedByEmployee.firstName */}
-                      {rowItem?.completedByEmployee
-                        ? `${rowItem.completedByEmployee.firstName} ${rowItem.completedByEmployee.lastName}`
-                        : "N/A"}
-                    </td>
-                    <td className="px-4 py-3">
-                      {/* Status logic */}
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          rowItem.status === "completed"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-blue-100 text-blue-800"
-                        }`}
-                      >
-                        {rowItem?.status || "new"}
-                      </span>
-                    </td>
-                    <td className="px-2 py-3 md:px-3 md:py-4">
-                      <FaTrash
-                        className="text-red-500 cursor-pointer h-5 w-5"
-                        onClick={() => setSelectedId(rowItem.id)}
-                      />
-                    </td>
-                  </tr>
-                ))}
+                      <td className="px-4 py-3">
+                        {rowItem.part?.partNumber || "N/A"}
+                      </td>
+                      <td className="px-4 py-3">
+                        {rowItem.part?.process?.processName || "N/A"}
+                      </td>
+                      <td className="px-4 py-3">
+                        {formatDate(rowItem.order_date)}
+                      </td>
+                      <td className="px-4 py-3">
+                        {formatDate(rowItem.delivery_date)}
+                      </td>
+                      <td className="px-4 py-3">
+                        {formatDate(rowItem.completed_date)}
+                      </td>
+                      <td className="px-4 py-3">
+                        {rowItem.completed_by || "Not Available"}
+                      </td>
+                      <td className="px-4 py-3">
+                        {/* JSON: completedByEmployee.firstName */}
+                        {rowItem?.completedByEmployee
+                          ? `${rowItem.completedByEmployee.firstName} ${rowItem.completedByEmployee.lastName}`
+                          : "N/A"}
+                      </td>
+                      <td className="px-4 py-3">
+                        {/* Status logic */}
+                        <span
+                          className={`px-2 py-1 text-xs font-medium rounded-full ${
+                            rowItem.status === "completed"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-blue-100 text-blue-800"
+                          }`}
+                        >
+                          {rowItem?.status || "new"}
+                        </span>
+                      </td>
+                      <td className="px-2 py-3 md:px-3 md:py-4">
+                        <FaTrash
+                          className="text-red-500 cursor-pointer h-5 w-5"
+                          onClick={() => setSelectedId(rowItem.id)}
+                        />
+                      </td>
+                    </tr>
+                  ))
+              )}
             </tbody>
           </table>
         </div>
