@@ -201,7 +201,7 @@
 // export default RunWithScan;
 
 import belt from "../../assets/belt-solid.png";
-import { IoLogOutOutline } from "react-icons/io5";
+import { IoClose, IoLogOutOutline } from "react-icons/io5";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import {
   completeOrder,
@@ -214,6 +214,7 @@ import { useEffect, useState, useCallback } from "react";
 // 1. NAYI LIBRARY IMPORT KAREIN
 import Barcode from "react-barcode";
 import CommentBox from "./CommentBox";
+import { FaPlay } from "react-icons/fa";
 // Server ka base URL
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 // --- BARCODE SCANNER CONFIGURATION ---
@@ -290,7 +291,7 @@ const RunWithScan = () => {
   const { id } = useParams<{ id: string }>();
   const [jobData, setJobData] = useState<JobData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [scannedCode, setScannedCode] = useState("");
+  const [activeVideo, setActiveVideo] = useState(null); // Video URL store karne ke liye
   const fetchJobDetails = useCallback(
     async (jobId: string | undefined) => {
       if (!jobId) {
@@ -451,10 +452,8 @@ const RunWithScan = () => {
   } = jobData;
   console.log("partpart", jobData);
   const rows = [
-    { part: part.partNumber, date: order_date },
-    { part: upcommingParts, date: upcommingOrder },
+    { part: part?.partNumber || part?.partDescription, date: order_date },
   ];
-
   return (
     <div className="bg-[#F5F6FA] min-h-screen flex flex-col">
       <div className="bg-[#243C75] relative ">
@@ -538,34 +537,102 @@ const RunWithScan = () => {
         <CommentBox employeeInfo={employeeInfo} />
 
         <div className="py-4 flex flex-col gap-4">
-          {part.WorkInstruction && part.WorkInstruction.length > 0 ? (
-            part.WorkInstruction.flatMap(
+          {part?.WorkInstruction && part?.WorkInstruction.length > 0 ? (
+            part?.WorkInstruction.flatMap(
               (instructionSet) => instructionSet.steps,
             ).map((step, index) => (
               <div
                 key={step.id || index}
-                className="flex flex-col md:flex-row gap-4 md:gap-20 items-center bg-white rounded-lg shadow-sm p-4"
+                className="flex flex-col md:flex-row gap-4 md:gap-10 items-start bg-white rounded-lg shadow-sm p-4 border border-gray-100"
               >
-                <div className="w-full md:w-auto">
-                  <img
-                    className="rounded-md w-full max-w-xs md:max-w-none"
-                    src={
-                      step.images && step.images.length > 0
-                        ? `${BASE_URL}/uploads/workInstructionImg/${step.images[0].imagePath}`
-                        : "https://via.placeholder.com/150"
-                    }
-                    alt={step.title}
-                  />
+                {/* MEDIA SECTION */}
+                <div className="flex flex-wrap gap-3 flex-shrink-0">
+                  {/* IMAGE */}
+                  {step.images?.length > 0 && (
+                    <img
+                      className="rounded-md w-40 h-40 object-cover border"
+                      src={`${BASE_URL}/uploads/workInstructionImg/${step.images[0].imagePath}`}
+                      alt={step.title}
+                    />
+                  )}
+
+                  {/* VIDEO THUMBNAIL WITH PLAY BUTTON */}
+                  {step.videos?.length > 0 && (
+                    <div
+                      className="relative w-40 h-40 bg-black rounded-md overflow-hidden cursor-pointer group border"
+                      onClick={() =>
+                        setActiveVideo(
+                          `${BASE_URL}/uploads/workInstructionVideo/${step.videos[0].videoPath}`,
+                        )
+                      }
+                    >
+                      {/* Video Preview as Thumbnail */}
+                      <video className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity">
+                        <source
+                          src={`${BASE_URL}/uploads/workInstructionVideo/${step.videos[0].videoPath}#t=0.1`}
+                        />
+                      </video>
+
+                      {/* Play Icon Overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="bg-white/20 backdrop-blur-sm p-3 rounded-full group-hover:scale-110 transition-transform">
+                          <FaPlay className="text-white text-xl" />
+                        </div>
+                      </div>
+                      <span className="absolute bottom-2 left-2 text-[10px] text-white bg-black/50 px-2 py-0.5 rounded">
+                        Video Instruction
+                      </span>
+                    </div>
+                  )}
                 </div>
-                <div className="text-center md:text-left">
-                  <p className="font-semibold text-lg">{step.title}</p>
-                  <p className="text-gray-600">{step.instruction}</p>
+
+                {/* TEXT SECTION */}
+                <div className="flex-1">
+                  <p className="font-semibold text-lg text-gray-800 break-words mb-1">
+                    {step.title}
+                  </p>
+                  <p className="text-gray-600 break-words leading-relaxed">
+                    {step.instruction}
+                  </p>
                 </div>
               </div>
             ))
           ) : (
             <div className="text-center text-gray-500 p-4">
-              No work instructions available for this part.
+              No instructions available.
+            </div>
+          )}
+
+          {/* VIDEO MODAL */}
+          {activeVideo && (
+            <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
+              <div className="relative w-full max-w-4xl bg-black rounded-xl overflow-hidden shadow-2xl">
+                {/* Close Button */}
+                <button
+                  onClick={() => setActiveVideo(null)}
+                  className="absolute top-4 right-4 z-10 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full transition-colors"
+                >
+                  <IoClose size={28} />
+                </button>
+
+                {/* Video Player */}
+                <div className="aspect-video w-full">
+                  <video
+                    src={activeVideo}
+                    controls
+                    autoPlay
+                    className="w-full h-full"
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              </div>
+
+              {/* Click outside to close */}
+              <div
+                className="absolute inset-0 -z-10"
+                onClick={() => setActiveVideo(null)}
+              ></div>
             </div>
           )}
         </div>

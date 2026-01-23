@@ -170,11 +170,15 @@ const Training = () => {
     if (!dateString) return "N/A";
 
     try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
+      const startTime = new Date(dateString);
+      if (isNaN(startTime.getTime())) {
         return "Invalid Time";
       }
-      return date.toLocaleTimeString("en-US");
+      const now = new Date();
+      const diffMs = now - startTime;
+      const diffMinutes = Math.floor(diffMs / (1000 * 60));
+
+      return `${diffMinutes} min`;
     } catch (error) {
       console.error("Could not format cycle time:", dateString, error);
       return "N/A";
@@ -335,13 +339,13 @@ const Training = () => {
               <p className="text-sm md:text-base">Process</p>
               <p className="text-sm md:text-base">{process?.processName}</p>
             </div>
-            <div className="flex flex-col items-center">
+            {/* <div className="flex flex-col items-center">
               <p className="text-green-500 text-sm md:text-base">Total Qty</p>
               <p className="text-green-500 text-sm md:text-base">
                 {jobData.quantity}
               </p>
-            </div>
-            <div className="flex flex-col items-center">
+            </div> */}
+            {/* <div className="flex flex-col items-center">
               <p className="text-green-500 text-sm md:text-base">
                 Remaining Qty
               </p>
@@ -355,17 +359,17 @@ const Training = () => {
                 {" "}
                 {jobData.scrapQuantity}
               </p>
-            </div>
+            </div> */}
           </div>
           <div className="flex gap-2 md:gap-6  justify-center">
             <div className="flex flex-col items-center text-white">
               <p className="text-sm md:text-base font-semibold"> Employee</p>
               <p className="text-sm md:text-base">{`${employeeInfo?.firstName} ${employeeInfo?.lastName}`}</p>
             </div>
-            <div className="flex flex-col items-center text-white">
+            {/* <div className="flex flex-col items-center text-white">
               <p className="text-sm md:text-base font-semibold"> Qty</p>
               <p className="text-sm md:text-base">{jobData.completedQty}</p>
-            </div>
+            </div> */}
             <div className="flex flex-col items-center text-white">
               <p className="text-sm md:text-base font-semibold">Cycle Time</p>
               <p className="text-sm md:text-base">
