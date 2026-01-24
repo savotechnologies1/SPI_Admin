@@ -17,36 +17,25 @@ const SupplierReturn = ({ qualityData }) => {
               <th className="px-4 py-3 text-left font-medium">
                 Part Description
               </th>
-              {/* <th className="px-4 py-3 text-left font-medium">
-                Schedule Quantity
-              </th> */}
               <th className="px-4 py-3 text-left font-medium">
                 Scrap Quantity
               </th>
             </tr>
           </thead>
+
           <tbody>
             {qualityData.map((item, index) => (
-              <tr key={index}>
-                {/* Access process correctly from item.part.process */}
+              <tr key={index} className="border-b">
                 <td className="px-4 py-4 text-sm sm:text-base">
-                  {item && item.part && item.part.process
-                    ? item.part.process.processName
-                    : "-"} ( {item && item.part && item.part.process
-                    ? item.part.process.machineName
-                    : "-"})
+                  {item.processName || "-"} ({item.machineName || "-"})
                 </td>
 
                 <td className="px-4 py-4 text-sm sm:text-base">
-                  {item?.part?.partDescription}
+                  {item.partDescription || "-"}
                 </td>
 
-                {/* <td className="px-4 py-4 text-sm sm:text-base">
-                  {item.scheduleQuantity}
-                </td> */}
-
                 <td className="px-4 py-4 text-sm sm:text-base">
-                  {item?.scrapQuantity}
+                  {item.scrapQuantity}
                 </td>
               </tr>
             ))}
