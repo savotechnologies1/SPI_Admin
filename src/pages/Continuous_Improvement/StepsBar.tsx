@@ -39,7 +39,7 @@ const StepsBar = ({ partId }: { partId: string }) => {
       const stepData = res.data.data.stepWiseCT.stepAverages || [];
       setChartData({
         labels: stepData.map(
-          (item: any) => `Step ${item.stepNumber}` // 👈 X-axis me step number
+          (item: any) => `Step ${item.stepNumber} (${item.stepTitle})` // 👈 X-axis me step number
         ),
         datasets: [
           {

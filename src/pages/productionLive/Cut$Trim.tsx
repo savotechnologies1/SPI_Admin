@@ -118,7 +118,7 @@ const getShiftHours = (shift) => {
 };
 
 // inside ProcessTable
-const ProcessTable = ({ processName, hourlyData, employees }) => {
+const ProcessTable = ({ processName,machineName, hourlyData, employees }) => {
   const currentHour = new Date().getHours();
   let shift = 1;
   if (currentHour >= 6 && currentHour < 14) shift = 1;
@@ -144,7 +144,7 @@ const ProcessTable = ({ processName, hourlyData, employees }) => {
   return (
     <div className="p-2 rounded-lg mx-auto">
       <h2 className="font-semibold mb-4 text-center text-[#1C252E]">
-        {processName}
+        {processName} (  {machineName})
       </h2>
 
       <table className="w-full border-collapse">

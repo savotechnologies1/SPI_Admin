@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosInstance";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaSpinner } from "react-icons/fa"; // Spinner icon add kiya
 import { deleteSupplierInventory } from "./https/suppliersApi";
 
 const SupplierInventory = () => {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false); // Loader state
   const [editingRow, setEditingRow] = useState(null);
   const [editedData, setEditedData] = useState({
     qty: "",
@@ -12,18 +13,20 @@ const SupplierInventory = () => {
     cost: "",
   });
   const [showConfirm, setShowConfirm] = useState(false);
-  const [selectedDeleteId, setSelectedDeleteId] = useState<string | null>(null);
+  const [selectedDeleteId, setSelectedDeleteId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const rowsPerPage = 5;
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("newest");
 
-  const fetchData = async (page = 1) => {
+  // Fetch Data Function
+  const fetchData = async (page) => {
+    setLoading(true); // Loader Start
     try {
       const res = await axiosInstance.get(`/supplier-inventory`, {
         params: {
-          page,
+          page: page,
           pageSize: rowsPerPage,
           search,
           sort,
@@ -44,40 +47,43 @@ const SupplierInventory = () => {
 
       setData(mappedData);
       setTotalPages(res.data.pagination.totalPages);
-      setCurrentPage(page);
     } catch (error) {
       console.error("Error fetching supplier inventory:", error);
+    } finally {
+      setLoading(false); // Loader Stop
     }
   };
 
+  // Effect: Dependency array mein currentPage, search aur sort daala
   useEffect(() => {
     fetchData(currentPage);
-  }, [search, sort]);
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteSupplierInventory(id);
-      await new Promise((r) => setTimeout(r, 500));
-      await fetchData(currentPage);
-    } catch (error: unknown) {
-      console.error("Error deleting process:", error);
-    }
-  };
-  const handleEditClick = (index) => {
-    setEditingRow(index);
-    setEditedData({
-      qty: data[index].qtyAvail.toString(),
-      stock: data[index].safetyStock.toString(),
-      cost: data[index].currentCost.toString(),
-    });
+  }, [currentPage, search, sort]);
+
+  // Search handle karte waqt page 1 par reset karna zaroori hai
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    setCurrentPage(1); 
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setEditedData((prev) => ({ ...prev, [name]: value }));
+  const handleDelete = async () => {
+    if (!selectedDeleteId) return;
+    setLoading(true);
+    try {
+      await deleteSupplierInventory(selectedDeleteId);
+      setShowConfirm(false);
+      setSelectedDeleteId(null);
+      // Agar last item delete ho aur page khali ho jaye toh previous page par bhejien
+      const nextPage = data.length === 1 && currentPage > 1 ? currentPage - 1 : currentPage;
+      fetchData(nextPage);
+    } catch (error) {
+      console.error("Error deleting process:", error);
+      setLoading(false);
+    }
   };
 
   const handleUpdate = async (index) => {
     try {
+      setLoading(true);
       const updated = {
         availStock: Number(editedData.qty),
         minStock: Number(editedData.stock),
@@ -85,32 +91,23 @@ const SupplierInventory = () => {
       };
 
       await axiosInstance.put(`/supplier-inventory/${data[index].id}`, updated);
-
-      const updatedData = [...data];
-      updatedData[index] = {
-        ...updatedData[index],
-        qtyAvail: updated.availStock,
-        safetyStock: updated.minStock,
-        currentCost: updated.cost,
-      };
-      setData(updatedData);
       setEditingRow(null);
+      fetchData(currentPage); // Data refresh karein
     } catch (error) {
       console.error("Error updating inventory:", error);
+      setLoading(false);
     }
   };
 
-  const goToPreviousPage = () => {
-    if (currentPage > 1) fetchData(currentPage - 1);
-  };
-
-  const goToNextPage = () => {
-    if (currentPage < totalPages) fetchData(currentPage + 1);
-  };
-  console.log("data", data);
-
   return (
-    <div className="p-6 bg-gray-100 min-h-screen mt-5">
+    <div className="p-6 bg-gray-100 min-h-screen mt-5 relative">
+      {/* Global Loader Overlay (Optional) */}
+      {loading && (
+        <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-50">
+          <FaSpinner className="animate-spin text-brand text-4xl text-blue-600" />
+        </div>
+      )}
+
       <div>
         <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
           Supplier Inventory List
@@ -124,7 +121,7 @@ const SupplierInventory = () => {
               type="text"
               placeholder="Search by part or supplier..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={handleSearchChange}
               className="border px-3 py-2 rounded-md w-full"
             />
           </div>
@@ -132,7 +129,10 @@ const SupplierInventory = () => {
             <label className="block text-sm font-medium">Sort</label>
             <select
               value={sort}
-              onChange={(e) => setSort(e.target.value)}
+              onChange={(e) => {
+                setSort(e.target.value);
+                setCurrentPage(1);
+              }}
               className="border w-full px-3 py-2 rounded-md"
             >
               <option value="newest">Newest First</option>
@@ -142,170 +142,106 @@ const SupplierInventory = () => {
         </div>
       </div>
 
-      <div className="bg-white overflow-x-auto mt-4">
+      <div className="bg-white overflow-x-auto mt-4 shadow-md rounded-lg">
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-gray-100 text-sm whitespace-nowrap">
-              <th className="text-left p-3">Part Number</th>
-              <th className="text-left p-3">Part Desc</th>
-              <th className="text-left p-3">Supplier Name</th>
-              <th className="text-left p-3">Qty Avail</th>
-              <th className="text-left p-3">Safety Stock</th>
-              <th className="text-left p-3">Current Cost</th>
-              <th className="text-left p-3">Actions</th>
+              <th className="text-left p-3 border-b">Part Number</th>
+              <th className="text-left p-3 border-b">Part Desc</th>
+              <th className="text-left p-3 border-b">Supplier Name</th>
+              <th className="text-left p-3 border-b">Qty Avail</th>
+              <th className="text-left p-3 border-b">Safety Stock</th>
+              <th className="text-left p-3 border-b">Current Cost</th>
+              <th className="text-left p-3 border-b">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {data.map((item, index) => (
-              <React.Fragment key={item.id}>
-                <tr className="border-b hover:bg-gray-50 text-sm">
-                  <td className="p-3">{item.partNumber}</td>
-                  <td className="p-3 whitespace-nowrap">
-                    {item.partDescription}
-                  </td>
-                  <td className="p-3">{item.supplierName}</td>
-                  <td className="p-3">{item.qtyAvail}</td>
-                  <td className="p-3">{item.safetyStock}</td>
-                  <td className="p-3">$ {item.currentCost}</td>
-                  <td className="p-3 flex items-center gap-4">
-                    {/* <FiEdit2
-                      onClick={() => handleEditClick(index)}
-                      className="text-black cursor-pointer text-lg"
-                      title="Quick Edit"
-                    /> */}
-                    {/* <Trash2
-                      className="text-red-500 cursor-pointer h-7"
-                      onClick={() => setShowConfirm(true)}
-                    /> */}
-
-                    <button className="text-brand hover:underline">
+            {data.length > 0 ? (
+              data.map((item, index) => (
+                <React.Fragment key={item.id}>
+                  <tr className="border-b hover:bg-gray-50 text-sm">
+                    <td className="p-3">{item.partNumber}</td>
+                    <td className="p-3 whitespace-nowrap">{item.partDescription}</td>
+                    <td className="p-3">{item.supplierName}</td>
+                    <td className="p-3">{item.qtyAvail}</td>
+                    <td className="p-3">{item.safetyStock}</td>
+                    <td className="p-3">$ {item.currentCost}</td>
+                    <td className="p-3">
                       <FaTrash
-                        className="text-red-500 cursor-pointer"
+                        className="text-red-500 cursor-pointer hover:scale-110 transition-transform"
                         onClick={() => {
                           setSelectedDeleteId(item.id);
                           setShowConfirm(true);
                         }}
                       />
-
-                      {showConfirm && selectedDeleteId && (
-                        <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-                          <div className="bg-white p-6 rounded-xl shadow-lg">
-                            <h2 className="text-lg font-semibold mb-4">
-                              Are you sure?
-                            </h2>
-                            <p className="mb-4">
-                              Do you really want to delete this process?
-                            </p>
-                            <div className="flex justify-end space-x-3">
-                              <button
-                                className="px-4 py-2 bg-gray-300 rounded"
-                                onClick={() => {
-                                  setShowConfirm(false);
-                                  setSelectedDeleteId(null);
-                                }}
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                className="px-4 py-2 bg-red-500 text-white rounded"
-                                onClick={() => {
-                                  if (selectedDeleteId) {
-                                    handleDelete(selectedDeleteId);
-                                    setShowConfirm(false);
-                                    setSelectedDeleteId(null);
-                                  }
-                                }}
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </button>
-                  </td>
-                </tr>
-
-                {editingRow === index && (
-                  <tr className="bg-gray-50">
-                    <td colSpan={3} className="p-3 font-semibold text-gray-600">
-                      {item.partDescription}
-                    </td>
-                    <td className="p-3">
-                      <label className="font-semibold text-xs">
-                        Quantity Available
-                      </label>
-                      <input
-                        type="number"
-                        name="qty"
-                        value={editedData.qty}
-                        onChange={handleChange}
-                        className="border px-3 py-2 rounded-md w-full"
-                      />
-                    </td>
-                    <td className="p-3">
-                      <label className="font-semibold text-xs">
-                        Safety Stock
-                      </label>
-                      <input
-                        type="number"
-                        name="stock"
-                        value={editedData.stock}
-                        onChange={handleChange}
-                        className="border px-3 py-2 rounded-md w-full"
-                      />
-                    </td>
-                    <td className="p-3">
-                      <label className="font-semibold text-xs">
-                        Current Cost
-                      </label>
-                      <input
-                        type="number"
-                        name="cost"
-                        value={editedData.cost}
-                        onChange={handleChange}
-                        className="border px-3 py-2 rounded-md w-full"
-                      />
-                    </td>
-                    <td className="p-3">
-                      <button
-                        onClick={() => handleUpdate(index)}
-                        className="bg-brand text-white px-3 py-1 rounded-md"
-                      >
-                        Update
-                      </button>
                     </td>
                   </tr>
-                )}
-              </React.Fragment>
-            ))}
+                </React.Fragment>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={7} className="text-center p-10 text-gray-500">
+                  {loading ? "Loading data..." : "No records found."}
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
 
-        <div className="flex justify-between items-center mt-4 p-2">
+        {/* Pagination Controls */}
+        <div className="flex justify-between items-center mt-4 p-4 border-t">
           <button
-            onClick={goToPreviousPage}
-            disabled={currentPage === 1}
-            className={`px-2 py-2 rounded-md ${
-              currentPage === 1 ? "bg-gray-300" : "bg-brand text-white"
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1 || loading}
+            className={`px-4 py-2 rounded-md transition ${
+              currentPage === 1 ? "bg-gray-200 text-gray-400" : "bg-blue-600 text-white hover:bg-blue-700"
             }`}
           >
             Previous
           </button>
-          <span>
-            Page {currentPage} of {totalPages}
+          <span className="font-medium">
+            Page {currentPage} of {totalPages || 1}
           </span>
           <button
-            onClick={goToNextPage}
-            disabled={currentPage === totalPages}
-            className={`px-4 py-2 rounded-md ${
-              currentPage === totalPages ? "bg-gray-300" : "bg-brand text-white"
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages || loading}
+            className={`px-4 py-2 rounded-md transition ${
+              currentPage === totalPages ? "bg-gray-200 text-gray-400" : "bg-blue-600 text-white hover:bg-blue-700"
             }`}
           >
             Next
           </button>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal (Moved outside loop for performance) */}
+      {showConfirm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[100]">
+          <div className="bg-white p-6 rounded-xl shadow-2xl w-96">
+            <h2 className="text-lg font-bold mb-2">Confirm Delete</h2>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete this item? This action cannot be undone.
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
+                onClick={() => {
+                  setShowConfirm(false);
+                  setSelectedDeleteId(null);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

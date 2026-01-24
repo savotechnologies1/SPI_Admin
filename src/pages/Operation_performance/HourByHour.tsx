@@ -290,6 +290,7 @@ const HourByHour = () => {
           <div key={index} className="bg-white">
             <ProcessTable
               processName={process.processName}
+              machineName={process.machineName}
               hourlyData={process.hourlyData}
               total={process.total}
               employees={process.employees}

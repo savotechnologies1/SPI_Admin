@@ -107,21 +107,43 @@ const LiveProductionGoal = () => {
     pieChartData: [],
   });
   const [processTablesData, setProcessTablesData] = useState([]);
+  const [loading, setLoading] = useState(true); // 1. Loader state
 
   useEffect(() => {
-    // Fetch overview data
-    fetch(`${BASE_URL}/api/admin/production/overview`)
-      .then((res) => res.json())
-      .then((data) => setOverviewData(data))
-      .catch((error) => console.error("Error fetching overview:", error));
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        // दोनों API को एक साथ fetch करने के लिए Promise.all का उपयोग
+        const [overviewRes, processRes] = await Promise.all([
+          fetch(`${BASE_URL}/api/admin/production/overview`),
+          fetch(`${BASE_URL}/api/admin/production/processes/hourly`)
+        ]);
 
-    // Fetch hourly process data
-    fetch(`${BASE_URL}/api/admin/production/processes/hourly`)
-      .then((res) => res.json())
-      .then((data) => setProcessTablesData(data.allProcessData))
-      .catch((error) => console.error("Error fetching process data:", error));
+        const overview = await overviewRes.json();
+        const processData = await processRes.json();
+
+        setOverviewData(overview);
+        setProcessTablesData(processData.allProcessData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false); // 2. Data load होने के बाद loader बंद
+      }
+    };
+
+    fetchData();
   }, []);
-
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[80vh]">
+        <div className="relative">
+          <div className="h-16 w-16 rounded-full border-t-4 border-b-4 border-blue-500 animate-spin"></div>
+          <p className="mt-4 font-semibold text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
   console.log("2222222222222222", processTablesData);
   return (
     <div className="p-4 mt-5">
@@ -164,6 +186,7 @@ const LiveProductionGoal = () => {
           <div key={index} className="bg-white">
             <ProcessTable
               processName={process.processName}
+              machineName={process.machineName}
               hourlyData={process.hourlyData}
               total={process.total}
               employees={process.employees}

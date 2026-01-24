@@ -194,11 +194,13 @@ const Training = () => {
     order_date,
   } = jobData;
   console.log("partpart", jobData);
+  // const rows = [
+  //   { part: part.partNumber, date: order_date },
+  //   { part: upcommingParts, date: upcommingOrder },
+  // ];
   const rows = [
-    { part: part.partNumber, date: order_date },
-    { part: upcommingParts, date: upcommingOrder },
+    { part: part?.partNumber || part?.partDescription, date: order_date },
   ];
-
   return (
     <div className="bg-[#F5F6FA] min-h-screen flex flex-col">
       <div className="bg-[#243C75] relative">

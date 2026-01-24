@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { FaCircle } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaCircle, FaSpinner } from "react-icons/fa";
 import Machine from "./Machine";
 import HourByHour from "./HourByHour";
 import Dive from "./Dive";
@@ -10,33 +10,40 @@ const tabs = ["Hour by Hour", "Dive"];
 
 const OperationPerformance = () => {
   const [activeTab, setActiveTab] = useState("Hour by Hour");
-  const [startDate, setStartDate] = useState(new Date("2024-08-25"));
-  const [endDate, setEndDate] = useState(new Date("2025-11-25"));
-  const renderTabContent = () => {
-    switch (activeTab) {
-      // case "Machine":
-      //   return (
-      //     <p>
-      //      <Machine/>
-      //     </p>
-      //   );
-      case "Hour by Hour":
-        return (
-          <p>
-            <HourByHour />
-          </p>
-        );
-
-      case "Dive":
-        return (
-          <p>
-            <Dive />
-          </p>
-        );
-      default:
-        return null;
-    }
-  };
+  
+  const [loading, setLoading] = useState(true); // Loading state
+    useEffect(() => {
+      setLoading(true);
+      
+      // Yahan aap apna real API call kar sakte hain
+      const timer = setTimeout(() => {
+        setLoading(false);
+      }, 1000); // 1 second ka delay simulate kiya hai
+  
+      return () => clearTimeout(timer);
+    }, [activeTab]);
+  
+ const renderTabContent = () => {
+     // Agar loading hai toh content ki jagah loader dikhao
+     if (loading) {
+       return (
+         <div className="flex flex-col items-center justify-center h-64">
+           <FaSpinner className="w-10 h-10 animate-spin text-brand" />
+           <p className="mt-2 text-gray-500 font-medium">Loading data...</p>
+         </div>
+       );
+     }
+ 
+     switch (activeTab) {
+       case "Hour by Hour":
+         return <HourByHour />;
+       case "Dive":
+         return <Dive />;
+       default:
+         return null;
+     }
+   };
+ 
   return (
     <div>
       <div className="p-4 md:p-7">

@@ -502,7 +502,7 @@ const RunSchedule = () => {
       toast.error(error.response.data.message);
       if (error?.status === 404) {
         setNoJob(true);
-        // navigate("/station-login");
+        navigate("/station-login");
       }
     } finally {
       setLoading(false);

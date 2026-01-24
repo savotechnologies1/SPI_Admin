@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   Bar,
   BarChart,
+  CartesianGrid,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -449,8 +450,249 @@ import DatePicker from "react-datepicker";
 
 // export default Dive;
 
+// const Dive = () => {
+//   const [selectedStation, setSelectedStation] = useState<string>("");
+//   const [selectedEmployee, setSelectedEmployee] = useState<string>("");
+//   const [productivityTable, setProductivityTable] = useState<any[]>([]);
+//   const [startDate, setStartDate] = useState(new Date());
+//   const [endDate, setEndDate] = useState(new Date());
+//   const [dashboardData, setDashboardData] = useState<any>({
+//     processMetrics: [],
+//     stations: [],
+//     employees: [],
+//     partsCompleted: [],
+//     avgCycleTime: [],
+//   });
+
+//   const BASE_URL = import.meta.env.VITE_SERVER_URL;
+
+//   const getData = async () => {
+//     try {
+//       let url = `${BASE_URL}/api/admin/dive-chart-data`;
+//       const params = new URLSearchParams();
+
+//       if (startDate) params.append("startDate", startDate.toISOString());
+//       if (endDate) params.append("endDate", endDate.toISOString());
+//       const res = await axios.get(`${url}?${params.toString()}`);
+//       const rawData = res.data.data;
+
+//       setProductivityTable(res.data.productivity);
+//       const processed = processApiData(rawData);
+//       setDashboardData(processed);
+//       if (!selectedStation && processed.stations.length > 0)
+//         setSelectedStation(processed.stations[0]);
+//     } catch (error) {
+//       console.error("Error fetching data:", error);
+//     }
+//   };
+
+//   useEffect(() => {
+//     getData();
+//   }, [startDate, endDate]);
+
+//   const processApiData = (data: any[]) => {
+//     const uniqueStations = new Set<string>();
+//     const uniqueEmployees = new Set<string>();
+//     const processStats: any = {};
+
+//     data.forEach((item) => {
+//       uniqueStations.add(item.processName);
+//       if (item.employee) uniqueEmployees.add(item.employee);
+
+//       if (!processStats[item.processName]) {
+//         processStats[item.processName] = {
+//           text: item.processName,
+//           effTotal: 0,
+//           prodTotal: 0,
+//           ctTotal: 0,
+//           count: 0,
+//         };
+//       }
+//       processStats[item.processName].effTotal += parseFloat(item.efficiency);
+//       processStats[item.processName].prodTotal += parseFloat(item.productivity);
+//       processStats[item.processName].ctTotal +=
+//         parseFloat(item.avgCycleTime) || 0;
+//       processStats[item.processName].count++;
+//     });
+
+//     const processMetrics = Object.values(processStats).map((s: any) => ({
+//       text: s.text,
+//       efficiency: (s.effTotal / s.count).toFixed(1) + "%",
+//       productivity: (s.prodTotal / s.count).toFixed(1) + "%",
+//       avgCycle: (s.ctTotal / s.count).toFixed(2),
+//     }));
+
+//     return {
+//       processMetrics,
+//       stations: Array.from(uniqueStations),
+//       employees: Array.from(uniqueEmployees),
+//       partsCompleted: data,
+//       avgCycleTime: processMetrics.map((m) => ({
+//         name: m.text,
+//         avgCycle: parseFloat(m.avgCycle),
+//       })),
+//     };
+//   };
+
+//   const filteredParts = dashboardData.partsCompleted.filter(
+//     (p: any) =>
+//       (!selectedStation || p.processName === selectedStation) &&
+//       (!selectedEmployee || p.employee === selectedEmployee)
+//   );
+
+//   return (
+//     <div className="p-4">
+//       <div className="flex items-center gap-2 justify-end mb-4">
+//         <DatePicker
+//           selected={startDate}
+//           onChange={(d) => setStartDate(d!)}
+//           className="border p-1 rounded"
+//         />
+//         <span>to</span>
+//         <DatePicker
+//           selected={endDate}
+//           onChange={(d) => setEndDate(d!)}
+//           className="border p-1 rounded"
+//         />
+//       </div>
+
+//       <div className="flex flex-col md:flex-row gap-4">
+//         <div className="md:w-[60%] grid grid-cols-2 gap-4">
+//           {dashboardData.processMetrics.map((item: any, i: number) => (
+//             <div
+//               key={i}
+//               className={`p-4 bg-white rounded shadow ${
+//                 selectedStation === item.text ? "ring-2 ring-blue-500" : ""
+//               }`}
+//             >
+//               <h3 className="font-bold text-center border-b mb-2">
+//                 {item.text}
+//               </h3>
+//               <div className="flex justify-between">
+//                 <div>
+//                   <p className="text-xs text-gray-500">Efficiency</p>
+//                   <p className="font-bold">{item.efficiency}</p>
+//                 </div>
+//                 <div>
+//                   <p className="text-xs text-gray-500">Productivity</p>
+//                   <p className="font-bold">{item.productivity}</p>
+//                 </div>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+
+//         <div className="md:w-[20%] bg-white p-4 rounded shadow">
+//           <h3 className="font-bold mb-2">Stations</h3>
+//           {dashboardData.stations.map((s: string) => (
+//             <label
+//               key={s}
+//               className="flex items-center gap-2 mb-1 cursor-pointer"
+//             >
+//               <input
+//                 type="radio"
+//                 checked={selectedStation === s}
+//                 onChange={() => setSelectedStation(s)}
+//               />
+//               <span className="text-sm">{s}</span>
+//             </label>
+//           ))}
+//         </div>
+
+//         <div className="md:w-[20%] bg-white p-4 rounded shadow">
+//           <h3 className="font-bold mb-2">Employees</h3>
+//           <label className="flex items-center gap-2 mb-1 cursor-pointer">
+//             <input
+//               type="radio"
+//               checked={selectedEmployee === ""}
+//               onChange={() => setSelectedEmployee("")}
+//             />
+//             <span className="text-sm">All Employees</span>
+//           </label>
+//           {dashboardData.employees.map((e: string) => (
+//             <label
+//               key={e}
+//               className="flex items-center gap-2 mb-1 cursor-pointer"
+//             >
+//               <input
+//                 type="radio"
+//                 checked={selectedEmployee === e}
+//                 onChange={() => setSelectedEmployee(e)}
+//               />
+//               <span className="text-sm">{e}</span>
+//             </label>
+//           ))}
+//         </div>
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+//         <div className="bg-white p-4 rounded shadow overflow-x-auto">
+//           <h3 className="font-bold mb-3">Parts Completed</h3>
+//           <table className="w-full text-sm">
+//             <thead>
+//               <tr className="bg-gray-50 text-left">
+//                 <th>Process</th>
+//                 <th>Part</th>
+//                 <th>Employee</th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {filteredParts.map((p: any, i: number) => (
+//                 <tr key={i} className="border-t">
+//                   <td>{p.processName}</td>
+//                   <td>{p.partNumber}</td>
+//                   <td>{p.employee}</td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+
+//         <div className="bg-white p-4 rounded shadow">
+//           <h3 className="font-bold mb-3">Avg Cycle Time (min)</h3>
+//           <ResponsiveContainer width="100%" height={250}>
+//             <BarChart data={dashboardData.avgCycleTime}>
+//               <XAxis dataKey="name" />
+//               <YAxis />
+//               <Tooltip />
+//               <Bar dataKey="avgCycle" fill="#4664C2" />
+//             </BarChart>
+//           </ResponsiveContainer>
+//         </div>
+//       </div>
+
+//       <div className="bg-white p-4 rounded shadow mt-6 overflow-x-auto">
+//         <h3 className="font-bold mb-3">Employee Wise Productivity</h3>
+//         <table className="w-full text-sm">
+//           <thead className="bg-gray-50">
+//             <tr>
+//               <th>Process</th>
+//               <th>Employee</th>
+//               <th>Avg CT</th>
+//               <th>Qty</th>
+//               <th>Scrap</th>
+//               <th>Prod %</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {productivityTable.map((item, i) => (
+//               <tr key={i} className="border-t text-center">
+//                 <td>{item.processName}</td>
+//                 <td>{item.employeeName}</td>
+//                 <td>{item.CT}</td>
+//                 <td>{item.Qty}</td>
+//                 <td>{item.Scrap}</td>
+//                 <td>{item.Prod}</td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       </div>
+//     </div>
+//   );
+// };
 const Dive = () => {
-  const [selectedStation, setSelectedStation] = useState<string>("");
+  const [selectedStation, setSelectedStation] = useState<string>(""); // Ab ye machineName store karega
   const [selectedEmployee, setSelectedEmployee] = useState<string>("");
   const [productivityTable, setProductivityTable] = useState<any[]>([]);
   const [startDate, setStartDate] = useState(new Date());
@@ -472,12 +714,15 @@ const Dive = () => {
 
       if (startDate) params.append("startDate", startDate.toISOString());
       if (endDate) params.append("endDate", endDate.toISOString());
+      
       const res = await axios.get(`${url}?${params.toString()}`);
       const rawData = res.data.data;
 
-      setProductivityTable(res.data.productivity);
+      setProductivityTable(res.data.productivity || []);
       const processed = processApiData(rawData);
       setDashboardData(processed);
+      
+      // Default selection machineName se hogi
       if (!selectedStation && processed.stations.length > 0)
         setSelectedStation(processed.stations[0]);
     } catch (error) {
@@ -490,32 +735,34 @@ const Dive = () => {
   }, [startDate, endDate]);
 
   const processApiData = (data: any[]) => {
-    const uniqueStations = new Set<string>();
+    const uniqueMachines = new Set<string>();
     const uniqueEmployees = new Set<string>();
-    const processStats: any = {};
+    const machineStats: any = {};
 
     data.forEach((item) => {
-      uniqueStations.add(item.processName);
+      const mName = item.machineName || item.processName; // Machine name ko priority di
+      uniqueMachines.add(mName);
       if (item.employee) uniqueEmployees.add(item.employee);
 
-      if (!processStats[item.processName]) {
-        processStats[item.processName] = {
-          text: item.processName,
+      if (!machineStats[mName]) {
+        machineStats[mName] = {
+          text: mName,
+          process: item.processName,
           effTotal: 0,
           prodTotal: 0,
           ctTotal: 0,
           count: 0,
         };
       }
-      processStats[item.processName].effTotal += parseFloat(item.efficiency);
-      processStats[item.processName].prodTotal += parseFloat(item.productivity);
-      processStats[item.processName].ctTotal +=
-        parseFloat(item.avgCycleTime) || 0;
-      processStats[item.processName].count++;
+      machineStats[mName].effTotal += parseFloat(item.efficiency) || 0;
+      machineStats[mName].prodTotal += parseFloat(item.productivity) || 0;
+      machineStats[mName].ctTotal += parseFloat(item.avgCycleTime) || 0;
+      machineStats[mName].count++;
     });
 
-    const processMetrics = Object.values(processStats).map((s: any) => ({
+    const processMetrics = Object.values(machineStats).map((s: any) => ({
       text: s.text,
+      process: s.process,
       efficiency: (s.effTotal / s.count).toFixed(1) + "%",
       productivity: (s.prodTotal / s.count).toFixed(1) + "%",
       avgCycle: (s.ctTotal / s.count).toFixed(2),
@@ -523,7 +770,7 @@ const Dive = () => {
 
     return {
       processMetrics,
-      stations: Array.from(uniqueStations),
+      stations: Array.from(uniqueMachines),
       employees: Array.from(uniqueEmployees),
       partsCompleted: data,
       avgCycleTime: processMetrics.map((m) => ({
@@ -533,155 +780,173 @@ const Dive = () => {
     };
   };
 
+  // Filter logic updated to use machineName
   const filteredParts = dashboardData.partsCompleted.filter(
     (p: any) =>
-      (!selectedStation || p.processName === selectedStation) &&
+      (!selectedStation || p.machineName === selectedStation) &&
       (!selectedEmployee || p.employee === selectedEmployee)
   );
 
   return (
-    <div className="p-4">
-      <div className="flex items-center gap-2 justify-end mb-4">
+    <div className="p-4 space-y-6">
+      {/* Date Filters */}
+      <div className="flex items-center gap-2 justify-end mb-4 bg-white p-2 rounded shadow-sm">
+        <span className="text-sm font-medium">Filter:</span>
         <DatePicker
           selected={startDate}
           onChange={(d) => setStartDate(d!)}
-          className="border p-1 rounded"
+          className="border p-1 rounded text-sm"
         />
-        <span>to</span>
+        <span className="text-gray-400">to</span>
         <DatePicker
           selected={endDate}
           onChange={(d) => setEndDate(d!)}
-          className="border p-1 rounded"
+          className="border p-1 rounded text-sm"
         />
       </div>
 
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="md:w-[60%] grid grid-cols-2 gap-4">
+        {/* Metrics Cards */}
+        <div className="md:w-[60%] grid grid-cols-1 sm:grid-cols-2 gap-4">
           {dashboardData.processMetrics.map((item: any, i: number) => (
             <div
               key={i}
-              className={`p-4 bg-white rounded shadow ${
-                selectedStation === item.text ? "ring-2 ring-blue-500" : ""
+              onClick={() => setSelectedStation(item.text)}
+              className={`p-4 bg-white rounded shadow-sm border-t-4 cursor-pointer transition-all ${
+                selectedStation === item.text ? "border-blue-600 scale-[1.02] shadow-md" : "border-transparent"
               }`}
             >
-              <h3 className="font-bold text-center border-b mb-2">
+              <h3 className="font-bold text-sm text-gray-700 truncate mb-2" title={item.text}>
                 {item.text}
               </h3>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-end">
                 <div>
-                  <p className="text-xs text-gray-500">Efficiency</p>
-                  <p className="font-bold">{item.efficiency}</p>
+                  <p className="text-[10px] uppercase text-gray-400 font-semibold">Efficiency</p>
+                  <p className="text-lg font-bold text-blue-600">{item.efficiency}</p>
                 </div>
-                <div>
-                  <p className="text-xs text-gray-500">Productivity</p>
-                  <p className="font-bold">{item.productivity}</p>
+                <div className="text-right">
+                  <p className="text-[10px] uppercase text-gray-400 font-semibold">Productivity</p>
+                  <p className="text-lg font-bold text-green-600">{item.productivity}</p>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="md:w-[20%] bg-white p-4 rounded shadow">
-          <h3 className="font-bold mb-2">Stations</h3>
+        {/* Stations/Machines List */}
+        <div className="md:w-[20%] bg-white p-4 rounded shadow-sm max-h-[300px] overflow-y-auto">
+          <h3 className="font-bold text-gray-700 mb-3 border-b pb-1">Machines</h3>
           {dashboardData.stations.map((s: string) => (
-            <label
-              key={s}
-              className="flex items-center gap-2 mb-1 cursor-pointer"
-            >
+            <label key={s} className="flex items-center gap-2 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
               <input
                 type="radio"
+                name="station"
+                className="w-4 h-4 text-blue-600"
                 checked={selectedStation === s}
                 onChange={() => setSelectedStation(s)}
               />
-              <span className="text-sm">{s}</span>
+              <span className="text-xs font-medium text-gray-600 truncate">{s}</span>
             </label>
           ))}
         </div>
 
-        <div className="md:w-[20%] bg-white p-4 rounded shadow">
-          <h3 className="font-bold mb-2">Employees</h3>
-          <label className="flex items-center gap-2 mb-1 cursor-pointer">
+        {/* Employees List */}
+        <div className="md:w-[20%] bg-white p-4 rounded shadow-sm max-h-[300px] overflow-y-auto">
+          <h3 className="font-bold text-gray-700 mb-3 border-b pb-1">Employees</h3>
+          <label className="flex items-center gap-2 mb-2 cursor-pointer">
             <input
               type="radio"
+              name="employee"
               checked={selectedEmployee === ""}
               onChange={() => setSelectedEmployee("")}
             />
-            <span className="text-sm">All Employees</span>
+            <span className="text-xs font-medium">All Employees</span>
           </label>
           {dashboardData.employees.map((e: string) => (
-            <label
-              key={e}
-              className="flex items-center gap-2 mb-1 cursor-pointer"
-            >
+            <label key={e} className="flex items-center gap-2 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
               <input
                 type="radio"
+                name="employee"
                 checked={selectedEmployee === e}
                 onChange={() => setSelectedEmployee(e)}
               />
-              <span className="text-sm">{e}</span>
+              <span className="text-xs font-medium text-gray-600">{e}</span>
             </label>
           ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <div className="bg-white p-4 rounded shadow overflow-x-auto">
-          <h3 className="font-bold mb-3">Parts Completed</h3>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-50 text-left">
-                <th>Process</th>
-                <th>Part</th>
-                <th>Employee</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredParts.map((p: any, i: number) => (
-                <tr key={i} className="border-t">
-                  <td>{p.processName}</td>
-                  <td>{p.partNumber}</td>
-                  <td>{p.employee}</td>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Parts Completed Table */}
+        <div className="bg-white p-4 rounded shadow-sm">
+          <h3 className="font-bold text-gray-700 mb-4 flex justify-between">
+            Parts Completed 
+            <span className="text-xs font-normal text-gray-400">Showing: {selectedStation || "All"}</span>
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 text-gray-600 text-left">
+                  <th className="p-2">Machine</th>
+                  <th className="p-2">Part Number</th>
+                  <th className="p-2">Employee</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredParts.length > 0 ? (
+                  filteredParts.map((p: any, i: number) => (
+                    <tr key={i} className="border-t hover:bg-gray-50">
+                      <td className="p-2 text-xs text-blue-600 font-medium">{p.machineName}</td>
+                      <td className="p-2 text-xs">{p.partNumber}</td>
+                      <td className="p-2 text-xs text-gray-500">{p.employee}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr><td colSpan={3} className="p-4 text-center text-gray-400">No data available</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div className="bg-white p-4 rounded shadow">
-          <h3 className="font-bold mb-3">Avg Cycle Time (min)</h3>
+        {/* Avg Cycle Time Chart */}
+        <div className="bg-white p-4 rounded shadow-sm">
+          <h3 className="font-bold text-gray-700 mb-4">Avg Cycle Time by Machine (min)</h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={dashboardData.avgCycleTime}>
-              <XAxis dataKey="name" />
-              <YAxis />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="name" tick={{fontSize: 10}} interval={0} />
+              <YAxis tick={{fontSize: 10}} />
               <Tooltip />
-              <Bar dataKey="avgCycle" fill="#4664C2" />
+              <Bar dataKey="avgCycle" fill="#4664C2" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded shadow mt-6 overflow-x-auto">
-        <h3 className="font-bold mb-3">Employee Wise Productivity</h3>
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              <th>Process</th>
-              <th>Employee</th>
-              <th>Avg CT</th>
-              <th>Qty</th>
-              <th>Scrap</th>
-              <th>Prod %</th>
+      {/* Employee Wise Productivity Table */}
+      <div className="bg-white p-4 rounded shadow-sm overflow-x-auto">
+        <h3 className="font-bold text-gray-700 mb-4">Employee Performance Detail</h3>
+        <table className="w-full text-sm border-collapse">
+          <thead>
+            <tr className="bg-gray-800 text-white">
+              <th className="p-2">Process</th>
+              <th className="p-2">Employee</th>
+              <th className="p-2">Avg CT</th>
+              <th className="p-2">Qty</th>
+              <th className="p-2">Scrap</th>
+              <th className="p-2">Prod %</th>
             </tr>
           </thead>
           <tbody>
             {productivityTable.map((item, i) => (
-              <tr key={i} className="border-t text-center">
-                <td>{item.processName}</td>
-                <td>{item.employeeName}</td>
-                <td>{item.CT}</td>
-                <td>{item.Qty}</td>
-                <td>{item.Scrap}</td>
-                <td>{item.Prod}</td>
+              <tr key={i} className="border-b text-center hover:bg-gray-50">
+                <td className="p-2">{item.processName}</td>
+                <td className="p-2 font-medium">{item.employeeName}</td>
+                <td className="p-2">{item.CT} min</td>
+                <td className="p-2 font-bold text-blue-600">{item.Qty}</td>
+                <td className="p-2 text-red-500">{item.Scrap}</td>
+                <td className="p-2 bg-green-50 font-bold">{item.Prod}</td>
               </tr>
             ))}
           </tbody>
@@ -690,5 +955,4 @@ const Dive = () => {
     </div>
   );
 };
-
 export default Dive;

@@ -453,19 +453,20 @@ const CurrentStatus = () => {
   const [loading, setLoading] = useState(true);
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
-  // Helper: targetPerHour se minutes nikalne ke liye (Graph ke liye)
   const calculateMinutesFromTarget = (target: number) => {
     return target > 0 ? 60 / target : 0;
   };
 
-  // Aggregate data (Avoid duplicates and handle JSON structure)
   const aggregateData = (data: any[]) => {
     const map = new Map();
 
     data.forEach((item) => {
+      console.log('itemitemitemitemitem',item);
+      
       if (!map.has(item.processName)) {
         map.set(item.processName, {
           processName: item.processName,
+          machineName: item.machineName || "N/A", // <-- Machine Name yahan store kiya
           scheduled: 0,
           actual: 0,
           scrap: 0,
@@ -478,11 +479,15 @@ const CurrentStatus = () => {
       entry.scheduled += Number(item.scheduled || 0);
       entry.actual += Number(item.actual || 0);
       entry.scrap += Number(item.scrap || 0);
-      entry.parts.push({ process: item.processName, desc: item.partId });
+      // Parts list mein bhi machine name add kar sakte hain agar zaroorat ho
+      entry.parts.push({ 
+        process: item.processName, 
+        desc: item.partDescription, 
+        machine: item.machineName 
+      });
     });
 
     return Array.from(map.values()).map((entry) => {
-      // Calculate derived fields based on aggregated totals
       const efficiency =
         entry.targetPerHour > 0
           ? ((entry.actual / entry.targetPerHour) * 100).toFixed(1) + "%"
@@ -504,14 +509,10 @@ const CurrentStatus = () => {
     });
   };
 
-  // Fetch data from API
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          `${BASE_URL}/api/admin/current-status-overview`
-        );
-        // FIX: res.data.details ko pass karna hai kyunki array wahan hai
+        const res = await axios.get(`${BASE_URL}/api/admin/current-status-overview`);
         if (res.data && res.data.details) {
           const transformed = aggregateData(res.data.details);
           setProcessData(transformed);
@@ -531,112 +532,115 @@ const CurrentStatus = () => {
   };
 
   const currentProcess = processData.find((p) => p.processName === selected);
-
-  if (loading) return <p className="p-6">Loading...</p>;
+console.log('currentProcesscurrentProcess',currentProcess)
+  if (loading) return <p className="p-6 text-center font-semibold">Loading data...</p>;
 
   return (
     <div className="p-6 space-y-8">
       {/* Header */}
       <div className="flex justify-between items-center flex-col md:flex-row">
         <div>
-          <h1 className="text-2xl font-bold">Current Status of Each Process</h1>
-          <p className="font-semibold text-base text-gray-600">Deep Dive</p>
+          <h1 className="text-2xl font-bold text-gray-800">Current Status of Each Process</h1>
+          <p className="font-semibold text-base text-gray-500">Deep Dive - {currentProcess?.machineName}</p>
         </div>
       </div>
 
-      {/* Top Stats: Actual & Scrap */}
+      {/* Top Stats */}
       <div className="flex gap-6 flex-col md:flex-row">
-        <div className="flex-1 flex justify-between items-center bg-white rounded-md shadow p-4">
+        <div className="flex-1 flex justify-between items-center bg-white rounded-md shadow p-5 border-l-4 border-blue-500">
           <div>
             <p className="font-bold text-3xl">{currentProcess?.actual || 0}</p>
-            <p className="text-gray-600">Actual</p>
+            <p className="text-gray-600">Actual Production</p>
           </div>
           <div className="relative">
-            <img className="w-16" src={shape_2} alt="" />
-            <div className="absolute right-2 top-4">
-              <img src={img2} alt="" />
-            </div>
+             <img className="w-16 opacity-20" src={shape_2} alt="" />
+             <img className="absolute right-2 top-4 w-8" src={img2} alt="" />
           </div>
         </div>
 
-        <div className="flex-1 flex justify-between items-center bg-white rounded-md shadow p-4">
+        <div className="flex-1 flex justify-between items-center bg-white rounded-md shadow p-5 border-l-4 border-red-500">
           <div>
             <p className="font-bold text-3xl">{currentProcess?.scrap || 0}</p>
-            <p className="text-gray-600">Scrap</p>
+            <p className="text-gray-600">Total Scrap</p>
           </div>
           <div className="relative">
-            <img className="w-16" src={shape_3} alt="" />
-            <div className="absolute right-2 top-4">
-              <img src={img3} alt="" />
-            </div>
+             <img className="w-16 opacity-20" src={shape_3} alt="" />
+             <img className="absolute right-2 top-4 w-8" src={img3} alt="" />
           </div>
         </div>
       </div>
 
-      {/* Efficiency & Productivity + Station List */}
       <div className="flex flex-col md:flex-row gap-6">
+        {/* Efficiency Card */}
         <div className="flex-1 bg-white p-6 rounded-md shadow flex flex-col gap-6">
-          <h2 className="text-center font-semibold text-lg">{selected}</h2>
+          <div className="text-center">
+             <h2 className="font-bold text-xl text-brand">{currentProcess?.processName}</h2>
+             <p className="text-sm text-gray-400">{currentProcess?.machineName}</p>
+          </div>
           <div className="flex justify-around">
             <div className="text-center">
-              <p className="font-bold text-xl">
-                {currentProcess?.efficiency || "0%"}
-              </p>
-              <p className="text-gray-600 text-sm">Efficiency</p>
+              <p className="font-bold text-2xl text-green-600">{currentProcess?.efficiency || "0%"}</p>
+              <p className="text-gray-500 text-xs uppercase tracking-wider">Efficiency</p>
             </div>
             <div className="text-center">
-              <p className="font-bold text-xl">
-                {currentProcess?.productivity || "0%"}
-              </p>
-              <p className="text-gray-600 text-sm">Productivity</p>
+              <p className="font-bold text-2xl text-blue-600">{currentProcess?.productivity || "0%"}</p>
+              <p className="text-gray-500 text-xs uppercase tracking-wider">Productivity</p>
             </div>
           </div>
         </div>
 
+        {/* Stations List Update */}
         <div className="w-full md:w-1/3 bg-white p-6 rounded-md shadow">
-          <h2 className="text-lg font-semibold mb-4">Stations</h2>
-          <div className="flex flex-col gap-3">
+          <h2 className="text-lg font-semibold mb-4 border-b pb-2">Stations & Machines</h2>
+          <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-2">
             {processData.map((p, index) => (
               <div
                 key={index}
-                className={`flex items-center gap-3 cursor-pointer p-2 rounded ${
+                className={`flex flex-col cursor-pointer p-3 rounded-md transition-all ${
                   selected === p.processName
-                    ? "bg-[#0F2B36] text-white"
-                    : "hover:bg-gray-100"
+                    ? "bg-[#0F2B36] text-white shadow-lg"
+                    : "bg-gray-50 hover:bg-gray-100 text-gray-700"
                 }`}
                 onClick={() => handleSelect(p.processName)}
               >
-                <span className="text-sm">{p.processName}</span>
+                <span className="font-bold text-sm">{p.processName}</span>
+                <span className={`text-[11px] ${selected === p.processName ? "text-gray-300" : "text-gray-500"}`}>
+                   Machine: {p.machineName}
+                </span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Parts Completed + Avg Cycle Time */}
+      {/* Parts & Chart Section */}
       <div className="flex flex-col md:flex-row gap-6">
         <div className="flex-1 bg-white rounded-lg shadow-md p-6">
           <h2 className="text-lg font-semibold mb-4">Parts Completed</h2>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-100 text-gray-600">
-                <th className="py-2 px-4 text-left">Process Name</th>
-                <th className="py-2 px-4 text-left">Part ID</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentProcess?.parts?.map((item: any, index: number) => (
-                <tr key={index} className="border-b">
-                  <td className="py-2 px-4">{item.process}</td>
-                  <td className="py-2 px-4">{item.desc}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+                <thead>
+                <tr className="bg-gray-100 text-gray-600">
+                    <th className="py-2 px-4 text-left">Process</th>
+                    <th className="py-2 px-4 text-left">Machine</th>
+                    <th className="py-2 px-4 text-left">Part ID</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                {currentProcess?.parts?.map((item: any, index: number) => (
+                    <tr key={index} className="border-b hover:bg-gray-50">
+                    <td className="py-2 px-4">{item.process}</td>
+                    <td className="py-2 px-4 text-gray-500">{item.machine}</td>
+                    <td className="py-2 px-4 font-mono">{item.desc}</td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+          </div>
         </div>
 
         <div className="w-full md:w-1/3 bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-lg font-semibold mb-4">Avg Cycle Time</h2>
+          <h2 className="text-lg font-semibold mb-4">Avg Cycle Time (Min)</h2>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart
               data={[
@@ -647,11 +651,9 @@ const CurrentStatus = () => {
               ]}
             >
               <XAxis dataKey="name" />
-              <YAxis
-                label={{ value: "Minutes", angle: -90, position: "insideLeft" }}
-              />
-              <Tooltip />
-              <Bar dataKey="avgCycle" fill="#4664C2" barSize={50} />
+              <YAxis />
+              <Tooltip cursor={{fill: 'transparent'}} />
+              <Bar dataKey="avgCycle" fill="#4664C2" barSize={40} radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

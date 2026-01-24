@@ -274,7 +274,7 @@ const StockOrderScheduleList: React.FC = () => {
                         {rowItem.part?.partNumber || "N/A"}
                       </td>
                       <td className="px-4 py-3">
-                        {rowItem.part?.process?.processName || "N/A"}
+                        {rowItem.part?.process?.processName || "N/A"}  ({rowItem.part?.process?.machineName })
                       </td>
                       <td className="px-4 py-3">
                         {formatDate(rowItem.order_date)}

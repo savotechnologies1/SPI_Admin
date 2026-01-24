@@ -32,7 +32,9 @@ const SupplierReturn = ({ qualityData }) => {
                 <td className="px-4 py-4 text-sm sm:text-base">
                   {item && item.part && item.part.process
                     ? item.part.process.processName
-                    : "-"}
+                    : "-"} ( {item && item.part && item.part.process
+                    ? item.part.process.machineName
+                    : "-"})
                 </td>
 
                 <td className="px-4 py-4 text-sm sm:text-base">
