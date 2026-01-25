@@ -312,7 +312,7 @@ const StepsBar = ({ partId }: { partId: string }) => {
           <option value="">All Processes</option>
           {processData.map((item: any) => (
             <option key={item.id} value={item.id}>
-              {item.processName || item.name}
+              {item.processName || item.name} ({item.machineName})
             </option>
           ))}
         </select>
