@@ -692,7 +692,7 @@ const RunSchedule = () => {
                 <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold break-words leading-snug text-white px-2">
                   Process Name :
                   <span className="text-md font-medium">
-                    {part?.process?.processName || "No Available"}
+                    {part?.process?.processName || "No Available"} ( {part?.process?.machineName })
                   </span>
                 </p>
               </div>
