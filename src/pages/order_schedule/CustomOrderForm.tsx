@@ -15,6 +15,7 @@ import {
   selectProductNumber,
   selectPartNumber,
   selectProcess,
+  getProductParts,
 } from "./https/schedulingApis";
 import { useNavigate } from "react-router-dom";
 
@@ -617,7 +618,7 @@ const CustomOrderForm = () => {
     null
   );
   const [singleUnitCost, setSingleUnitCost] = useState<number | null>(null);
-
+  const [inventoryList, setInventoryList] = useState<any[]>([]);
   const [bomEntries, setBomEntries] = useState<BOMEntry[]>([
     {
       partNumber: "",
@@ -736,6 +737,12 @@ const CustomOrderForm = () => {
       }
     }
   };
+  const STATIC_PRODUCT_LIST = [
+    { id: "P001", name: "Steel Plate - Grade A", category: "Raw Material", price: "$45.00" },
+    { id: "P002", name: "Aluminum Rod 10mm", category: "Extrusion", price: "$12.50" },
+    { id: "P003", name: "Copper Wire spool", category: "Electrical", price: "$85.00" },
+    { id: "P004", name: "Bolts M8 x 50mm", category: "Fasteners", price: "$0.50" },
+  ];
   const handleSuggestionClick = (index: number, selectedPart: any) => {
     const updatedBOM = [...bomEntries];
 
@@ -765,6 +772,7 @@ const CustomOrderForm = () => {
     setBomEntries(updatedBOM);
     setSuggestions((prev) => ({ ...prev, [index]: [] }));
   };
+
   const handleBOMProcessChange = (index: number, processId: string) => {
     const updatedBOM = [...bomEntries];
     updatedBOM[index] = { ...updatedBOM[index], processId: processId };
@@ -775,7 +783,29 @@ const CustomOrderForm = () => {
     setBomEntries(updated);
     toast.success("BOM Entries Saved locally");
   };
+  const handleDeleteInventoryItem = (index: number) => {
+  // Confirm karein ki list update ho rahi hai
+  const updatedList = inventoryList.filter((_, i) => i !== index);
+  setInventoryList(updatedList);
+  
+  // Note: Agar aapne manually niche wale section (Assign Part Number) mein bhi same item rakha hai 
+  // toh use delete karne ki zarurat nahi jab tak user khud na chahe.
+};
 
+  // 2. Update Function: Kisi bhi field (qty, cycleTime etc) ko update karne ke liye
+  const handleUpdateInventoryItem = (index: number, field: string, value: any) => {
+    const updatedList = [...inventoryList];
+
+    // Agar nested object (process) update karna hai
+    if (field === 'processName') {
+      updatedList[index].process = { ...updatedList[index].process, processName: value };
+    } else {
+      updatedList[index][field] = value;
+    }
+
+    setInventoryList(updatedList);
+  };
+  
   return (
     <>
       <ToastContainer
@@ -787,44 +817,93 @@ const CustomOrderForm = () => {
         <Formik
           initialValues={initialFormValues}
           validationSchema={customOrderValidation} // Uncomment if you have validation
-          onSubmit={async (values, { setSubmitting, resetForm }) => {
-            try {
-              const formattedBOM = bomEntries
-                .filter((item) => item.partId && item.partId !== "") // Sirf valid parts lein
-                .map((item) => ({
-                  partId: item.partId,
-                  qty: item.qty,
-                  processId: item.processId,
-                  totalTime: item.cycleTime,
-                  // aur jo fields backend ko chahiye
-                }));
+          // onSubmit={async (values, { setSubmitting, resetForm }) => {
+          //   try {
+          //     const formattedBOM = bomEntries
+          //       .filter((item) => item.partId && item.partId !== "") // Sirf valid parts lein
+          //       .map((item) => ({
+          //         partId: item.partId,
+          //         qty: item.qty,
+          //         processId: item.processId,
+          //         totalTime: item.cycleTime,
+          //         // aur jo fields backend ko chahiye
+          //       }));
 
-              const finalData = {
-                ...values,
-                bomList: formattedBOM,
-              };
+          //     const finalData = {
+          //       ...values,
+          //       bomList: formattedBOM,
+          //     };
 
-              const res = await addCustomOrder(finalData);
-              console.log("resresr1111111111111111111111es");
-              resetForm({
-                values: {
-                  ...initialFormValues,
-                  orderNumber: generateNewOrderNumber(),
-                },
-              });
-              if (res.status === 201) {
-                toast.success(res.data.message);
+          //     const res = await addCustomOrder(finalData);
+          //     console.log("resresr1111111111111111111111es");
+          //     resetForm({
+          //       values: {
+          //         ...initialFormValues,
+          //         orderNumber: generateNewOrderNumber(),
+          //       },
+          //     });
+          //     if (res.status === 201) {
+          //       toast.success(res.data.message);
 
-                navigate("/custom-order-schedule");
-              }
-              setSelectedCustomerId(null);
-              setSingleUnitCost(null);
-            } catch (error) {
-              console.error("Submission error:", error);
-            } finally {
-              setSubmitting(false);
-            }
-          }}
+          //       navigate("/custom-order-schedule");
+          //     }
+          //     setSelectedCustomerId(null);
+          //     setSingleUnitCost(null);
+          //   } catch (error) {
+          //     console.error("Submission error:", error);
+          //   } finally {
+          //     setSubmitting(false);
+          //   }
+          // }}
+
+
+    onSubmit={async (values, { setSubmitting, resetForm }) => {
+  try {
+    // A. Table (inventoryList) mein jo items bache hain unhe map karein
+    const productParts = inventoryList.map((item) => ({
+      partId: item.part_id,
+      partNumber: item.partNumber,
+      qty: item.qty,
+      processId: item.processId || item.process?.id || "",
+      totalTime: item.cycleTime,
+      instructionRequired: item.instructionRequired === "Yes" || item.instructionRequired === true,
+    }));
+
+    // B. Manual entries (Assign Part Number section) se valid data lein
+    const manualParts = bomEntries
+      .filter((item) => item.partId) // Sirf wo jisme part select kiya gaya ho
+      .map((item) => ({
+        partId: item.partId,
+        partNumber: item.partNumber,
+        qty: item.qty,
+        processId: item.processId,
+        totalTime: item.cycleTime,
+        instructionRequired: item.instructionRequired === "Yes",
+      }));
+
+    // C. Dono ko combine karein (Ab is list mein deleted items nahi honge)
+    const combinedBOM = [...productParts, ...manualParts];
+
+    const finalData = {
+      ...values,
+      bomList: combinedBOM, // Backend ko filter ki hui final list jayegi
+    };
+
+    const res = await addCustomOrder(finalData);
+    
+    if (res.status === 201) {
+      toast.success("Custom Order Created!");
+      resetForm();
+      setInventoryList([]); // Form clear hone par list reset
+      setBomEntries([{ partNumber: "", qty: "", process: "", cycleTime: "", instructionRequired: "", isSaved: false }]);
+      navigate("/custom-order-schedule");
+    }
+  } catch (error) {
+    toast.error("Error creating order");
+  } finally {
+    setSubmitting(false);
+  }
+}}
         >
           {({ values, setFieldValue, errors, touched, isSubmitting }) => {
             const handleCustomerSelectChange = (
@@ -856,31 +935,64 @@ const CustomOrderForm = () => {
               }
             };
 
-            const handleProductSelectChange = (
-              e: React.ChangeEvent<HTMLSelectElement>
-            ) => {
-              const selectedProductId = e.target.value;
-              setFieldValue("productId", selectedProductId);
-              if (selectedProductId) {
-                const selected = productList.find(
-                  (p) => p.productId === selectedProductId
-                );
-                if (selected) {
-                  const unitCost = selected.cost;
-                  const quantity = 1; // Default quantity to 1
-                  setSingleUnitCost(unitCost);
-                  setFieldValue("cost", unitCost.toFixed(2));
-                  setFieldValue("productQuantity", quantity);
-                  setFieldValue("totalCost", (unitCost * quantity).toFixed(2));
-                }
-              } else {
-                setSingleUnitCost(null);
-                setFieldValue("cost", "");
-                setFieldValue("productQuantity", "");
-                setFieldValue("totalCost", "");
-              }
-            };
+            // const handleProductSelectChange = (
+            //   e: React.ChangeEvent<HTMLSelectElement>
+            // ) => {
+            //   const selectedProductId = e.target.value;
+            //   setFieldValue("productId", selectedProductId);
+            //   if (selectedProductId) {
+            //     const selected = productList.find(
+            //       (p) => p.productId === selectedProductId
+            //     );
+            //     if (selected) {
+            //       const unitCost = selected.cost;
+            //       const quantity = 1; // Default quantity to 1
+            //       setSingleUnitCost(unitCost);
+            //       setFieldValue("cost", unitCost.toFixed(2));
+            //       setFieldValue("productQuantity", quantity);
+            //       setFieldValue("totalCost", (unitCost * quantity).toFixed(2));
+            //     }
+            //   } else {
+            //     setSingleUnitCost(null);
+            //     setFieldValue("cost", "");
+            //     setFieldValue("productQuantity", "");
+            //     setFieldValue("totalCost", "");
+            //   }
+            // };
 
+         const handleProductSelectChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const selectedProductId = e.target.value;
+  setFieldValue("productId", selectedProductId);
+
+  if (selectedProductId) {
+    // Existing Cost Logic...
+    const selected = productList.find((p) => p.productId === selectedProductId);
+    if (selected) {
+       setSingleUnitCost(selected.cost);
+       setFieldValue("cost", selected.cost.toFixed(2));
+       setFieldValue("productQuantity", 1);
+       setFieldValue("totalCost", selected.cost.toFixed(2));
+    }
+
+    try {
+      const partsData = await getProductParts(selectedProductId);
+      if (partsData && partsData.length > 0) {
+        // Data format set karna taaki update aur delete smoothly chalein
+        const formattedParts = partsData.map((part: any) => ({
+          ...part,
+          // Process ID ko top level par rakhna asaan hota hai update ke liye
+          processId: part.process?.id || "", 
+          instructionRequired: part.instructionRequired ? "Yes" : "No"
+        }));
+        setInventoryList(formattedParts);
+      }
+    } catch (error) {
+      console.error("Error fetching parts:", error);
+    }
+  } else {
+    setInventoryList([]);
+  }
+};
             const handlePartSelectChange = (
               e: React.ChangeEvent<HTMLSelectElement>
             ) => {
@@ -931,11 +1043,10 @@ const CustomOrderForm = () => {
                     <Field
                       name="shipDate"
                       type="date"
-                      className={`border py-3 px-4 rounded-md w-full ${
-                        touched.shipDate && errors.shipDate
+                      className={`border py-3 px-4 rounded-md w-full ${touched.shipDate && errors.shipDate
                           ? "border-red-500"
                           : ""
-                      }`}
+                        }`}
                     />
                     <ErrorMessage
                       name="shipDate"
@@ -956,11 +1067,10 @@ const CustomOrderForm = () => {
                           : ""
                       }
                       onChange={handleCustomerSelectChange}
-                      className={`border px-2 py-3 rounded-md w-full ${
-                        touched.customerId && errors.customerId
+                      className={`border px-2 py-3 rounded-md w-full ${touched.customerId && errors.customerId
                           ? "border-red-500"
                           : ""
-                      }`}
+                        }`}
                     >
                       <option value="">Select a customer</option>
                       <option value="new">➕ Add New Customer</option>
@@ -982,13 +1092,11 @@ const CustomOrderForm = () => {
                       name="customerName"
                       readOnly={selectedCustomerId !== null}
                       placeholder="Enter Customer Name"
-                      className={`border py-3 px-4 rounded-md w-full ${
-                        selectedCustomerId !== null ? "bg-gray-100" : ""
-                      } ${
-                        touched.customerName && errors.customerName
+                      className={`border py-3 px-4 rounded-md w-full ${selectedCustomerId !== null ? "bg-gray-100" : ""
+                        } ${touched.customerName && errors.customerName
                           ? "border-red-500"
                           : ""
-                      }`}
+                        }`}
                     />
                     <ErrorMessage
                       name="customerName"
@@ -1003,13 +1111,11 @@ const CustomOrderForm = () => {
                       type="email"
                       readOnly={selectedCustomerId !== null}
                       placeholder="Enter Customer Email"
-                      className={`border py-3 px-4 rounded-md w-full ${
-                        selectedCustomerId !== null ? "bg-gray-100" : ""
-                      } ${
-                        touched.customerEmail && errors.customerEmail
+                      className={`border py-3 px-4 rounded-md w-full ${selectedCustomerId !== null ? "bg-gray-100" : ""
+                        } ${touched.customerEmail && errors.customerEmail
                           ? "border-red-500"
                           : ""
-                      }`}
+                        }`}
                     />
                     <ErrorMessage
                       name="customerEmail"
@@ -1023,13 +1129,11 @@ const CustomOrderForm = () => {
                       name="customerPhone"
                       readOnly={selectedCustomerId !== null}
                       placeholder="Enter Customer Phone"
-                      className={`border py-3 px-4 rounded-md w-full ${
-                        selectedCustomerId !== null ? "bg-gray-100" : ""
-                      } ${
-                        touched.customerPhone && errors.customerPhone
+                      className={`border py-3 px-4 rounded-md w-full ${selectedCustomerId !== null ? "bg-gray-100" : ""
+                        } ${touched.customerPhone && errors.customerPhone
                           ? "border-red-500"
                           : ""
-                      }`}
+                        }`}
                     />
                     <ErrorMessage
                       name="customerPhone"
@@ -1046,11 +1150,10 @@ const CustomOrderForm = () => {
                       name="productId"
                       value={values.productId}
                       onChange={handleProductSelectChange}
-                      className={`border px-2 py-3 rounded-md w-full ${
-                        touched.productId && errors.productId
+                      className={`border px-2 py-3 rounded-md w-full ${touched.productId && errors.productId
                           ? "border-red-500"
                           : ""
-                      }`}
+                        }`}
                     >
                       <option value="">Select a product</option>
                       {productList.map((p) => (
@@ -1081,11 +1184,10 @@ const CustomOrderForm = () => {
                       placeholder="Quantity"
                       onChange={handleQuantityChange}
                       min="1"
-                      className={`border py-3 px-4 rounded-md w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-                        touched.productQuantity && errors.productQuantity
+                      className={`border py-3 px-4 rounded-md w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${touched.productQuantity && errors.productQuantity
                           ? "border-red-500"
                           : ""
-                      }`}
+                        }`}
                     />
                     <ErrorMessage
                       name="productQuantity"
@@ -1347,6 +1449,83 @@ const CustomOrderForm = () => {
                         >
                           + Add
                         </button>
+                        <div className="mt-4 border rounded-lg overflow-hidden shadow-sm">
+                          <div className="bg-gray-100 p-3 font-bold border-b flex justify-between items-center">
+                            <span>Product Components (Editable)</span>
+                            {/* <span className="text-xs font-normal text-gray-500">Changes here only affect this order</span> */}
+                          </div>
+                          <table className="min-w-full bg-white text-sm">
+                            <thead className="bg-gray-50">
+                              <tr>
+                                <th className="px-4 py-2 text-left">Part Number</th>
+                                <th className="px-4 py-2 text-left w-24">Qty</th>
+                                <th className="px-4 py-2 text-left">Process</th>
+                                <th className="px-4 py-2 text-left w-32">Cycle Time (min)</th>
+                                <th className="px-4 py-2 text-center">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {inventoryList.length > 0 ? (
+                                inventoryList.map((item, idx) => (
+                                  <tr key={idx} className="border-t hover:bg-gray-50">
+                                    {/* Part Number - Read Only or Editable */}
+                                    <td className="px-4 py-2 font-medium">
+                                      {item.partNumber}
+                                    </td>
+
+                                    {/* Quantity - Editable */}
+                                    <td className="px-4 py-2">
+                                      <input
+                                        type="number"
+                                        value={item.qty}
+                                        onChange={(e) => handleUpdateInventoryItem(idx, 'qty', e.target.value)}
+                                        className="border rounded px-2 py-1 w-full focus:outline-blue-500"
+                                      />
+                                    </td>
+
+                                    {/* Process Name - Editable */}
+                                    <td className="px-4 py-2">
+                                      <input
+                                        type="text"
+                                        value={item.process?.processName || ""}
+                                        onChange={(e) => handleUpdateInventoryItem(idx, 'processName', e.target.value)}
+                                        className="border rounded px-2 py-1 w-full focus:outline-blue-500"
+                                      />
+                                    </td>
+
+                                    {/* Cycle Time - Editable */}
+                                    <td className="px-4 py-2">
+                                      <input
+                                        type="text"
+                                        value={item.cycleTime}
+                                        onChange={(e) => handleUpdateInventoryItem(idx, 'cycleTime', e.target.value)}
+                                        className="border rounded px-2 py-1 w-full focus:outline-blue-500"
+                                      />
+                                    </td>
+
+                                    {/* Delete Action */}
+                                    <td className="px-4 py-2 text-center">
+                                      <button
+                                        type="button"
+                                        onClick={() => handleDeleteInventoryItem(idx)}
+                                        className="text-red-500 hover:text-red-700 p-1"
+                                        title="Delete Row"
+                                      >
+                                        <RiDeleteBin6Line size={18} />
+                                      </button>
+                                    </td>
+                                  </tr>
+                                ))
+                              ) : (
+                                <tr>
+                                  <td colSpan={5} className="px-4 py-10 text-center text-gray-400 italic">
+                                    No components found. Please select a product.
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     )}
                   </FieldArray>

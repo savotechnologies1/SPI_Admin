@@ -107,14 +107,151 @@ import StepsBar from "./StepsBar";
 
 import { useEffect } from "react";
 import axios from "axios";
+import { FaSpinner } from "react-icons/fa";
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
+// const ContinuousImprovement = () => {
+//   const [parts, setParts] = useState<
+//     { part_id: string; partDescription: string }[]
+//   >([]);
+//   const [selected, setSelected] = useState<string>("");
+
+//   useEffect(() => {
+//     fetchParts();
+//   }, []);
+
+//   const fetchParts = async () => {
+//     try {
+//       const res = await axios.get(`${BASE_URL}/api/frontLine/get-parts`);
+//       setParts(res.data);
+//       if (res.data.length > 0) setSelected(res.data[0].part_id);
+//     } catch (error) {
+//       console.error("Error fetching parts:", error);
+//     }
+//   };
+
+//   return (
+//     <div className="mt-10 px-4 sm:px-6">
+//       <h2 className="text-2xl font-bold mb-6 text-gray-800 mt-10">
+//         Continuous Improvement
+//       </h2>
+//       <div className="flex flex-col lg:flex-row gap-6 mb-6">
+//         <div className="w-full lg:w-[70%]">
+//           {selected && <CycleTime partId={selected} />}
+//         </div>
+//         <div className="w-full lg:w-[30%] bg-white p-4 rounded-md">
+//           <h2 className="text-lg font-semibold mb-4 mt-2">Part Desc</h2>
+
+//           <div className="flex flex-col gap-3">
+//             {parts.map((part) => (
+//               <div
+//                 key={part.part_id}
+//                 className="flex items-start gap-2 cursor-pointer"
+//                 onClick={() => setSelected(part.part_id)}
+//               >
+//                 <div
+//                   className={`w-5 h-5 flex items-center justify-center border shrink-0 ${
+//                     selected === part.part_id ? "bg-[#0F2B36] text-black" : ""
+//                   }`}
+//                 >
+//                   {selected === part.part_id && (
+//                     <span className="w-3 bg-white rounded-sm"></span>
+//                   )}
+//                 </div>
+
+//                 <span
+//                   className={`text-sm break-words whitespace-normal line-clamp-2 ${
+//                     selected === part.part_id ? "text-black" : "text-gray-700"
+//                   }`}
+//                 >
+//                   {part.partDescription}
+//                 </span>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Steps Graph */}
+//       {selected && <StepsBar partId={selected} />}
+//     </div>
+//   );
+// };
+
+// export default ContinuousImprovement;
+
+// const ContinuousImprovement = () => {
+//   const [parts, setParts] = useState<{ part_id: string; partDescription: string }[]>([]);
+//   const [selected, setSelected] = useState<string>("");
+
+//   useEffect(() => {
+//     fetchParts();
+//   }, []);
+
+//   const fetchParts = async () => {
+//     try {
+//       const res = await axios.get(`${BASE_URL}/api/frontLine/get-parts`);
+//       setParts(res.data);
+//       if (res.data.length > 0) setSelected(res.data[0].part_id);
+//     } catch (error) {
+//       console.error("Error fetching parts:", error);
+//     }
+//   };
+
+//   return (
+//     <div className="mt-10 px-4 sm:px-6">
+//       <h2 className="text-2xl font-bold mb-6 text-gray-800 mt-10">
+//         Continuous Improvement
+//       </h2>
+      
+//       <div className="flex flex-col lg:flex-row gap-6 mb-6">
+//         <div className="w-full lg:w-[70%]">
+//           {selected && <CycleTime partId={selected} />}
+//         </div>
+
+//         {/* --- Dropdown Section --- */}
+//         <div className="w-full lg:w-[30%] bg-white p-4 rounded-md shadow-sm border border-gray-100">
+//           <label htmlFor="part-select" className="block text-lg font-semibold mb-4 text-gray-700">
+//             Select Part Description
+//           </label>
+          
+//           <select
+//             id="part-select"
+//             value={selected}
+//             onChange={(e) => setSelected(e.target.value)}
+//             className="w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block"
+//           >
+//             <option value="" disabled>Choose a part...</option>
+//             {parts.map((part) => (
+//               <option key={part.part_id} value={part.part_id}>
+//                 {part.partDescription}
+//               </option>
+//             ))}
+//           </select>
+          
+//           {/* Optional: Selected Part ka naam dikhane ke liye niche text */}
+//           {/* {selected && (
+//             <p className="mt-4 text-xs text-gray-500">
+//               Selected ID: <span className="font-mono">{selected}</span>
+//             </p>
+//           )} */}
+//         </div>
+//       </div>
+
+//       {/* Steps Graph */}
+//       {selected && <StepsBar partId={selected} />}
+//     </div>
+//   );
+// };
+
+// export default ContinuousImprovement;
+
+
 const ContinuousImprovement = () => {
-  const [parts, setParts] = useState<
-    { part_id: string; partDescription: string }[]
-  >([]);
+  const [parts, setParts] = useState<{ part_id: string; partDescription: string }[]>([]);
   const [selected, setSelected] = useState<string>("");
+  const [loadingParts, setLoadingParts] = useState(true); // 🔹 Loading state
 
   useEffect(() => {
     fetchParts();
@@ -122,53 +259,55 @@ const ContinuousImprovement = () => {
 
   const fetchParts = async () => {
     try {
+      setLoadingParts(true);
       const res = await axios.get(`${BASE_URL}/api/frontLine/get-parts`);
       setParts(res.data);
       if (res.data.length > 0) setSelected(res.data[0].part_id);
     } catch (error) {
       console.error("Error fetching parts:", error);
+    } finally {
+      setLoadingParts(false);
     }
   };
 
   return (
-    <div className="mt-10 px-4 sm:px-6">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 mt-10">
+    <div className="mt-10 px-4 sm:px-6 min-h-screen bg-gray-50 pb-10">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 pt-5">
         Continuous Improvement
       </h2>
+      
       <div className="flex flex-col lg:flex-row gap-6 mb-6">
         <div className="w-full lg:w-[70%]">
-          {selected && <CycleTime partId={selected} />}
+          {/* CycleTime component will handle its own loader inside */}
+          {selected && <CycleTime partId={selected} />} 
         </div>
-        <div className="w-full lg:w-[30%] bg-white p-4 rounded-md">
-          <h2 className="text-lg font-semibold mb-4 mt-2">Part Desc</h2>
 
-          <div className="flex flex-col gap-3">
-            {parts.map((part) => (
-              <div
-                key={part.part_id}
-                className="flex items-start gap-2 cursor-pointer"
-                onClick={() => setSelected(part.part_id)}
-              >
-                <div
-                  className={`w-5 h-5 flex items-center justify-center border shrink-0 ${
-                    selected === part.part_id ? "bg-[#0F2B36] text-black" : ""
-                  }`}
-                >
-                  {selected === part.part_id && (
-                    <span className="w-3 bg-white rounded-sm"></span>
-                  )}
-                </div>
-
-                <span
-                  className={`text-sm break-words whitespace-normal line-clamp-2 ${
-                    selected === part.part_id ? "text-black" : "text-gray-700"
-                  }`}
-                >
+        {/* --- Dropdown Section --- */}
+        <div className="w-full lg:w-[30%] bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <label htmlFor="part-select" className="block text-sm font-bold mb-3 text-gray-600 uppercase tracking-wider">
+            Select Part Description
+          </label>
+          
+          {loadingParts ? (
+            <div className="flex items-center gap-2 text-blue-600">
+              <FaSpinner className="animate-spin" />
+              <span className="text-sm">Loading parts...</span>
+            </div>
+          ) : (
+            <select
+              id="part-select"
+              value={selected}
+              onChange={(e) => setSelected(e.target.value)}
+              className="w-full p-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none block transition-all"
+            >
+              <option value="" disabled>Choose a part...</option>
+              {parts.map((part) => (
+                <option key={part.part_id} value={part.part_id}>
                   {part.partDescription}
-                </span>
-              </div>
-            ))}
-          </div>
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       </div>
 

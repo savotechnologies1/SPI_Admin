@@ -766,6 +766,9 @@ const RunSchedule = () => {
               <p className=" text-sm md:text-base">
                 Scrap Qty: {jobData.employeeScrapQty}
               </p>
+                 <p className=" text-sm md:text-base">
+               Order Type: {jobData.order_type}
+              </p>
             </div>
           </div>
         </div>

@@ -161,7 +161,7 @@ const TimeClockList = () => {
                       <option value="">Select Process</option>
                       {processList.map((process) => (
                         <option key={process.id} value={process.name}>
-                          {process.name}
+                          {process.name} ({process.machineName})
                         </option>
                       ))}
                     </select>
@@ -240,7 +240,7 @@ const TimeClockList = () => {
                           </div>
                         </td>
                         <td className="px-2 py-3 text-xs md:text-sm font-medium hidden sm:table-cell">
-                          {item.process}
+                          {item.process} ({item.machineName})
                         </td>
                         <td className="px-2 py-3 text-xs md:text-sm font-medium">
                           {item.hours}

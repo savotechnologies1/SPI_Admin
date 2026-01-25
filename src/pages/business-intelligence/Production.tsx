@@ -18,6 +18,8 @@ import {
   PointElement,
   LineElement,
   Title,
+  Tooltip,
+  Legend,
 } from "chart.js";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title);
@@ -271,46 +273,191 @@ const data_1 = [
 
 // export default Production;
 
+// const Production = () => {
+//   const [chartData, setChartData] = useState<
+//     { processName: string; efficiency: number }[]
+//   >([]);
+//   const [totals, setTotals] = useState<{
+//     totalEfficiency: number;
+//     totalScrapCost: number;
+//     totalSupplierReturnCost: number;
+//   }>({ totalEfficiency: 0, totalScrapCost: 0, totalSupplierReturnCost: 0 });
+//   const BASE_URL = import.meta.env.VITE_SERVER_URL;
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const res = await axios.get(
+//           `${BASE_URL}/api/admin/production-efficiency`
+//         );
+//         setChartData(res.data.data);
+//         setTotals(res.data.totals); // set totals for display
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     };
+//     fetchData();
+//   }, []);
+
+//   const data = {
+//     labels: chartData.map((item) => `${item.processName} (${item.machineName})`),
+//     datasets: [
+//       {
+//         label: "Production Efficiency (%)",
+//         data: chartData.map((item) => item.efficiency),
+//         borderColor: "#052C89",
+//         backgroundColor: "rgba(5, 44, 137, 0.1)",
+//         fill: true, // area under line
+//         tension: 0.4, // smooth curve
+//         yAxisID: "y1",
+//         pointBackgroundColor: "#052C89",
+//         pointRadius: 5, // bigger dots
+//         pointHoverRadius: 7, // hover effect
+//       },
+//     ],
+//   };
+
+//   const options = {
+//     responsive: true,
+//     maintainAspectRatio: false,
+//     plugins: {
+//       tooltip: {
+//         callbacks: {
+//           label: (context: { dataset: any; raw: any }) => {
+//             if (context.dataset.label === "Production Efficiency (%)") {
+//               return `${context.raw}%`;
+//             }
+//             return `₹${context.raw}`;
+//           },
+//         },
+//       },
+//       legend: { display: true },
+//     },
+//     scales: {
+//       y1: {
+//         type: "linear",
+//         position: "left",
+//         beginAtZero: true,
+//         max: 100,
+//         ticks: { callback: (value: any) => `${value}%` },
+//         title: { display: true, text: "Efficiency (%)" },
+//       },
+//     },
+//   };
+//   console.log("optionsoptions", options);
+
+//   // Data cards for totals
+//   const totalsCards = [
+//     {
+//       text: "Total Efficiency",
+//       num: `${totals.totalEfficiency}%`,
+//       scrap_img: "/icons/efficiency.png",
+//     },
+//     {
+//       text: "Total Scrap Cost",
+//       num: `$${totals.totalScrapCost}`,
+//       scrap_img: "/icons/scrap.png",
+//     },
+//     {
+//       text: "Total Supplier Return",
+//       num: `$${totals.totalSupplierReturnCost}`,
+//       scrap_img: "/icons/return.png",
+//     },
+//   ];
+
+//   return (
+//     <div className="p-4">
+//       <h1 className="font-semibold text-2xl mb-4">Production</h1>
+
+//       {/* Totals Cards */}
+//       <div className="flex flex-col md:flex-row gap-4 mb-6">
+//         {totalsCards.map((item, index) => (
+//           <div
+//             key={index}
+//             className="flex flex-col justify-between bg-white rounded-md w-full p-4 shadow-md"
+//           >
+//             <div className="flex items-center gap-2">
+//               <img className="w-10" src={item.scrap_img} alt="" />
+//               <div>
+//                 <p className="text-sm text-gray-600">{item.text}</p>
+//                 <p className="font-bold text-xl">{item.num}</p>
+//               </div>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+
+//       {/* Chart */}
+//       <div className="p-6 bg-white shadow-md rounded-lg w-full">
+//         <h2 className="text-xl font-semibold mb-4">
+//           Production Efficiency by Process
+//         </h2>
+//         <div className="w-full h-64 md:h-80 lg:h-96">
+//           <Line data={data} options={options} />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Production;
+
+
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+
 const Production = () => {
-  const [chartData, setChartData] = useState<
-    { processName: string; efficiency: number }[]
-  >([]);
-  const [totals, setTotals] = useState<{
-    totalEfficiency: number;
-    totalScrapCost: number;
-    totalSupplierReturnCost: number;
-  }>({ totalEfficiency: 0, totalScrapCost: 0, totalSupplierReturnCost: 0 });
+  const [chartData, setChartData] = useState<any[]>([]);
+  const [totals, setTotals] = useState({
+    totalEfficiency: 0,
+    totalScrapCost: 0,
+    totalSupplierReturnCost: 0,
+  });
+
+  // --- Today's Date Helper ---
+  const getTodayDate = () => {
+    const today = new Date();
+    // Local date ko YYYY-MM-DD format mein lane ke liye
+    return today.toLocaleDateString('en-CA'); 
+  };
+
+  const [startDate, setStartDate] = useState(getTodayDate());
+  const [endDate, setEndDate] = useState(getTodayDate());
+
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
+  // Fetch data function
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `${BASE_URL}/api/admin/production-efficiency`
+          `${BASE_URL}/api/admin/production-efficiency`,
+          {
+            params: { startDate, endDate } // Backend ko dates bhej rahe hain
+          }
         );
         setChartData(res.data.data);
-        setTotals(res.data.totals); // set totals for display
+        setTotals(res.data.totals);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching data:", error);
       }
     };
     fetchData();
-  }, []);
+  }, [startDate, endDate, BASE_URL]); // Date badalte hi automatic fetch hoga
 
   const data = {
-    labels: chartData.map((item) => `${item.processName} (${item.machineName})`),
+    labels: chartData.map((item) => `${item.processName} (${item.machineName || 'N/A'})`),
     datasets: [
       {
         label: "Production Efficiency (%)",
         data: chartData.map((item) => item.efficiency),
         borderColor: "#052C89",
         backgroundColor: "rgba(5, 44, 137, 0.1)",
-        fill: true, // area under line
-        tension: 0.4, // smooth curve
+        fill: true,
+        tension: 0.4,
         yAxisID: "y1",
         pointBackgroundColor: "#052C89",
-        pointRadius: 5, // bigger dots
-        pointHoverRadius: 7, // hover effect
+        pointRadius: 5,
       },
     ],
   };
@@ -318,80 +465,95 @@ const Production = () => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: {
-      tooltip: {
-        callbacks: {
-          label: (context: { dataset: any; raw: any }) => {
-            if (context.dataset.label === "Production Efficiency (%)") {
-              return `${context.raw}%`;
-            }
-            return `₹${context.raw}`;
-          },
-        },
-      },
-      legend: { display: true },
-    },
     scales: {
       y1: {
-        type: "linear",
-        position: "left",
         beginAtZero: true,
         max: 100,
         ticks: { callback: (value: any) => `${value}%` },
-        title: { display: true, text: "Efficiency (%)" },
       },
     },
   };
-  console.log("optionsoptions", options);
 
-  // Data cards for totals
   const totalsCards = [
-    {
-      text: "Total Efficiency",
-      num: `${totals.totalEfficiency}%`,
-      scrap_img: "/icons/efficiency.png",
-    },
-    {
-      text: "Total Scrap Cost",
-      num: `$${totals.totalScrapCost}`,
-      scrap_img: "/icons/scrap.png",
-    },
-    {
-      text: "Total Supplier Return",
-      num: `$${totals.totalSupplierReturnCost}`,
-      scrap_img: "/icons/return.png",
-    },
+    { text: "Total Efficiency", num: `${totals.totalEfficiency}%`, img:scrap_cost },
+    { text: "Total Scrap Cost", num: `₹${totals.totalScrapCost}`, img: scrap_cost},
+    { text: "Total Supplier Return", num: `₹${totals.totalSupplierReturnCost}`, img:supplier_return },
   ];
 
   return (
-    <div className="p-4">
-      <h1 className="font-semibold text-2xl mb-4">Production</h1>
+    <div className="p-4 bg-gray-50 min-h-screen">
+      {/* Header with Date Picker */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <h1 className="font-semibold text-2xl text-gray-800">Production Dashboard</h1>
+
+        {/* --- Date Picker UI Start --- */}
+        <div className="flex items-center gap-2 bg-white p-2 rounded-lg shadow-sm border border-gray-200">
+          <div className="flex flex-col px-2">
+            <label className="text-[10px] font-bold text-gray-400 uppercase">From</label>
+            <input 
+              type="date" 
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="text-sm outline-none bg-transparent cursor-pointer"
+            />
+          </div>
+          <div className="h-8 w-[1px] bg-gray-200 mx-1"></div>
+          <div className="flex flex-col px-2">
+            <label className="text-[10px] font-bold text-gray-400 uppercase">To</label>
+            <input 
+              type="date" 
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="text-sm outline-none bg-transparent cursor-pointer"
+            />
+          </div>
+          { (startDate || endDate) && (
+            <button 
+              onClick={() => { setStartDate(""); setEndDate(""); }}
+              className="ml-2 p-1 text-red-500 hover:bg-red-50 rounded-full transition-colors"
+              title="Clear Filter"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </button>
+          )}
+        </div>
+        {/* --- Date Picker UI End --- */}
+      </div>
 
       {/* Totals Cards */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         {totalsCards.map((item, index) => (
-          <div
-            key={index}
-            className="flex flex-col justify-between bg-white rounded-md w-full p-4 shadow-md"
-          >
-            <div className="flex items-center gap-2">
-              <img className="w-10" src={item.scrap_img} alt="" />
-              <div>
-                <p className="text-sm text-gray-600">{item.text}</p>
-                <p className="font-bold text-xl">{item.num}</p>
-              </div>
+          <div key={index} className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+            <div className="p-3 bg-blue-50 rounded-lg">
+              <img className="w-8 h-8 object-contain" src={item.img} alt={item.text} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 font-medium">{item.text}</p>
+              <p className="font-bold text-2xl text-gray-800">{item.num}</p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Chart */}
-      <div className="p-6 bg-white shadow-md rounded-lg w-full">
-        <h2 className="text-xl font-semibold mb-4">
-          Production Efficiency by Process
-        </h2>
-        <div className="w-full h-64 md:h-80 lg:h-96">
-          <Line data={data} options={options} />
+      {/* Chart Section */}
+      <div className="p-6 bg-white shadow-sm rounded-xl border border-gray-100">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg font-bold text-gray-700">Efficiency by Process & Machine</h2>
+          <span className="text-xs font-medium px-2.5 py-0.5 rounded bg-blue-100 text-blue-800">Live Data</span>
+        </div>
+        <div className="w-full h-[400px]">
+          {chartData.length > 0 ? (
+            <Line data={data} options={options} />
+          ) : (
+            <div className="h-full flex flex-col items-center justify-center text-gray-400">
+              <svg className="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <p>No data found for the selected period</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

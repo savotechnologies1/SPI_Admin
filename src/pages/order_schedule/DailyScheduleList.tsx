@@ -293,10 +293,11 @@ const DailyScheduleList = () => {
             res.data.data.map((item: any) => ({
               product_name:
                 item.order?.product?.partNumber ||
-                item.order?.part?.partNumber ||
+                item.part?.partNumber ||
                 "-",
-              sub_name: item.order?.subName || "",
+              sub_name: item.subName || "",
               part: item.part?.process?.processName || "-",
+              machineName: item.part?.process?.machineName || "-",
               Schedule_Date: item.scheduleQuantity
                 ? new Date(item.order_date).toISOString().split("T")[0]
                 : "-",
@@ -348,7 +349,7 @@ const DailyScheduleList = () => {
             <option value="">All</option>
             {processes.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.name}
+                {p.name} (  {p.machineName})
               </option>
             ))}
           </select>
@@ -388,9 +389,9 @@ const DailyScheduleList = () => {
                 <tr key={index} className="border-b text-sm">
                   <td className="px-3 py-2 whitespace-nowrap">
                     <p>{item.product_name}</p>
-                    <p className="text-xs text-gray-500">{item.sub_name}</p>
+                    <p className="text-xs text-gray-500">{item.sub_name} </p>
                   </td>
-                  <td className="px-3 py-2 whitespace-nowrap">{item.part}</td>
+                  <td className="px-3 py-2 whitespace-nowrap">{item.part} ({item.machineName})</td>
                   <td className="px-3 py-2 flex flex-col whitespace-nowrap">
                     {item.Schedule_Date}
                     <span className="text-xs text-gray-500">
