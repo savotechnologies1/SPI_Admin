@@ -1371,7 +1371,6 @@
 
 // export default Inventory;
 
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -1380,62 +1379,79 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   CartesianGrid,
+  Legend,
   ResponsiveContainer,
 } from "recharts";
 
-type Period = "week" | "month" | "year";
+/* ---------------- Types ---------------- */
+
+type Period = "daily" | "weekly" | "monthly";
 
 interface ChartItem {
-  name: string;
+  date: string;      // X-axis formatted (system time)
+  rawDate: string;   // original date (tooltip)
   cost: number;
 }
 
+/* ---------------- Date Utils (Frontend Only) ---------------- */
+
+// System / Browser time ke according
+const formatShortDate = (date: string | Date) =>
+  new Intl.DateTimeFormat(undefined, {
+    day: "2-digit",
+    month: "short",
+  }).format(new Date(date));
+
+const formatFullDate = (date: string | Date) =>
+  new Intl.DateTimeFormat(undefined, {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(date));
+
+/* ---------------- Component ---------------- */
+
 const Inventory = () => {
-  const [period, setPeriod] = useState<Period>("month");
+  const [period, setPeriod] = useState<Period>("daily");
   const [chartData, setChartData] = useState<ChartItem[]>([]);
   const [totalInventoryCost, setTotalInventoryCost] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
-  const formatLabel = (date: string) => {
-    const d = new Date(date);
-
-    if (period === "year") {
-      return d.toLocaleString("en-US", { month: "short" }); // Jan
-    }
-
-    if (period === "week") {
-      return d.toLocaleString("en-US", { weekday: "short" }); // Mon
-    }
-
-    return d.getDate().toString(); // 1,2,3...
-  };
+  /* ---------------- API Call ---------------- */
 
   const fetchInventoryGraph = async () => {
     try {
+      setLoading(true);
+
       const res = await axios.get(
-        `${BASE_URL}/api/admin/inventory-data?period=${period}`,
+        `${BASE_URL}/api/admin/inventory-data?period=${period}`
       );
 
       const formatted: ChartItem[] = res.data.map((item: any) => ({
-        name: formatLabel(item.date),
+        date: formatShortDate(item.date), // X-axis (system time)
+        rawDate: item.date,
         cost: item.totalInventoryCost,
       }));
 
       setChartData(formatted);
 
-      // KPI = latest date ka inventory
+      // KPI → latest day inventory cost
       if (res.data.length > 0) {
         setTotalInventoryCost(
-          res.data[res.data.length - 1].totalInventoryCost,
+          res.data[res.data.length - 1].totalInventoryCost
         );
       } else {
         setTotalInventoryCost(0);
       }
     } catch (error) {
       console.error("Inventory graph error:", error);
+      setChartData([]);
+      setTotalInventoryCost(0);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -1443,51 +1459,70 @@ const Inventory = () => {
     fetchInventoryGraph();
   }, [period]);
 
+  /* ---------------- UI ---------------- */
+
   return (
     <div className="p-4">
       <h1 className="font-semibold text-2xl mb-4">Inventory</h1>
 
       {/* 🔹 Period Filter */}
-      <div className="mb-6">
-        <label className="mr-2 font-medium">Select Period:</label>
+      <div className="mb-6 flex items-center gap-2">
+        <label className="font-medium">Select Period:</label>
         <select
           value={period}
           onChange={(e) => setPeriod(e.target.value as Period)}
           className="border rounded px-3 py-1"
         >
-          <option value="week">Week</option>
-          <option value="month">Month</option>
-          <option value="year">Year</option>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
         </select>
       </div>
 
       {/* 🔹 KPI */}
       <div className="mb-6 p-4 border rounded-lg shadow bg-white">
         <h2 className="text-lg font-semibold">
-          Total Inventory Cost: $ {totalInventoryCost.toFixed(2)}
+          Total Inventory Cost: ₹ {totalInventoryCost.toFixed(2)}
         </h2>
+        {/* <p className="text-sm text-gray-500 mt-1">
+          Last updated: {formatFullDate(new Date())}
+        </p> */}
       </div>
 
-      {/* 🔹 Line Chart */}
+      {/* 🔹 Line Graph */}
       <div className="bg-white shadow-md rounded-2xl p-4">
-        <h2 className="text-lg font-medium mb-3">Inventory Trend</h2>
+        <h2 className="text-lg font-medium mb-3">
+          Inventory Trend (Date Wise)
+        </h2>
 
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={chartData}>
-            <CartesianGrid stroke="#e0e0e0" />
-            <XAxis dataKey="name" fontSize={11} />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="cost"
-              stroke="#8884d8"
-              strokeWidth={2}
-              dot={{ r: 4 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        {loading ? (
+          <p className="text-center py-10 text-gray-500">Loading graph...</p>
+        ) : (
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={chartData}>
+              <CartesianGrid stroke="#e0e0e0" />
+              <XAxis dataKey="date" fontSize={12} />
+              <YAxis />
+              <Tooltip
+                labelFormatter={(label, payload) =>
+                  payload?.[0]?.payload?.rawDate
+                    ? `Date: ${formatFullDate(
+                        payload[0].payload.rawDate
+                      )}`
+                    : label
+                }
+              />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="cost"
+                stroke="#4f46e5"
+                strokeWidth={3}
+                dot={{ r: 4 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   );
