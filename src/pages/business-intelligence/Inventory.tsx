@@ -1416,7 +1416,7 @@ const Inventory = () => {
   const fetchInventoryGraph = async () => {
     try {
       const res = await axios.get(
-        `${BASE_URL}/api/admin/inventory-graph?period=${period}`,
+        `${BASE_URL}/api/admin/inventory-data?period=${period}`,
       );
 
       const formatted: ChartItem[] = res.data.map((item: any) => ({
