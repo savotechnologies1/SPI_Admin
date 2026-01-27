@@ -1445,7 +1445,7 @@ const CustomOrderForm = () => {
                               <option value="">Select Process</option>
                               {processList.map((p) => (
                                 <option key={p.id} value={p.id}>
-                                  {p.name}
+                                  {p.name}    ({p.machineName})
                                 </option>
                               ))}
                             </select>
@@ -1538,7 +1538,7 @@ const CustomOrderForm = () => {
                                 <option value="">Select Process</option>
                                 {processList.map((p) => (
                                   <option key={p.id} value={p.id}>
-                                    {p.name}
+                                    {p.name}  ({p.machineName})
                                   </option>
                                 ))}
                               </Field>
@@ -1652,7 +1652,7 @@ const CustomOrderForm = () => {
                                         <option value="">Select Process</option>
                                         {processList.map((p) => (
                                           <option key={p.id} value={p.id}>
-                                            {p.name || p.processName}
+                                            {p.name || p.processName} ({p.machineName})
                                           </option>
                                         ))}
                                       </select>
