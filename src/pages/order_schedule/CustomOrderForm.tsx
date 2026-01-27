@@ -1584,7 +1584,7 @@ const CustomOrderForm = () => {
                         </button>
                         <div className="mt-4 border rounded-lg overflow-hidden shadow-sm">
                           <div className="bg-gray-100 p-3 font-bold border-b flex justify-between items-center">
-                            <span>Product Components (Editable)</span>
+                            <span>Product Parts </span>
                           </div>
                           <table className="min-w-full bg-white text-sm">
                             <thead className="bg-gray-50">

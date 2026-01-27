@@ -25,58 +25,6 @@ interface WorkInstructionItem {
   statusColor: string;
 }
 
-const mockData: WorkInstructionItem[] = [
-  {
-    id: "1",
-    imageUrl: "/avatar1.jpg",
-    name: "John Smith",
-    partDesc: "Cut Trim",
-    stepNumber: "Step 1",
-    description: "Remove burn and sharp edges",
-    submitDate: "18/09/2016",
-    statusColor: "green",
-  },
-  {
-    id: "2",
-    imageUrl: "/avatar2.jpg",
-    name: "Emily Johnson",
-    partDesc: "Cut Trim",
-    stepNumber: "Step 2",
-    description: "Remove burn and sharp edges",
-    submitDate: "12/06/2020",
-    statusColor: "yellow",
-  },
-  {
-    id: "3",
-    imageUrl: "/avatar3.jpg",
-    name: "Michael Brown",
-    partDesc: "Cut Trim",
-    stepNumber: "Step 3",
-    description: "Remove burn and sharp edges",
-    submitDate: "15/08/2017",
-    statusColor: "red",
-  },
-  {
-    id: "4",
-    imageUrl: "/avatar4.jpg",
-    name: "Sarah Wilson",
-    partDesc: "Cut Trim",
-    stepNumber: "Step 4",
-    description: "Remove burn and sharp edges",
-    submitDate: "07/05/2016",
-    statusColor: "gray",
-  },
-  {
-    id: "5",
-    imageUrl: "/avatar5.jpg",
-    name: "David Lee",
-    partDesc: "Cut Trim",
-    stepNumber: "Step 5",
-    description: "Remove burn and sharp edges",
-    submitDate: "28/10/2012",
-    statusColor: "green",
-  },
-];
 
 const StockOrderScheduleList: React.FC = () => {
   const [workData, setWorkData] = useState<any[]>([]); // Use any[] for now for simplicity
@@ -217,6 +165,7 @@ const StockOrderScheduleList: React.FC = () => {
                 <th className="px-4 py-3">Process</th>
                 <th className="px-4 py-3">Order Date</th>
                 <th className="px-4 py-3">Delivery Date</th>
+                <th className="px-4 py-3">Completed By</th>
                 <th className="px-4 py-3">Employee Name</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Actions</th>
@@ -278,6 +227,11 @@ const StockOrderScheduleList: React.FC = () => {
                     </td>
                     <td className="px-4 py-3">
                       {formatDate(rowItem.delivery_date)}
+                    </td>
+                   <td className="px-4 py-3 text-gray-600">
+                      {rowItem.completed_by
+                        ? `${rowItem.completed_by}`
+                        : "Not Assigned"}
                     </td>
 
                     {/* Employee Name */}
