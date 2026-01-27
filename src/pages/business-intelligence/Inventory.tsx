@@ -1185,7 +1185,7 @@ const Inventory = () => {
   const [inventoryData, setInventoryData] = useState<InventoryData>({});
   const [totalInventoryCost, setTotalInventoryCost] = useState<number>(0);
   const [period, setPeriod] = useState<"day" | "week" | "month" | "year">(
-    "month"
+    "month",
   );
   const dayMap: Record<string, string> = {
     Monday: "Mon",
@@ -1213,13 +1213,11 @@ const Inventory = () => {
 
   const fetchInventory = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/api/admin/inventory-data`, {
-        params: { period },
-      });
+      const res = await axios.get(`${BASE_URL}/api/admin/inventory-data`);
 
       const normalizedData = normalizeInventoryKeys(
         res.data.inventoryData,
-        period
+        period,
       );
 
       setInventoryData(normalizedData);
@@ -1234,7 +1232,43 @@ const Inventory = () => {
   }, [period]);
 
   const normalizeChartData = () => {
+    const now = new Date();
+    const currentDayNum = now.getDate().toString(); // e.g., "27"
+    const currentMonthName = now.toLocaleString("en-US", { month: "short" }); // e.g., "Jan"
+    const currentWeekdayName = now.toLocaleString("en-US", {
+      weekday: "short",
+    }); // e.g., "Tue"
+
     let chartData: { name: string; cost: number }[] = [];
+
+    // Helper function to calculate total cost for a specific key
+    const getTotalForKey = (
+      key: string,
+      periodType: "month" | "year" | "week",
+    ) => {
+      // 1. Agar backend ne us specific key (jaise "27" ya "Jan") ka data bheja hai
+      if (inventoryData[key]) {
+        return inventoryData[key].reduce(
+          (acc, p) => acc + (p.inventoryCost || 0),
+          0,
+        );
+      }
+
+      // 2. Agar backend ne sirf "total" bheja hai, toh use "Aaj" ki date par dikhao
+      const isToday =
+        (periodType === "month" && key === currentDayNum) ||
+        (periodType === "year" && key === currentMonthName) ||
+        (periodType === "week" && key === currentWeekdayName);
+
+      if (isToday && inventoryData["total"]) {
+        return inventoryData["total"].reduce(
+          (acc, p) => acc + (p.inventoryCost || 0),
+          0,
+        );
+      }
+
+      return 0;
+    };
 
     if (period === "year") {
       const months = [
@@ -1251,42 +1285,40 @@ const Inventory = () => {
         "Nov",
         "Dec",
       ];
-      chartData = months.map((m) => {
-        const val =
-          inventoryData[m]?.reduce((acc, p) => acc + p.inventoryCost, 0) || 0;
-        return { name: m, cost: val };
-      });
+      chartData = months.map((m) => ({
+        name: m,
+        cost: getTotalForKey(m, "year"),
+      }));
     }
 
     if (period === "month") {
-      const year = new Date().getFullYear();
-      const month = new Date().getMonth() + 1; // current month (1-12)
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
       const daysInMonth = new Date(year, month, 0).getDate();
       chartData = Array.from({ length: daysInMonth }, (_, i) => {
         const day = (i + 1).toString();
-        const val =
-          inventoryData[day]?.reduce((acc, p) => acc + p.inventoryCost, 0) || 0;
-        return { name: day, cost: val };
+        return {
+          name: day,
+          cost: getTotalForKey(day, "month"),
+        };
       });
     }
 
     if (period === "week") {
       const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-      chartData = weekDays.map((d) => {
-        const val =
-          inventoryData[d]?.reduce((acc, p) => acc + p.inventoryCost, 0) || 0;
-        return { name: d, cost: val };
-      });
+      chartData = weekDays.map((d) => ({
+        name: d,
+        cost: getTotalForKey(d, "week"),
+      }));
     }
 
     return chartData;
   };
-
   const chartData = normalizeChartData();
 
   console.log(
     "totalInventoryCosttotalInventoryCosttotalInventoryCost",
-    totalInventoryCost
+    totalInventoryCost,
   );
   return (
     <div className="p-4">

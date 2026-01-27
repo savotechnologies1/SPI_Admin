@@ -60,6 +60,7 @@ import ReactApexChart from "react-apexcharts";
 //   );
 // };
 const CapacityRadialChart = ({ processCompletion }) => {
+  console.log('processCompletionprocessCompletionprocessCompletion',processCompletion)
   if (!processCompletion) return null;
 
   const series = processCompletion.map((p) =>

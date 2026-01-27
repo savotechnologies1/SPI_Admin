@@ -739,7 +739,7 @@ const EditProductForm = () => {
     instructionRequired: string;
     processId: string;
     processDesc: string;
-    isProductSchedule: boolean;
+    // isProductSchedule: boolean;
   }
 
   const {
@@ -788,7 +788,7 @@ const EditProductForm = () => {
     formData.append("instructionRequired", data.instructionRequired);
     formData.append("processId", data.processId);
     formData.append("processDesc", data.processDesc);
-    formData.append("isProductSchedule", data.isProductSchedule);
+    // formData.append("isProductSchedule", data.isProductSchedule);
 
     if (imageFiles.length > 0) {
       for (let file of imageFiles) {
