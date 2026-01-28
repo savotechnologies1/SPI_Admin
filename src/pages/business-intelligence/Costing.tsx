@@ -528,8 +528,6 @@
 
 // export default Costing;
 
-
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import scrap_cost from "../../assets/scrap_cost.png";
@@ -545,17 +543,16 @@ import {
   Legend,
 } from "recharts";
 
-// Helper function to get today's date in YYYY-MM-DD
 const getTodayDate = () => {
-  return new Date().toLocaleDateString('en-CA');
+  return new Date().toLocaleDateString("en-CA");
 };
 
-const formatDollar = (value) => `₹${Number(value).toLocaleString()}`; // Currency ₹ set kiya
+const formatDollar = (value) => `$${Number(value).toLocaleString()}`;
 
 const Costing = () => {
   const [cardsData, setCardsData] = useState([]);
   const [monthlyCOGS, setMonthlyCOGS] = useState([]);
-  
+
   // 1. Start and End Date states with Today as default
   const [startDate, setStartDate] = useState(getTodayDate());
   const [endDate, setEndDate] = useState(getTodayDate());
@@ -566,12 +563,9 @@ const Costing = () => {
     const fetchData = async () => {
       try {
         // 2. API call with startDate and endDate
-        const res = await axios.get(
-          `${BASE_URL}/api/admin/costing-data`,
-          {
-            params: { startDate, endDate }
-          }
-        );
+        const res = await axios.get(`${BASE_URL}/api/admin/costing-data`, {
+          params: { startDate, endDate },
+        });
         const data = res.data;
 
         // Cards logic
@@ -597,18 +591,31 @@ const Costing = () => {
         ]);
 
         // Monthly COGS Line Chart Logic
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const months = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
         const cogs = data.monthlyCOGS || {};
-        
+
         // Agar single year hai toh months dikhayenge, varna keys dikhayenge
         const chartData = months.map((month, index) => {
           const monthNum = String(index + 1).padStart(2, "0");
           // Current year ya selected range ka year check karne ke liye logic
-          const yearKey = startDate.split('-')[0]; 
+          const yearKey = startDate.split("-")[0];
           const key = `${yearKey}-${monthNum}`;
           return { name: month, value: cogs[key] || 0 };
         });
-        
+
         setMonthlyCOGS(chartData);
       } catch (error) {
         console.error("Error fetching costing data:", error);
@@ -621,14 +628,18 @@ const Costing = () => {
   return (
     <div className="p-4 bg-gray-50 min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <h1 className="font-semibold text-2xl text-gray-800">Costing Analysis</h1>
+        <h1 className="font-semibold text-2xl text-gray-800">
+          Costing Analysis
+        </h1>
 
         {/* --- Date Picker UI --- */}
         <div className="flex items-center gap-2 bg-white p-2 rounded-lg shadow-sm border border-gray-200">
           <div className="flex flex-col px-2">
-            <label className="text-[10px] font-bold text-gray-400 uppercase">From</label>
-            <input 
-              type="date" 
+            <label className="text-[10px] font-bold text-gray-400 uppercase">
+              From
+            </label>
+            <input
+              type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               className="text-sm outline-none bg-transparent cursor-pointer"
@@ -636,17 +647,22 @@ const Costing = () => {
           </div>
           <div className="h-8 w-[1px] bg-gray-200 mx-1"></div>
           <div className="flex flex-col px-2">
-            <label className="text-[10px] font-bold text-gray-400 uppercase">To</label>
-            <input 
-              type="date" 
+            <label className="text-[10px] font-bold text-gray-400 uppercase">
+              To
+            </label>
+            <input
+              type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
               className="text-sm outline-none bg-transparent cursor-pointer"
             />
           </div>
           {(startDate !== getTodayDate() || endDate !== getTodayDate()) && (
-            <button 
-              onClick={() => { setStartDate(getTodayDate()); setEndDate(getTodayDate()); }}
+            <button
+              onClick={() => {
+                setStartDate(getTodayDate());
+                setEndDate(getTodayDate());
+              }}
               className="ml-2 text-xs text-blue-500 font-semibold hover:underline"
             >
               Today
@@ -663,7 +679,11 @@ const Costing = () => {
             className="flex items-center gap-4 bg-white rounded-xl w-full p-5 shadow-sm border border-gray-100"
           >
             <div className="p-3 bg-blue-50 rounded-lg">
-              <img className="w-8 h-8 object-contain" src={item.scrap_img} alt="" />
+              <img
+                className="w-8 h-8 object-contain"
+                src={item.scrap_img}
+                alt=""
+              />
             </div>
             <div>
               <p className="text-sm text-gray-500 font-medium">{item.text}</p>
@@ -676,31 +696,43 @@ const Costing = () => {
       {/* Monthly COGS Line Chart */}
       <div className="bg-white shadow-sm rounded-2xl p-6 border border-gray-100">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-bold text-gray-700">Monthly COGS Trend</h2>
-          <p className="text-xs text-gray-400">Values based on {startDate.split('-')[0]}</p>
+          <h2 className="text-lg font-bold text-gray-700">
+            Monthly COGS Trend
+          </h2>
+          <p className="text-xs text-gray-400">
+            Values based on {startDate.split("-")[0]}
+          </p>
         </div>
         <div className="w-full h-[350px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={monthlyCOGS}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-              <XAxis 
-                dataKey="name" 
-                axisLine={false} 
-                tickLine={false} 
-                fontSize={12} 
-                tick={{fill: '#9CA3AF'}}
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+                stroke="#f0f0f0"
+              />
+              <XAxis
+                dataKey="name"
+                axisLine={false}
+                tickLine={false}
+                fontSize={12}
+                tick={{ fill: "#9CA3AF" }}
                 dy={10}
               />
-              <YAxis 
-                axisLine={false} 
-                tickLine={false} 
-                fontSize={12} 
-                tick={{fill: '#9CA3AF'}}
-                tickFormatter={(value) => `₹${value/1000}k`}
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                fontSize={12}
+                tick={{ fill: "#9CA3AF" }}
+                tickFormatter={(value) => `$${value / 1000}k`}
               />
-              <Tooltip 
+              <Tooltip
                 formatter={(value) => [formatDollar(value), "COGS"]}
-                contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                contentStyle={{
+                  borderRadius: "10px",
+                  border: "none",
+                  boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                }}
               />
               <Legend verticalAlign="top" align="right" iconType="circle" />
               <Line

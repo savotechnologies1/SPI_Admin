@@ -26,7 +26,7 @@ const CashFlowLineGraph: React.FC = () => {
         ([date, cashNeeded]) => ({
           date,
           cashNeeded: cashNeeded ?? 0, // Ensure 0 if null or undefined
-        })
+        }),
       );
 
       // ✅ Fill missing dates with 0
@@ -119,7 +119,7 @@ const CashFlowLineGraph: React.FC = () => {
               />
               <YAxis />
               <Tooltip
-                formatter={(value: number) => `₹${value.toLocaleString()}`}
+                formatter={(value: number) => `$${value.toLocaleString()}`}
               />
               <Line
                 type="monotone"

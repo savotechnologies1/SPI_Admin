@@ -402,9 +402,15 @@ const data_1 = [
 
 // export default Production;
 
-
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 const Production = () => {
   const [chartData, setChartData] = useState<any[]>([]);
@@ -418,7 +424,7 @@ const Production = () => {
   const getTodayDate = () => {
     const today = new Date();
     // Local date ko YYYY-MM-DD format mein lane ke liye
-    return today.toLocaleDateString('en-CA'); 
+    return today.toLocaleDateString("en-CA");
   };
 
   const [startDate, setStartDate] = useState(getTodayDate());
@@ -433,8 +439,8 @@ const Production = () => {
         const res = await axios.get(
           `${BASE_URL}/api/admin/production-efficiency`,
           {
-            params: { startDate, endDate } // Backend ko dates bhej rahe hain
-          }
+            params: { startDate, endDate }, // Backend ko dates bhej rahe hain
+          },
         );
         setChartData(res.data.data);
         setTotals(res.data.totals);
@@ -446,7 +452,9 @@ const Production = () => {
   }, [startDate, endDate, BASE_URL]); // Date badalte hi automatic fetch hoga
 
   const data = {
-    labels: chartData.map((item) => `${item.processName} (${item.machineName || 'N/A'})`),
+    labels: chartData.map(
+      (item) => `${item.processName} (${item.machineName || "N/A"})`,
+    ),
     datasets: [
       {
         label: "Production Efficiency (%)",
@@ -475,23 +483,39 @@ const Production = () => {
   };
 
   const totalsCards = [
-    { text: "Total Efficiency", num: `${totals.totalEfficiency}%`, img:scrap_cost },
-    { text: "Total Scrap Cost", num: `₹${totals.totalScrapCost}`, img: scrap_cost},
-    { text: "Total Supplier Return", num: `₹${totals.totalSupplierReturnCost}`, img:supplier_return },
+    {
+      text: "Total Efficiency",
+      num: `${totals.totalEfficiency}%`,
+      img: scrap_cost,
+    },
+    {
+      text: "Total Scrap Cost",
+      num: `$${totals.totalScrapCost}`,
+      img: scrap_cost,
+    },
+    {
+      text: "Total Supplier Return",
+      num: `$${totals.totalSupplierReturnCost}`,
+      img: supplier_return,
+    },
   ];
 
   return (
     <div className="p-4 bg-gray-50 min-h-screen">
       {/* Header with Date Picker */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <h1 className="font-semibold text-2xl text-gray-800">Production Dashboard</h1>
+        <h1 className="font-semibold text-2xl text-gray-800">
+          Production Dashboard
+        </h1>
 
         {/* --- Date Picker UI Start --- */}
         <div className="flex items-center gap-2 bg-white p-2 rounded-lg shadow-sm border border-gray-200">
           <div className="flex flex-col px-2">
-            <label className="text-[10px] font-bold text-gray-400 uppercase">From</label>
-            <input 
-              type="date" 
+            <label className="text-[10px] font-bold text-gray-400 uppercase">
+              From
+            </label>
+            <input
+              type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               className="text-sm outline-none bg-transparent cursor-pointer"
@@ -499,22 +523,36 @@ const Production = () => {
           </div>
           <div className="h-8 w-[1px] bg-gray-200 mx-1"></div>
           <div className="flex flex-col px-2">
-            <label className="text-[10px] font-bold text-gray-400 uppercase">To</label>
-            <input 
-              type="date" 
+            <label className="text-[10px] font-bold text-gray-400 uppercase">
+              To
+            </label>
+            <input
+              type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
               className="text-sm outline-none bg-transparent cursor-pointer"
             />
           </div>
-          { (startDate || endDate) && (
-            <button 
-              onClick={() => { setStartDate(""); setEndDate(""); }}
+          {(startDate || endDate) && (
+            <button
+              onClick={() => {
+                setStartDate("");
+                setEndDate("");
+              }}
               className="ml-2 p-1 text-red-500 hover:bg-red-50 rounded-full transition-colors"
               title="Clear Filter"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
               </svg>
             </button>
           )}
@@ -525,9 +563,16 @@ const Production = () => {
       {/* Totals Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         {totalsCards.map((item, index) => (
-          <div key={index} className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+          <div
+            key={index}
+            className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4"
+          >
             <div className="p-3 bg-blue-50 rounded-lg">
-              <img className="w-8 h-8 object-contain" src={item.img} alt={item.text} />
+              <img
+                className="w-8 h-8 object-contain"
+                src={item.img}
+                alt={item.text}
+              />
             </div>
             <div>
               <p className="text-sm text-gray-500 font-medium">{item.text}</p>
@@ -540,16 +585,30 @@ const Production = () => {
       {/* Chart Section */}
       <div className="p-6 bg-white shadow-sm rounded-xl border border-gray-100">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-bold text-gray-700">Efficiency by Process & Machine</h2>
-          <span className="text-xs font-medium px-2.5 py-0.5 rounded bg-blue-100 text-blue-800">Live Data</span>
+          <h2 className="text-lg font-bold text-gray-700">
+            Efficiency by Process & Machine
+          </h2>
+          <span className="text-xs font-medium px-2.5 py-0.5 rounded bg-blue-100 text-blue-800">
+            Live Data
+          </span>
         </div>
         <div className="w-full h-[400px]">
           {chartData.length > 0 ? (
             <Line data={data} options={options} />
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-gray-400">
-              <svg className="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              <svg
+                className="w-12 h-12 mb-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
               </svg>
               <p>No data found for the selected period</p>
             </div>

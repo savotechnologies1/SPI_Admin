@@ -14,6 +14,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
 import { MdCancel } from "react-icons/md";
+import { selectSupplier } from "../supplier_chain/https/suppliersApi";
 
 interface FormDataType {
   partFamily: string;
@@ -77,12 +78,31 @@ const PartForm = () => {
   const processId = watch("processId");
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const processOrderRequired = watch("processOrderRequired");
-
+  const [suppliers, setSuppliers] = useState<any[]>([]); // Suppliers list store karne ke liye
+  const [showDropdown, setShowDropdown] = useState(false);
   const isProcessRequired = processOrderRequired === "true";
   if (!context) {
     throw new Error("PartContext must be used within a PartProvider");
   }
+  const [searchTerm, setSearchTerm] = useState(""); // UI में दिखाने के लिए
+  const companySearch = watch("companyName"); // इनपुट वैल्यू ट्रैक करने के लिए
 
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        const res = await selectSupplier();
+        setSuppliers(res);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchSuppliers();
+  }, []);
+
+  // सर्च के लिए फिल्टर
+  const filteredSuppliers = suppliers.filter((s) =>
+    s.name?.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
   const getAllPartList = async (page: number) => {
     try {
       const response = await partNumberList(page, rowsPerPage);
@@ -93,6 +113,27 @@ const PartForm = () => {
     }
   };
 
+  // API से Suppliers की लिस्ट लाना
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        const res = await selectSupplier();
+        // अगर रिस्पॉन्स सीधा एरे है: [{"id":"1","name":"shikha"}]
+        setSuppliers(res);
+      } catch (err) {
+        console.error("Suppliers load failed", err);
+      }
+    };
+    fetchSuppliers();
+  }, []);
+
+  // // Filtered Suppliers logic
+  // const filteredSuppliers = suppliers.filter((s) => {
+  //   const fullName = `${s.firstName} ${s.lastName}`.toLowerCase();
+  //   const email = s.email?.toLowerCase() || "";
+  //   const search = companySearch?.toLowerCase() || "";
+  //   return search && (fullName.includes(search) || email.includes(search));
+  // });
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -143,7 +184,7 @@ const PartForm = () => {
 
       if (data.image && data.image.length > 0) {
         Array.from(data.image).forEach((file) =>
-          formData.append("partImages", file)
+          formData.append("partImages", file),
         );
       }
 
@@ -289,7 +330,7 @@ const PartForm = () => {
               className="border p-2 rounded w-full"
             />
           </div>
-          <div className="col-span-4 md:col-span-1">
+          {/* <div className="col-span-4 md:col-span-1">
             <label>Company Name</label>
             <input
               type="text"
@@ -297,6 +338,57 @@ const PartForm = () => {
               placeholder="Company"
               className="border p-2 rounded w-full"
             />
+          </div> */}
+          <div className="col-span-4 md:col-span-1 relative">
+            <label className="block mb-1">Company (Supplier)</label>
+
+            {/* असली field जो submit होगी (Hidden) */}
+            <input
+              type="hidden"
+              {...register("companyName", { required: "Supplier is required" })}
+            />
+
+            {/* दिखने वाला Input */}
+            <input
+              type="text"
+              value={searchTerm}
+              placeholder="Search Supplier..."
+              autoComplete="off"
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setShowDropdown(true);
+                // अगर यूजर खुद टाइप करके हटा दे, तो ID भी क्लियर कर दें
+                if (e.target.value === "") setValue("companyName", "");
+              }}
+              onFocus={() => setShowDropdown(true)}
+              onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+              className="border p-2 rounded w-full focus:ring-2 focus:ring-brand focus:outline-none"
+            />
+
+            {/* Dropdown List */}
+            {showDropdown && searchTerm && filteredSuppliers.length > 0 && (
+              <ul className="absolute z-[100] w-full bg-white border border-gray-300 rounded shadow-xl mt-1 max-h-40 overflow-y-auto">
+                {filteredSuppliers.map((s) => (
+                  <li
+                    key={s.id}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b last:border-0"
+                    onMouseDown={() => {
+                      setSearchTerm(s.name); // इनपुट में 'shikha jatav' दिखेगा
+                      setValue("companyName", s.id); // Backend में '16b245' (ID) जाएगा
+                      setShowDropdown(false);
+                    }}
+                  >
+                    {s.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {errors.companyName && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.companyName.message as string}
+              </p>
+            )}
           </div>
           <div className="col-span-4 md:col-span-1">
             <label>Minimum Stock</label>
@@ -476,7 +568,7 @@ const PartForm = () => {
                     size={22}
                     onClick={() => {
                       const updatedImages = selectedImages.filter(
-                        (_, i) => i !== index
+                        (_, i) => i !== index,
                       );
                       setSelectedImages(updatedImages);
                       setValue("image", updatedImages);

@@ -1482,7 +1482,7 @@ const Inventory = () => {
       {/* 🔹 KPI */}
       <div className="mb-6 p-4 border rounded-lg shadow bg-white">
         <h2 className="text-lg font-semibold">
-          Total Inventory Cost: ₹ {totalInventoryCost.toFixed(2)}
+          Total Inventory Cost: $₹ {totalInventoryCost.toFixed(2)}
         </h2>
         {/* <p className="text-sm text-gray-500 mt-1">
           Last updated: {formatFullDate(new Date())}
