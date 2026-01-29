@@ -593,7 +593,7 @@ interface ProductNumberInterface {
 const StockOrderForm = () => {
   const [customerList, setCustomerList] = useState<CustomerInterface[]>([]);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(
-    null
+    null,
   );
   const [productNumberList, setProductNumberList] = useState<
     ProductNumberInterface[]
@@ -646,6 +646,10 @@ const StockOrderForm = () => {
             const response = await addStockOrder(values);
             if (response.status === 201) {
               navigate("/stock-order-schedule");
+              console.log(
+                "response?.data?.messageresponse?.data?.message",
+                response?.data?.message,
+              );
             }
             resetForm({
               values: {
@@ -681,7 +685,7 @@ const StockOrderForm = () => {
           handleBlur,
         }) => {
           const handleCustomerSelectChange = (
-            e: React.ChangeEvent<HTMLSelectElement>
+            e: React.ChangeEvent<HTMLSelectElement>,
           ) => {
             const value = e.target.value;
             if (value === "new") {
@@ -711,14 +715,14 @@ const StockOrderForm = () => {
           };
 
           const handleProductSelectChange = (
-            e: React.ChangeEvent<HTMLSelectElement>
+            e: React.ChangeEvent<HTMLSelectElement>,
           ) => {
             const selectedProductId = e.target.value;
             setFieldValue("productId", selectedProductId);
 
             if (selectedProductId) {
               const selectedProduct = productNumberList.find(
-                (p) => p.productId === selectedProductId
+                (p) => p.productId === selectedProductId,
               );
               if (selectedProduct) {
                 const unitCost = selectedProduct.cost;
@@ -729,7 +733,7 @@ const StockOrderForm = () => {
                 setFieldValue("productQuantity", quantity);
                 setFieldValue(
                   "productDescription",
-                  selectedProduct.productDescription
+                  selectedProduct.productDescription,
                 );
                 setFieldValue("totalCost", (unitCost * quantity).toFixed(2));
               }
@@ -745,7 +749,7 @@ const StockOrderForm = () => {
           };
 
           const handleQuantityChange = (
-            e: React.ChangeEvent<HTMLInputElement>
+            e: React.ChangeEvent<HTMLInputElement>,
           ) => {
             const quantityValue = e.target.value;
             setFieldValue("productQuantity", quantityValue);

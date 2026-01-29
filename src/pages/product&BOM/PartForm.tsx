@@ -261,7 +261,7 @@ const PartForm = () => {
               <option value="">Select Part Family</option>
               {processData.map((item) => (
                 <option key={item.id} value={item.partFamily}>
-                  {item.partFamily}
+                  {item.partFamily} ({item.machineName})
                 </option>
               ))}
             </select>
@@ -521,7 +521,7 @@ const PartForm = () => {
                   <option value="">Select Process</option>
                   {processData.map((item) => (
                     <option key={item.id} value={item.id}>
-                      {item.name}
+                      {item.name} ({item.machineName})
                     </option>
                   ))}
                 </select>

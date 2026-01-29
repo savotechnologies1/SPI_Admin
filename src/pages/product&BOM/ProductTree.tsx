@@ -401,7 +401,7 @@ export default function ProductTree() {
                 <tr>
                   <td
                     colSpan={7}
-                    className="p-10 text-center text-gray-500 italic font-medium"
+                    className="p-10 text-center text-gray-500  font-medium"
                   >
                     No products found.
                   </td>

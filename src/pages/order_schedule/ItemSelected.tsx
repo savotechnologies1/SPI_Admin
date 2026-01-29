@@ -552,14 +552,14 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   const [itemInputs, setItemInputs] = useState<ItemInputState>({});
   const [loading, setLoading] = useState(false);
 
-
   const scheduleItem = (itemToAdd: SearchResultItem) => {
     const inputs = itemInputs[itemToAdd.id];
     const qtyToSchedule = parseInt(inputs?.qty || "0", 10);
-    
+
     // FIX: Pehle state ki date check karo, fir item ki date, fir current date (fixed at midnight)
-    const shipDate = inputs?.shipDate || 
-                     (itemToAdd.shipDate ? new Date(itemToAdd.shipDate) : new Date());
+    const shipDate =
+      inputs?.shipDate ||
+      (itemToAdd.shipDate ? new Date(itemToAdd.shipDate) : new Date());
 
     if (isNaN(qtyToSchedule) || qtyToSchedule <= 0) {
       toast.error("Please enter a valid quantity to schedule.");
@@ -569,7 +569,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
     const newScheduledItem: ScheduledItem = {
       ...itemToAdd,
       scheduledQty: qtyToSchedule,
-      shipDate: shipDate, 
+      shipDate: shipDate,
     };
 
     setSelectedItems((prev) => [...prev, newScheduledItem]);
@@ -582,7 +582,9 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   };
 
   const removeItem = (itemIdToRemove: string) => {
-    setSelectedItems(selectedItems.filter((item) => item.id !== itemIdToRemove));
+    setSelectedItems(
+      selectedItems.filter((item) => item.id !== itemIdToRemove),
+    );
   };
 
   const flattenBOM = (components, parentQty) => {
@@ -625,7 +627,10 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
           type: "part",
         };
 
-        const allNestedParts = flattenBOM(item.part.components, item.scheduledQty);
+        const allNestedParts = flattenBOM(
+          item.part.components,
+          item.scheduledQty,
+        );
         const componentPayloads = allNestedParts.map((comp) => ({
           order_id: item.id,
           orderDate: item.orderDate,
@@ -655,7 +660,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
     }
   };
 
-    const handleInputChange = (
+  const handleInputChange = (
     itemId: string,
     field: "qty" | "shipDate",
     value: string | Date,
@@ -664,7 +669,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       ...prev,
       [itemId]: {
         ...prev[itemId],
-        [field]: value // Sirf wahi field update karo jo change hui hai
+        [field]: value, // Sirf wahi field update karo jo change hui hai
       },
     }));
   };
@@ -673,7 +678,9 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
     <div className="py-6">
       {/* Header with Button */}
       <div className="flex gap-4 justify-end items-center mb-5">
-        <div className="bg-white p-2 rounded-3xl"><FontAwesomeIcon icon={faCartShopping} /></div>
+        <div className="bg-white p-2 rounded-3xl">
+          <FontAwesomeIcon icon={faCartShopping} />
+        </div>
         <div className="flex relative">
           <button
             className={`py-2 px-10 border-gray-100 bg-brand text-white flex gap-2 items-center h-fit ${loading ? "opacity-70 cursor-not-allowed" : "hover:cursor-pointer"}`}
@@ -688,32 +695,46 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Left Section: Available Items */}
         <div className="bg-white rounded-xl p-4 shadow">
-          <h1 className="bg-[#CBCBCB] text-center p-2 font-semibold mb-4">Stock orders available to schedule</h1>
+          <h1 className="bg-[#CBCBCB] text-center p-2 font-semibold mb-4">
+            Stock orders available to schedule
+          </h1>
           <div className="space-y-4">
-            {isLoading && <p className="text-center">Loading search results...</p>}
-            
+            {isLoading && (
+              <p className="text-center">Loading search results...</p>
+            )}
+
             {availableItems.map((item) => {
               // FIX: Default date logic handle karne ke liye variable
-              const displayDate = itemInputs[item.id]?.shipDate || 
-                                 (item.shipDate ? new Date(item.shipDate) : new Date());
+              const displayDate =
+                itemInputs[item.id]?.shipDate ||
+                (item.shipDate ? new Date(item.shipDate) : new Date());
 
               return (
-                <div key={item.id} className="p-4 bg-white shadow-md flex justify-between items-start gap-4">
+                <div
+                  key={item.id}
+                  className="p-4 bg-white shadow-md flex justify-between items-start gap-4"
+                >
                   <div className="flex-1 space-y-3">
-                    <p className="font-semibold text-base">{item.part.partDescription}</p>
+                    <p className="font-semibold text-base">
+                      {item.part.partDescription}
+                    </p>
                     <div className="flex items-center text-sm text-gray-600">
                       <span>{item.part.partNumber}</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
                       <p className="text-[#5A6774]">Stock Order Qty:</p>
-                      <span className="font-bold text-[#637381] bg-[#919EAB29] px-2 py-1 rounded-md">{item.productQuantity}</span>
+                      <span className="font-bold text-[#637381] bg-[#919EAB29] px-2 py-1 rounded-md">
+                        {item.productQuantity}
+                      </span>
                     </div>
                     <input
                       className="w-full sm:w-40 p-2 border rounded-md text-sm"
                       type="number"
                       placeholder="Enter Qty"
                       value={itemInputs[item.id]?.qty || ""}
-                      onChange={(e) => handleInputChange(item.id, "qty", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange(item.id, "qty", e.target.value)
+                      }
                     />
                   </div>
 
@@ -725,10 +746,14 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                       Schedule Order
                     </button>
                     <div className="flex flex-col">
-                      <label className="text-[#1C252E] text-sm text-right mb-1">Ship Date</label>
+                      <label className="text-[#1C252E] text-sm text-right mb-1">
+                        Ship Date
+                      </label>
                       <DatePicker
                         selected={displayDate}
-                        onChange={(date) => handleInputChange(item.id, "shipDate", date as Date)}
+                        onChange={(date) =>
+                          handleInputChange(item.id, "shipDate", date as Date)
+                        }
                         dateFormat="dd MMM yyyy"
                         className="border py-2 px-4 rounded-md font-semibold w-full sm:w-44 text-center"
                       />
@@ -741,9 +766,15 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
         </div>
         {/* Right Section: Selected Items */}
         <div className="bg-white rounded-xl p-4 shadow">
-          <h1 className="bg-[#CBCBCB] text-center p-2 font-semibold mb-4">Stock orders selected to be scheduled</h1>
+          <h1 className="bg-[#CBCBCB] text-center p-2 font-semibold mb-4">
+            Stock orders selected to be scheduled
+          </h1>
           <div className="space-y-4">
-            {selectedItems.length === 0 && <p className="text-center text-gray-500">No items scheduled yet.</p>}
+            {selectedItems.length === 0 && (
+              <p className="text-center text-gray-500">
+                No items scheduled yet.
+              </p>
+            )}
             {selectedItems.map((item) => (
               <div key={item.id} className="p-4 bg-white shadow-md ">
                 <div className="flex justify-between mb-4">
@@ -751,14 +782,18 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                     <label className="text-[#1C252E] text-sm">Ship Date</label>
                     <DatePicker
                       selected={item.shipDate}
-                      onChange={(date) => updateScheduledDate(item.id, date as Date)}
+                      onChange={(date) =>
+                        updateScheduledDate(item.id, date as Date)
+                      }
                       dateFormat="dd MMM yyyy"
                       className="border py-2 px-4 rounded-md font-semibold w-full sm:w-44"
                     />
                   </div>
-                  <button onClick={() => removeItem(item.id)}><FaTrashAlt className="text-red-500 " /></button>
+                  <button onClick={() => removeItem(item.id)}>
+                    <FaTrashAlt className="text-red-500 " />
+                  </button>
                 </div>
-                
+
                 <div className="overflow-x-auto border">
                   <table className="min-w-full text-sm text-left">
                     <thead className="bg-gray-200">
@@ -771,16 +806,24 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                     <tbody>
                       <tr className="bg-gray-50 font-semibold border-b">
                         <td className="px-4 py-2">{item.part.partNumber}</td>
-                        <td className="px-4 py-2">{item.part.partDescription}</td>
+                        <td className="px-4 py-2">
+                          {item.part.partDescription}
+                        </td>
                         <td className="px-4 py-2">{item.scheduledQty}</td>
                       </tr>
                       {flattenBOM(item.part.components, item.scheduledQty || 0)
                         .filter((data) => data?.part)
                         .map((data, idx) => (
                           <tr key={idx} className="border-b hover:bg-gray-50">
-                            <td className="px-4 py-2">{data.part.partNumber}</td>
-                            <td className="px-4 py-2">{data.part.partDescription}</td>
-                            <td className="px-4 py-2 font-medium">{data.calculatedQty}</td>
+                            <td className="px-4 py-2">
+                              {data.part.partNumber}
+                            </td>
+                            <td className="px-4 py-2">
+                              {data.part.partDescription}
+                            </td>
+                            <td className="px-4 py-2 font-medium">
+                              {data.calculatedQty}
+                            </td>
                           </tr>
                         ))}
                     </tbody>
@@ -793,4 +836,5 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       </div>
     </div>
   );
-};export default ItemSelected;
+};
+export default ItemSelected;

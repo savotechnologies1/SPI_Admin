@@ -703,7 +703,7 @@ const Costing = () => {
             Values based on {startDate.split("-")[0]}
           </p>
         </div>
-        <div className="w-full h-[350px]">
+        {/* <div className="w-full h-[350px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={monthlyCOGS}>
               <CartesianGrid
@@ -727,6 +727,53 @@ const Costing = () => {
                 tickFormatter={(value) => `$${value / 1000}k`}
               />
               <Tooltip
+                formatter={(value) => [formatDollar(value), "COGS"]}
+                contentStyle={{
+                  borderRadius: "10px",
+                  border: "none",
+                  boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                }}
+              />
+              <Legend verticalAlign="top" align="right" iconType="circle" />
+              <Line
+                name="Monthly COGS"
+                type="monotone"
+                dataKey="value"
+                stroke="#052C89"
+                strokeWidth={3}
+                dot={{ r: 4, fill: "#052C89", strokeWidth: 2, stroke: "#fff" }}
+                activeDot={{ r: 6, strokeWidth: 0 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div> */}
+        <div className="w-full h-[350px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={monthlyCOGS}>
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+                stroke="#f0f0f0"
+              />
+              <XAxis
+                dataKey="name"
+                axisLine={false}
+                tickLine={false}
+                fontSize={12}
+                tick={{ fill: "#9CA3AF" }}
+                dy={10}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                fontSize={12}
+                tick={{ fill: "#9CA3AF" }}
+                // Yahan value ko seedha $ ke saath dikhayenge
+                tickFormatter={(value) => `$${value}`}
+                width={60} // Taki bade numbers cut na ho
+              />
+              <Tooltip
+                // formatDollar function ka use karein jo aapne pehle define kiya hai
                 formatter={(value) => [formatDollar(value), "COGS"]}
                 contentStyle={{
                   borderRadius: "10px",

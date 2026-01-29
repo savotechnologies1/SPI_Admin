@@ -16,6 +16,7 @@ import {
   updateProductNumber,
 } from "./https/partProductApis";
 import { MdCancel } from "react-icons/md";
+import { selectSupplier } from "../supplier_chain/https/suppliersApi";
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 // const EditProductForm = () => {
@@ -771,7 +772,36 @@ const EditProductForm = () => {
   const [suggestions, setSuggestions] = useState<{ [index: number]: string[] }>(
     {},
   );
+  const [suppliers, setSuppliers] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [bomEntries, setBomEntries] = useState([
+    {
+      productNumber: "",
+      partQuantity: "",
+      process: "",
+      cycleTime: "",
+      instructionRequired: "",
+    },
+  ]);
 
+  const [savedBOMs, setSavedBOMs] = useState<any[]>([]);
+  const filteredSuppliers = suppliers.filter((s) =>
+    s.name?.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  // Suppliers की लिस्ट लोड करने के लिए useEffect
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        const res = await selectSupplier(); // सुनिश्चित करें कि ये API import है
+        setSuppliers(res);
+      } catch (err) {
+        console.error("Suppliers load failed", err);
+      }
+    };
+    fetchSuppliers();
+  }, []);
   const onSubmitProduct = async (data: any) => {
     const formData = new FormData();
     formData.append("partFamily", data.partFamily);
@@ -808,51 +838,57 @@ const EditProductForm = () => {
       console.error("Error updating product:", err);
     }
   };
-
   const fetchProductDetail = async () => {
     try {
       const response = await getProductNumberDetail(id);
       const data = response.data;
-      console.log("3333333333333", data.availStock);
+
+      // 1. Supplier का नाम निकालें (Input Box में दिखाने के लिए)
+      const supplierName = data.supplier
+        ? `${data.supplier.firstName || ""} ${data.supplier.lastName || ""}`.trim()
+        : data.companyName || "";
+
+      setSearchTerm(supplierName); // ये ज़रूरी है ताकि Input खाली न दिखे
+
+      // 2. Form Fields को Reset करें
       reset({
-        // ... (reset call is correct from previous fix)
         partFamily: data.partFamily || "",
         productNumber: data.productNumber || "",
         partDescription: data.partDescription || "",
         cost: data.cost || "",
         leadTime: data.leadTime || "",
-        supplierOrderQty: data.supplierOrderQty || 0,
-        companyName: data.companyName || "",
+        companyName: data.companyName || "", // ये ID स्टोर करेगा
         minStock: data.minStock || "",
-        availStock: data.availStock ?? "",
+        availStock: data.availStock || "",
         cycleTime: data.cycleTime || "",
+        supplierOrderQty: data.supplierOrderQty || 0,
+        // Select fields के लिए string conversion ज़रूरी है
         processOrderRequired: String(data.processOrderRequired),
         instructionRequired: String(data.instructionRequired),
-        // isProductSchedule: data.isProductSchedule,
         processId: data.processId || "",
         processDesc: data.processDesc || "",
       });
 
+      // 3. Images सेट करें
       if (data.productImages?.length) {
         setExistingImages(data.productImages);
       }
-      console.log("data.partdata.part", data.part);
-      // --- FIX: Populate the single bomItems state ---
+
+      // 4. BOM Items सेट करें (नाम सही करें: setBomItems)
       if (Array.isArray(data.parts) && data.parts.length > 0) {
-        const preFilledBOMs = data.parts.map((part) => ({
+        const preFilledBOMs = data.parts.map((part: any) => ({
           id: part.id || "",
           part_id: part.part_id || "",
           partNumber: part.partNumber || "",
-          partQuantity: part.partQuantity ?? "", // <-- change here
+          partQuantity: part.partQuantity ?? "",
           process: part.process?.processName || "",
           processId: part.process?.id || "",
           cycleTime: part.process?.cycleTime?.toString() || "",
           instructionRequired: part.instructionRequired ? "Yes" : "No",
         }));
-
-        setBomItems(preFilledBOMs);
+        setBomItems(preFilledBOMs); // यहाँ bomItems इस्तेमाल करें
       } else {
-        // If no parts, ensure there's one blank row to start with
+        // अगर कोई पार्ट नहीं है तो एक खाली रो दिखाएँ
         setBomItems([
           {
             partNumber: "",
@@ -863,12 +899,10 @@ const EditProductForm = () => {
           },
         ]);
       }
-      // ------------------------------------------------
     } catch (error) {
       console.error("Failed to fetch product details:", error);
     }
   };
-
   useEffect(() => {
     if (id) {
       fetchProductDetail();
@@ -1100,16 +1134,54 @@ const EditProductForm = () => {
               className="border p-2 rounded w-full"
             />
           </div>
+          <div className="col-span-4 md:col-span-1 relative">
+            <label className="block mb-1">Company Name</label>
 
-          <div className="col-span-4 md:col-span-1">
-            {" "}
-            <label>Company Name</label>{" "}
+            {/* Backend में ID भेजने के लिए hidden field */}
+            <input
+              type="hidden"
+              {...register("companyName")} // यहाँ companyName ID स्टोर करेगा
+            />
+
+            {/* Search/Display के लिए visible input */}
             <input
               type="text"
-              {...register("companyName")}
-              placeholder="Company"
-              className="border p-2 rounded w-full"
-            />{" "}
+              value={searchTerm}
+              placeholder="Search Supplier..."
+              autoComplete="off"
+              onChange={(e) => {
+                const val = e.target.value;
+                setSearchTerm(val);
+                setShowDropdown(true);
+
+                // अगर नाम मिटा दिया तो form value भी खाली कर दें
+                if (val === "") {
+                  setValue("companyName", "");
+                }
+              }}
+              onFocus={() => setShowDropdown(true)}
+              onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+              className="border p-2 rounded w-full focus:ring-2 focus:ring-brand focus:outline-none"
+            />
+
+            {/* Dropdown List */}
+            {showDropdown && searchTerm && filteredSuppliers.length > 0 && (
+              <ul className="absolute z-[100] w-full bg-white border border-gray-300 rounded shadow-xl mt-1 max-h-40 overflow-y-auto">
+                {filteredSuppliers.map((s) => (
+                  <li
+                    key={s.id}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b last:border-0"
+                    onMouseDown={() => {
+                      setSearchTerm(s.name); // Input में नाम दिखेगा
+                      setValue("companyName", s.id); // Form submit होने पर ID जाएगी
+                      setShowDropdown(false);
+                    }}
+                  >
+                    {s.name}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="col-span-4 md:col-span-1">
             {" "}

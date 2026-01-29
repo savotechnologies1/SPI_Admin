@@ -936,7 +936,7 @@ const ProcessList = () => {
   return (
     <div className="p-7">
       <div>
-        <div className="flex justify-between">
+        <div className="flex justify-between mt-8">
           <h1 className="font-bold text-[20px] md:text-[24px] text-black">
             Process
           </h1>

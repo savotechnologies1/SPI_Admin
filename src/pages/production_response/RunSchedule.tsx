@@ -499,9 +499,7 @@ const RunSchedule = () => {
       }
     } catch (error: any) {
       console.log("errorerror", error.response.data.message);
-      toast.error(error.response.data.message);
       if (error?.status === 404) {
-        setNoJob(true);
         navigate("/station-login");
       }
     } finally {
@@ -633,20 +631,20 @@ const RunSchedule = () => {
     );
   }
 
-  if (noJob) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <p>No job data available.</p>
+  // if (noJob) {
+  //   return (
+  //     <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+  //       <p>No job data available.</p>
 
-        <button
-          onClick={() => navigate(-1)}
-          className="px-4 py-2 bg-brand text-white rounded-md hover:bg-brand"
-        >
-          Go Back to station login
-        </button>
-      </div>
-    );
-  }
+  //       <button
+  //         onClick={() => navigate(-1)}
+  //         className="px-4 py-2 bg-brand text-white rounded-md hover:bg-brand"
+  //       >
+  //         Go Back to station login
+  //       </button>
+  //     </div>
+  //   );
+  // }
 
   const {
     part,
@@ -692,7 +690,8 @@ const RunSchedule = () => {
                 <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold break-words leading-snug text-white px-2">
                   Process Name :
                   <span className="text-md font-medium">
-                    {part?.process?.processName || "No Available"} ( {part?.process?.machineName })
+                    {part?.process?.processName || "No Available"} ({" "}
+                    {part?.process?.machineName})
                   </span>
                 </p>
               </div>
@@ -766,8 +765,8 @@ const RunSchedule = () => {
               <p className=" text-sm md:text-base">
                 Scrap Qty: {jobData.employeeScrapQty}
               </p>
-                 <p className=" text-sm md:text-base">
-               Order Type: {jobData.order_type}
+              <p className=" text-sm md:text-base">
+                Order Type: {jobData.order_type}
               </p>
             </div>
           </div>
@@ -797,7 +796,6 @@ const RunSchedule = () => {
                     />
                   )}
 
-                  {/* VIDEO THUMBNAIL WITH PLAY BUTTON */}
                   {step.videos?.length > 0 && (
                     <div
                       className="relative w-40 h-40 bg-black rounded-md overflow-hidden cursor-pointer group border"
@@ -807,14 +805,12 @@ const RunSchedule = () => {
                         )
                       }
                     >
-                      {/* Video Preview as Thumbnail */}
                       <video className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity">
                         <source
                           src={`${BASE_URL}/uploads/workInstructionVideo/${step.videos[0].videoPath}#t=0.1`}
                         />
                       </video>
 
-                      {/* Play Icon Overlay */}
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="bg-white/20 backdrop-blur-sm p-3 rounded-full group-hover:scale-110 transition-transform">
                           <FaPlay className="text-white text-xl" />
@@ -826,8 +822,6 @@ const RunSchedule = () => {
                     </div>
                   )}
                 </div>
-
-                {/* TEXT SECTION */}
                 <div className="flex-1">
                   <p className="font-semibold text-lg text-gray-800 break-words mb-1">
                     {step.title}
@@ -946,5 +940,4 @@ const RunSchedule = () => {
     </div>
   );
 };
-
 export default RunSchedule;

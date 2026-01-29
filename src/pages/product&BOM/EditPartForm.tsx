@@ -18,6 +18,7 @@ import {
   updatePartNumber,
 } from "./https/partProductApis";
 import { MdCancel } from "react-icons/md";
+import { selectSupplier } from "../supplier_chain/https/suppliersApi";
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 const EditPartForm = () => {
   const {
@@ -45,9 +46,93 @@ const EditPartForm = () => {
   const [existingImages, setExistingImages] = useState([]);
   const selectedImages = watch("image");
   const [previewImages, setPreviewImages] = useState([]);
+  const [suppliers, setSuppliers] = useState([]); // Suppliers की पूरी लिस्ट
+  const [searchTerm, setSearchTerm] = useState(""); // इनपुट में दिखने वाला नाम
+  const [showDropdown, setShowDropdown] = useState(false); // लिस्ट दिखाने के लिए
+
+  // सर्च के लिए फिल्टर logic
+  const filteredSuppliers = suppliers.filter((s) =>
+    s.name?.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+  // 1. Suppliers की लिस्ट लाना
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        const res = await selectSupplier();
+        setSuppliers(res);
+      } catch (err) {
+        console.error("Suppliers load failed", err);
+      }
+    };
+    fetchSuppliers();
+  }, []);
+
+  // 2. पुराने डेटा को लोड करते समय Search Term सेट करना (Modified fetchProcessDetail)
+  const fetchProcessDetail = async () => {
+    try {
+      const response = await getPartNumberDetail(id);
+      const data = response.data;
+
+      // Supplier ka full name taiyar karein
+      const supplierName = data.supplier
+        ? `${data.supplier.firstName || ""} ${data.supplier.lastName || ""}`.trim()
+        : data.companyName || "";
+
+      reset({
+        ...data,
+        processId: data.processId || "",
+        cycleTime: data.cycleTime || "",
+        processOrderRequired: data.processOrderRequired ? "true" : "false",
+        // Backend ko 'companyName' field me ID chahiye
+        companyId: data.companyName || "",
+      });
+
+      // Input box me Name dikhane ke liye
+      setSearchTerm(supplierName);
+      setExistingImages(data.partImages || []);
+    } catch (error) {
+      console.error("Error fetching detail:", error);
+    }
+  };
+  // const onSubmit = async (data) => {
+  //   const formData = new FormData();
+
+  //   formData.append("partFamily", data.partFamily);
+  //   formData.append("partNumber", data.partNumber);
+  //   formData.append("partDescription", data.partDescription);
+  //   formData.append("cost", data.cost);
+  //   formData.append("leadTime", data.leadTime);
+  //   formData.append("supplierOrderQty", data.supplierOrderQty);
+  //   formData.append("companyName", data.companyName);
+  //   formData.append("minStock", data.minStock);
+  //   formData.append("availStock", data.availStock);
+
+  //   formData.append("cycleTime", data.cycleTime);
+
+  //   formData.append("processOrderRequired", data.processOrderRequired);
+  //   formData.append("processId", data.processId);
+  //   formData.append("processDesc", data.processDesc);
+  //   formData.append("instructionRequired", data.instructionRequired);
+
+  //   if (data.image?.length) {
+  //     for (let file of data.image) {
+  //       formData.append("partImages", file);
+  //     }
+  //   }
+
+  //   try {
+  //     const response = await updatePartNumber(id, formData);
+  //     if (response.status === 200) {
+  //       navigate("/part-table");
+  //     }
+  //   } catch (err) {
+  //     console.error("Error updating part", err);
+  //   }
+  // };
   const onSubmit = async (data) => {
     const formData = new FormData();
 
+    // बाकी फील्ड्स...
     formData.append("partFamily", data.partFamily);
     formData.append("partNumber", data.partNumber);
     formData.append("partDescription", data.partDescription);
@@ -65,12 +150,15 @@ const EditPartForm = () => {
     formData.append("processDesc", data.processDesc);
     formData.append("instructionRequired", data.instructionRequired);
 
+    formData.append("companyId", data.companyId);
+
     if (data.image?.length) {
       for (let file of data.image) {
         formData.append("partImages", file);
       }
     }
 
+    // ... (बाकी कोड)
     try {
       const response = await updatePartNumber(id, formData);
       if (response.status === 200) {
@@ -80,7 +168,6 @@ const EditPartForm = () => {
       console.error("Error updating part", err);
     }
   };
-
   const getAllPartList = async (page = 1) => {
     try {
       const response = await partNumberList(page, rowsPerPage);
@@ -98,24 +185,24 @@ const EditPartForm = () => {
     }
   };
 
-  const fetchProcessDetail = async () => {
-    try {
-      const response = await getPartNumberDetail(id);
-      const data = response.data;
+  // const fetchProcessDetail = async () => {
+  //   try {
+  //     const response = await getPartNumberDetail(id);
+  //     const data = response.data;
 
-      reset({
-        ...data,
-        partFamily: data.partFamily,
-        processId: data.processId || "",
-        cycleTime: data.cycleTime || "",
-        processOrderRequired: data.processOrderRequired ? "true" : "false",
-      });
+  //     reset({
+  //       ...data,
+  //       partFamily: data.partFamily,
+  //       processId: data.processId || "",
+  //       cycleTime: data.cycleTime || "",
+  //       processOrderRequired: data.processOrderRequired ? "true" : "false",
+  //     });
 
-      setExistingImages(data.partImages.map((img) => img));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     setExistingImages(data.partImages.map((img) => img));
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleNumericInput = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -198,7 +285,6 @@ const EditPartForm = () => {
     fetchProcessList();
     getAllPartList();
   }, []);
-
   return (
     // ... your JSX is unchanged, it will work automatically now
     <div className="p-4 md:p-7">
@@ -244,7 +330,7 @@ const EditPartForm = () => {
               {processData.map((item) => (
                 <option key={item.id} value={item.partFamily}>
                   {/* सुनिश्चित करें कि item.partFamily मौजूद है */}
-                  {item.partFamily}
+                  {item.partFamily} ({item.machineName})
                 </option>
               ))}
             </select>
@@ -307,18 +393,61 @@ const EditPartForm = () => {
               className="border p-2 rounded w-full"
             />
           </div>
+          <div className="col-span-4 md:col-span-1 relative">
+            <label className="block mb-1">Company Name</label>
 
-          {/* Company Name */}
-          <div className="col-span-4 md:col-span-1">
-            <label>Company Name</label>
+            {/* यह Hidden input बैकएंड में ID भेजने के लिए है */}
+            <input
+              type="hidden"
+              {...register("companyId", { required: "Company is required" })}
+            />
+
+            {/* यह Visible input सिर्फ User के देखने और Search करने के लिए है */}
             <input
               type="text"
-              {...register("companyName")}
-              placeholder="Company"
-              className="border p-2 rounded w-full"
-            />
-          </div>
+              value={searchTerm}
+              placeholder="Search Supplier..."
+              autoComplete="off"
+              onChange={(e) => {
+                const val = e.target.value;
+                setSearchTerm(val);
+                setShowDropdown(true);
 
+                // अगर यूजर नाम पूरा मिटा देता है, तो ID को भी खाली कर दें
+                if (val === "") {
+                  setValue("companyId", "");
+                }
+              }}
+              onFocus={() => setShowDropdown(true)}
+              onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+              className={`border p-2 rounded w-full focus:ring-2 focus:ring-brand focus:outline-none ${errors.companyId ? "border-red-500" : ""}`}
+            />
+
+            {/* Dropdown List */}
+            {showDropdown && searchTerm && filteredSuppliers.length > 0 && (
+              <ul className="absolute z-[100] w-full bg-white border border-gray-300 rounded shadow-xl mt-1 max-h-40 overflow-y-auto">
+                {filteredSuppliers.map((s) => (
+                  <li
+                    key={s.id}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b last:border-0"
+                    onMouseDown={() => {
+                      setSearchTerm(s.name); // यहाँ 'Name' सेट होगा जो इनपुट में दिखेगा
+                      setValue("companyId", s.id); // यहाँ 'ID' सेट होगी जो API में जाएगी
+                      setShowDropdown(false);
+                    }}
+                  >
+                    {s.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {errors.companyId && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.companyId.message}
+              </p>
+            )}
+          </div>
           {/* Minimum Stock */}
           <div className="col-span-4 md:col-span-1">
             <label>Minimum Stock</label>

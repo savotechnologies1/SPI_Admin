@@ -1,4 +1,7 @@
 import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 import Layout from "./components/Layout";
 import SignIn from "./auth/SignIn";
 import DashboardDetails from "./pages/dashboard/DasboardDetails";
@@ -24,7 +27,6 @@ import { PartProvider } from "./components/Context/PartContext";
 import PartTable from "./pages/product&BOM/PartTable";
 import EditPartForm from "./pages/product&BOM/EditPartForm";
 import ProductTree from "./pages/product&BOM/ProductTree";
-import { ToastContainer } from "react-toastify";
 import AddProcess from "./pages/process/AddProcess";
 import CustomerList from "./pages/customerInfo/CustomerList";
 import WorkInstructionList from "./pages/Work_Instrcution.tsx/WorkInstructionList";
@@ -81,7 +83,6 @@ import EditVacationInfo from "./pages/Employee_Information/Employee_Information/
 import FixedCost from "./pages/fixed-cost-management/FixedCost";
 import MonitorManagement from "./pages/productionLive/MonitorManagement";
 import CustomOrder from "./pages/order_schedule/CustomOrder";
-
 const App = () => {
   const { isLoading, token } = useAuth();
 
@@ -95,7 +96,7 @@ const App = () => {
   }
   return (
     <PartProvider>
-      <ToastContainer />
+      <ToastContainer style={{ zIndex: 99999 }} />
       <Router basename="/admin">
         <Routes>
           {/* Public Routes */}

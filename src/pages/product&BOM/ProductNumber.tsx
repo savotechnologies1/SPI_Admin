@@ -13,6 +13,7 @@ import {
   selectProcess,
 } from "./https/partProductApis";
 import { toast } from "react-toastify";
+import { selectSupplier } from "../supplier_chain/https/suppliersApi";
 
 interface Part {
   partFamily: string;
@@ -69,6 +70,25 @@ const ProductNumber = () => {
   );
   const inputRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [selectedImages, setSelectedImages] = useState<FileList | null>(null);
+  const [suppliers, setSuppliers] = useState<any[]>([]); // Suppliers स्टोर करने के लिए
+  const [searchTerm, setSearchTerm] = useState(""); // इनपुट में दिखने वाला नाम
+  const [showDropdown, setShowDropdown] = useState(false); // लिस्ट दिखाने के लिए
+
+  // Filtered Suppliers: जो टाइप किया गया है उसके आधार पर लिस्ट छोटी होगी
+  const filteredSuppliers = suppliers.filter((s) =>
+    s.name?.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        const res = await selectSupplier();
+        setSuppliers(res);
+      } catch (err) {
+        console.error("Suppliers load failed", err);
+      }
+    };
+    fetchSuppliers();
+  }, []);
 
   const { addPart } = partContext || {};
   const handleRemoveImage = (index: number) => {
@@ -307,7 +327,7 @@ const ProductNumber = () => {
             <option value="">Select Part Family</option>
             {processData.map((item: any) => (
               <option key={item.id} value={item.partFamily}>
-                {item.partFamily}
+                {item.partFamily} ( {item.machineName})
               </option>
             ))}
           </select>
@@ -380,7 +400,7 @@ const ProductNumber = () => {
             </p>
           )}
         </label>
-        <label className="col-span-4 md:col-span-1">
+        {/* <label className="col-span-4 md:col-span-1">
           Company Name
           <input
             type="text"
@@ -388,7 +408,54 @@ const ProductNumber = () => {
             placeholder="Company"
             className="border p-2 rounded w-full"
           />
-        </label>
+        </label> */}
+        <div className="col-span-4 md:col-span-1 relative">
+          <label className="block mb-1">Company Name</label>
+
+          {/* Hidden Input: यह फॉर्म सबमिट करते समय 'companyName' की ID भेजेगा */}
+          <input type="hidden" {...register("companyName")} />
+
+          {/* Search Input: यह यूजर को टाइप करने के लिए दिखेगा */}
+          <input
+            type="text"
+            value={searchTerm}
+            placeholder="Search Supplier..."
+            autoComplete="off"
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setShowDropdown(true);
+              // अगर इनपुट खाली हो जाए तो फॉर्म वैल्यू भी साफ़ कर दें
+              if (e.target.value === "") setValue("companyName", "");
+            }}
+            onFocus={() => setShowDropdown(true)}
+            // Blur पर थोड़े डिले के साथ बंद करें ताकि क्लिक रजिस्टर हो सके
+            onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+            className="border p-2 rounded w-full focus:ring-2 focus:ring-brand focus:outline-none"
+          />
+
+          {/* Dropdown Suggestions List */}
+          {showDropdown && searchTerm && filteredSuppliers.length > 0 && (
+            <ul className="absolute z-[100] w-full bg-white border border-gray-300 rounded shadow-xl mt-1 max-h-40 overflow-y-auto">
+              {filteredSuppliers.map((s) => (
+                <li
+                  key={s.id}
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b last:border-0"
+                  onMouseDown={() => {
+                    setSearchTerm(s.name); // इनपुट में नाम सेट करें
+                    setValue("companyName", s.id); // फॉर्म में ID सेट करें
+                    setShowDropdown(false); // लिस्ट बंद करें
+                  }}
+                >
+                  {s.name}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {errors.companyName && (
+            <p className="text-red-500 text-xs mt-1">Company is required</p>
+          )}
+        </div>
         <label className="col-span-4 md:col-span-1">
           Minimum Stock
           <input
@@ -495,7 +562,6 @@ const ProductNumber = () => {
         </div>
         {isProcessRequired && (
           <>
-            {/* Process Selection */}
             <div className="col-span-4 md:col-span-1">
               <label>Process</label>
               <select
@@ -507,7 +573,7 @@ const ProductNumber = () => {
                 <option value="">Select Process</option>
                 {processData.map((item: any) => (
                   <option key={item.id} value={item.id}>
-                    {item.name}
+                    {item.name} ( {item.machineName})
                   </option>
                 ))}
               </select>

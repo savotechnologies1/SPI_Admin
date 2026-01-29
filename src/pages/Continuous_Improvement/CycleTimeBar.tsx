@@ -272,7 +272,7 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 // const CycleTime = () => {
@@ -440,20 +440,27 @@ import { format, subDays } from "date-fns";
 
 // export default CycleTime;
 
-
 // Chart.js components ko register karna zaroori hai agar pehle nahi kiya
 
-
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 const CycleTime = ({ partId }: { partId: string }) => {
   const [chartData, setChartData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  
+
   // Dynamic Dates State (Default: Pichle 7 din)
-  const [startDate, setStartDate] = useState<Date | null>(subDays(new Date(), 7));
+  const [startDate, setStartDate] = useState<Date | null>(
+    subDays(new Date(), 7),
+  );
   const [endDate, setEndDate] = useState<Date | null>(new Date());
 
   // Jab partId, startDate ya endDate change ho, data fetch karein
@@ -466,19 +473,21 @@ const CycleTime = ({ partId }: { partId: string }) => {
   const fetchCycleTimeData = async (pId: string, start: Date, end: Date) => {
     try {
       setLoading(true);
-      
+
       // Date format: YYYY-MM-DD
       const formattedStart = format(start, "yyyy-MM-dd");
       const formattedEnd = format(end, "yyyy-MM-dd");
 
       const res = await axios.get(
-        `${BASE_URL}/api/admin/cycle-time-comparision-data?startDate=${formattedStart}&endDate=${formattedEnd}&partId=${pId}`
+        `${BASE_URL}/api/admin/cycle-time-comparision-data?startDate=${formattedStart}&endDate=${formattedEnd}&partId=${pId}`,
       );
 
       const apiData = res.data.data.processWiseCT;
 
       setChartData({
-        labels: apiData.map((item: any) => `${item.processName} (${item.machineName})`),
+        labels: apiData.map(
+          (item: any) => `${item.processName} (${item.machineName})`,
+        ),
         datasets: [
           {
             label: "Manual CT",
@@ -534,7 +543,7 @@ const CycleTime = ({ partId }: { partId: string }) => {
               className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
             />
           </div>
-          
+
           <div className="flex flex-col">
             <label className="text-xs text-gray-500 mb-1">End Date</label>
             <DatePicker
@@ -555,7 +564,7 @@ const CycleTime = ({ partId }: { partId: string }) => {
       <div className="w-full h-[260px] sm:h-[320px] md:h-[400px] lg:h-[450px] relative">
         {loading ? (
           <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70 z-10">
-             <p className="text-gray-500 font-medium">Updating Chart...</p>
+            <p className="text-gray-500 font-medium">Updating Chart...</p>
           </div>
         ) : null}
 
@@ -563,7 +572,9 @@ const CycleTime = ({ partId }: { partId: string }) => {
           <Bar data={chartData} options={options} />
         ) : (
           <div className="flex items-center justify-center h-full">
-            <p className="text-gray-400">No data available for the selected range.</p>
+            <p className="text-gray-400">
+              No data available for the selected range.
+            </p>
           </div>
         )}
       </div>

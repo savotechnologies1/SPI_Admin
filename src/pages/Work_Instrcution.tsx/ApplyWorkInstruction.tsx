@@ -48,6 +48,7 @@ const ApplyWorkInstruction = () => {
       };
 
       await applyWorkInstructionApi(payload);
+      navigate("/work-instructions-list");
     } catch (error) {
       console.error("Error submitting:", error);
     }

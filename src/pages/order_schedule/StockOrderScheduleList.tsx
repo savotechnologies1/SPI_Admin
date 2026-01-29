@@ -25,7 +25,6 @@ interface WorkInstructionItem {
   statusColor: string;
 }
 
-
 const StockOrderScheduleList: React.FC = () => {
   const [workData, setWorkData] = useState<any[]>([]); // Use any[] for now for simplicity
   const [totalPages, setTotalPages] = useState(1);
@@ -215,9 +214,11 @@ const StockOrderScheduleList: React.FC = () => {
                     <td className="px-4 py-3">
                       {rowItem.part?.process?.processName ||
                         rowItem.customPart?.process?.processName ||
-                        "N/A"}{" "}
+                        "N/A"}
+                      (
                       {rowItem.part?.process?.machineName ||
                         rowItem.customPart?.process?.machineName}
+                      )
                     </td>
 
                     {/* Source: Library hai ya Manual entry */}
@@ -228,7 +229,7 @@ const StockOrderScheduleList: React.FC = () => {
                     <td className="px-4 py-3">
                       {formatDate(rowItem.delivery_date)}
                     </td>
-                   <td className="px-4 py-3 text-gray-600">
+                    <td className="px-4 py-3 text-gray-600">
                       {rowItem.completed_by
                         ? `${rowItem.completed_by}`
                         : "Not Assigned"}

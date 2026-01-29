@@ -103,7 +103,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { selectProcess } from "./https/schedulingApis";
 
-// const DailyScheduleList = () => {
+// const DailyScheduleList = () => {navbar
 //   interface FormData {
 //     date: string;
 //     process: string;
