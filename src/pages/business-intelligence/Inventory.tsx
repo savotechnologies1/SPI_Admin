@@ -1370,7 +1370,6 @@
 // };
 
 // export default Inventory;
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -1386,22 +1385,16 @@ import {
 
 /* ---------------- Types ---------------- */
 
-type Period = "daily" | "weekly" | "monthly";
+// 1. "yearly" add kiya
+type Period = "daily" | "weekly" | "monthly" | "yearly";
 
 interface ChartItem {
-  date: string;      // X-axis formatted (system time)
+  date: string;      // X-axis label
   rawDate: string;   // original date (tooltip)
   cost: number;
 }
 
-/* ---------------- Date Utils (Frontend Only) ---------------- */
-
-// System / Browser time ke according
-const formatShortDate = (date: string | Date) =>
-  new Intl.DateTimeFormat(undefined, {
-    day: "2-digit",
-    month: "short",
-  }).format(new Date(date));
+/* ---------------- Date Utils ---------------- */
 
 const formatFullDate = (date: string | Date) =>
   new Intl.DateTimeFormat(undefined, {
@@ -1409,6 +1402,18 @@ const formatFullDate = (date: string | Date) =>
     month: "short",
     year: "numeric",
   }).format(new Date(date));
+
+// X-axis ke liye custom formatter jo period ke hisaab se label change karega
+const formatXAxis = (dateStr: string, period: Period) => {
+  const date = new Date(dateStr);
+  if (period === "yearly") {
+    return date.getFullYear().toString(); // Yearly mein sirf saal dikhayenge
+  }
+  return new Intl.DateTimeFormat(undefined, {
+    day: "2-digit",
+    month: "short",
+  }).format(date);
+};
 
 /* ---------------- Component ---------------- */
 
@@ -1431,14 +1436,14 @@ const Inventory = () => {
       );
 
       const formatted: ChartItem[] = res.data.map((item: any) => ({
-        date: formatShortDate(item.date), // X-axis (system time)
+        // Yaha formatXAxis use kiya taaki yearly mein sirf year dikhe
+        date: formatXAxis(item.date, period), 
         rawDate: item.date,
         cost: item.totalInventoryCost,
       }));
 
       setChartData(formatted);
 
-      // KPI → latest day inventory cost
       if (res.data.length > 0) {
         setTotalInventoryCost(
           res.data[res.data.length - 1].totalInventoryCost
@@ -1459,8 +1464,6 @@ const Inventory = () => {
     fetchInventoryGraph();
   }, [period]);
 
-  /* ---------------- UI ---------------- */
-
   return (
     <div className="p-4">
       <h1 className="font-semibold text-2xl mb-4">Inventory</h1>
@@ -1471,28 +1474,26 @@ const Inventory = () => {
         <select
           value={period}
           onChange={(e) => setPeriod(e.target.value as Period)}
-          className="border rounded px-3 py-1"
+          className="border rounded px-3 py-1 bg-white"
         >
           <option value="daily">Daily</option>
           <option value="weekly">Weekly</option>
           <option value="monthly">Monthly</option>
+          <option value="yearly">Yearly</option> {/* 2. Dropdown mein add kiya */}
         </select>
       </div>
 
       {/* 🔹 KPI */}
       <div className="mb-6 p-4 border rounded-lg shadow bg-white">
         <h2 className="text-lg font-semibold">
-          Total Inventory Cost: $ {totalInventoryCost.toFixed(2)}
+          Total Inventory Cost: $ {totalInventoryCost.toLocaleString(undefined, { minimumFractionDigits: 2 })}
         </h2>
-        {/* <p className="text-sm text-gray-500 mt-1">
-          Last updated: {formatFullDate(new Date())}
-        </p> */}
       </div>
 
       {/* 🔹 Line Graph */}
       <div className="bg-white shadow-md rounded-2xl p-4">
         <h2 className="text-lg font-medium mb-3">
-          Inventory Trend (Date Wise)
+          Inventory Trend ({period.charAt(0).toUpperCase() + period.slice(1)})
         </h2>
 
         {loading ? (
@@ -1500,25 +1501,35 @@ const Inventory = () => {
         ) : (
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={chartData}>
-              <CartesianGrid stroke="#e0e0e0" />
-              <XAxis dataKey="date" fontSize={12} />
-              <YAxis />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
+              <XAxis 
+                dataKey="date" 
+                fontSize={12} 
+                tickMargin={10}
+              />
+              <YAxis 
+                fontSize={12} 
+                tickFormatter={(value) => `$${value}`}
+              />
               <Tooltip
-                labelFormatter={(label, payload) =>
-                  payload?.[0]?.payload?.rawDate
-                    ? `Date: ${formatFullDate(
-                        payload[0].payload.rawDate
-                      )}`
-                    : label
-                }
+                labelFormatter={(label, payload) => {
+                  if (payload?.[0]?.payload?.rawDate) {
+                    return period === "yearly" 
+                      ? `Year: ${new Date(payload[0].payload.rawDate).getFullYear()}`
+                      : `Date: ${formatFullDate(payload[0].payload.rawDate)}`;
+                  }
+                  return label;
+                }}
               />
               <Legend />
               <Line
+                name="Inventory Cost"
                 type="monotone"
                 dataKey="cost"
                 stroke="#4f46e5"
                 strokeWidth={3}
                 dot={{ r: 4 }}
+                activeDot={{ r: 6 }}
               />
             </LineChart>
           </ResponsiveContainer>

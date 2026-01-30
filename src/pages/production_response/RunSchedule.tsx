@@ -602,7 +602,8 @@ const RunSchedule = () => {
         jobData.productionId,
         jobData.order_id,
         jobData.order_type,
-        jobData.part_id,
+        jobData.part_id ||jobData.customPartId,
+        jobData.customPartId,
         stationUserId, // maps to employeeId in backend
         jobData?.productId || jobData?.order?.productId,
         jobData.type || "part",
@@ -684,9 +685,17 @@ const RunSchedule = () => {
     order_date,
   } = jobData;
   console.log("partpart", jobData);
-  const rows = [
-    { part: part?.partNumber || part?.partDescription, date: order_date },
-  ];
+   const rows = [
+  { part: jobData.partNumber || "N/A", date: order_date },
+];
+
+  // Agar upcoming order ka data hai, tabhi doosri row add karein
+  if (upcommingOrder && upcommingParts) {
+    rows.push({
+      part: upcommingParts,
+      date: upcommingOrder,
+    });
+  }
 
   // Agar upcoming order ka data hai, tabhi doosri row add karein
   if (upcommingOrder && upcommingParts) {
@@ -718,8 +727,8 @@ const RunSchedule = () => {
                 <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold break-words leading-snug text-white px-2">
                   Process Name :
                   <span className="text-md font-medium">
-                    {part?.process?.processName || "No Available"} ({" "}
-                    {part?.process?.machineName})
+                    {part?.process?.processName ||jobData.process.processName} ({" "}
+                    {part?.process?.machineName ||jobData.process.machineName})
                   </span>
                 </p>
               </div>

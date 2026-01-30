@@ -47,6 +47,7 @@ const EditSuppliers = () => {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
+        companyName: data.companyName,
         address: data.address,
         billingTerms: data.billingTerms,
       });
@@ -146,6 +147,21 @@ const EditSuppliers = () => {
             {errors.email && (
               <p className="text-red-500 text-sm">
                 {String(errors.email.message)}
+              </p>
+            )}
+          </div>
+
+          <label className="font-semibold">Company Name</label>
+          <div className="mt-2 w-full mb-6">
+            <input
+              {...register("companyName", { required: "Company Name is required" })}
+              type="text"
+              placeholder="Company Name"
+              className="border py-4 px-4 rounded-md w-full"
+            />
+            {errors.address && (
+              <p className="text-red-500 text-sm">
+                {String(errors.address.message)}
               </p>
             )}
           </div>

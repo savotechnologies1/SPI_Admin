@@ -150,9 +150,11 @@ const SupplierList = () => {
                 <tr className="bg-[#F4F6F8]">
                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
                     Name
-                  </th>
+                  </th> 
                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium hidden sm:table-cell">
                     Address
+                  </th> <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
+                    Company Name
                   </th>
                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium hidden md:table-cell">
                     Billing Terms
@@ -184,8 +186,11 @@ const SupplierList = () => {
                           <p className="text-xs text-gray-400 truncate max-w-[100px] md:max-w-none">
                             {item.email}
                           </p>
+                          
                         </div>
                       </div>
+                    </td> <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
+                      {item.companyName}
                     </td>
                     <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
                       {item.address}
