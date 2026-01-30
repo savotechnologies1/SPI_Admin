@@ -151,9 +151,7 @@ const SupplierList = () => {
                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
                     Name
                   </th> 
-                  <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
-                    Email
-                  </th>
+                  
                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
                     Company Name
                   </th>
