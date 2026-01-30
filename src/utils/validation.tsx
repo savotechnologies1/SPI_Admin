@@ -11,7 +11,7 @@ export const stockOrderValidation = Yup.object().shape({
   // customerId: Yup.string().required(
   //   "Please select a customer or add a new one."
   // ),
-  customerName: Yup.string().required("Customer Name is required"),
+  // customerName: Yup.string().required("Customer Name is required"),
   customerEmail: Yup.string().email("Invalid email format"),
 
   customerPhone: Yup.string()
@@ -36,7 +36,7 @@ export const customOrderValidation = Yup.object().shape({
     .min(Yup.ref("orderDate"), "Ship date cannot be before order date"),
   // customerId: Yup.string().required("Please select or add a customer"),
   customerName: Yup.string().required("Customer name is required"),
-  customerEmail: Yup.string().email("Invalid email format"),
+  // customerEmail: Yup.string().email("Invalid email format"),
   customerPhone: Yup.string()
     .matches(/^[0-9]+$/, "Phone number must be only digits")
     .min(7, "Phone number must be at least 7 digits")

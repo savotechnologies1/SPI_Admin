@@ -229,17 +229,30 @@ const StockOrderScheduleList: React.FC = () => {
                     <td className="px-4 py-3">
                       {formatDate(rowItem.delivery_date)}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">
-                      {rowItem.completed_by
-                        ? `${rowItem.completed_by}`
-                        : "Not Assigned"}
+                    {/* 7. Performed By (Completed By) - This shows "Admin (Name)" or "Worker Name" */}
+                    <td className="px-4 py-3 text-sm text-gray-700">
+                      {rowItem.status === "completed" ? (
+                        <span className="font-medium">
+                          {rowItem.completed_by === "N/A"
+                            ? "System"
+                            : rowItem.completed_by}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 italic">Pending</span>
+                      )}
                     </td>
 
-                    {/* Employee Name */}
-                    <td className="px-4 py-3 text-gray-600">
-                      {rowItem.completedByEmployee
-                        ? `${rowItem.completedByEmployee.firstName} ${rowItem.completedByEmployee.lastName}`
-                        : "Not Assigned"}
+                    {/* 8. Station Employee (The worker assigned to this station) */}
+                    <td className="px-4 py-3 text-sm text-gray-700">
+                      {rowItem.completedByEmployee ? (
+                        <div className="flex flex-col">
+                          <span>{`${rowItem.completedByEmployee.firstName} ${rowItem.completedByEmployee.lastName || ""}`}</span>
+                        </div>
+                      ) : (
+                        <span className="text-gray-400 italic text-xs">
+                          No Station Worker
+                        </span>
+                      )}
                     </td>
 
                     {/* Status */}

@@ -267,8 +267,24 @@ const customerTemplate = [
 
 // Supplier Template
 const supplierTemplate = [
-  ["firstName", "lastName", "email", "address", "billingTerms", "fileName"],
-  ["test", "test", "test@gmail.com", "test address", "5", "supplier"],
+  [
+    "firstName",
+    "lastName",
+    "email",
+    "companyName",
+    "address",
+    "billingTerms",
+    "fileName",
+  ],
+  [
+    "test",
+    "test",
+    "test@gmail.com",
+    "test company",
+    "test address",
+    "5",
+    "supplier",
+  ],
 ];
 
 // const Import: React.FC = () => {

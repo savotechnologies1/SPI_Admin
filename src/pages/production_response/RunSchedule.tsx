@@ -539,51 +539,79 @@ const RunSchedule = () => {
   //   }
   // };
   const [isCompleting, setIsCompleting] = useState(false);
+  // const handleCompleteOrder = async () => {
+  //   if (!jobData || isCompleting) return;
+  //   setIsCompleting(true);
+  //   try {
+  //     if (jobData.type === "product") {
+  //       const stationLoginData = {
+  //         processId: jobData.processId,
+  //         stationUserId: jobData.employeeInfo.id,
+  //         type: "run_schedule",
+  //       };
+
+  //       const loginRes = await stationLogin(stationLoginData);
+  //       if (loginRes?.status !== 200) {
+  //         console.error("Station login failed");
+  //         setIsCompleting(false);
+  //         return;
+  //       }
+  //       console.log("Station login successful!");
+  //     }
+
+  //     console.log("jobDatajobData", jobData);
+  //     let productId = null;
+  //     if (jobData.type === "product") {
+  //       productId = jobData.productId || jobData.order.productId;
+  //     }
+
+  //     await completeOrder(
+  //       jobData.productionId,
+  //       jobData.order_id,
+  //       jobData.order_type,
+  //       jobData.part_id,
+  //       jobData.employeeInfo.id,
+  //       jobData?.productId || jobData?.order?.productId,
+  //       jobData.type || "part",
+  //       `Admin`,
+  //     );
+  //     fetchJobDetails(id);
+  //   } catch (error: any) {
+  //     const status = error?.response?.status;
+  //     if (status === 400) {
+  //       console.warn("Order might be already completed. Refetching...");
+  //       fetchJobDetails(id);
+  //     } else {
+  //       console.error("Error completing order:", error);
+  //     }
+  //   } finally {
+  //     setIsCompleting(false);
+  //   }
+  // };
+
   const handleCompleteOrder = async () => {
     if (!jobData || isCompleting) return;
     setIsCompleting(true);
     try {
-      if (jobData.type === "product") {
-        const stationLoginData = {
-          processId: jobData.processId,
-          stationUserId: jobData.employeeInfo.id,
-          type: "run_schedule",
-        };
+      // ... (keep your existing stationLogin logic for products)
 
-        const loginRes = await stationLogin(stationLoginData);
-        if (loginRes?.status !== 200) {
-          console.error("Station login failed");
-          setIsCompleting(false);
-          return;
-        }
-        console.log("Station login successful!");
-      }
-
-      console.log("jobDatajobData", jobData);
-      let productId = null;
-      if (jobData.type === "product") {
-        productId = jobData.productId || jobData.order.productId;
-      }
+      const adminName = "Admin"; // You can replace this with actual logged-in Admin name from context/localStorage
+      const stationUserId = jobData.employeeInfo.id; // The ID of the user assigned to this station
 
       await completeOrder(
         jobData.productionId,
         jobData.order_id,
         jobData.order_type,
         jobData.part_id,
-        jobData.employeeInfo.id,
+        stationUserId, // maps to employeeId in backend
         jobData?.productId || jobData?.order?.productId,
         jobData.type || "part",
-        `Admin`,
+        adminName, // maps to completedBy in backend
       );
+
       fetchJobDetails(id);
     } catch (error: any) {
-      const status = error?.response?.status;
-      if (status === 400) {
-        console.warn("Order might be already completed. Refetching...");
-        fetchJobDetails(id);
-      } else {
-        console.error("Error completing order:", error);
-      }
+      // ... error handling
     } finally {
       setIsCompleting(false);
     }

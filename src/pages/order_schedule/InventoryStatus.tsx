@@ -216,7 +216,7 @@ const InventoryStatus = () => {
     const fetchInventory = async () => {
       try {
         const response = await axios.get(
-          `${BASE_URL}/api/admin/schedule-inventory`
+          `${BASE_URL}/api/admin/schedule-inventory`,
         ); // change to your API
         setData(response.data.data); // assuming your API returns { data: [...] }
         setLoading(false);
@@ -232,7 +232,7 @@ const InventoryStatus = () => {
   const totalPages = Math.ceil(data.length / rowsPerPage);
   const currentRows = data.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
 
   const goToPreviousPage = () => {
@@ -269,7 +269,7 @@ const InventoryStatus = () => {
             <FaCircle className="text-[6px] text-gray-500" />
           </span>
           <span className="text-[14px] hover:cursor-pointer">
-            Inventory Status
+            Inventory Status1
           </span>
         </div>
       </div>
