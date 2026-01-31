@@ -468,7 +468,9 @@ const formatCycleTime = (dateString) => {
     }
     const now = new Date();
     const diffMs = now - startTime;
-    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    
+    // Math.max use kiya hai taaki agar difference 0 se chota ho toh 0 dikhaye
+    const diffMinutes = Math.max(0, Math.floor(diffMs / (1000 * 60)));
 
     return `${diffMinutes} min`;
   } catch (error) {
