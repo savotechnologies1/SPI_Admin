@@ -787,7 +787,7 @@ const EditProductForm = () => {
 
   const [savedBOMs, setSavedBOMs] = useState<any[]>([]);
   const filteredSuppliers = suppliers.filter((s) =>
-    s.name?.toLowerCase().includes(searchTerm.toLowerCase()),
+    s.companyName?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // Suppliers की लिस्ट लोड करने के लिए useEffect
@@ -845,7 +845,7 @@ const EditProductForm = () => {
 
       // 1. Supplier का नाम निकालें (Input Box में दिखाने के लिए)
       const supplierName = data.supplier
-        ? `${data.supplier.firstName || ""} ${data.supplier.lastName || ""}`.trim()
+        ? `${data.supplier.companyName || ""}`.trim()
         : data.companyName || "";
 
       setSearchTerm(supplierName); // ये ज़रूरी है ताकि Input खाली न दिखे
@@ -1172,12 +1172,12 @@ const EditProductForm = () => {
                     key={s.id}
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b last:border-0"
                     onMouseDown={() => {
-                      setSearchTerm(s.name); // Input में नाम दिखेगा
+                      setSearchTerm(s.companyName); // Input में नाम दिखेगा
                       setValue("companyName", s.id); // Form submit होने पर ID जाएगी
                       setShowDropdown(false);
                     }}
                   >
-                    {s.name}
+                    {s.companyName}
                   </li>
                 ))}
               </ul>

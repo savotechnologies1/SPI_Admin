@@ -431,12 +431,12 @@ const EditPartForm = () => {
                     key={s.id}
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b last:border-0"
                     onMouseDown={() => {
-                      setSearchTerm(s.name); // यहाँ 'Name' सेट होगा जो इनपुट में दिखेगा
+                      setSearchTerm(s.companyName); // यहाँ 'Name' सेट होगा जो इनपुट में दिखेगा
                       setValue("companyId", s.id); // यहाँ 'ID' सेट होगी जो API में जाएगी
                       setShowDropdown(false);
                     }}
                   >
-                    {s.name}
+                    {s.companyName}
                   </li>
                 ))}
               </ul>

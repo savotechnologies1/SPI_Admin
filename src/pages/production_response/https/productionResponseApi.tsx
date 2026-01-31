@@ -95,7 +95,6 @@ export const completeOrder = async (
     toast.error(error?.response?.data?.message || "Something went wrong");
   }
 };
-
 export const completeTraningApi = async (id: string) => {
   try {
     const response = await axiosInstance.put(`/complete-traning/${id}`);

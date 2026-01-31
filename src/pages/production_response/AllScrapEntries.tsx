@@ -170,7 +170,7 @@ const AllScrapEntries: React.FC = () => {
                   <td className="px-4 py-3">{item?.PartNumber?.partNumber}</td>
 
                   <td className="px-4 py-3">
-                    {item?.supplier?.firstName} {item?.supplier?.lastName}
+                    {item?.PartNumber.supplier.companyName} 
                   </td>
                   <td className="px-4 py-3">
                     {item.scrapStatus == true ? "yes" : "no"}
