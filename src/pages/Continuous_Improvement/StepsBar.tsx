@@ -318,8 +318,7 @@ const StepsBar = ({ partId }: { partId: string }) => {
         </select>
       </div>
       </div>
-        {loading && <FaSpinner className="animate-spin text-blue-600 text-xl" />}
-
+    
       {/* Select Process Dropdown */}
       
 

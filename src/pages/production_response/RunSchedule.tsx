@@ -687,26 +687,28 @@ const handleCompleteOrder = async () => {
     order_date,
   } = jobData;
   console.log("partpart", jobData);
-   const rows = [
-  { part: jobData.partNumber || "N/A", date: order_date },
+  
+// 1. Pehle current job ko row mein daalein
+// Current Job details
+// 1. Current Job
+const rows = [
+  { 
+    status: "Current",
+    part: jobData.partNumber || "N/A", 
+    date: jobData.order_date 
+  },
 ];
 
-  // Agar upcoming order ka data hai, tabhi doosri row add karein
-  if (upcommingOrder && upcommingParts) {
-    rows.push({
-      part: upcommingParts,
-      date: upcommingOrder,
-    });
-  }
-
-  // Agar upcoming order ka data hai, tabhi doosri row add karein
-  if (upcommingOrder && upcommingParts) {
-    rows.push({
-      part: upcommingParts,
-      date: upcommingOrder,
-    });
-  }
-
+// 2. Sirf 1 Upcoming Job (Agar data available hai)
+if (jobData.incomingJobs && jobData.incomingJobs.length > 0) {
+  const nextJob = jobData.incomingJobs[0]; // Pehla item uthaya
+  rows.push({
+    status: "Upcoming",
+    part: nextJob.partNumber,
+    // JSON mein 'scheudleDate' field ka use kar rahe hain
+    date: nextJob.scheudleDate 
+  });
+}
   return (
     <div className="bg-[#F5F6FA] min-h-screen flex flex-col">
       <div className="bg-[#243C75] relative ">
@@ -741,36 +743,31 @@ const handleCompleteOrder = async () => {
                 className="w-20 sm:w-24 md:w-28 lg:w-32 object-contain"
               />
 
-              {/* Table overlay on image */}
-              <div className="absolute inset-0 flex items-center justify-center px-2 sm:px-3 md:px-4 mt-5">
-                <div className=" bg-opacity-50 rounded-md overflow-x-auto w-full">
-                  <table className="border border-white text-white text-center w-full min-w-[280px]">
-                    <thead>
-                      <tr className="font-semibold">
-                        <th className="border border-white px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm md:text-base">
-                          Part
-                        </th>
-                        <th className="border border-white px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm md:text-base">
-                          Schedule date
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rows.map((row, i) => (
-                        <tr key={i}>
-                          <td className="border border-white px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm md:text-base">
-                            {row.part}{" "}
-                            {/* Yahan sirf row.part likhein, description alag se mat likhein */}
-                          </td>
-                          <td className="border border-white px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm md:text-base">
-                            {formatDate(row.date)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+            <div className="absolute inset-0 flex items-center justify-center px-2 sm:px-3 md:px-4 mt-5">
+  <div className="bg-opacity-50 rounded-md overflow-y-auto w-full max-h-[150px]"> {/* Scrolling add ki hai taaki zyada parts fits ho sakein */}
+    <table className="border border-white text-white text-center w-full min-w-[280px]">
+      <thead className="sticky top-0 bg-[#243C75]">
+        <tr className="font-semibold">
+          <th className="border border-white px-2 py-1 text-xs sm:text-sm">Part Number</th>
+          <th className="border border-white px-2 py-1 text-xs sm:text-sm">Type/Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row, i) => (
+          <tr key={i} className={i === 0 ? "bg-green-600/30" : ""}> {/* Current job ko highlight karne ke liye */}
+            <td className="border border-white px-2 py-1 text-xs sm:text-sm">
+              {row.part}
+            </td>
+           
+            <td className="border border-white px-2 py-1 text-xs sm:text-sm">
+              {row.date.includes('T') ? formatDate(row.date) : row.date}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
             </div>
           </div>
           {/* <div className="absolute inset-0 flex items-center justify-center px-3 md:px-6">

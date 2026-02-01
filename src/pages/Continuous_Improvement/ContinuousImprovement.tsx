@@ -303,17 +303,17 @@ const ContinuousImprovement = () => {
               value={selected}
               onChange={(e) => setSelected(e.target.value)}
               className="
-        w-full
-        p-2.5 sm:p-3
-        bg-gray-50
-        border border-gray-300
-        text-gray-900
-        text-xs sm:text-sm
-        rounded-lg
-        focus:ring-2 focus:ring-blue-500
-        focus:outline-none
-        transition-all
-      "
+              w-full
+              p-2.5 sm:p-3
+              bg-gray-50
+              border border-gray-300
+              text-gray-900
+              text-xs sm:text-sm
+              rounded-lg
+              focus:ring-2 focus:ring-blue-500
+              focus:outline-none
+              transition-all
+            "
             >
               <option value="" disabled>
                 Choose a part...
