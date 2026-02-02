@@ -159,7 +159,7 @@ const Chart = () => {
   }, []);
 
   const data = {
-    labels: chartData.map((item) => item.processName),
+    labels: chartData.map((item) => `${item.processName} (${item.machineName})`),
     datasets: [
       {
         label: "Production Efficiency (%)",

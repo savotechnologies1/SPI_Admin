@@ -21,7 +21,7 @@ const Productivity = ({ productivity }) => {
             {productivity?.length > 0 ? (
               productivity?.map((item, index) => (
                 <tr key={index} className="border-b">
-                  <td className="py-2 px-4">{item.process}</td>
+                  <td className="py-2 px-4">{item.process} ({item.machineName})</td>
                   <td className="py-2 px-4">{item.employee}</td>
                   <td className="py-2 px-4">{item.cycleTime}</td>
                   <td className="py-2 px-4">{item.totalQty}</td>

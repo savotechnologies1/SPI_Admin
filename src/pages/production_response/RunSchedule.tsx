@@ -698,22 +698,41 @@ const handleCompleteOrder = async () => {
 // 1. Pehle current job ko row mein daalein
 // Current Job details
 // 1. Current Job
+// const rows = [
+//   { 
+//     status: "Current",
+//     part: jobData.partNumber || "N/A", 
+//     date: jobData.order_date 
+//   },
+// ];
+
+// // 2. Sirf 1 Upcoming Job (Agar data available hai)
+// if (jobData.incomingJobs && jobData.incomingJobs.length > 0) {
+//   const nextJob = jobData.incomingJobs[0]; // Pehla item uthaya
+//   rows.push({
+//     status: "Upcoming",
+//     part: nextJob.partNumber,
+//     // JSON mein 'scheudleDate' field ka use kar rahe hain
+//     date: nextJob.scheudleDate 
+//   });
+// }
 const rows = [
   { 
     status: "Current",
     part: jobData.partNumber || "N/A", 
-    date: jobData.order_date 
+    date: jobData.order_date || "" // Fallback empty string
   },
 ];
 
-// 2. Sirf 1 Upcoming Job (Agar data available hai)
+// 2. Sirf 1 Upcoming Job
 if (jobData.incomingJobs && jobData.incomingJobs.length > 0) {
-  const nextJob = jobData.incomingJobs[0]; // Pehla item uthaya
+  const nextJob = jobData.incomingJobs[0];
   rows.push({
     status: "Upcoming",
-    part: nextJob.partNumber,
-    // JSON mein 'scheudleDate' field ka use kar rahe hain
-    date: nextJob.scheudleDate 
+    part: nextJob.partNumber || "N/A",
+    // Backend mein spelling 'scheudleDate' hai, lekin JSON mein missing hai
+    // Isliye safe access karein
+    date: nextJob.scheudleDate || "No Date" 
   });
 }
   return (

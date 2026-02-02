@@ -599,6 +599,13 @@ const StockOrderForm = () => {
     ProductNumberInterface[]
   >([]);
   const [singleUnitCost, setSingleUnitCost] = useState<number | null>(null);
+  const getLocalDate = () => {
+  const date = new Date();
+  const offset = date.getTimezoneOffset();
+  const localDate = new Date(date.getTime() - offset * 60 * 1000);
+  return localDate.toISOString().split("T")[0];
+};
+
   const navigate = useNavigate();
   useEffect(() => {
     getCustomer();
@@ -627,7 +634,7 @@ const StockOrderForm = () => {
       <Formik
         initialValues={{
           orderNumber: generateNewOrderNumber(),
-          orderDate: new Date().toISOString().split("T")[0],
+          orderDate: getLocalDate(),
           shipDate: "",
           customerId: "",
           customerName: "",

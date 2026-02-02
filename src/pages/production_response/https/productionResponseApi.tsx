@@ -39,20 +39,49 @@ export const stationProcessDetail = async (
   }
 };
 
-export const traningStatus = async (
-  stationId: string,
-  production_id: string
+
+export const stationTrainingProcessDetail = async (
+  id: string,
+  stationUserId: string
 ) => {
   try {
     const response = await axiosInstance.get(
-      `/trainig-status/${production_id}?stationId=${stationId}`
+      `/get-training-schedule/${id}?stationUserId=${stationUserId}`
     );
     return response.data;
   } catch (error) {
     throw error;
   }
 };
+export const traningStatus = async (data: { stationUserId: string, processId: string, productId: string }) => {
+  try {
+    const response = await axiosInstance.get(`/trainig-status`, {
+      params: {
+        stationUserId: data.stationUserId,
+        processId: data.processId,
+        productId: data.productId
+      }
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
+// export const traningStatus = async (params: { stationUserId: string, processId: string, productId: string }) => {
+//   try {
+//     // URL ko dhyan se check karein
+//     const response = await axiosInstance.get(`/trainig-status/${params.processId}`, {
+//       params: { 
+//         stationId: params.stationUserId, // Yeh string honi chahiye, object nahi
+//         productId: params.productId 
+//       }
+//     });
+//     return response.data;
+//   } catch (error) {
+//     throw error;
+//   }
+// };
 export const stationLogoutApi = async (id: string) => {
   try {
     const response = await axiosInstance.post(`/station-logout/${id}`);
@@ -109,27 +138,35 @@ export const completeTraningApi = async (id: string) => {
   }
 };
 
-export const updateStepTime = async (
-  productionId: string,
-  stepId: string,
-  prevStepId: string
-) => {
+// export const updateStepTime = async (
+//   productionId: string,
+//   stepId: string,
+//   prevStepId: string
+// ) => {
+//   try {
+//     const response = await axiosInstance.put(
+//       `/production-response/update-step-time`,,
+//       { stepId, prevStepId }
+//     );
+
+//     if (response.status === 200) {
+//       toast.success("Step marked as completed.");
+//     }
+
+//     return response.data;
+//   } catch (error: any) {
+//     toast.error(error?.response?.data?.message || "Failed to update step.");
+//   }
+// };
+export const updateStepTime = async (data: { productionId: string; stepId: string }) => {
   try {
-    const response = await axiosInstance.put(
-      `/production-response/update-step-time/${productionId}`,
-      { stepId, prevStepId }
-    );
-
-    if (response.status === 200) {
-      toast.success("Step marked as completed.");
-    }
-
+    // Data ko body ke roop mein bhejein (second parameter)
+    const response = await axiosInstance.post(`/production-response/update-step-time`, data);
     return response.data;
-  } catch (error: any) {
-    toast.error(error?.response?.data?.message || "Failed to update step.");
+  } catch (error) {
+    throw error;
   }
 };
-
 export const scrapOrder = async (
   id: string,
   orderId: string,
