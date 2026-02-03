@@ -451,9 +451,23 @@ const RunWithScan = () => {
     order_date,
   } = jobData;
   console.log("partpart", jobData);
+
   const rows = [
-    { part: part?.partNumber || part?.partDescription, date: order_date },
+    {
+      status: "Current",
+      part: jobData.partNumber || "N/A",
+      date: jobData.order_date || "",
+    },
   ];
+
+  if (jobData.incomingJobs && jobData.incomingJobs.length > 0) {
+    const nextJob = jobData.incomingJobs[0];
+    rows.push({
+      status: "Upcoming",
+      part: nextJob.partNumber || "N/A",
+      date: nextJob.scheudleDate || "No Date",
+    });
+  }
   return (
     <div className="bg-[#F5F6FA] min-h-screen flex flex-col">
       <div className="bg-[#243C75] relative ">
@@ -473,7 +487,9 @@ const RunWithScan = () => {
                 <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold break-words leading-snug text-white px-2">
                   Process Name :
                   <span className="text-md font-medium">
-                    {part?.process.processName || "No Available"}
+                    {part?.process?.processName || jobData.process.processName}{" "}
+                    ({" "}
+                    {part?.process?.machineName || jobData.process.machineName})
                   </span>
                 </p>
               </div>
@@ -523,10 +539,13 @@ const RunWithScan = () => {
                 Date: {formatDate(jobData.delivery_date)}
               </p>
               <p className=" text-sm md:text-base">
-                Qty: {jobData.completedQty}
+                Qty: {jobData.employeeCompletedQty}
               </p>
               <p className=" text-sm md:text-base">
-                Scrap Qty: {jobData.scrapQty}
+                Scrap Qty: {jobData.employeeScrapQty}
+              </p>
+              <p className=" text-sm md:text-base">
+                Order Type: {jobData.order_type}
               </p>
             </div>
           </div>
@@ -700,7 +719,9 @@ const RunWithScan = () => {
             </div>
             <div className="flex flex-col items-center text-white">
               <p className="text-sm md:text-base font-semibold"> Qty</p>
-              <p className="text-sm md:text-base">{jobData.completedQty}</p>
+              <p className="text-sm md:text-base">
+                {jobData.employeeCompletedQty}
+              </p>
             </div>
             <div className="flex flex-col items-center text-white">
               <p className="text-sm md:text-base font-semibold">Cycle Time</p>

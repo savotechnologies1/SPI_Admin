@@ -103,7 +103,7 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 // const ScrapBar = () => {
@@ -206,7 +206,7 @@ const ScrapBar = ({ startDate, endDate, apiData }) => {
       // Aggregate scrap quantity per process
       const scrapByProcess = {};
       apiData.forEach((item) => {
-        const name = item.processName || "Unknown";
+        const name = `${item?.processName} (${item?.machineName})`;
         if (!scrapByProcess[name]) {
           scrapByProcess[name] = 0;
         }

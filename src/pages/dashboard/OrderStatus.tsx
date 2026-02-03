@@ -368,27 +368,27 @@ const OrderStatus = ({ orders }) => {
           Fulfilled Orders (Total: {orders?.fulfilledOrders?.total || 0})
         </h2>
 
-        {/* Table Header */}
-        <table className="w-full">
-          <thead>
-            <tr className="bg-gray-100 text-gray-600 text-sm whitespace-nowrap">
-              <th className="py-2 px-4 text-left">Date</th>
-              <th className="py-2 px-4 text-left">Order</th>
-              <th className="py-2 px-4 text-left">First Name</th>
-              <th className="py-2 px-4 text-left">Last Name</th>
-              <th className="py-2 px-4 text-left">Product</th>
-              <th className="py-2 px-4 text-left">Qty</th>
-            </tr>
-          </thead>
-        </table>
+        {/* Scrollable Table */}
+        <div className="max-h-[400px] overflow-y-auto border rounded-lg">
+          <table className="w-full text-sm border-collapse">
+            <thead className="sticky top-0 bg-gray-100 z-10">
+              <tr className="text-gray-600 whitespace-nowrap">
+                <th className="py-2 px-4 text-left">Date</th>
+                <th className="py-2 px-4 text-left">Order</th>
+                <th className="py-2 px-4 text-left">First Name</th>
+                <th className="py-2 px-4 text-left">Last Name</th>
+                <th className="py-2 px-4 text-left">Product</th>
+                <th className="py-2 px-4 text-left">Qty</th>
+              </tr>
+            </thead>
 
-        {/* Scrollable Body (10 rows approx) */}
-        <div className="max-h-[400px] overflow-y-auto">
-          <table className="w-full">
             <tbody>
               {orders?.fulfilledOrders?.list?.length > 0 ? (
                 orders.fulfilledOrders.list.map((item, index) => (
-                  <tr key={index} className="border-b text-sm">
+                  <tr
+                    key={index}
+                    className="border-b hover:bg-gray-50 transition"
+                  >
                     <td className="py-2 px-4">
                       {new Date(item.date).toLocaleDateString()}
                     </td>
@@ -396,12 +396,12 @@ const OrderStatus = ({ orders }) => {
                     <td className="py-2 px-4">{item.firstName}</td>
                     <td className="py-2 px-4">{item.lastName}</td>
                     <td className="py-2 px-4">{item.product || "-"}</td>
-                    <td className="py-2 px-4">{item.qty}</td>
+                    <td className="py-2 px-4 font-medium">{item.qty}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="text-center py-4">
+                  <td colSpan={6} className="text-center py-6 text-gray-400">
                     No data available
                   </td>
                 </tr>

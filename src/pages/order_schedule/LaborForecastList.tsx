@@ -3,6 +3,7 @@ import data from "../../components/Data/LaborData";
 import ItemSelector from "./ItemSelector";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { selectProcess } from "./https/schedulingApis";
 const LaborForecastList = () => {
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -14,11 +15,15 @@ const LaborForecastList = () => {
 
   const [data, setData] = useState<any[]>([]);
 
+  const [processData, setProcessData] = useState([]);
   const onSubmit = (formData: any) => {
-    const forecastValues = data.reduce((acc, item, idx) => {
-      acc[idx] = item.Forecast || 0;
-      return acc;
-    }, {} as Record<number, number>);
+    const forecastValues = data.reduce(
+      (acc, item, idx) => {
+        acc[idx] = item.Forecast || 0;
+        return acc;
+      },
+      {} as Record<number, number>,
+    );
 
     const finalData = {
       ...formData,
@@ -49,7 +54,14 @@ const LaborForecastList = () => {
       return updatedData;
     });
   };
-
+  const fetchProcessList = async () => {
+    try {
+      const response = await selectProcess();
+      setProcessData(response);
+    } catch (error) {
+      throw error;
+    }
+  };
   const getInventory = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/admin/get-labour-forcast`);
@@ -70,6 +82,7 @@ const LaborForecastList = () => {
 
   useEffect(() => {
     getInventory();
+    fetchProcessList();
   }, []);
 
   return (
@@ -79,7 +92,7 @@ const LaborForecastList = () => {
           {/* Form fields */}
           <div className="flex gap-2 flex-col">
             <div className="flex flex-col md:flex-row items-end gap-3 mb-4">
-              <div className="flex flex-col w-full gap-2">
+              {/* <div className="flex flex-col w-full gap-2">
                 <label className="font-semibold">Select Process</label>
                 <select
                   {...register("process", { required: "Process is required" })}
@@ -94,6 +107,22 @@ const LaborForecastList = () => {
                     {errors.process.message}
                   </span>
                 )}
+              </div> */}
+              <div className="flex flex-col w-full gap-2">
+                <label>Process</label>
+                <select
+                  {...register("processId", {
+                    required: "Process is required",
+                  })}
+                  className="border p-2 rounded w-full"
+                >
+                  <option value="">Select Process</option>
+                  {processData.map((item: any) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name} ( {item.machineName})
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 

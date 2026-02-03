@@ -65,7 +65,7 @@ const TimeClockList = () => {
           page,
           rowsPerPage,
           selectedProcess,
-          searchVal
+          searchVal,
         );
         setCustomerData(response.data);
         setTotalPages(response.pagination?.totalPages || 1);
@@ -76,7 +76,7 @@ const TimeClockList = () => {
         setLoading(false);
       }
     },
-    [rowsPerPage, selectedProcess, searchVal] // Depend on searchVal and selectedProcess
+    [rowsPerPage, selectedProcess, searchVal], // Depend on searchVal and selectedProcess
   );
 
   console.log("searchValsearchVal", searchVal);
@@ -103,9 +103,9 @@ const TimeClockList = () => {
     setCurrentPage(1); // Reset to page 1 on new filter
   };
 
-  const handleRowClicked = (id: string) => {
-    navigate(`/time-sheet/${id}`); // Navigate to specific time sheet using ID
-  };
+  // const handleRowClicked = (id: string) => {
+  //   navigate(`/time-sheet/${id}`); // Navigate to specific time sheet using ID
+  // };
 
   if (loading && customerData.length === 0) {
     // Show loading only if no data has been loaded yet
@@ -224,7 +224,7 @@ const TimeClockList = () => {
                       <tr
                         key={item.id}
                         className={`border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100`}
-                        onClick={() => handleRowClicked(item.id)}
+                        // onClick={() => handleRowClicked(item.id)}
                       >
                         <td className="px-2 py-3">
                           <div className="flex items-center">

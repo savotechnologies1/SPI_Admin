@@ -11,6 +11,7 @@ import {
 import { useEffect } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
+import { FaSpinner } from "react-icons/fa";
 
 // const Dive = () => {
 //   const [selectedStation, setSelectedStation] = useState<string>("");
@@ -704,9 +705,12 @@ const Dive = () => {
     partsCompleted: [],
     avgCycleTime: [],
   });
-
+  const [parts, setParts] = useState<
+    { part_id: string; partDescription: string }[]
+  >([]);
+  const [selected, setSelected] = useState<string>("");
+  const [loadingParts, setLoadingParts] = useState(true); // 🔹 Loading state
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
-
   const getData = async () => {
     try {
       let url = `${BASE_URL}/api/admin/dive-chart-data`;
@@ -714,25 +718,40 @@ const Dive = () => {
 
       if (startDate) params.append("startDate", startDate.toISOString());
       if (endDate) params.append("endDate", endDate.toISOString());
-      
+
+      // ✅ ADD THIS
+      if (selected) params.append("partId", selected);
+
       const res = await axios.get(`${url}?${params.toString()}`);
       const rawData = res.data.data;
 
       setProductivityTable(res.data.productivity || []);
       const processed = processApiData(rawData);
       setDashboardData(processed);
-      
-      // Default selection machineName se hogi
+
       if (!selectedStation && processed.stations.length > 0)
         setSelectedStation(processed.stations[0]);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+  const fetchParts = async () => {
+    try {
+      setLoadingParts(true);
+      const res = await axios.get(`${BASE_URL}/api/admin/get-parts`);
+      setParts(res.data);
+      // setSelected(res.data[0].part_id); // Isse hata dein agar "All Parts" default rakhna hai
+    } catch (error) {
+      console.error("Error fetching parts:", error);
+    } finally {
+      setLoadingParts(false);
+    }
+  };
 
   useEffect(() => {
+    fetchParts();
     getData();
-  }, [startDate, endDate]);
+  }, [startDate, endDate, selected]);
 
   const processApiData = (data: any[]) => {
     const uniqueMachines = new Set<string>();
@@ -784,7 +803,8 @@ const Dive = () => {
   const filteredParts = dashboardData.partsCompleted.filter(
     (p: any) =>
       (!selectedStation || p.machineName === selectedStation) &&
-      (!selectedEmployee || p.employee === selectedEmployee)
+      (!selectedEmployee || p.employee === selectedEmployee) &&
+      (!selected || p.partId === selected || p.partNumber), // safe fallback
   );
 
   return (
@@ -813,20 +833,33 @@ const Dive = () => {
               key={i}
               onClick={() => setSelectedStation(item.text)}
               className={`p-4 bg-white rounded shadow-sm border-t-4 cursor-pointer transition-all ${
-                selectedStation === item.text ? "border-blue-600 scale-[1.02] shadow-md" : "border-transparent"
+                selectedStation === item.text
+                  ? "border-blue-600 scale-[1.02] shadow-md"
+                  : "border-transparent"
               }`}
             >
-              <h3 className="font-bold text-sm text-gray-700 truncate mb-2" title={item.text}>
+              <h3
+                className="font-bold text-sm text-gray-700 truncate mb-2"
+                title={item.text}
+              >
                 {item.text}
               </h3>
               <div className="flex justify-between items-end">
                 <div>
-                  <p className="text-[10px] uppercase text-gray-400 font-semibold">Efficiency</p>
-                  <p className="text-lg font-bold text-blue-600">{item.efficiency}</p>
+                  <p className="text-[10px] uppercase text-gray-400 font-semibold">
+                    Efficiency
+                  </p>
+                  <p className="text-lg font-bold text-blue-600">
+                    {item.efficiency}
+                  </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] uppercase text-gray-400 font-semibold">Productivity</p>
-                  <p className="text-lg font-bold text-green-600">{item.productivity}</p>
+                  <p className="text-[10px] uppercase text-gray-400 font-semibold">
+                    Productivity
+                  </p>
+                  <p className="text-lg font-bold text-green-600">
+                    {item.productivity}
+                  </p>
                 </div>
               </div>
             </div>
@@ -835,9 +868,14 @@ const Dive = () => {
 
         {/* Stations/Machines List */}
         <div className="md:w-[20%] bg-white p-4 rounded shadow-sm max-h-[300px] overflow-y-auto">
-          <h3 className="font-bold text-gray-700 mb-3 border-b pb-1">Machines</h3>
+          <h3 className="font-bold text-gray-700 mb-3 border-b pb-1">
+            Machines
+          </h3>
           {dashboardData.stations.map((s: string) => (
-            <label key={s} className="flex items-center gap-2 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+            <label
+              key={s}
+              className="flex items-center gap-2 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded"
+            >
               <input
                 type="radio"
                 name="station"
@@ -845,14 +883,18 @@ const Dive = () => {
                 checked={selectedStation === s}
                 onChange={() => setSelectedStation(s)}
               />
-              <span className="text-xs font-medium text-gray-600 truncate">{s}</span>
+              <span className="text-xs font-medium text-gray-600 truncate">
+                {s}
+              </span>
             </label>
           ))}
         </div>
 
         {/* Employees List */}
         <div className="md:w-[20%] bg-white p-4 rounded shadow-sm max-h-[300px] overflow-y-auto">
-          <h3 className="font-bold text-gray-700 mb-3 border-b pb-1">Employees</h3>
+          <h3 className="font-bold text-gray-700 mb-3 border-b pb-1">
+            Employees
+          </h3>
           <label className="flex items-center gap-2 mb-2 cursor-pointer">
             <input
               type="radio"
@@ -863,7 +905,10 @@ const Dive = () => {
             <span className="text-xs font-medium">All Employees</span>
           </label>
           {dashboardData.employees.map((e: string) => (
-            <label key={e} className="flex items-center gap-2 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+            <label
+              key={e}
+              className="flex items-center gap-2 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded"
+            >
               <input
                 type="radio"
                 name="employee"
@@ -878,11 +923,56 @@ const Dive = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Parts Completed Table */}
-        <div className="bg-white p-4 rounded shadow-sm">
+        {/* <div className="bg-white p-4 rounded shadow-sm">
           <h3 className="font-bold text-gray-700 mb-4 flex justify-between">
-            Parts Completed 
-            <span className="text-xs font-normal text-gray-400">Showing: {selectedStation || "All"}</span>
+            Parts Completed
+            <span className="text-xs font-normal text-gray-400">
+              Showing: {selectedStation || "All"}
+            </span>
           </h3>
+          <div className="w-full lg:w-[30%] bg-white p-4 sm:p-5 lg:p-6 rounded-xl  border-gray-200">
+            <label
+              htmlFor="part-select"
+              className="block text-xs sm:text-sm font-bold mb-2 sm:mb-3 text-gray-600 uppercase tracking-wider"
+            >
+              Select Part
+            </label>
+
+            {loadingParts ? (
+              <div className="flex items-center gap-2 text-blue-600">
+                <FaSpinner className="animate-spin text-sm sm:text-base" />
+                <span className="text-xs sm:text-sm">Loading parts...</span>
+              </div>
+            ) : (
+              <select
+                id="part-select"
+                value={selected}
+                onChange={(e) => setSelected(e.target.value)}
+                className="
+                        w-full
+                        p-2.5 sm:p-3
+                        bg-gray-50
+                        border border-gray-300
+                        text-gray-900
+                        text-xs sm:text-sm
+                        rounded-lg
+                        focus:ring-2 focus:ring-blue-500
+                        focus:outline-none
+                        transition-all
+                      "
+              >
+                <option value="" disabled>
+                  Choose a part...
+                </option>
+
+                {parts.map((part) => (
+                  <option key={part.part_id} value={part.part_id}>
+                    {part.partNumber}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -896,13 +986,97 @@ const Dive = () => {
                 {filteredParts.length > 0 ? (
                   filteredParts.map((p: any, i: number) => (
                     <tr key={i} className="border-t hover:bg-gray-50">
-                      <td className="p-2 text-xs text-blue-600 font-medium">{p.machineName}</td>
+                      <td className="p-2 text-xs text-blue-600 font-medium">
+                        {p.machineName}
+                      </td>
                       <td className="p-2 text-xs">{p.partNumber}</td>
-                      <td className="p-2 text-xs text-gray-500">{p.employee}</td>
+                      <td className="p-2 text-xs text-gray-500">
+                        {p.employee}
+                      </td>
                     </tr>
                   ))
                 ) : (
-                  <tr><td colSpan={3} className="p-4 text-center text-gray-400">No data available</td></tr>
+                  <tr>
+                    <td colSpan={3} className="p-4 text-center text-gray-400">
+                      No data available
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div> */}
+        <div className="bg-white p-4 rounded shadow-sm">
+          {/* Header Row */}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
+            <h3 className="font-bold text-gray-700 flex justify-between items-center">
+              Parts Completed
+              <span className="ml-2 text-xs font-normal text-gray-400">
+                Showing: {selectedStation || "All"}
+              </span>
+            </h3>
+
+            {/* Select Part */}
+            <div className="w-full lg:w-[260px]">
+              <label
+                htmlFor="part-select"
+                className="block text-xs font-bold mb-1 text-gray-600 uppercase tracking-wider"
+              >
+                Select Part
+              </label>
+
+              {loadingParts ? (
+                <div className="flex items-center gap-2 text-blue-600">
+                  <FaSpinner className="animate-spin text-sm" />
+                  <span className="text-xs">Loading parts...</span>
+                </div>
+              ) : (
+                <select
+                  id="part-select"
+                  value={selected}
+                  onChange={(e) => setSelected(e.target.value)}
+                  className="w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                >
+                  <option value="">All Parts</option> {/* Default option */}
+                  {parts.map((part) => (
+                    <option key={part.part_id} value={part.part_id}>
+                      {part.partNumber}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+          </div>
+
+          {/* Table */}
+          <div className="overflow-x-auto overflow-y-auto max-h-[300px]">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 text-gray-600 text-left">
+                  <th className="p-2">Machine</th>
+                  <th className="p-2">Part Number</th>
+                  <th className="p-2">Employee</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredParts.length > 0 ? (
+                  filteredParts.map((p, i) => (
+                    <tr key={i} className="border-t hover:bg-gray-50">
+                      <td className="p-2 text-xs text-blue-600 font-medium">
+                        {p.machineName}
+                      </td>
+                      <td className="p-2 text-xs">{p.partNumber}</td>
+                      <td className="p-2 text-xs text-gray-500">
+                        {p.employee}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={3} className="p-4 text-center text-gray-400">
+                      No data available
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>
@@ -911,12 +1085,14 @@ const Dive = () => {
 
         {/* Avg Cycle Time Chart */}
         <div className="bg-white p-4 rounded shadow-sm">
-          <h3 className="font-bold text-gray-700 mb-4">Avg Cycle Time by Machine (min)</h3>
+          <h3 className="font-bold text-gray-700 mb-4">
+            Avg Cycle Time by Machine (min)
+          </h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={dashboardData.avgCycleTime}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="name" tick={{fontSize: 10}} interval={0} />
-              <YAxis tick={{fontSize: 10}} />
+              <XAxis dataKey="name" tick={{ fontSize: 10 }} interval={0} />
+              <YAxis tick={{ fontSize: 10 }} />
               <Tooltip />
               <Bar dataKey="avgCycle" fill="#4664C2" radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -925,8 +1101,10 @@ const Dive = () => {
       </div>
 
       {/* Employee Wise Productivity Table */}
-      <div className="bg-white p-4 rounded shadow-sm overflow-x-auto">
-        <h3 className="font-bold text-gray-700 mb-4">Employee Performance Detail</h3>
+      <div className="bg-white p-4 rounded shadow-sm overflow-x-auto overflow-y-auto max-h-[300px]">
+        <h3 className="font-bold text-gray-700 mb-4">
+          Employee Performance Detail
+        </h3>
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="bg-gray-800 text-white">
