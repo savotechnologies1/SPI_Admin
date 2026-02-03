@@ -23,7 +23,7 @@ const Productivity = ({ productivity }) => {
                 <tr key={index} className="border-b">
                   <td className="py-2 px-4">{item.process} ({item.machineName})</td>
                   <td className="py-2 px-4">{item.employee}</td>
-                  <td className="py-2 px-4">{item.cycleTime}</td>
+                  <td className="py-2 px-4">{item.cycleTime}  min</td>
                   <td className="py-2 px-4">{item.totalQty}</td>
                   <td className="py-2 px-4">{item.scrap}</td>
                   <td className="py-2 px-4">{item.productivity}</td>
