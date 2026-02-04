@@ -640,7 +640,7 @@ const CurrentStatus = () => {
       <div className="flex flex-col md:flex-row gap-6">
         <div className="flex-1 bg-white rounded-lg shadow-md p-6">
           <h2 className="text-lg font-semibold mb-4">Parts Completed</h2>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto overflow-y-auto max-h-[300px]">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-gray-100 text-gray-600">
