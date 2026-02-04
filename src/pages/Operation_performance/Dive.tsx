@@ -711,13 +711,32 @@ const Dive = () => {
   const [selected, setSelected] = useState<string>("");
   const [loadingParts, setLoadingParts] = useState(true); // 🔹 Loading state
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
+  // Local Date ko format karne ke liye (YYYY-MM-DD)
+const formatLocalDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
   const getData = async () => {
     try {
       let url = `${BASE_URL}/api/admin/dive-chart-data`;
       const params = new URLSearchParams();
 
-      if (startDate) params.append("startDate", startDate.toISOString());
-      if (endDate) params.append("endDate", endDate.toISOString());
+    if (startDate) {
+      // Start of the day (00:00:00)
+      const start = new Date(startDate);
+      start.setHours(0, 0, 0, 0);
+      params.append("startDate", start.toLocaleString('sv-SE').replace(' ', 'T')); 
+      // sv-SE format results in YYYY-MM-DDTHH:mm:ss which is easy for backends
+    }
+    
+    if (endDate) {
+      // End of the day (23:59:59)
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999);
+      params.append("endDate", end.toLocaleString('sv-SE').replace(' ', 'T'));
+    }
 
       // ✅ ADD THIS
       if (selected) params.append("partId", selected);
@@ -1119,7 +1138,7 @@ const Dive = () => {
           <tbody>
             {productivityTable.map((item, i) => (
               <tr key={i} className="border-b text-center hover:bg-gray-50">
-                <td className="p-2">{item.processName}</td>
+                <td className="p-2">{item.processName} ({item.machineName})</td>
                 <td className="p-2 font-medium">{item.employeeName}</td>
                 <td className="p-2">{item.CT} min</td>
                 <td className="p-2 font-bold text-blue-600">{item.Qty}</td>
