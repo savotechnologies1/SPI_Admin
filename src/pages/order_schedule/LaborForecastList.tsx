@@ -5,74 +5,49 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { selectProcess } from "./https/schedulingApis";
 const LaborForecastList = () => {
-  const BASE_URL = import.meta.env.VITE_SERVER_URL;
+ const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
   const {
     register,
     handleSubmit,
+    watch, // User ke input "hour" ko watch karne ke liye
     formState: { errors },
   } = useForm();
 
   const [data, setData] = useState<any[]>([]);
-
   const [processData, setProcessData] = useState([]);
-  const onSubmit = (formData: any) => {
-    const forecastValues = data.reduce(
-      (acc, item, idx) => {
-        acc[idx] = item.Forecast || 0;
-        return acc;
-      },
-      {} as Record<number, number>,
-    );
 
-    const finalData = {
-      ...formData,
-      forecastValues,
-    };
-    console.log("Submitted:", finalData);
-  };
-  const handleForecastChange = (index: number, value: string) => {
-    const numericForecast = parseInt(value) || 0;
-
-    setData((prevData) => {
-      const updatedData = [...prevData];
-      const currentItem = updatedData[index];
-
-      const available = currentItem.Available || 0;
-      const cycleTime = parseFloat(currentItem.cycleTime) || 0; // already in hours
-
-      const prodNeed = Math.max(numericForecast + available, 0);
-      const hrNeed = +(prodNeed * cycleTime).toFixed(2); // round to 2 decimals
-
-      updatedData[index] = {
-        ...currentItem,
-        Forecast: numericForecast,
-        ProdNeed: prodNeed,
-        Hr_Need: hrNeed,
-      };
-
-      return updatedData;
-    });
-  };
-  const fetchProcessList = async () => {
+  // Filtered Data Fetch karne ke liye
+  const getInventory = async (filters: any = {}) => {
     try {
-      const response = await selectProcess();
-      setProcessData(response);
-    } catch (error) {
-      throw error;
-    }
-  };
-  const getInventory = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/api/admin/get-labour-forcast`);
+      const res = await axios.get(`${BASE_URL}/api/admin/get-labour-forcast`, {
+        params: {
+          processId: filters.processId,
+          startDate: filters.startDate,
+          endDate: filters.endDate,
+          forecastHours: filters.hour, // Header se liya gaya Forecast Hour
+        },
+      });
 
-      const enrichedData = res.data.data.map((item: any) => ({
-        ...item,
-        Forecast: 0,
-        ProdNeed: item.ProdNeed,
-        Hr_Need: item.Hr_Need,
-        cycleTime: item.cycleTime || 0,
-      }));
+      // API se aaye hue data ko process karna
+      const enrichedData = res.data.data.map((item: any) => {
+        const cycleTime = parseFloat(item.cycleTime) || 0;
+        const need = parseFloat(item.Need) || 0;
+        const available = parseFloat(item.Available) || 0;
+
+        // Auto-calculate values based on header "Forecast Hours"
+        // 1. Hr_Need: Need Qty ko poora karne ke liye kitne ghante chahiye
+        const hrNeedValue = (need * cycleTime).toFixed(2);
+        
+        // 2. Forc: Header ke 'hour' input mein kitni qty ban sakti hai (API se aa rahi hai)
+        return {
+          ...item,
+          Forecast: item.Forc || 0, // Backend ne Forc calculate karke bheja hai
+          ProdNeed: Math.max(need - available, 0),
+          Hr_Need: parseFloat(hrNeedValue),
+          cycleTime: cycleTime,
+        };
+      });
 
       setData(enrichedData);
     } catch (error) {
@@ -80,46 +55,65 @@ const LaborForecastList = () => {
     }
   };
 
+  // Submit button click hone par filter apply honge
+  const onSubmit = (formData: any) => {
+    getInventory(formData);
+  };
+
+  const handleForecastChange = (index: number, value: string) => {
+    const numericForecast = parseInt(value) || 0;
+
+    setData((prevData) => {
+      const updatedData = [...prevData];
+      const currentItem = updatedData[index];
+
+      const cycleTime = currentItem.cycleTime || 0;
+      
+      // Agar user table ke andar "Forc" change karta hai, toh Hr_Need uske mutabik update hoga
+      // Calculation: Forecast Qty * Cycle Time
+      const hrNeed = +(numericForecast * cycleTime).toFixed(2);
+
+      updatedData[index] = {
+        ...currentItem,
+        Forecast: numericForecast,
+        Hr_Need: hrNeed,
+      };
+
+      return updatedData;
+    });
+  };
+
+  const fetchProcessList = async () => {
+    try {
+      const response = await selectProcess();
+      setProcessData(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    getInventory();
     fetchProcessList();
+    getInventory(); // Initial load
   }, []);
+
 
   return (
     <>
       <div className="p-4 bg-white rounded-lg shadow-md">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Form fields */}
+      <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex gap-2 flex-col">
             <div className="flex flex-col md:flex-row items-end gap-3 mb-4">
-              {/* <div className="flex flex-col w-full gap-2">
-                <label className="font-semibold">Select Process</label>
-                <select
-                  {...register("process", { required: "Process is required" })}
-                  className="border py-3 px-4 rounded-md placeholder-gray-600"
-                >
-                  <option value="">Select Process</option>
-                  <option value="sending">Sending</option>
-                  <option value="cut_trim">Cut Trim</option>
-                </select>
-                {errors.process && (
-                  <span className="text-red-500 text-sm">
-                    {errors.process.message}
-                  </span>
-                )}
-              </div> */}
               <div className="flex flex-col w-full gap-2">
-                <label>Process</label>
+                <label className="font-semibold">Process</label>
                 <select
-                  {...register("processId", {
-                    required: "Process is required",
-                  })}
-                  className="border p-2 rounded w-full"
+                  {...register("processId")}
+                  className="border p-3 rounded-md w-full"
                 >
                   <option value="">Select Process</option>
                   {processData.map((item: any) => (
                     <option key={item.id} value={item.id}>
-                      {item.name} ( {item.machineName})
+                      {item.name} ({item.machineName})
                     </option>
                   ))}
                 </select>
@@ -130,53 +124,34 @@ const LaborForecastList = () => {
               <div className="w-full md:w-1/2">
                 <label className="font-semibold">Start Date</label>
                 <input
-                  {...register("startDate", {
-                    required: "Start date is required",
-                  })}
+                  {...register("startDate")}
                   type="date"
-                  className="border py-3 px-4 rounded-md w-full placeholder-gray-600"
+                  className="border py-3 px-4 rounded-md w-full"
                 />
-                {errors.startDate && (
-                  <span className="text-red-500 text-sm">
-                    {errors.startDate.message}
-                  </span>
-                )}
               </div>
 
               <div className="w-full md:w-1/2">
                 <label className="font-semibold">End Date</label>
                 <input
-                  {...register("endDate", { required: "End date is required" })}
+                  {...register("endDate")}
                   type="date"
-                  className="border py-3 px-4 rounded-md w-full placeholder-gray-600"
+                  className="border py-3 px-4 rounded-md w-full"
                 />
-                {errors.endDate && (
-                  <span className="text-red-500 text-sm">
-                    {errors.endDate.message}
-                  </span>
-                )}
               </div>
 
               <div className="w-full md:w-1/2">
-                <label className="font-semibold">Forecast Hours</label>
+                <label className="font-semibold">Forecast Hours (per unit)</label>
                 <input
-                  {...register("hour", {
-                    required: "Forecast hours are required",
-                  })}
-                  type="text"
-                  placeholder="hour"
-                  className="border py-3 px-4 rounded-md w-full placeholder-gray-600"
+                  {...register("hour")}
+                  type="number"
+                  placeholder="e.g. 8"
+                  className="border py-3 px-4 rounded-md w-full"
                 />
-                {errors.hour && (
-                  <span className="text-red-500 text-sm">
-                    {errors.hour.message}
-                  </span>
-                )}
               </div>
 
               <div>
                 <p
-                  className="text-[#B71D18] font-semibold cursor-pointer"
+                  className="text-[#B71D18] font-semibold cursor-pointer pb-3"
                   onClick={() => window.location.reload()}
                 >
                   Reset
@@ -187,79 +162,14 @@ const LaborForecastList = () => {
             <div>
               <button
                 type="submit"
-                className="bg-brand text-white text-sm px-4 py-2 rounded-md mb-4"
+                className="bg-[#052C89] text-white text-sm px-6 py-3 rounded-md mb-4 font-bold"
               >
-                Submit
+                Submit Filter
               </button>
             </div>
           </div>
         </form>
-
-        {/* Data table */}
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border-collapse">
-            <thead>
-              <tr className="border-b bg-[#F4F6F8] text-left text-[#637381] whitespace-nowrap">
-                {[
-                  "Product Tree",
-                  "Available",
-                  "Need",
-                  "Forc",
-                  "Process Time (hour)",
-                  "Hr Need",
-                  "Action",
-                ].map((header, idx) => (
-                  <th key={idx} className="px-3 py-2 text-sm font-medium">
-                    {header}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((item, index) => (
-                <tr key={index} className="border-b text-sm">
-                  <td className="px-3 py-2 whitespace-nowrap">
-                    <p>{item.product_name}</p>
-                    <p>{item.sub_name}</p>
-                  </td>
-
-                  <td className="px-3 py-2">{item.Available} qty</td>
-                  <td className="px-3 py-2">{item.Need} qty</td>
-
-                  <td className="px-3 py-2">
-                    <input
-                      type="number"
-                      value={item.Forecast}
-                      onChange={(e) =>
-                        handleForecastChange(index, e.target.value)
-                      }
-                      className="border rounded-md px-2 py-1 w-20"
-                      placeholder="Enter"
-                    />
-                  </td>
-
-                  <td className="px-3 py-2">{item.cycleTime} hr</td>
-                  <td className="px-3 py-2">
-                    {/* ✅ This is now dynamic — not API value */}
-                    {item.Hr_Need} hr
-                  </td>
-
-                  <td className="px-3 py-2">
-                    <button
-                      className="bg-blue-500 text-white text-xs px-3 py-1 rounded hover:bg-blue-600"
-                      onClick={() => handleUpdate(item, item.Forecast)}
-                    >
-                      Update
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Forecast summary */}
-        {data.some((item) => item.Forecast > 0) && (
+      {data.some((item) => item.Forecast > 0) && (
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
             <div className="px-6 py-5 border-b border-gray-100">
               <h2 className="text-xl font-semibold text-gray-800">
@@ -307,6 +217,53 @@ const LaborForecastList = () => {
             </div>
           </div>
         )}
+        {/* Data table */}
+         <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border-collapse">
+            <thead>
+              <tr className="border-b bg-[#F4F6F8] text-left text-[#637381]">
+                <th className="px-3 py-4 text-sm font-medium">Product Tree</th>
+                <th className="px-3 py-4 text-sm font-medium">Available</th>
+                <th className="px-3 py-4 text-sm font-medium">Need</th>
+                <th className="px-3 py-4 text-sm font-medium">Forc (Qty)</th>
+                <th className="px-3 py-4 text-sm font-medium">Process Time (hr)</th>
+                <th className="px-3 py-4 text-sm font-medium">Hr Need</th>
+                <th className="px-3 py-4 text-sm font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((item, index) => (
+                <tr key={index} className="border-b text-sm hover:bg-gray-50">
+                  <td className="px-3 py-3">
+                    <p className="font-bold">{item.product_name}</p>
+                    <p className="text-gray-500 text-xs">{item.sub_name}</p>
+                  </td>
+                  <td className="px-3 py-3 text-blue-600 font-medium">{item.Available}</td>
+                  <td className="px-3 py-3 text-orange-600 font-medium">{item.Need}</td>
+                  <td className="px-3 py-3">
+                    <input
+                      type="number"
+                      value={item.Forecast}
+                      onChange={(e) => handleForecastChange(index, e.target.value)}
+                      className="border rounded-md px-2 py-1 w-24 bg-yellow-50 focus:bg-white"
+                    />
+                  </td>
+                  <td className="px-3 py-3 text-gray-500">{item.cycleTime} hr</td>
+                  <td className="px-3 py-3 font-bold text-gray-800">
+                    {item.Hr_Need} hr
+                  </td>
+                  <td className="px-3 py-3">
+                    <button className="bg-blue-600 text-white text-xs px-4 py-1.5 rounded shadow-sm">
+                      Update
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {/* Forecast summary */}
+  
       </div>
     </>
   );

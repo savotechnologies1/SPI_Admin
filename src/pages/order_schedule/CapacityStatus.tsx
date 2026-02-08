@@ -353,7 +353,7 @@ const CapacityStatus = () => {
       </div>
 
       <div className="bg-white rounded-lg mt-4 overflow-hidden shadow-sm">
-        <h2 className="p-4 text-lg font-semibold border-b">Process Status</h2>
+        <h2 className="p-4 text-lg font-semibold border-b">Process Status (Completed Orders)</h2>
         <div className="overflow-x-auto overflow-y-auto max-h-[300px]">
           <table className="min-w-full border-collapse">
             <thead className="bg-gray-50 text-gray-600 text-sm">

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { FaCircle } from "react-icons/fa";
+import { useCallback, useState } from "react";
+import { FaCircle, FaSearch } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import more from "../../assets/more.png";
 import edit from "../../assets/edit.png";
@@ -206,33 +206,193 @@ import React, { useEffect } from "react";
 import axios from "axios";
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
+// const InventoryStatus = () => {
+//   const [data, setData] = useState<any[]>([]);
+//   const [loading, setLoading] = useState(true);
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const rowsPerPage = 10;
+
+//   useEffect(() => {
+//     const fetchInventory = async () => {
+//       try {
+//         const response = await axios.get(
+//           `${BASE_URL}/api/admin/schedule-inventory`,
+//         ); // change to your API
+//         setData(response.data.data); // assuming your API returns { data: [...] }
+//         setLoading(false);
+//       } catch (error) {
+//         console.error("Error fetching inventory:", error);
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchInventory();
+//   }, []);
+
+//   const totalPages = Math.ceil(data.length / rowsPerPage);
+//   const currentRows = data.slice(
+//     (currentPage - 1) * rowsPerPage,
+//     currentPage * rowsPerPage,
+//   );
+
+//   const goToPreviousPage = () => {
+//     if (currentPage > 1) setCurrentPage(currentPage - 1);
+//   };
+
+//   const goToNextPage = () => {
+//     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+//   };
+
+//   if (loading) return <p className="p-6">Loading inventory...</p>;
+
+//   return (
+//     <div className="p-6 bg-gray-100 min-h-screen mt-5">
+//       {/* Breadcrumb */}
+//       <div className="flex items-center text-sm text-gray-500 mb-4"></div>
+//       <div>
+//         <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
+//           Inventory Status
+//         </h1>
+//       </div>
+//       <div className="flex justify-between items-center">
+//         <div className="flex gap-2 items-center ">
+//           <p className="text-[14px] text-black">
+//             <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
+//           </p>
+//           <span>
+//             <FaCircle className="text-[6px] text-gray-500" />
+//           </span>
+//           <span className="text-[14px] hover:cursor-pointer">
+//             Daily Schedule & Capacity
+//           </span>
+//           <span>
+//             <FaCircle className="text-[6px] text-gray-500" />
+//           </span>
+//           <span className="text-[14px] hover:cursor-pointer">
+//             Inventory Status
+//           </span>
+//         </div>
+//       </div>
+
+//       {/* Filters */}
+//       {/* <div className="bg-white p-4 mt-6">
+//         <div className="flex flex-col md:flex-row justify-between gap-4 items-end">
+//           <div className="w-full">
+//             <label className="block text-sm font-semibold">Part Family</label>
+//             <select className="border w-full px-3 py-2 rounded-md">
+//               <option>Cut trim</option>
+//               <option>Sending</option>
+//             </select>
+//           </div>
+//         </div>
+//       </div> */}
+
+//       {/* Table */}
+//       <div className="bg-white overflow-x-auto mt-8">
+//         <table className="min-w-full border-collapse">
+//           <thead>
+//             <tr className="bg-gray-100 text-gray-600 text-sm whitespace-nowrap">
+//               <th className="py-2 px-4 text-left">Part Number</th>
+//               <th className="py-2 px-4 text-left">Part Description</th>
+//               <th className="py-2 px-4 text-left">Qty Avail</th>
+//               <th className="py-2 px-4 text-left">Safety Stock</th>
+//               <th className="py-2 px-4 text-left">Current Cost</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {currentRows.map((row, index) => (
+//               <tr key={index} className="border-b hover:bg-gray-50">
+//                 <td className="py-3 px-4 text-[#061D22] text-sm whitespace-nowrap">
+//                   {row.partNumber}
+//                 </td>
+//                 <td className="py-3 px-4 text-[#061D22] text-sm whitespace-nowrap">
+//                   {row.partDescription}
+//                 </td>
+//                 <td className="py-3 px-4 text-[#061D22] text-sm">
+//                   {row.qtyAvailable}
+//                 </td>
+//                 <td className="py-3 px-4 text-[#061D22] text-sm">
+//                   {row.safetyStock}
+//                 </td>
+//                 <td className="py-3 px-4 text-[#061D22] text-sm">
+//                   ${row.unitCost}
+//                 </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+
+//         {/* Pagination */}
+//         <div className="flex justify-between items-center mt-4 p-2">
+//           <button
+//             onClick={goToPreviousPage}
+//             disabled={currentPage === 1}
+//             className={`px-2 py-2 rounded-md ${
+//               currentPage === 1 ? "bg-gray-300" : "bg-brand text-white"
+//             }`}
+//           >
+//             Previous
+//           </button>
+//           <span>
+//             Page {currentPage} of {totalPages}
+//           </span>
+//           <button
+//             onClick={goToNextPage}
+//             disabled={currentPage === totalPages}
+//             className={`px-4 py-2 rounded-md ${
+//               currentPage === totalPages ? "bg-gray-300" : "bg-brand text-white"
+//             }`}
+//           >
+//             Next
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default InventoryStatus;
+
+
 const InventoryStatus = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 5;
+  const [searchTerm, setSearchTerm] = useState(""); // Naya state search ke liye
+  const rowsPerPage = 10;
+  const BASE_URL = import.meta.env.VITE_SERVER_URL; // Ensure BASE_URL is defined
 
+  // API Fetching function
+  const fetchInventory = useCallback(async (searchQuery: string) => {
+    try {
+      setLoading(true);
+      // Backend API ko search query pass kar rahe hain
+      const response = await axios.get(
+        `${BASE_URL}/api/admin/schedule-inventory?search=${searchQuery}`
+      );
+      setData(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching inventory:", error);
+      setLoading(false);
+    }
+  }, [BASE_URL]);
+
+  // Debounced Search Effect
   useEffect(() => {
-    const fetchInventory = async () => {
-      try {
-        const response = await axios.get(
-          `${BASE_URL}/api/admin/schedule-inventory`,
-        ); // change to your API
-        setData(response.data.data); // assuming your API returns { data: [...] }
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching inventory:", error);
-        setLoading(false);
-      }
-    };
+    const delayDebounceFn = setTimeout(() => {
+      setCurrentPage(1); // Search badalne par page 1 par reset karein
+      fetchInventory(searchTerm);
+    }, 500); // 500ms ka delay (jab user type karna stop kare tab call ho)
 
-    fetchInventory();
-  }, []);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, fetchInventory]);
 
-  const totalPages = Math.ceil(data.length / rowsPerPage);
+  // Pagination Logic
+  const totalPages = Math.ceil(data.length / rowsPerPage) || 1;
   const currentRows = data.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
+    currentPage * rowsPerPage
   );
 
   const goToPreviousPage = () => {
@@ -243,104 +403,112 @@ const InventoryStatus = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
-  if (loading) return <p className="p-6">Loading inventory...</p>;
-
   return (
-    <div className="p-6 bg-gray-100 min-h-screen mt-5">
-      {/* Breadcrumb */}
-      <div className="flex items-center text-sm text-gray-500 mb-4"></div>
+    <div className="p-4 md:p-6 bg-gray-100 min-h-screen mt-5">
+      {/* Header */}
       <div>
         <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
           Inventory Status
         </h1>
       </div>
-      <div className="flex justify-between items-center">
-        <div className="flex gap-2 items-center ">
+
+      {/* Breadcrumbs & Search Row */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mt-2">
+        <div className="flex gap-2 items-center flex-wrap">
           <p className="text-[14px] text-black">
             <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
           </p>
-          <span>
-            <FaCircle className="text-[6px] text-gray-500" />
+          <span><FaCircle className="text-[6px] text-gray-500" /></span>
+          <span className="text-[14px]">Daily Schedule & Capacity</span>
+          <span><FaCircle className="text-[6px] text-gray-500" /></span>
+          <span className="text-[14px] font-bold">Inventory Status</span>
+        </div>
+
+        {/* Search Input Field */}
+        <div className="relative w-full md:w-72">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+            <FaSearch className="text-gray-400 text-sm" />
           </span>
-          <span className="text-[14px] hover:cursor-pointer">
-            Daily Schedule & Capacity
-          </span>
-          <span>
-            <FaCircle className="text-[6px] text-gray-500" />
-          </span>
-          <span className="text-[14px] hover:cursor-pointer">
-            Inventory Status1
-          </span>
+          <input
+            type="text"
+            placeholder="Search Part Number..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          />
         </div>
       </div>
 
-      {/* Filters */}
-      {/* <div className="bg-white p-4 mt-6">
-        <div className="flex flex-col md:flex-row justify-between gap-4 items-end">
-          <div className="w-full">
-            <label className="block text-sm font-semibold">Part Family</label>
-            <select className="border w-full px-3 py-2 rounded-md">
-              <option>Cut trim</option>
-              <option>Sending</option>
-            </select>
-          </div>
-        </div>
-      </div> */}
-
-      {/* Table */}
-      <div className="bg-white overflow-x-auto mt-8">
+      {/* Table Section */}
+      <div className="bg-white overflow-x-auto mt-6 shadow-sm rounded-lg">
         <table className="min-w-full border-collapse">
           <thead>
-            <tr className="bg-gray-100 text-gray-600 text-sm whitespace-nowrap">
-              <th className="py-2 px-4 text-left">Part Number</th>
-              <th className="py-2 px-4 text-left">Part Description</th>
-              <th className="py-2 px-4 text-left">Qty Avail</th>
-              <th className="py-2 px-4 text-left">Safety Stock</th>
-              <th className="py-2 px-4 text-left">Current Cost</th>
+            <tr className="bg-gray-100 text-xs font-bold uppercase tracking-wider">
+              <th className="py-3 px-4 text-left">Part Number</th>
+              <th className="py-3 px-4 text-left">Part Description</th>
+              <th className="py-3 px-4 text-center">Qty Avail</th>
+              <th className="py-3 px-4 text-center">Safety Stock</th>
+              <th className="py-3 px-4 text-right">Unit Cost</th>
             </tr>
           </thead>
-          <tbody>
-            {currentRows.map((row, index) => (
-              <tr key={index} className="border-b hover:bg-gray-50">
-                <td className="py-3 px-4 text-[#061D22] text-sm whitespace-nowrap">
-                  {row.partNumber}
-                </td>
-                <td className="py-3 px-4 text-[#061D22] text-sm whitespace-nowrap">
-                  {row.partDescription}
-                </td>
-                <td className="py-3 px-4 text-[#061D22] text-sm">
-                  {row.qtyAvailable}
-                </td>
-                <td className="py-3 px-4 text-[#061D22] text-sm">
-                  {row.safetyStock}
-                </td>
-                <td className="py-3 px-4 text-[#061D22] text-sm">
-                  ${row.unitCost}
+          <tbody className="divide-y divide-gray-100">
+            {loading ? (
+              <tr>
+                <td colSpan={5} className="text-center py-10">
+                  Fetching data...
                 </td>
               </tr>
-            ))}
+            ) : currentRows.length > 0 ? (
+              currentRows.map((row, index) => (
+                <tr key={index} className="hover:bg-gray-50">
+                  <td className="py-3 px-4 text-sm">
+                    {row.partNumber}
+                  </td>
+                  <td className="py-3 px-4 text-sm text-center ">
+                    {row.partDescription}
+                  </td>
+                  <td className="py-3 px-4 text-sm text-center">
+                    {row.qtyAvailable}
+                  </td>
+                  <td className="py-3 px-4 text-sm text-center ">
+                    {row.safetyStock}
+                  </td>
+                  <td className="py-3 px-4 text-sm text-right  ">
+                    ${row.unitCost}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="text-center py-10 text-gray-400">
+                  No matching parts found.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
 
-        {/* Pagination */}
-        <div className="flex justify-between items-center mt-4 p-2">
+        {/* Pagination Section */}
+        <div className="flex justify-between items-center p-4 bg-white border-t">
           <button
             onClick={goToPreviousPage}
-            disabled={currentPage === 1}
-            className={`px-2 py-2 rounded-md ${
-              currentPage === 1 ? "bg-gray-300" : "bg-brand text-white"
+            disabled={currentPage === 1 || loading}
+            className={`px-4 py-2 text-sm rounded-md transition-all ${
+              currentPage === 1 ? "bg-gray-200 text-gray-400" : "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
             }`}
           >
             Previous
           </button>
-          <span>
+          
+          <span className="text-xs font-medium text-gray-500 uppercase tracking-widest">
             Page {currentPage} of {totalPages}
           </span>
+          
           <button
             onClick={goToNextPage}
-            disabled={currentPage === totalPages}
-            className={`px-4 py-2 rounded-md ${
-              currentPage === totalPages ? "bg-gray-300" : "bg-brand text-white"
+            disabled={currentPage === totalPages || loading}
+            className={`px-4 py-2 text-sm rounded-md transition-all ${
+              currentPage === totalPages ? "bg-gray-200 text-gray-400" : "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
             }`}
           >
             Next
