@@ -370,7 +370,7 @@ export default function ProductTree() {
                 </th>
                 <th className="border p-2 font-semibold text-gray-600">Cost</th>
                 <th className="border p-2 font-semibold text-gray-600">
-                  Cycle Time
+                  LeadTimeDays
                 </th>
                 <th className="border p-2 font-semibold text-gray-600">
                   Minimum Stock

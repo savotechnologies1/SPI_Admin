@@ -41,6 +41,7 @@ const DasboardDetails = () => {
   const handleMonthChangeFromChild = (month) => {
     setSelectedMonthForApi(month);
   };
+  console.log("dashboardDetailsdashboardDetails", dashboardDetails);
 
   if (!dashboardDetails) {
     return (

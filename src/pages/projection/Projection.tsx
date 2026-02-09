@@ -440,13 +440,184 @@
 
 // export default Projection;
 
+// import axios from "axios";
+// import React, { useEffect, useState } from "react";
+// import {
+//   BarChart,
+//   Bar,
+//   LineChart,
+//   Line,
+//   XAxis,
+//   YAxis,
+//   CartesianGrid,
+//   Tooltip,
+//   Legend,
+//   ResponsiveContainer,
+// } from "recharts";
+// import CashFlowLineGraph from "./LineGraph";
+
+// const cashFlowData = [
+//   { name: "Fixed Cost", value: 5000 },
+//   { name: "COGS Needed", value: 3000 },
+//   { name: "Revenue in Hand", value: 8000 },
+//   { name: "Revenue Unfulfilled", value: 4000 },
+// ];
+
+// const scheduledData = [
+//   { date: "2025-09-01", cashNeeded: 2000 },
+//   { date: "2025-09-05", cashNeeded: 3500 },
+//   { date: "2025-09-10", cashNeeded: 2800 },
+//   { date: "2025-09-15", cashNeeded: 4000 },
+//   { date: "2025-09-20", cashNeeded: 3200 },
+// ];
+
+// const BASE_URL = import.meta.env.VITE_SERVER_URL;
+
+// const Projection: React.FC = () => {
+//   const [cashFlowData, setCashFlowData] = useState<any[]>([]);
+//   const [scheduledData, setScheduledData] = useState<any[]>([]);
+//   const [allSchedule, setAllSchedule] = useState<any[]>([]);
+//   const [selectedYear, setSelectedYear] = useState<string>("");
+//   const [startDate, setStartDate] = useState<string>("");
+//   const [endDate, setEndDate] = useState<string>("");
+
+//   const fetchData = async () => {
+//     try {
+//       const response = await axios.get(`${BASE_URL}/api/admin/revenue-api`);
+//       const data = response.data;
+
+//       // ✅ Cash Flow Data (overall)
+//       const cashFlow = [
+//         { name: "Total Revenue", value: data.totalRevenue },
+//         { name: "Total COGS", value: data.totalCOGS },
+//         // { name: "Gross Profit", value: data.grossProfit },
+//         { name: "Fixed Cost", value: data.totalFixedCost },
+//         { name: "Fulfilled Revenue", value: data.fulfilledRevenue },
+//         { name: "Unfulfilled Revenue", value: data.unfulfilledRevenue },
+//       ];
+//       setCashFlowData(cashFlow);
+
+//       // ✅ Scheduled Data (cashflow needed per month)
+//       const schedule = Object.keys(data.monthlyRevenue).map((month) => {
+//         const cashNeeded =
+//           data.totalFixedCost +
+//           (data.monthlyCOGS[month] || 0) -
+//           (data.fulfilledRevenue || 0) +
+//           (data.unfulfilledRevenue || 0);
+
+//         return {
+//           date: month, // e.g., "2025-09"
+//           year: month.split("-")[0],
+//           month: month.split("-")[1],
+//           cashNeeded,
+//         };
+//       });
+
+//       setAllSchedule(schedule);
+
+//       // Default filter = current year
+//       const currentYear = new Date().getFullYear().toString();
+//       setSelectedYear(currentYear);
+//       const defaultData = schedule.filter((s) => s.year === currentYear);
+//       setScheduledData(defaultData);
+
+//       // Set default start & end date range
+//       if (defaultData.length > 0) {
+//         setStartDate(`${currentYear}-01`);
+//         setEndDate(`${currentYear}-12`);
+//       }
+//     } catch (error) {
+//       console.error("Error fetching projection data", error);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchData();
+//   }, []);
+
+//   // ✅ Handle year filter
+//   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+//     const year = e.target.value;
+//     setSelectedYear(year);
+//     const filtered = allSchedule.filter((s) => s.year === year);
+//     setScheduledData(filtered);
+
+//     if (filtered.length > 0) {
+//       setStartDate(`${year}-01`);
+//       setEndDate(`${year}-12`);
+//     }
+//   };
+
+//   // ✅ Handle date range filter
+//   useEffect(() => {
+//     if (startDate && endDate) {
+//       const filtered = allSchedule.filter(
+//         (s) => s.date >= startDate && s.date <= endDate
+//       );
+//       setScheduledData(filtered);
+//     }
+//   }, [startDate, endDate, allSchedule]);
+
+//   return (
+//     <>
+//       <h1 className="font-bold text-2xl mt-10 px-7">Projection</h1>
+//       <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+//         {/* Cash Flow Needed (Bar Chart) */}
+//         <div className="bg-white p-6 rounded-2xl shadow-md">
+//           <h2 className="text-lg font-bold  mb-4">Cash Flow Needed</h2>
+
+//           {/* Table */}
+//           <div className="overflow-x-auto">
+//             <table className="min-w-full border-collapse border border-gray-200 text-sm sm:text-base">
+//               <thead>
+//                 <tr className="bg-gray-100">
+//                   <th className="border border-gray-200 p-2 text-left">Item</th>
+//                   <th className="border border-gray-200 p-2 text-right">
+//                     Amount
+//                   </th>
+//                 </tr>
+//               </thead>
+//               <tbody>
+//                 {cashFlowData.map((row, i) => (
+//                   <tr key={i} className="hover:bg-gray-50">
+//                     <td className="border border-gray-200 p-2">{row.name}</td>
+//                     <td className="border border-gray-200 p-2 text-right">
+//                       ${row?.value?.toLocaleString()}
+//                     </td>
+//                   </tr>
+//                 ))}
+//               </tbody>
+//             </table>
+//           </div>
+
+//           {/* Bar Chart */}
+//           <div className="h-64">
+//             <ResponsiveContainer width="100%" height="100%">
+//               <BarChart
+//                 data={cashFlowData.filter((row) => row.value > 0)} // negative ko hata diya
+//               >
+//                 <CartesianGrid strokeDasharray="3 3" />
+//                 <XAxis dataKey="name" />
+//                 <YAxis />
+//                 <Tooltip />
+//                 <Legend />
+//                 <Bar dataKey="value" fill="#3b82f6" />
+//               </BarChart>
+//             </ResponsiveContainer>
+//           </div>
+//         </div>
+//         <CashFlowLineGraph />
+//       </div>
+//     </>
+//   );
+// };
+
+// export default Projection;
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -456,26 +627,11 @@ import {
 } from "recharts";
 import CashFlowLineGraph from "./LineGraph";
 
-const cashFlowData = [
-  { name: "Fixed Cost", value: 5000 },
-  { name: "COGS Needed", value: 3000 },
-  { name: "Revenue in Hand", value: 8000 },
-  { name: "Revenue Unfulfilled", value: 4000 },
-];
-
-const scheduledData = [
-  { date: "2025-09-01", cashNeeded: 2000 },
-  { date: "2025-09-05", cashNeeded: 3500 },
-  { date: "2025-09-10", cashNeeded: 2800 },
-  { date: "2025-09-15", cashNeeded: 4000 },
-  { date: "2025-09-20", cashNeeded: 3200 },
-];
-
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 const Projection: React.FC = () => {
   const [cashFlowData, setCashFlowData] = useState<any[]>([]);
-  const [scheduledData, setScheduledData] = useState<any[]>([]);
+  const [projections, setProjections] = useState<any>(null); // New state for cards
   const [allSchedule, setAllSchedule] = useState<any[]>([]);
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [startDate, setStartDate] = useState<string>("");
@@ -486,18 +642,20 @@ const Projection: React.FC = () => {
       const response = await axios.get(`${BASE_URL}/api/admin/revenue-api`);
       const data = response.data;
 
+      // ✅ Capture Projections for Cards
+      setProjections(data.projections);
+
       // ✅ Cash Flow Data (overall)
       const cashFlow = [
         { name: "Total Revenue", value: data.totalRevenue },
         { name: "Total COGS", value: data.totalCOGS },
-        // { name: "Gross Profit", value: data.grossProfit },
         { name: "Fixed Cost", value: data.totalFixedCost },
-        { name: "Fulfilled Revenue", value: data.fulfilledRevenue },
+        // { name: "Fulfilled Revenue", value: data.fulfilledRevenue },
         { name: "Unfulfilled Revenue", value: data.unfulfilledRevenue },
       ];
       setCashFlowData(cashFlow);
 
-      // ✅ Scheduled Data (cashflow needed per month)
+      // ✅ Scheduled Data
       const schedule = Object.keys(data.monthlyRevenue).map((month) => {
         const cashNeeded =
           data.totalFixedCost +
@@ -506,7 +664,7 @@ const Projection: React.FC = () => {
           (data.unfulfilledRevenue || 0);
 
         return {
-          date: month, // e.g., "2025-09"
+          date: month,
           year: month.split("-")[0],
           month: month.split("-")[1],
           cashNeeded,
@@ -514,18 +672,8 @@ const Projection: React.FC = () => {
       });
 
       setAllSchedule(schedule);
-
-      // Default filter = current year
       const currentYear = new Date().getFullYear().toString();
       setSelectedYear(currentYear);
-      const defaultData = schedule.filter((s) => s.year === currentYear);
-      setScheduledData(defaultData);
-
-      // Set default start & end date range
-      if (defaultData.length > 0) {
-        setStartDate(`${currentYear}-01`);
-        setEndDate(`${currentYear}-12`);
-      }
     } catch (error) {
       console.error("Error fetching projection data", error);
     }
@@ -535,80 +683,94 @@ const Projection: React.FC = () => {
     fetchData();
   }, []);
 
-  // ✅ Handle year filter
-  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const year = e.target.value;
-    setSelectedYear(year);
-    const filtered = allSchedule.filter((s) => s.year === year);
-    setScheduledData(filtered);
-
-    if (filtered.length > 0) {
-      setStartDate(`${year}-01`);
-      setEndDate(`${year}-12`);
-    }
-  };
-
-  // ✅ Handle date range filter
-  useEffect(() => {
-    if (startDate && endDate) {
-      const filtered = allSchedule.filter(
-        (s) => s.date >= startDate && s.date <= endDate
-      );
-      setScheduledData(filtered);
-    }
-  }, [startDate, endDate, allSchedule]);
-
   return (
-    <>
-      <h1 className="font-bold text-2xl mt-10 px-7">Projection</h1>
-      <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Cash Flow Needed (Bar Chart) */}
-        <div className="bg-white p-6 rounded-2xl shadow-md">
-          <h2 className="text-lg font-bold  mb-4">Cash Flow Needed</h2>
+    <div className="p-7">
+      <h1 className="font-bold text-2xl mb-6">Projection Dashboard</h1>
 
-          {/* Table */}
-          <div className="overflow-x-auto">
-            <table className="min-w-full border-collapse border border-gray-200 text-sm sm:text-base">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border border-gray-200 p-2 text-left">Item</th>
-                  <th className="border border-gray-200 p-2 text-right">
-                    Amount
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {cashFlowData.map((row, i) => (
-                  <tr key={i} className="hover:bg-gray-50">
-                    <td className="border border-gray-200 p-2">{row.name}</td>
-                    <td className="border border-gray-200 p-2 text-right">
-                      ${row?.value?.toLocaleString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Bar Chart */}
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={cashFlowData.filter((row) => row.value > 0)} // negative ko hata diya
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="value" fill="#3b82f6" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+      {/* ✅ 3 NEW CARDS FOR PROJECTIONS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        {/* Order Card */}
+        <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-xl shadow-sm">
+          <p className="text-blue-600 font-semibold text-sm uppercase">
+            {projections?.orderCard?.title || "Total Open Order Revenue"}
+          </p>
+          <h2 className="text-3xl font-bold mt-2">
+            ${projections?.orderCard?.value?.toLocaleString() || 0}
+          </h2>
         </div>
-        <CashFlowLineGraph />
+
+        {/* Part Card */}
+        <div className="bg-green-50 border-l-4 border-green-500 p-6 rounded-xl shadow-sm">
+          <p className="text-green-600 font-semibold text-sm uppercase">
+            {projections?.partCard?.title || "Total Open Parts Cost"}
+          </p>
+          <h2 className="text-3xl font-bold mt-2">
+            ${projections?.partCard?.value?.toLocaleString() || 0}
+          </h2>
+        </div>
+
+        {/* Employee Card */}
+        <div className="bg-purple-50 border-l-4 border-purple-500 p-6 rounded-xl shadow-sm">
+          <p className="text-purple-600 font-semibold text-sm uppercase">
+            {projections?.employeeCard?.title || "Total Open Labor Cost"}
+          </p>
+          <h2 className="text-3xl font-bold mt-2">
+            ${projections?.employeeCard?.value?.toLocaleString() || 0}
+          </h2>
+        </div>
+        <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-xl shadow-sm">
+          <p className="text-blue-600 font-semibold text-sm uppercase">
+            {projections?.fixedCostCard?.title || "Total Open Order Revenue"}
+          </p>
+          <h2 className="text-3xl font-bold mt-2">
+            ${projections?.fixedCostCard?.value?.toLocaleString() || 0}
+          </h2>
+        </div>
       </div>
-    </>
+      <div className="bg-white p-6 rounded-2xl shadow-md">
+        <h2 className="text-lg font-bold mb-4">Current Cash Flow Summary</h2>
+
+        <div className="overflow-x-auto mb-6">
+          <table className="min-w-full border-collapse border border-gray-200 text-sm">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border border-gray-200 p-2 text-left">Item</th>
+                <th className="border border-gray-200 p-2 text-right">
+                  Amount
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {cashFlowData.map((row, i) => (
+                <tr key={i} className="hover:bg-gray-50">
+                  <td className="border border-gray-200 p-2">{row.name}</td>
+                  <td className="border border-gray-200 p-2 text-right">
+                    ${row?.value?.toLocaleString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={cashFlowData.filter((row) => row.value > 0)}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Cash Flow Needed (Table & Bar Chart) */}
+
+      <CashFlowLineGraph />
+    </div>
   );
 };
 

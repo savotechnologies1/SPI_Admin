@@ -343,7 +343,7 @@ const OrderStatus = ({ orders }) => {
                     <td className="py-2 px-4">
                       {new Date(item.date).toLocaleDateString()}
                     </td>
-                    <td className="py-2 px-4">{item.order}</td>
+                    <td className="py-2 px-4">{item.orderNo}</td>
                     <td className="py-2 px-4">{item.firstName}</td>
                     <td className="py-2 px-4">{item.lastName}</td>
                     <td className="py-2 px-4">{item.product || "-"}</td>
@@ -392,7 +392,7 @@ const OrderStatus = ({ orders }) => {
                     <td className="py-2 px-4">
                       {new Date(item.date).toLocaleDateString()}
                     </td>
-                    <td className="py-2 px-4">{item.order}</td>
+                    <td className="py-2 px-4">{item.orderNo}</td>
                     <td className="py-2 px-4">{item.firstName}</td>
                     <td className="py-2 px-4">{item.lastName}</td>
                     <td className="py-2 px-4">{item.product || "-"}</td>

@@ -93,7 +93,6 @@ import { ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 
 const DashboardCards = ({ dashboardDetails }: { dashboardDetails: any }) => {
   if (!dashboardDetails) return <p>Loading...</p>;
-
   const Card = ({
     title,
     value,
@@ -129,8 +128,8 @@ const DashboardCards = ({ dashboardDetails }: { dashboardDetails: any }) => {
                 isPositive
                   ? "text-green-600"
                   : isNegative
-                  ? "text-red-600"
-                  : "text-gray-500"
+                    ? "text-red-600"
+                    : "text-gray-500"
               }`}
             >
               {change}%

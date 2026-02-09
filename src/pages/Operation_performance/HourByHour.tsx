@@ -204,14 +204,15 @@ const HourByHour = () => {
   const [totalData, setTotalData] = useState();
   const fetchData = async () => {
     const response = await axios.get(
-      `${BASE_URL}/api/admin/production/overview`
+      `${BASE_URL}/api/admin/production/overview`,
     );
     console.log("responseresponse", response);
   };
 
   const fetcHourlyhData = async () => {
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const response = await axios.get(
-      `${BASE_URL}/api/admin/production/processes/hourly`
+      `${BASE_URL}/api/admin/production/processes/hourly?tz=${userTimeZone}`,
     );
     setProcessTablesData(response.data.allProcessData);
     setTotalData(response.data.grandTotals);

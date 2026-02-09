@@ -23,6 +23,7 @@ import SupplierReturn from "./SupplierReturn";
 import ScrapBar from "./ScrapBar";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
+import ReturnTable from "./ReturnTable";
 
 const data_1 = [
   {
@@ -204,6 +205,8 @@ const QualityPerformance = () => {
   const [endDate, setEndDate] = useState(today);
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
   const [totalData, setTotalData] = useState();
+  const [customerReturns, setCustomerReturns] = useState([]);
+  const [supplierReturns, setSupplierReturns] = useState([]);
   const fetchQualityData = async () => {
     try {
       setLoading(true);
@@ -217,12 +220,14 @@ const QualityPerformance = () => {
       }
 
       const res = await fetch(
-        `${BASE_URL}/api/admin/quality-performance-data${query}`
+        `${BASE_URL}/api/admin/quality-performance-data${query}`,
       );
       const data = await res.json();
       if (data && data.data) {
         setTotalData(data.totalScrapQty);
         setQualityData(data.data);
+        setCustomerReturns(data.customerScrapDetails || []);
+        setSupplierReturns(data.supplierScrapDetails || []);
       }
     } catch (error) {
       console.error("Error fetching quality performance:", error);
@@ -241,7 +246,7 @@ const QualityPerformance = () => {
       acc.totalSchedule += item.scheduleQuantity || 0;
       return acc;
     },
-    { totalScrap: 0, totalSchedule: 0 }
+    { totalScrap: 0, totalSchedule: 0 },
   );
 
   if (loading) return <p>Loading...</p>;
@@ -342,7 +347,19 @@ const QualityPerformance = () => {
             ))}
           </div>
         </div>
+        {/* Customer Return Table */}
+        <ReturnTable
+          title="Customer Return"
+          data={customerReturns} // Yeh state API se aayegi
+          nameLabel="Customer Name"
+        />
 
+        {/* Supplier Return Table */}
+        <ReturnTable
+          title="Supplier Return"
+          data={supplierReturns} // Yeh state API se aayegi
+          nameLabel="Customer Name" // Screenshot mein dono jagah Customer Name hi likha hai
+        />
         <div className="mt-6">
           <SupplierReturn qualityData={qualityData} />
         </div>

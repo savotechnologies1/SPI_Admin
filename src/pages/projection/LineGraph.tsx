@@ -86,8 +86,8 @@ const CashFlowLineGraph: React.FC = () => {
   }, [selectedMonth, allSchedule]);
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-md p-6">
+    <div className="mt-5  min-h-screen">
+      <div className=" bg-white rounded-2xl shadow-md p-6">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-4">
           <h2 className="text-2xl font-bold ">Cash Needed Over Time</h2>
 

@@ -159,6 +159,7 @@ const AllScrapEntries: React.FC = () => {
                 <th className="px-4 py-3">Part Number</th>
                 <th className="px-4 py-3">Supplier Name</th>
                 <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Defect Description</th>
                 <th className="px-4 py-3">Submit By</th>
                 <th className="px-4 py-3">Submit Date</th>
                 <th className="px-4 py-3">Actions</th>
@@ -168,13 +169,13 @@ const AllScrapEntries: React.FC = () => {
               {workData.map((item, index) => (
                 <tr key={item.id} className="border-b hover:bg-gray-50">
                   <td className="px-4 py-3">{item?.PartNumber?.partNumber}</td>
-
                   <td className="px-4 py-3">
-                    {item?.PartNumber.supplier.companyName} 
+                    {item?.PartNumber.supplier.companyName}
                   </td>
                   <td className="px-4 py-3">
                     {item.scrapStatus == true ? "yes" : "no"}
-                  </td>
+                  </td>{" "}
+                  <td className="px-4 py-3">{item.defectDesc}</td>
                   <td className="px-4 py-3">
                     {item.employeeDetails !== null
                       ? `${item?.employeeDetails.firstName} ${item?.employeeDetails.lastName}`
@@ -189,7 +190,6 @@ const AllScrapEntries: React.FC = () => {
                       {new Date(item.createdAt).toLocaleDateString()}
                     </span>
                   </td>
-
                   <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
                     <button
                       className="text-brand hover:underline"

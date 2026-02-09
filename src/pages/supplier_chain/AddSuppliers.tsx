@@ -31,13 +31,6 @@ const AddSuppliers = () => {
     <div className="p-7 my-5">
       {/* Header with Back Button */}
       <div className="flex items-center gap-4">
-        <button
-          onClick={() => navigate(-1)}
-          className="p-2 bg-white hover:bg-gray-100 rounded-full shadow-sm transition-all border border-gray-200"
-          title="Go Back"
-        >
-          <FaArrowLeft className="text-gray-600" />
-        </button>
         <h1 className="font-bold text-[20px] md:text-[24px] text-black">
           Add New Supplier
         </h1>
