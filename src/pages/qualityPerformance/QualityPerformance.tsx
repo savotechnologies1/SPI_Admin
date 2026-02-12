@@ -28,7 +28,7 @@ import ReturnTable from "./ReturnTable";
 const data_1 = [
   {
     num: "$5,00,000",
-    text: "Scrap Cost",
+    text: "Scrap Quantity",
     img: img1,
     scrap: scrap_1,
     scrap_img: scrap_cost,
@@ -256,7 +256,7 @@ const QualityPerformance = () => {
   const data_1 = [
     {
       num: totalData,
-      text: "Scrap Cost",
+      text: "Scrap Quantity",
       img: img1,
       scrap: scrap_1,
       scrap_img: scrap_cost,

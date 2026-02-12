@@ -15,16 +15,15 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 const ScrapBar = ({ qualityData }) => {
-  // Filter data to show only items that have scrap (optional, but looks better)
-  const chartDataEntries = qualityData.filter(item => item.scrapQuantity > 0);
-
+  const chartDataEntries = qualityData.filter((item) => item.scrapQuantity > 0);
   const data = {
-    // FIX: Changed from item?.part?.process?.processName to item.partNumber
-    labels: chartDataEntries.map((item) => item.partNumber  ? item.partDescription : item.partNumber),
+    labels: chartDataEntries.map((item) =>
+      item.partNumber ? item.partDescription : item.partNumber,
+    ),
     datasets: [
       {
         label: "Scrap Quantity",
@@ -51,18 +50,17 @@ const ScrapBar = ({ qualityData }) => {
       },
       tooltip: {
         callbacks: {
-          // Adds description to tooltip for better UX
           afterLabel: (context) => {
             const item = chartDataEntries[context.dataIndex];
-            return item.partDescription ? `Desc: ${item.partDescription}` : '';
-          }
-        }
-      }
+            return item.partDescription ? `Desc: ${item.partDescription}` : "";
+          },
+        },
+      },
     },
     scales: {
       x: {
         grid: { display: false },
-        title: { display: true, text: "Part Number" }
+        title: { display: true, text: "Part Number" },
       },
       y: {
         beginAtZero: true,

@@ -66,7 +66,7 @@ const ReturnTable = ({ title, data, nameLabel }) => {
 
                   {/* Is Scrap & Defect (Hardcoded as per screenshot) */}
                   <td className="p-4 text-gray-600">Yes</td>
-                  <td className="p-4 text-gray-600">Broke</td>
+                  <td className="p-4 text-gray-600">{item.defectDesc}</td>
 
                   {/* Qty Column */}
                   <td className="p-4 text-right font-medium text-gray-700">

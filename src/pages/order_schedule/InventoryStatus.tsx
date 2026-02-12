@@ -204,6 +204,7 @@ import edit from "../../assets/edit.png";
 
 import React, { useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 // const InventoryStatus = () => {
@@ -532,7 +533,6 @@ const InventoryStatus = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Editing State
   const [editRowId, setEditRowId] = useState<string | null>(null);
   const [editFormData, setEditFormData] = useState<any>({});
 
@@ -577,21 +577,29 @@ const InventoryStatus = () => {
   };
 
   // Handle Save (API Call)
+  // Handle Save (API Call)
   const handleSave = async () => {
     try {
+      // 1. API Call
       await axios.put(`${BASE_URL}/api/admin/update-inventory`, {
         partNumber: editFormData.partNumber,
-        qtyAvailable: editFormData.qtyAvailable,
-        safetyStock: editFormData.safetyStock,
-        unitCost: editFormData.unitCost,
+        qtyAvailable: Number(editFormData.qtyAvailable),
+        safetyStock: Number(editFormData.safetyStock),
+        unitCost: Number(editFormData.unitCost),
       });
 
-      toast.success("Updated successfully!");
+      toast.success("Inventory updated successfully!");
+
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.partNumber === editRowId ? { ...item, ...editFormData } : item,
+        ),
+      );
+
       setEditRowId(null);
-      fetchInventory(searchTerm); // Refresh data
     } catch (error) {
-      toast.error("Update failed");
-      console.error(error);
+      toast.error("Update failed. Please try again.");
+      console.error("Update Error:", error);
     }
   };
 
@@ -647,6 +655,7 @@ const InventoryStatus = () => {
                       name="qtyAvailable"
                       value={editFormData.qtyAvailable}
                       onChange={handleInputChange}
+                      onKeyDown={(e) => e.key === "Enter" && handleSave()} // Enter dabane par save
                       className="w-16 border rounded p-1 text-center"
                     />
                   ) : (
