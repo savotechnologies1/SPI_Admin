@@ -11,7 +11,12 @@ import {
 import { useEffect } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
-import { FaSortAmountDown, FaSortAmountUp, FaSpinner, FaTrophy } from "react-icons/fa";
+import {
+  FaSortAmountDown,
+  FaSortAmountUp,
+  FaSpinner,
+  FaTrophy,
+} from "react-icons/fa";
 
 // const Dive = () => {
 //   const [selectedStation, setSelectedStation] = useState<string>("");
@@ -699,10 +704,10 @@ const Dive = () => {
   const [selectedStation, setSelectedStation] = useState<string>("");
   const [selectedEmployee, setSelectedEmployee] = useState<string>("");
   const [productivityTable, setProductivityTable] = useState<any[]>([]);
-  
+
   // 1. Naya state top performers ke liye
-  const [topPerformers, setTopPerformers] = useState<any[]>([]); 
-  
+  const [topPerformers, setTopPerformers] = useState<any[]>([]);
+
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [dashboardData, setDashboardData] = useState<any>({
@@ -712,7 +717,9 @@ const Dive = () => {
     partsCompleted: [],
     avgCycleTime: [],
   });
-  const [parts, setParts] = useState<{ part_id: string; partNumber: string }[]>([]);
+  const [parts, setParts] = useState<{ part_id: string; partNumber: string }[]>(
+    [],
+  );
   const [selected, setSelected] = useState<string>("");
   const [loadingParts, setLoadingParts] = useState(true);
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
@@ -734,21 +741,24 @@ const Dive = () => {
       if (startDate) {
         const start = new Date(startDate);
         start.setHours(0, 0, 0, 0);
-        params.append("startDate", start.toLocaleString('sv-SE').replace(' ', 'T'));
+        params.append(
+          "startDate",
+          start.toLocaleString("sv-SE").replace(" ", "T"),
+        );
       }
       if (endDate) {
         const end = new Date(endDate);
         end.setHours(23, 59, 59, 999);
-        params.append("endDate", end.toLocaleString('sv-SE').replace(' ', 'T'));
+        params.append("endDate", end.toLocaleString("sv-SE").replace(" ", "T"));
       }
       if (selected) params.append("partId", selected);
 
       const res = await axios.get(`${url}?${params.toString()}`);
-      
+
       // 2. API se data set karna
       setProductivityTable(res.data.productivity || []);
       setTopPerformers(res.data.topPerformers || []); // Backend se sorted ranking data
-      
+
       const processed = processApiData(res.data.data);
       setDashboardData(processed);
 
@@ -825,7 +835,7 @@ const Dive = () => {
   const filteredParts = dashboardData.partsCompleted.filter(
     (p: any) =>
       (!selectedStation || p.machineName === selectedStation) &&
-      (!selectedEmployee || p.employee === selectedEmployee)
+      (!selectedEmployee || p.employee === selectedEmployee),
   );
 
   return (
@@ -863,15 +873,25 @@ const Dive = () => {
                   : "border-transparent"
               }`}
             >
-              <h3 className="font-bold text-sm text-gray-700 truncate mb-2">{item.text}</h3>
+              <h3 className="font-bold text-sm text-gray-700 truncate mb-2">
+                {item.text}
+              </h3>
               <div className="flex justify-between items-end">
                 <div>
-                  <p className="text-[10px] uppercase text-gray-400 font-semibold">Efficiency</p>
-                  <p className="text-lg font-bold text-blue-600">{item.efficiency}</p>
+                  <p className="text-[10px] uppercase text-gray-400 font-semibold">
+                    Efficiency
+                  </p>
+                  <p className="text-lg font-bold text-blue-600">
+                    {item.efficiency}
+                  </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] uppercase text-gray-400 font-semibold">Productivity</p>
-                  <p className="text-lg font-bold text-green-600">{item.productivity}</p>
+                  <p className="text-[10px] uppercase text-gray-400 font-semibold">
+                    Productivity
+                  </p>
+                  <p className="text-lg font-bold text-green-600">
+                    {item.productivity}
+                  </p>
                 </div>
               </div>
             </div>
@@ -880,24 +900,51 @@ const Dive = () => {
 
         {/* Machines & Employees Selectors */}
         <div className="md:w-[20%] bg-white p-4 rounded shadow-sm max-h-[250px] overflow-y-auto">
-          <h3 className="font-bold text-gray-700 mb-3 border-b pb-1">Machines</h3>
+          <h3 className="font-bold text-gray-700 mb-3 border-b pb-1">
+            Machines
+          </h3>
           {dashboardData.stations.map((s: string) => (
-            <label key={s} className="flex items-center gap-2 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
-              <input type="radio" name="station" checked={selectedStation === s} onChange={() => setSelectedStation(s)} />
-              <span className="text-xs font-medium text-gray-600 truncate">{s}</span>
+            <label
+              key={s}
+              className="flex items-center gap-2 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded"
+            >
+              <input
+                type="radio"
+                name="station"
+                checked={selectedStation === s}
+                onChange={() => setSelectedStation(s)}
+              />
+              <span className="text-xs font-medium text-gray-600 truncate">
+                {s}
+              </span>
             </label>
           ))}
         </div>
 
         <div className="md:w-[20%] bg-white p-4 rounded shadow-sm max-h-[250px] overflow-y-auto">
-          <h3 className="font-bold text-gray-700 mb-3 border-b pb-1">Employees</h3>
+          <h3 className="font-bold text-gray-700 mb-3 border-b pb-1">
+            Employees
+          </h3>
           <label className="flex items-center gap-2 mb-2 cursor-pointer">
-            <input type="radio" name="employee" checked={selectedEmployee === ""} onChange={() => setSelectedEmployee("")} />
+            <input
+              type="radio"
+              name="employee"
+              checked={selectedEmployee === ""}
+              onChange={() => setSelectedEmployee("")}
+            />
             <span className="text-xs font-medium">All Employees</span>
           </label>
           {dashboardData.employees.map((e: string) => (
-            <label key={e} className="flex items-center gap-2 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
-              <input type="radio" name="employee" checked={selectedEmployee === e} onChange={() => setSelectedEmployee(e)} />
+            <label
+              key={e}
+              className="flex items-center gap-2 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded"
+            >
+              <input
+                type="radio"
+                name="employee"
+                checked={selectedEmployee === e}
+                onChange={() => setSelectedEmployee(e)}
+              />
               <span className="text-xs font-medium text-gray-600">{e}</span>
             </label>
           ))}
@@ -916,7 +963,9 @@ const Dive = () => {
             >
               <option value="">All Parts</option>
               {parts.map((part) => (
-                <option key={part.part_id} value={part.part_id}>{part.partNumber}</option>
+                <option key={part.part_id} value={part.part_id}>
+                  {part.partNumber}
+                </option>
               ))}
             </select>
           </div>
@@ -932,7 +981,9 @@ const Dive = () => {
               <tbody>
                 {filteredParts.map((p: any, i: number) => (
                   <tr key={i} className="border-t hover:bg-gray-50">
-                    <td className="p-2 text-xs text-blue-600 font-medium">{p.machineName}</td>
+                    <td className="p-2 text-xs text-blue-600 font-medium">
+                      {p.machineName}
+                    </td>
                     <td className="p-2 text-xs">{p.partNumber}</td>
                     <td className="p-2 text-xs text-gray-500">{p.employee}</td>
                   </tr>
@@ -944,7 +995,9 @@ const Dive = () => {
 
         {/* Avg Cycle Time Chart */}
         <div className="bg-white p-4 rounded shadow-sm">
-          <h3 className="font-bold text-gray-700 mb-4">Avg Cycle Time by Machine (min)</h3>
+          <h3 className="font-bold text-gray-700 mb-4">
+            Avg Cycle Time by Machine (min)
+          </h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={dashboardData.avgCycleTime}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -956,13 +1009,15 @@ const Dive = () => {
           </ResponsiveContainer>
         </div>
       </div>
-    <div className="bg-white p-4 rounded shadow-sm">
-        <h3 className="font-bold text-gray-700 mb-4 text-start ">Employee Performance Detail</h3>
+      <div className="bg-white p-4 rounded shadow-sm">
+        <h3 className="font-bold text-gray-700 mb-4 text-start ">
+          Employee Performance Detail
+        </h3>
         <div className="overflow-x-auto max-h-[300px]">
           <table className="w-full text-sm border-collapse">
             <thead className="sticky top-0 z-10">
               <tr className="bg-gray-800 text-white">
-                <th className="p-2">Process (Machine)</th>
+                <th className="p-2 text-left">Process (Machine)</th>
                 <th className="p-2">Employee</th>
                 <th className="p-2">Avg CT</th>
                 <th className="p-2">Qty</th>
@@ -974,7 +1029,9 @@ const Dive = () => {
             <tbody>
               {productivityTable.map((item, i) => (
                 <tr key={i} className="border-b text-center hover:bg-gray-50">
-                  <td className="p-2 text-left">{item.processName} ({item.machineName})</td>
+                  <td className="p-2 text-left">
+                    {item.processName} ({item.machineName})
+                  </td>
                   <td className="p-2 font-medium">{item.employeeName}</td>
                   <td className="p-2">{item.CT} min</td>
                   <td className="p-2 font-bold text-blue-600">{item.Qty}</td>
@@ -988,93 +1045,102 @@ const Dive = () => {
         </div>
       </div>
       {/* --- NEW: TOP PERFORMERS TABLE (RANKING) --- */}
-       <div className="bg-white p-5 rounded-xl shadow-sm border border-blue-100">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
-              <h3 className="font-bold text-gray-700 mb-4 text-start">
-            Top  Performance 
-              </h3>
-    
-              {/* Highest / Lowest Toggle Filter */}
-              <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-lg">
-                <button
-                  onClick={() => setSortOrder("highest")}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
-                    sortOrder === "highest" 
-                    ? "bg-white text-blue-600 shadow-sm" 
-                    : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  <FaSortAmountDown /> Highest First
-                </button>
-                <button
-                  onClick={() => setSortOrder("lowest")}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
-                    sortOrder === "lowest" 
-                    ? "bg-white text-red-600 shadow-sm" 
-                    : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  <FaSortAmountUp /> Lowest First
-                </button>
-              </div>
-            </div>
-    
-            <div className="overflow-x-auto border ">
-              <table className="w-full text-sm border-collapse">
-                <thead>
-                  <tr className={` bg-gray-800 text-white`}>
-                    <th className="p-3 text-left">Employee Name</th>
-                    <th className="p-3 text-center">Total Efficiency</th>
-                    <th className="p-3 text-center">Total Productivity</th>
-                    <th className="p-3 text-center">Qty</th>
-                    <th className="p-3 text-center">Scrap</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedRanking.length > 0 ? (
-                    sortedRanking.map((emp, i) => {
-                      // Rank calculate logic based on order
-                      const displayRank = sortOrder === "highest" ? i + 1 : topPerformers.length - i;
-                      
-                      return (
-                        <tr key={i} className="border-b hover:bg-gray-50 transition-colors">
-                      
-                          <td className="p-3 font-semibold text-gray-700">
-                            {emp.employeeName}
-                          </td>
-                          <td className="p-3 text-center">
-                            <div className="flex flex-col items-center">
-                              <span className={`px-2 py-1 rounded text-xs font-bold ${
-                                parseFloat(emp.totalEfficiency) >= 80 ? "bg-green-100 text-green-700" : 
-                                parseFloat(emp.totalEfficiency) >= 50 ? "bg-yellow-100 text-yellow-700" : "bg-red-100 text-red-700"
-                              }`}>
-                                {emp.totalEfficiency}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="p-3 text-center text-gray-600 font-medium">
-                            {emp.totalProductivity}
-                          </td>
-                          <td className="p-3 text-center font-bold text-blue-600">
-                            {emp.totalQty}
-                          </td>
-                          <td className="p-3 text-center text-red-500">
-                            {emp.totalScrap}
-                          </td>
-                        </tr>
-                      );
-                    })
-                  ) : (
-                    <tr>
-                      <td colSpan={6} className="p-10 text-center text-gray-400">No records found</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+      <div className="bg-white p-5 rounded-xl shadow-sm border border-blue-100">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+          <h3 className="font-bold text-gray-700 mb-4 text-start">
+            Top Performance
+          </h3>
+
+          {/* Highest / Lowest Toggle Filter */}
+          <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-lg">
+            <button
+              onClick={() => setSortOrder("highest")}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
+                sortOrder === "highest"
+                  ? "bg-white text-blue-600 shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              <FaSortAmountDown /> Highest First
+            </button>
+            <button
+              onClick={() => setSortOrder("lowest")}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
+                sortOrder === "lowest"
+                  ? "bg-white text-red-600 shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              <FaSortAmountUp /> Lowest First
+            </button>
           </div>
+        </div>
+
+        <div className="overflow-x-auto border ">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className={` bg-gray-800 text-white`}>
+                <th className="p-3 text-left">Employee Name</th>
+                <th className="p-3 text-center">Total Efficiency</th>
+                <th className="p-3 text-center">Total Productivity</th>
+                <th className="p-3 text-center">Qty</th>
+                <th className="p-3 text-center">Scrap</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedRanking.length > 0 ? (
+                sortedRanking.map((emp, i) => {
+                  // Rank calculate logic based on order
+                  const displayRank =
+                    sortOrder === "highest" ? i + 1 : topPerformers.length - i;
+
+                  return (
+                    <tr
+                      key={i}
+                      className="border-b hover:bg-gray-50 transition-colors"
+                    >
+                      <td className="p-3 font-semibold text-gray-700">
+                        {emp.employeeName}
+                      </td>
+                      <td className="p-3 text-center">
+                        <div className="flex flex-col items-center">
+                          <span
+                            className={`px-2 py-1 rounded text-xs font-bold ${
+                              parseFloat(emp.totalEfficiency) >= 80
+                                ? "bg-green-100 text-green-700"
+                                : parseFloat(emp.totalEfficiency) >= 50
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : "bg-red-100 text-red-700"
+                            }`}
+                          >
+                            {emp.totalEfficiency}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="p-3 text-center text-gray-600 font-medium">
+                        {emp.totalProductivity}
+                      </td>
+                      <td className="p-3 text-center font-bold text-blue-600">
+                        {emp.totalQty}
+                      </td>
+                      <td className="p-3 text-center text-red-500">
+                        {emp.totalScrap}
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={6} className="p-10 text-center text-gray-400">
+                    No records found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
       {/* Process Wise Detail Table */}
-  
     </div>
   );
 };

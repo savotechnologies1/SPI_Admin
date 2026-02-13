@@ -75,7 +75,7 @@ const EditPartForm = () => {
 
       // Supplier ka full name taiyar karein
       const supplierName = data.supplier
-        ? `${data.supplier.firstName || ""} ${data.supplier.lastName || ""}`.trim()
+        ? `${data.supplier.companyName || ""} `.trim()
         : data.companyName || "";
 
       reset({
@@ -361,7 +361,7 @@ const EditPartForm = () => {
             Cost
             <input
               type="number"
-              step="0.01" // decimal allowed
+              step="0.01"
               min="0"
               {...register("cost", {
                 required: "Cost is required",
@@ -372,7 +372,6 @@ const EditPartForm = () => {
             />
           </label>
 
-          {/* Lead Time */}
           <div className="col-span-4 md:col-span-1">
             <label>Lead Time (Days)</label>
             <input
@@ -383,7 +382,6 @@ const EditPartForm = () => {
             />
           </div>
 
-          {/* Order Quantity */}
           <div className="col-span-4 md:col-span-1">
             <label>Order Quantity by Supplier</label>
             <input
@@ -395,14 +393,11 @@ const EditPartForm = () => {
           </div>
           <div className="col-span-4 md:col-span-1 relative">
             <label className="block mb-1">Company Name</label>
-
-            {/* यह Hidden input बैकएंड में ID भेजने के लिए है */}
             <input
               type="hidden"
               {...register("companyId", { required: "Company is required" })}
             />
 
-            {/* यह Visible input सिर्फ User के देखने और Search करने के लिए है */}
             <input
               type="text"
               value={searchTerm}
@@ -413,7 +408,6 @@ const EditPartForm = () => {
                 setSearchTerm(val);
                 setShowDropdown(true);
 
-                // अगर यूजर नाम पूरा मिटा देता है, तो ID को भी खाली कर दें
                 if (val === "") {
                   setValue("companyId", "");
                 }
@@ -423,7 +417,6 @@ const EditPartForm = () => {
               className={`border p-2 rounded w-full focus:ring-2 focus:ring-brand focus:outline-none ${errors.companyId ? "border-red-500" : ""}`}
             />
 
-            {/* Dropdown List */}
             {showDropdown && searchTerm && filteredSuppliers.length > 0 && (
               <ul className="absolute z-[100] w-full bg-white border border-gray-300 rounded shadow-xl mt-1 max-h-40 overflow-y-auto">
                 {filteredSuppliers.map((s) => (
@@ -431,8 +424,8 @@ const EditPartForm = () => {
                     key={s.id}
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b last:border-0"
                     onMouseDown={() => {
-                      setSearchTerm(s.companyName); // यहाँ 'Name' सेट होगा जो इनपुट में दिखेगा
-                      setValue("companyId", s.id); // यहाँ 'ID' सेट होगी जो API में जाएगी
+                      setSearchTerm(s.companyName);
+                      setValue("companyId", s.id);
                       setShowDropdown(false);
                     }}
                   >

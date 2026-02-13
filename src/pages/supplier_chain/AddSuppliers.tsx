@@ -17,7 +17,6 @@ const AddSuppliers = () => {
     try {
       const response = await addSupplier(data);
       if (response.status === 201) {
-        toast.success("Supplier added successfully!");
         navigate("/all-supplier");
       }
     } catch (error: any) {
