@@ -178,7 +178,6 @@ export const updateNotificationStatus = async (id, status) => {
 
 // export default NotificationList;
 
-// Add props for onClose and onNotificationAction
 
 const NotificationList = ({ onClose, onNotificationAction }) => {
   const [activeTab, setActiveTab] = useState("all");
@@ -187,7 +186,6 @@ const NotificationList = ({ onClose, onNotificationAction }) => {
   const [counts, setCounts] = useState({ all: 0, unread: 0, archived: 0 });
   const [message, setMessage] = useState("");
   
-  // --- NEW STATES FOR MODAL ---
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
 
