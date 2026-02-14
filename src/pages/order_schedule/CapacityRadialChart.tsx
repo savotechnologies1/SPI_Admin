@@ -200,7 +200,7 @@ const CapacityRadialChart = ({ processCompletion, overallAverage }) => {
 
   return (
     <div className="p-6 bg-white rounded-md shadow-md h-full">
-      <h2 className="text-lg font-semibold mb-4">Status By Process</h2>
+<h2 className="text-lg font-semibold mb-4">Status By Process ( Schedule Orders Process )</h2>
       <ReactApexChart
         options={options}
         series={series}
