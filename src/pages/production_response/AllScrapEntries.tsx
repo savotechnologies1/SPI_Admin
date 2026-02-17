@@ -167,30 +167,52 @@ const AllScrapEntries: React.FC = () => {
             </thead>
             <tbody>
               {workData.map((item, index) => (
-                <tr key={item.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3">{item?.PartNumber?.partNumber}</td>
+                <tr
+                  key={item.id}
+                  className="border-b hover:bg-gray-50 text-sm md:text-base"
+                >
+                  {/* 1. Part Number */}
                   <td className="px-4 py-3">
-                    {item?.PartNumber.supplier.companyName}
+                    {item.PartNumber?.partNumber || "N/A"}
                   </td>
+
+                  {/* 2. Supplier Company Name */}
                   <td className="px-4 py-3">
-                    {item.scrapStatus == true ? "yes" : "no"}
-                  </td>{" "}
-                  <td className="px-4 py-3">{item.defectDesc}</td>
-                  <td className="px-4 py-3">
-                    {item.employeeDetails !== null
-                      ? `${item?.employeeDetails.firstName} ${item?.employeeDetails.lastName}`
-                      : `${
-                          item?.createdByAdmin?.name
-                            ? item?.createdByAdmin?.name
-                            : "Not Available"
-                        }`}
+                    {item.PartNumber?.supplier?.companyName || "N/A"}
                   </td>
+
+                  {/* 3. Scrap Status */}
                   <td className="px-4 py-3">
-                    <span className="px-2 py-1 rounded text-xs font-semibold bg-gray-200 text-gray-600">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${item.scrapStatus ? "bg-red-100 text-red-600" : "bg-green-100 text-green-600"}`}
+                    >
+                      {item.scrapStatus ? "Yes" : "No"}
+                    </span>
+                  </td>
+
+                  {/* 4. Defect Description */}
+                  <td className="px-4 py-3">
+                    {item.defectDesc || "No description"}
+                  </td>
+
+                  {/* 5. Created By (Employee or Admin) */}
+                  <td className="px-4 py-3">
+                    {item.createdByEmployee
+                      ? `${item.createdByEmployee.firstName} ${item.createdByEmployee.lastName}`
+                      : item.createdByAdmin?.name
+                        ? item.createdByAdmin.name
+                        : "Not Available"}
+                  </td>
+
+                  {/* 6. Date */}
+                  <td className="px-4 py-3">
+                    <span className="px-2 py-1 rounded text-xs font-semibold bg-gray-100 text-gray-600">
                       {new Date(item.createdAt).toLocaleDateString()}
                     </span>
                   </td>
-                  <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
+
+                  {/* 7. Actions */}
+                  <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4 items-center">
                     <button
                       className="text-brand hover:underline"
                       onClick={() => editWorkInstruction(item.id, item.type)}
@@ -201,29 +223,32 @@ const AllScrapEntries: React.FC = () => {
                         className="w-4 h-4 md:w-5 md:h-5"
                       />
                     </button>
+
                     <FaTrash
-                      className="text-red-500 cursor-pointer h-7"
+                      className="text-red-500 cursor-pointer h-5 w-5 hover:text-red-700"
                       onClick={() => setSelectedId(item.id)}
                     />
 
+                    {/* Delete Confirmation Modal */}
                     {selectedId === item.id && (
-                      <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-                        <div className="bg-white p-6 rounded-xl shadow-lg">
-                          <h2 className="text-lg font-semibold mb-4">
+                      <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+                        <div className="bg-white p-6 rounded-xl shadow-lg max-w-sm w-full">
+                          <h2 className="text-lg font-semibold mb-2">
                             Are you sure?
                           </h2>
-                          <p className="mb-4">
-                            Do you really want to delete this scrap entry?
+                          <p className="mb-6 text-gray-600 text-sm">
+                            Do you really want to delete this scrap entry for{" "}
+                            <b>{item.PartNumber?.partNumber}</b>?
                           </p>
                           <div className="flex justify-end space-x-3">
                             <button
-                              className="px-4 py-2 bg-gray-300 rounded"
+                              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
                               onClick={() => setSelectedId(null)}
                             >
                               Cancel
                             </button>
                             <button
-                              className="px-4 py-2 bg-red-500 text-white rounded"
+                              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                               onClick={() => {
                                 handleDelete(selectedId, item.type);
                                 setSelectedId(null);

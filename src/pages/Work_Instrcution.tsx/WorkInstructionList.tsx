@@ -12,13 +12,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 interface WorkInstructionItem {
   id: string;
-  imageUrl: string;
-  name: string;
-  partDesc: string;
-  stepNumber: string;
-  description: string;
-  submitDate: string;
-  statusColor: string;
+  instructionTitle: string;
+  process: {
+    processName: string;
+  };
+  PartNumber: {
+    partNumber: string;
+  };
+  steps: Array<unknown>;
+  createdAt: string;
+  type: string;
 }
 
 const WorkInstructionList: React.FC = () => {
@@ -32,6 +35,10 @@ const WorkInstructionList: React.FC = () => {
   };
 
   const { id } = useParams();
+
+  if (id) {
+    // id is available if needed
+  }
 
   const getColorClass = (color: string) => {
     switch (color) {
@@ -50,15 +57,15 @@ const WorkInstructionList: React.FC = () => {
   const handleEdit = (id: string) => {
     navigate(`/edit-work-instruction/${id}`);
   };
-  const [workData, setWorkData] = useState<[]>([]);
+  const [workData, setWorkData] = useState<WorkInstructionItem[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [searchVal, setSearchVal] = useState("");
-  const [showConfirmId, setShowConfirmId] = useState(null);
+  const [showConfirmId, setShowConfirmId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedValue, setSelectedValue] = useState("all");
   const debouncedSearchVal = useDebounce(searchVal, 500);
-  function useDebounce(value, delay) {
-    const [debouncedValue, setDebouncedValue] = useState(value);
+  function useDebounce(value: string, delay: number): string {
+    const [debouncedValue, setDebouncedValue] = useState<string>(value);
 
     useEffect(() => {
       const handler = setTimeout(() => {
@@ -72,7 +79,7 @@ const WorkInstructionList: React.FC = () => {
 
     return debouncedValue;
   }
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       setSearchVal(e.target.value);
     } catch (error) {
@@ -80,7 +87,7 @@ const WorkInstructionList: React.FC = () => {
     }
   };
 
-  const handleSelectChange = (event) => {
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newValue = event.target.value;
     setSelectedValue(newValue);
 
@@ -138,7 +145,7 @@ const WorkInstructionList: React.FC = () => {
     }
   };
 
-  const editWorkInstruction = (id) => {
+  const editWorkInstruction = (id: string) => {
     navigate(`/edit-work-instruction/${id}`);
   };
 

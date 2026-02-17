@@ -17,10 +17,10 @@ import {
 } from "./https/workInstructionApi";
 import { toast } from "react-toastify";
 
-// Define strict types for API data and form state
 type Process = {
   id: string;
   name: string;
+  machineName: string;
 };
 
 type Product = {
@@ -30,8 +30,8 @@ type Product = {
 
 type Step = {
   title: string;
-  stepNumber: string;
-  partId: string; // This was missing but used in logic
+  stepNumber: number;
+  partId: string;
   workInstruction: string;
   workInstructionImg: File[];
   workInstructionVideo: File | null;
@@ -44,7 +44,6 @@ type FormValues = {
   steps: Step[];
 };
 
-// A helper type for react-select options for better readability
 type SelectOption = {
   value: string;
   label: string;
@@ -55,7 +54,6 @@ const AddWorkInstruction = () => {
   const [processData, setProcessData] = useState<Process[]>([]);
   const navigate = useNavigate();
 
-  // Fetch initial data on component mount
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
@@ -93,7 +91,6 @@ const AddWorkInstruction = () => {
           workInstructionImg: Yup.array()
             .min(1, "At least one image is required")
             .required("Image is required"),
-          // Video is optional, so no validation needed unless specified
         }),
       )
       .min(1, "At least one step is required"),
@@ -107,7 +104,7 @@ const AddWorkInstruction = () => {
       steps: [
         {
           title: "",
-          stepNumber: "",
+          stepNumber: 0,
           partId: "",
           workInstruction: "",
           workInstructionImg: [],
@@ -120,12 +117,10 @@ const AddWorkInstruction = () => {
     onSubmit: async (values) => {
       const formData = new FormData();
 
-      // Append top-level fields
       formData.append("processId", values.processId);
       formData.append("productId", values.productId);
       formData.append("instructionTitle", values.instructionTitle);
 
-      // Prepare step metadata (without files) to be sent as a JSON string
       const instructionStepsMetadata = values.steps.map((step) => ({
         stepNumber: step.stepNumber,
         title: step.title,
@@ -136,12 +131,8 @@ const AddWorkInstruction = () => {
         "instructionSteps",
         JSON.stringify(instructionStepsMetadata),
       );
-
-      // Append files separately, associating them by index.
-      // The backend will need to match these files to the corresponding step from the JSON data.
       values.steps.forEach((step, index) => {
         step.workInstructionImg.forEach((imgFile) => {
-          // A common pattern is to name the field based on the step index
           formData.append(
             `instructionSteps[${index}][workInstructionImgs]`,
             imgFile,
@@ -161,8 +152,10 @@ const AddWorkInstruction = () => {
         if (response && response.status === 201) {
           navigate("/work-instructions-list");
         }
-      } catch (error) {
-        toast.error(error.message);
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : "An error occurred";
+        toast.error(errorMessage);
       }
     },
   });
@@ -270,7 +263,6 @@ const AddWorkInstruction = () => {
             render={(arrayHelpers) => (
               <>
                 {values.steps.map((step, index) => {
-                  // Safely access errors and touched status for a specific step
                   const stepErrors =
                     Array.isArray(errors.steps) && errors.steps[index]
                       ? (errors.steps[index] as FormikErrors<Step>)
@@ -456,7 +448,7 @@ const AddWorkInstruction = () => {
                       arrayHelpers.push({
                         partId: "",
                         title: "",
-                        stepNumber: "",
+                        stepNumber: 0,
                         workInstruction: "",
                         workInstructionImg: [],
                         workInstructionVideo: null,

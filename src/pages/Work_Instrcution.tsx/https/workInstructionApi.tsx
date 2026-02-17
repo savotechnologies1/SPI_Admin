@@ -34,12 +34,12 @@ export const addWorkinstructionInfo = async (data: object) => {
     const response = await axiosInstance.post(
       "/create-work-instruction-detail",
       data,
-      { headers: { "Content-Type": "multipart/form-data" } }
+      { headers: { "Content-Type": "multipart/form-data" } },
     );
 
     if (response.data?.success) {
       toast.success(
-        response.data.message || "Work instruction created successfully!"
+        response.data.message || "Work instruction created successfully!",
       );
     } else {
       toast.error(response.data?.message || "Something went wrong");
@@ -61,13 +61,13 @@ export const workInstructionList = async (
   page = 1,
   limit = 5,
   selectedValue: string,
-  search: string
+  search: string,
 ) => {
   try {
     console.log(selectedValue, search);
 
     const response = await axiosInstance.get(
-      `/all-work-instructions?page=${page}&limit=${limit}&type=${selectedValue}&search=${search}`
+      `/all-work-instructions?page=${page}&limit=${limit}&type=${selectedValue}&search=${search}`,
     );
     return response.data;
   } catch (error) {
@@ -85,11 +85,11 @@ export const editWorkInstruction = async (data: object) => {
 
     if (response.data?.success) {
       toast.success(
-        response.data.message || "Work instruction updated successfully!"
+        response.data.message || "Work instruction updated successfully!",
       );
     } else {
       toast.error(
-        response.data?.message || "Something went wrong while updating."
+        response.data?.message || "Something went wrong while updating.",
       );
     }
 
@@ -117,7 +117,7 @@ export const workInstructionDetail = async (id: string) => {
 export const deleteWorkInstruction = async (id: string, type: string) => {
   try {
     const response = await axiosInstance.put(
-      `/delete-work-instruction/${id}?type=${type}`
+      `/delete-work-instruction/${id}?type=${type}`,
     );
     if (response.status === 200) {
       toast.success(response.data.message);
@@ -131,7 +131,7 @@ export const deleteWorkInstruction = async (id: string, type: string) => {
 export const deleteWorkInstructionSteps = async (id: string) => {
   try {
     const response = await axiosInstance.put(
-      `/delete-work-instruction-step/${id}`
+      `/delete-work-instruction-step/${id}`,
     );
     if (response.status === 200) {
       toast.success(response.data.message);
@@ -144,7 +144,7 @@ export const deleteWorkInstructionSteps = async (id: string) => {
 export const deleteWorkInstructionImage = async (id: string) => {
   try {
     const response = await axiosInstance.delete(
-      `/delete-work-instruction-image/${id}`
+      `/delete-work-instruction-image/${id}`,
     );
     if (response.status === 200) {
       toast.success(response.data.message);
@@ -194,7 +194,7 @@ export const selectProductInfoApi = async () => {
 export const selectProductRelatedPartsApi = async (productId: string) => {
   try {
     const response = await axiosInstance.get(
-      `/product-related-parts?productId=${productId}`
+      `/product-related-parts?productId=${productId}`,
     );
 
     return response.data;

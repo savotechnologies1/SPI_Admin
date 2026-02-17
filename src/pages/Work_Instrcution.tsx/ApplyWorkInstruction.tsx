@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaCircle } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import {
   selectProcessApi,
@@ -10,9 +10,32 @@ import {
 } from "./https/workInstructionApi";
 import AsyncSelect from "react-select/async";
 
+interface Option {
+  value: string;
+  label: string;
+}
+
+interface ProcessItem {
+  id: string;
+  name: string;
+  machineName: string;
+}
+
+interface WorkInstructionItem {
+  id: string;
+  title: string;
+}
+
+interface ProductItem {
+  id: string;
+  partNumber: string;
+  partDescription: string;
+}
+
 const ApplyWorkInstruction = () => {
-  const [workInstructions, setWorkInstructions] = useState([]);
-  const [processData, setProcessData] = useState([]);
+  const navigate = useNavigate();
+  const [workInstructions, setWorkInstructions] = useState<WorkInstructionItem[]>([]);
+  const [processData, setProcessData] = useState<ProcessItem[]>([]);
   const [formData, setFormData] = useState({
     workInstructionId: "",
     processId: "",
@@ -32,7 +55,7 @@ const ApplyWorkInstruction = () => {
     setWorkInstructions(res?.data || []);
   };
 
-  const handleSelectChange = (selectedOption, field) => {
+  const handleSelectChange = (selectedOption: Option | null, field: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: selectedOption?.value || "",
@@ -59,14 +82,14 @@ const ApplyWorkInstruction = () => {
     { label: "Work Instruction" },
     { label: "Apply work instruction to different product/process" },
   ];
-  const loadProductOptions = async (inputValue) => {
+  const loadProductOptions = async (inputValue: string): Promise<Option[]> => {
     if (!inputValue || inputValue.length < 2) {
       return [];
     }
 
     try {
       const response = await selectProductInfoApi(inputValue);
-      return response.data.map((item) => ({
+      return response.data.map((item: ProductItem) => ({
         value: item.id,
         label: `${item.partNumber} - ${item.partDescription}`,
       }));
@@ -75,7 +98,7 @@ const ApplyWorkInstruction = () => {
       return [];
     }
   };
-  const handleProductChange = (selectedOption) => {
+  const handleProductChange = (selectedOption: Option | null) => {
     setSelectedProduct(selectedOption);
     setFormData((prev) => ({
       ...prev,
@@ -117,7 +140,7 @@ const ApplyWorkInstruction = () => {
               Select Work Instruction
             </label>
             <Select
-              options={workInstructions.map((item) => ({
+              options={workInstructions.map((item: WorkInstructionItem) => ({
                 value: item.id,
                 label: item.title,
               }))}
@@ -129,7 +152,7 @@ const ApplyWorkInstruction = () => {
           <div>
             <label className="font-semibold block mb-1">Select Process</label>
             <Select
-              options={processData.map((item) => ({
+              options={processData.map((item: ProcessItem) => ({
                 value: item.id,
                 label: `${item.name} (${item.machineName})`,
               }))}

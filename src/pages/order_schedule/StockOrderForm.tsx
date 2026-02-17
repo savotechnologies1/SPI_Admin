@@ -580,13 +580,13 @@ const StockOrderForm = () => {
     ProductNumberInterface[]
   >([]);
   const [singleUnitCost, setSingleUnitCost] = useState<number | null>(null);
+
   const getLocalDate = () => {
     const date = new Date();
-    const offset = date.getTimezoneOffset();
-    const localDate = new Date(date.getTime() - offset * 60 * 1000);
-    return localDate.toISOString().split("T")[0];
+    // 'en-CA' use karne se format YYYY-MM-DD milta hai jo input type="date" ko chahiye hota hai
+    // Ye wahi date nikalega jo aapke computer ki ghadi (clock) mein hai
+    return date.toLocaleDateString("en-CA");
   };
-
   const navigate = useNavigate();
   useEffect(() => {
     getCustomer();
