@@ -15,20 +15,7 @@ const StockOrderSchedule = () => {
             Stock Order Schedule
           </h1>
         </div>
-        {/* 
-        <div className="flex gap-4 justify-center items-center">
-          <div className="bg-white p-2 rounded-3xl">
-            <FontAwesomeIcon icon={faCartShopping} />
-          </div>
-          <div className="flex relative  ">
-            <button className="py-2 px-10  border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer">
-              <NavLink to="/dashboard/addEmployees"> Schedule Order</NavLink>
-            </button>
-            <div className="absolute top-3 right-2 pl-2 ">
-              <img src={send} alt="" />
-            </div>
-          </div>
-        </div> */}
+      
       </div>
       <div className="flex justify-between  items-center">
         <div className="flex gap-2 items-center ">

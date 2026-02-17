@@ -24,7 +24,7 @@ interface Customer {
   id: string;
   firstName: string;
   lastName: string;
-  email: string;
+  email?: string;
 }
 
 interface Part {
@@ -36,55 +36,37 @@ interface Part {
 interface ProcessDetail {
   id: number;
   process: string;
-  assignTo: string;
-  totalTime: number;
-  customOrderId: string;
+  processName?: string;
+  assignTo?: string;
+  totalTime?: number;
+  customOrderId?: string;
+}
+
+interface BOMEntry {
+  id?: string;
+  partNumber?: string;
+  partId?: string;
+  processName?: string;
+  qty?: number;
+  cycleTime?: number;
 }
 
 interface CustomOrder {
   id: string;
   orderNumber: string;
-  orderDate: string;
+  orderDate?: string;
+  shipDate?: string;
   productQuantity: number;
   customer: Customer;
   part: Part | null;
+  product?: Part;
   processDetails: ProcessDetail[];
+  bomList?: BOMEntry[];
 }
 
 interface SchedulableCustomOrder extends CustomOrder {
   scheduledQty: number;
   selectedProcessId: string;
-}
-
-interface CustomItemSelectedProps {
-  items: CustomOrder[];
-  isLoading: boolean;
-}
-
-interface Customer {
-  id: string;
-  firstName: string;
-  lastName: string;
-}
-
-interface Part {
-  part_id: string;
-  partNumber: string;
-  partDescription: string;
-}
-
-interface ProcessDetail {
-  id: number;
-  process: string;
-}
-
-interface CustomOrder {
-  id: string;
-  orderNumber: string;
-  productQuantity: number;
-  customer: Customer;
-  part: Part | null;
-  processDetails: ProcessDetail[];
 }
 
 interface ItemForUI {
@@ -97,6 +79,7 @@ interface ItemForUI {
   inputQty: string;
   allProcesses: ProcessDetail[];
   originalData: CustomOrder;
+  processName?: string;
 }
 
 interface CustomItemSelectedProps {
@@ -104,60 +87,9 @@ interface CustomItemSelectedProps {
   isLoading: boolean;
 }
 
-// --- KEY CHANGE 1: Interfaces updated to match your latest API response ---
-interface Customer {
-  id: string;
-  firstName: string;
-  lastName: string;
-}
-
-interface Part {
-  part_id: string;
-  partNumber: string;
-  partDescription: string;
-}
-
-// This now matches the structure in your data
-interface ProcessDetail {
-  id: number;
-  process: string;
-  assignTo: string; // This is the sub-part number
-  totalTime: number;
-  customOrderId: string;
-}
-
-interface CustomOrder {
-  id: string;
-  orderNumber: string;
-  productQuantity: number;
-  customer: Customer;
-  part: Part | null; // The main part, can be null
-  processDetails: ProcessDetail[]; // The list of sub-parts/processes
-}
-
-// This "View Model" interface remains the same, as it serves the UI well
-interface ItemForUI {
-  id: string;
-  img1: string;
-  orderNumber: string;
-  text1: string;
-  text2: string; // Selected process
-  qty: number;
-  inputQty: string;
-  allProcesses: ProcessDetail[];
-  originalData: CustomOrder; // Contains the rich data for the right-side table
-}
-
-interface CustomItemSelectedProps {
-  items: CustomOrder[];
-  isLoading: boolean;
-}
-
-// // const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
-// //   const [availableItems, setAvailableItems] = useState<ItemForUI[]>([]);
-// //   const [selectedItems, setSelectedItems] = useState<ItemForUI[]>([]);
-
-// //   useEffect(() => {
+// ============================================================================
+// MAIN COMPONENT
+// ============================================================================
 // //     if (!items) return;
 
 // //     // Transform API data to the ItemForUI structure for the left-side cards
@@ -1119,7 +1051,10 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
           img1: "https://via.placeholder.com/150",
           orderNumber: apiItem.orderNumber,
           text1: apiItem.product?.partDescription || "Custom Assembly",
+          text2: processName,
           qty: apiItem.productQuantity,
+          inputQty: "1",
+          allProcesses: apiItem.processDetails || [],
           originalData: apiItem, // Full API object with bomList
           processName: processName,
         };
@@ -1175,7 +1110,7 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
       }
 
       const response = await scheduleCustomOrder(payloads);
-      if (response.status === 201 || response.status === 200) {
+      if (response && (response.status === 201 || response.status === 200)) {
         toast.success("Orders scheduled successfully!");
         navigate("/order-schedule-list");
       }

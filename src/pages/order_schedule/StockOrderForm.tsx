@@ -567,28 +567,9 @@ import { v4 as uuidv4 } from "uuid";
 
 // StockOrderForm.tsx
 
-// Assuming you have these imports
-// import { stockOrderValidation } from './validationSchema';
-// import { addStockOrder } from './api';
-// import { selectCustomer, selectProductNumber } from './api';
-// import { CustomerInterface, ProductNumberInterface } from './interfaces';
-
 // --- MOCK FUNCTIONS & INTERFACES FOR DEMONSTRATION ---
 // Replace these with your actual imports and types
 const generateNewOrderNumber = () => Date.now().toString();
-
-interface CustomerInterface {
-  id: string;
-  name: string;
-  email: string;
-  customerPhone: string;
-}
-interface ProductNumberInterface {
-  productId: string;
-  partNumber: string;
-  cost: number;
-  productDescription: string;
-}
 
 const StockOrderForm = () => {
   const [customerList, setCustomerList] = useState<CustomerInterface[]>([]);
@@ -600,11 +581,11 @@ const StockOrderForm = () => {
   >([]);
   const [singleUnitCost, setSingleUnitCost] = useState<number | null>(null);
   const getLocalDate = () => {
-  const date = new Date();
-  const offset = date.getTimezoneOffset();
-  const localDate = new Date(date.getTime() - offset * 60 * 1000);
-  return localDate.toISOString().split("T")[0];
-};
+    const date = new Date();
+    const offset = date.getTimezoneOffset();
+    const localDate = new Date(date.getTime() - offset * 60 * 1000);
+    return localDate.toISOString().split("T")[0];
+  };
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -613,8 +594,8 @@ const StockOrderForm = () => {
   }, []);
   const getCustomer = async () => {
     try {
-      const response: CustomerInterface[] = await selectCustomer();
-      setCustomerList(response || []);
+      const response = await selectCustomer();
+      setCustomerList(Array.isArray(response) ? response : []);
     } catch (error) {
       console.error("Error fetching customer:", error);
       setCustomerList([]);
@@ -622,8 +603,8 @@ const StockOrderForm = () => {
   };
   const getProductNumber = async () => {
     try {
-      const response: ProductNumberInterface[] = await selectProductNumber();
-      setProductNumberList(response || []);
+      const response = await selectProductNumber();
+      setProductNumberList(Array.isArray(response) ? response : []);
     } catch (error) {
       console.error("Error fetching product number:", error);
     }
@@ -651,7 +632,7 @@ const StockOrderForm = () => {
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           try {
             const response = await addStockOrder(values);
-            if (response.status === 201) {
+            if (response.status === 201 || response) {
               navigate("/stock-order-schedule");
               console.log(
                 "response?.data?.messageresponse?.data?.message",

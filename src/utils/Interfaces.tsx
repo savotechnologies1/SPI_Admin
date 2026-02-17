@@ -7,6 +7,7 @@ export interface CustomerInterface {
 
 export interface ProductNumberInterface {
   part_id: string;
+  productId?: string;
   partNumber: string;
   partDescription: string;
   cost: number;
@@ -32,9 +33,11 @@ export interface PartNumberInterface {
 }
 
 export interface processInterface {
-  id: string,
-  name: string,
-  partFamily: string,
+  id: string;
+  name: string;
+  partFamily: string;
+  processName?: string;
+  machineName?: string;
 }
 
 export interface SearchResultItem {
@@ -52,10 +55,9 @@ export interface StockOrderScheduleInterface {
   partNumber: string;
 }
 
-
 export interface ScheduledItem extends SearchResultItem {
   scheduledQty: number;
-  deliveryDate: Date;
+  shipDate: Date;
 }
 
 export interface ItemSelectedProps {
@@ -66,7 +68,6 @@ export interface ItemSelectedProps {
 export interface ItemInputState {
   [itemId: string]: {
     qty: string;
-    deliveryDate: Date;
+    shipDate: Date;
   };
 }
-

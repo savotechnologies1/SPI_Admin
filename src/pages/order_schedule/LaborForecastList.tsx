@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
-import data from "../../components/Data/LaborData";
 import ItemSelector from "./ItemSelector";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { selectProcess } from "./https/schedulingApis";
+
+interface ProcessItem {
+  id: string;
+  name: string;
+  machineName?: string;
+}
+
 const LaborForecastList = () => {
- const BASE_URL = import.meta.env.VITE_SERVER_URL;
+  const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
   const {
     register,
@@ -15,7 +21,7 @@ const LaborForecastList = () => {
   } = useForm();
 
   const [data, setData] = useState<any[]>([]);
-  const [processData, setProcessData] = useState([]);
+  const [processData, setProcessData] = useState<ProcessItem[]>([]);
 
   // Filtered Data Fetch karne ke liye
   const getInventory = async (filters: any = {}) => {
@@ -38,7 +44,7 @@ const LaborForecastList = () => {
         // Auto-calculate values based on header "Forecast Hours"
         // 1. Hr_Need: Need Qty ko poora karne ke liye kitne ghante chahiye
         const hrNeedValue = (need * cycleTime).toFixed(2);
-        
+
         // 2. Forc: Header ke 'hour' input mein kitni qty ban sakti hai (API se aa rahi hai)
         return {
           ...item,
@@ -68,7 +74,7 @@ const LaborForecastList = () => {
       const currentItem = updatedData[index];
 
       const cycleTime = currentItem.cycleTime || 0;
-      
+
       // Agar user table ke andar "Forc" change karta hai, toh Hr_Need uske mutabik update hoga
       // Calculation: Forecast Qty * Cycle Time
       const hrNeed = +(numericForecast * cycleTime).toFixed(2);
@@ -86,7 +92,7 @@ const LaborForecastList = () => {
   const fetchProcessList = async () => {
     try {
       const response = await selectProcess();
-      setProcessData(response);
+      setProcessData(Array.isArray(response) ? response : []);
     } catch (error) {
       console.error(error);
     }
@@ -97,11 +103,10 @@ const LaborForecastList = () => {
     getInventory(); // Initial load
   }, []);
 
-
   return (
     <>
       <div className="p-4 bg-white rounded-lg shadow-md">
-      <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex gap-2 flex-col">
             <div className="flex flex-col md:flex-row items-end gap-3 mb-4">
               <div className="flex flex-col w-full gap-2">
@@ -111,9 +116,10 @@ const LaborForecastList = () => {
                   className="border p-3 rounded-md w-full"
                 >
                   <option value="">Select Process</option>
-                  {processData.map((item: any) => (
+                  {processData.map((item) => (
                     <option key={item.id} value={item.id}>
-                      {item.name} ({item.machineName})
+                      {item.name}{" "}
+                      {item.machineName ? `(${item.machineName})` : ""}
                     </option>
                   ))}
                 </select>
@@ -140,7 +146,9 @@ const LaborForecastList = () => {
               </div>
 
               <div className="w-full md:w-1/2">
-                <label className="font-semibold">Forecast Hours (per unit)</label>
+                <label className="font-semibold">
+                  Forecast Hours (per unit)
+                </label>
                 <input
                   {...register("hour")}
                   type="number"
@@ -169,7 +177,7 @@ const LaborForecastList = () => {
             </div>
           </div>
         </form>
-      {data.some((item) => item.Forecast > 0) && (
+        {data.some((item) => item.Forecast > 0) && (
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
             <div className="px-6 py-5 border-b border-gray-100">
               <h2 className="text-xl font-semibold text-gray-800">
@@ -218,7 +226,7 @@ const LaborForecastList = () => {
           </div>
         )}
         {/* Data table */}
-         <div className="overflow-x-auto">
+        <div className="overflow-x-auto">
           <table className="min-w-full bg-white border-collapse">
             <thead>
               <tr className="border-b bg-[#F4F6F8] text-left text-[#637381]">
@@ -226,7 +234,9 @@ const LaborForecastList = () => {
                 <th className="px-3 py-4 text-sm font-medium">Available</th>
                 <th className="px-3 py-4 text-sm font-medium">Need</th>
                 <th className="px-3 py-4 text-sm font-medium">Forc (Qty)</th>
-                <th className="px-3 py-4 text-sm font-medium">Process Time (hr)</th>
+                <th className="px-3 py-4 text-sm font-medium">
+                  Process Time (hr)
+                </th>
                 <th className="px-3 py-4 text-sm font-medium">Hr Need</th>
                 <th className="px-3 py-4 text-sm font-medium">Action</th>
               </tr>
@@ -238,17 +248,25 @@ const LaborForecastList = () => {
                     <p className="font-bold">{item.product_name}</p>
                     <p className="text-gray-500 text-xs">{item.sub_name}</p>
                   </td>
-                  <td className="px-3 py-3 text-blue-600 font-medium">{item.Available}</td>
-                  <td className="px-3 py-3 text-orange-600 font-medium">{item.Need}</td>
+                  <td className="px-3 py-3 text-blue-600 font-medium">
+                    {item.Available}
+                  </td>
+                  <td className="px-3 py-3 text-orange-600 font-medium">
+                    {item.Need}
+                  </td>
                   <td className="px-3 py-3">
                     <input
                       type="number"
                       value={item.Forecast}
-                      onChange={(e) => handleForecastChange(index, e.target.value)}
+                      onChange={(e) =>
+                        handleForecastChange(index, e.target.value)
+                      }
                       className="border rounded-md px-2 py-1 w-24 bg-yellow-50 focus:bg-white"
                     />
                   </td>
-                  <td className="px-3 py-3 text-gray-500">{item.cycleTime} hr</td>
+                  <td className="px-3 py-3 text-gray-500">
+                    {item.cycleTime} hr
+                  </td>
                   <td className="px-3 py-3 font-bold text-gray-800">
                     {item.Hr_Need} hr
                   </td>
@@ -263,7 +281,6 @@ const LaborForecastList = () => {
           </table>
         </div>
         {/* Forecast summary */}
-  
       </div>
     </>
   );

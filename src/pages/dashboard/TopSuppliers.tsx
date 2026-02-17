@@ -1,8 +1,15 @@
-import data from "../../components/Data/topSuppliesData";
+interface SupplierItem {
+  supplierName: string;
+  product: string;
+  total: number;
+  rank: string;
+}
 
-const TopSuppliers = ({ suppliers }) => {
-  console.log("supplierssuppliers", suppliers);
+interface TopSuppliersProps {
+  suppliers: SupplierItem[];
+}
 
+const TopSuppliers = ({ suppliers }: TopSuppliersProps) => {
   return (
     <div className=" py-6">
       <h1 className="text-xl font-semibold px-4 ">Top Suppliers</h1>
@@ -34,9 +41,6 @@ const TopSuppliers = ({ suppliers }) => {
               >
                 <td className="px-4 py-4">
                   <div className="flex items-center">
-                    {/* <div className="h-10 w-10 rounded-full bg-gray-300 mr-4">
-                      <img src={item.avatar} alt="" />
-                    </div> */}
                     <div>
                       <p className="text-sm sm:text-base font-medium text-[#052C89]">
                         {item.supplierName}
@@ -57,12 +61,12 @@ const TopSuppliers = ({ suppliers }) => {
                       item.rank === "1"
                         ? "text-green-800 bg-green-100"
                         : item.rank === "Top 2"
-                        ? "text-[#5119B7] bg-[#8E33FF29]"
-                        : item.rank === "Top 3"
-                        ? "text-[#006C9C] bg-[#00B8D929]"
-                        : item.rank === "Top 4"
-                        ? "text-[#B76E00] bg-[#FFAB0029]"
-                        : "text-gray-800 bg-gray-100"
+                          ? "text-[#5119B7] bg-[#8E33FF29]"
+                          : item.rank === "Top 3"
+                            ? "text-[#006C9C] bg-[#00B8D929]"
+                            : item.rank === "Top 4"
+                              ? "text-[#B76E00] bg-[#FFAB0029]"
+                              : "text-gray-800 bg-gray-100"
                     }`}
                   >
                     {item.rank}

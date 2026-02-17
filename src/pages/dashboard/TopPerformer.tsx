@@ -1,7 +1,18 @@
 import data from "../../components/Data/TopPerformerData";
 import arrow from "../../assets/right_arrow.png";
 
-const TopPerformer = ({ performers }) => {
+interface PerformerItem {
+  avatar: string;
+  fullName: string;
+  completedCount: number;
+  name?: string;
+}
+
+interface TopPerformerProps {
+  performers: PerformerItem[];
+}
+
+const TopPerformer = ({ performers }: TopPerformerProps) => {
   console.log("performersperformers", performers);
 
   return (

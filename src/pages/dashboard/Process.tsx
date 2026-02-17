@@ -1,13 +1,43 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 
 const data = [
-  { id: "#5632", name: "Process 01", assignedTo: "Kathryn Murphy", date: "27 Mar 2024", status: "Active" },
-  { id: "#5632", name: "Process 04", assignedTo: "Kathryn Murphy", date: "27 Mar 2024", status: "Cancelled" },
-  { id: "#5632", name: "Process 02", assignedTo: "Kathryn Murphy", date: "27 Mar 2024", status: "In process" },
-  { id: "#5632", name: "Process 03", assignedTo: "Kathryn Murphy", date: "27 Mar 2024", status: "Active" },
-  { id: "#5632", name: "Process 05", assignedTo: "Kathryn Murphy", date: "27 Mar 2024", status: "In process" },
+  {
+    id: "#5632",
+    name: "Process 01",
+    assignedTo: "Kathryn Murphy",
+    date: "27 Mar 2024",
+    status: "Active",
+  },
+  {
+    id: "#5632",
+    name: "Process 04",
+    assignedTo: "Kathryn Murphy",
+    date: "27 Mar 2024",
+    status: "Cancelled",
+  },
+  {
+    id: "#5632",
+    name: "Process 02",
+    assignedTo: "Kathryn Murphy",
+    date: "27 Mar 2024",
+    status: "In process",
+  },
+  {
+    id: "#5632",
+    name: "Process 03",
+    assignedTo: "Kathryn Murphy",
+    date: "27 Mar 2024",
+    status: "Active",
+  },
+  {
+    id: "#5632",
+    name: "Process 05",
+    assignedTo: "Kathryn Murphy",
+    date: "27 Mar 2024",
+    status: "In process",
+  },
 ];
 
 const getStatusClass = (status: string) => {
@@ -34,27 +64,24 @@ const ProcessTable = () => {
           <TabList className="flex space-x-6 border-b-2 ">
             <Tab
               className={`cursor-pointer px-4 py-2 ${
-                tabIndex === 0 ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"
+                tabIndex === 0
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-600"
               }`}
             >
               Process 01
             </Tab>
             <Tab
               className={`cursor-pointer px-4 py-2 ${
-                tabIndex === 1 ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"
+                tabIndex === 1
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-600"
               }`}
             >
               Process 02
             </Tab>
           </TabList>
 
-          {/* View All Button */}
-          {/* <button className="ml-auto px-3 py-1 text-sm border rounded-lg flex items-center gap-2">
-            View all
-            <span>→</span>
-          </button> */}
-
-          {/* Tab Panels */}
           <TabPanel>
             <div className="overflow-x-auto w-full">
               <table className="min-w-full text-left mt-4">
@@ -81,7 +108,7 @@ const ProcessTable = () => {
                       <td className="p-3">
                         <span
                           className={`px-3 py-1 rounded-full text-sm ${getStatusClass(
-                            item.status
+                            item.status,
                           )}`}
                         >
                           {item.status}

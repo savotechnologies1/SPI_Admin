@@ -1,4 +1,19 @@
-const Productivity = ({ productivity }) => {
+interface ProductivityItem {
+  process: string;
+  machineName: string;
+  completedPartCost: number;
+  cycleTime: number;
+  totalQty: number;
+  scrapQuantity: number;
+  productivity: number;
+  efficiency: number;
+}
+
+interface ProductivityProps {
+  productivity: ProductivityItem[];
+}
+
+const Productivity = ({ productivity }: ProductivityProps) => {
   console.log("productivityproductivity", productivity);
 
   return (
@@ -9,7 +24,6 @@ const Productivity = ({ productivity }) => {
           <thead>
             <tr className="bg-gray-100 text-gray-600 text-sm whitespace-nowrap">
               <th className="py-2 px-4 text-left">Process Name</th>
-              {/* <th className="py-2 px-4 text-left">Employee Name</th> */}
               <th className="py-2 px-4 text-left">Cost</th>
               <th className="py-2 px-4 text-left">Cycle Time</th>
               <th className="py-2 px-4 text-left">Qty</th>
@@ -35,7 +49,7 @@ const Productivity = ({ productivity }) => {
               ))
             ) : (
               <tr>
-                <td colSpan="6" className="text-center py-4">
+                <td colSpan={7} className="text-center py-4">
                   No data available
                 </td>
               </tr>

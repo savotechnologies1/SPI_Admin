@@ -255,7 +255,7 @@ const DailyScheduleList = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [processes, setProcesses] = useState<
-    { id: string; processName: string }[]
+    { id: string; processName: string; machineName: string }[]
   >([]);
 
   const watchedDate = watch("date");
@@ -285,16 +285,14 @@ const DailyScheduleList = () => {
               date: watchedDate,
               process: watchedProcess || "", // send selected process
             },
-          }
+          },
         );
 
         if (res.data?.data) {
           setData(
             res.data.data.map((item: any) => ({
               product_name:
-                item.order?.product?.partNumber ||
-                item.part?.partNumber ||
-                "-",
+                item.order?.product?.partNumber || item.part?.partNumber || "-",
               sub_name: item.subName || "",
               part: item.part?.process?.processName || "-",
               machineName: item.part?.process?.machineName || "-",
@@ -311,7 +309,7 @@ const DailyScheduleList = () => {
                 ? new Date(item.delivery_date).toISOString().split("T")[0]
                 : "-",
               quantity: item.quantity || "-",
-            }))
+            })),
           );
         } else {
           setData([]);
@@ -349,7 +347,7 @@ const DailyScheduleList = () => {
             <option value="">All</option>
             {processes.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.name} (  {p.machineName})
+                {p.processName} ( {p.machineName})
               </option>
             ))}
           </select>
@@ -391,7 +389,9 @@ const DailyScheduleList = () => {
                     <p>{item.product_name}</p>
                     <p className="text-xs text-gray-500">{item.sub_name} </p>
                   </td>
-                  <td className="px-3 py-2 whitespace-nowrap">{item.part} ({item.machineName})</td>
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    {item.part} ({item.machineName})
+                  </td>
                   <td className="px-3 py-2 flex flex-col whitespace-nowrap">
                     {item.Schedule_Date}
                     <span className="text-xs text-gray-500">

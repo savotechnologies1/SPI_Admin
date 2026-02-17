@@ -1,125 +1,15 @@
-// import { useForm } from "react-hook-form";
-// import logo from "../assets/logo.png";
-// import setting from "../assets/settings_icon.png";
-// import password from "../assets/password_icon'.png";
-// import visible from "../assets/visible_icon.png";
-// import { useState } from "react";
-// import { Link, useNavigate } from "react-router-dom";
-// import { loginApi } from "./https/authApi";
-// import { toast } from "react-toastify";
-// import { useAuth } from "../context/AuthContext";
-
-// const SignIn = () => {
-//   const [showPassword, setShowPassword] = useState(false);
-//   const navigate = useNavigate();
-//   const { login } = useAuth();
-//   const togglePasswordVisibility = () => {
-//     setShowPassword((prev) => !prev);
-//   };
-
-//   const {
-//     register,
-//     handleSubmit,
-//     formState: { errors },
-//   } = useForm<FormData>();
-
-//   interface FormData {
-//     userName: string;
-//     password: string;
-//   }
-
-//   const onSubmit = async (data: FormData) => {
-//     try {
-//       const response = await loginApi(data);
-//       console.log("responseresponse", response);
-//       if (response.status === 201) {
-//         login(response.data.token);
-//         console.log("login page redirect");
-//         navigate("/", { replace: true });
-//       }
-//     } catch (error: unknown) {
-//       toast.error(error.response.message);
-//     }
-//   };
-
-//   return (
-//     <div className="bg-[#F5F6FA] min-h-screen flex items-center justify-center p-4">
-//       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-//         <div className="flex justify-between items-center mb-8">
-//           <img src={logo} alt="Logo" className="w-20 2xl:w-32" />
-//           <img src={setting} alt="Settings" />
-//         </div>
-
-//         <h2 className="text-3xl font-bold text-center mb-6">ADMIN LOGIN</h2>
-
-//         <form onSubmit={handleSubmit(onSubmit)}>
-//           <div className="mb-4">
-//             <label className="block font-semibold">Username</label>
-//             <input
-//               type="text"
-//               {...register("userName", { required: "Name is required" })}
-//               placeholder="Enter your userName"
-//               className="w-full border p-2 rounded"
-//               autoComplete="true"
-//             />
-//             {errors.userName && (
-//               <p className="text-red-500">{errors.userName.message}</p>
-//             )}
-//           </div>
-
-//           <div className="mb-4">
-//             <label className="block font-semibold">Password</label>
-//             <div className="relative">
-//               <input
-//                 type={showPassword ? "text" : "password"}
-//                 {...register("password", { required: "Password is required" })}
-//                 placeholder="********"
-//                 className="w-full border p-2 rounded"
-//                 autoComplete="true"
-//               />
-//               <img
-//                 src={showPassword ? visible : password}
-//                 alt="Toggle visibility"
-//                 className="absolute right-3 top-3 cursor-pointer w-6"
-//                 onClick={togglePasswordVisibility}
-//               />
-//             </div>
-//             {errors.password && (
-//               <p className="text-red-500">{String(errors.password.message)}</p>
-//             )}
-//           </div>
-//           <Link
-//             to="/forget-password"
-//             className="text-red-700 text-sm flex justify-end mb-5"
-//           >
-//             Forget Password
-//           </Link>
-//           <button
-//             type="submit"
-//             className="w-full bg-brand text-white p-3 rounded"
-//           >
-//             Sign In
-//           </button>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default SignIn;
 import { useForm } from "react-hook-form";
 import logo from "../assets/logo.png";
 import setting from "../assets/settings_icon.png";
-import passwordIcon from "../assets/password_icon'.png"; // Renamed for clarity
+import passwordIcon from "../assets/password_icon'.png";
 import visibleIcon from "../assets/visible_icon.png";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginApi } from "./https/authApi";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
-import { FaSpinner } from "react-icons/fa"; // Added for loader
+import { FaSpinner } from "react-icons/fa";
 
-// Move interface outside the component for better practice
 interface SignInFormData {
   userName: string;
   password: string;
@@ -137,21 +27,24 @@ const SignIn = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting }, // Destructure isSubmitting
+    formState: { errors, isSubmitting },
   } = useForm<SignInFormData>();
 
   const onSubmit = async (data: SignInFormData) => {
     try {
       const response = await loginApi(data);
 
-      if (response.status === 201 || response.status === 200) {
-        login(response.data.token);
+      if (response && (response.status === 201 || response.status === 200)) {
+        login(response.data.token, response.data.user);
         navigate("/", { replace: true });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Improved error handling
+      const axiosError = error as {
+        response?: { data?: { message?: string } };
+      };
       const errorMessage =
-        error.response?.data?.message ||
+        axiosError.response?.data?.message ||
         "Something went wrong. Please try again.";
       toast.error(errorMessage);
     }
@@ -161,7 +54,7 @@ const SignIn = () => {
     <div className="bg-[#F5F6FA] min-h-screen flex items-center justify-center p-4">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <div className="flex justify-between items-center mb-8">
-          <img src={logo} alt="Logo" className="w-20 2xl:w-32" />
+          <img src={logo} alt="Logo" className="w-30 2xl:w-36" />
           <img src={setting} alt="Settings" />
         </div>
 
@@ -170,7 +63,6 @@ const SignIn = () => {
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Username Field */}
           <div className="mb-4">
             <label className="block font-semibold mb-1 text-gray-700">
               Username
@@ -191,7 +83,6 @@ const SignIn = () => {
             )}
           </div>
 
-          {/* Password Field */}
           <div className="mb-4">
             <label className="block font-semibold mb-1 text-gray-700">
               Password
@@ -229,10 +120,9 @@ const SignIn = () => {
             </Link>
           </div>
 
-          {/* Submit Button with Loading State */}
           <button
             type="submit"
-            disabled={isSubmitting} // DISBALE BUTTON WHILE API IS CALLING
+            disabled={isSubmitting}
             className={`w-full p-3 rounded text-white font-bold flex items-center justify-center gap-2 transition-all ${
               isSubmitting
                 ? "bg-gray-400 cursor-not-allowed"

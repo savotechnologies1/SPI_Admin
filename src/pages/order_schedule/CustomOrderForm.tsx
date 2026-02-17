@@ -23,27 +23,6 @@ import { useNavigate } from "react-router-dom";
 // MOCK DATA & INTERFACES (Replace with your actual imports and API calls)
 // ========================================================================
 
-// --- Interfaces ---
-interface CustomerInterface {
-  id: string;
-  name: string;
-  email: string;
-  customerPhone: string;
-}
-interface ProductNumberInterface {
-  productId: string;
-  partNumber: string;
-  cost: number;
-}
-interface PartNumberInterface {
-  part_id: string;
-  partNumber: string;
-}
-interface processInterface {
-  id: string;
-  name: string;
-}
-
 const generateNewOrderNumber = () => Date.now().toString();
 
 const initialProcess = { totalTime: "", processId: "", part: "" };
@@ -602,10 +581,13 @@ import { Plus } from "lucide-react";
 
 interface BOMEntry {
   partNumber: string;
+  partId?: string;
   qty: number | string;
   process: string;
+  processId?: string;
   cycleTime: number | string;
-  workInstruction: string;
+  workInstruction?: string;
+  instructionRequired?: string;
   isSaved: boolean;
 }
 
@@ -644,7 +626,7 @@ const CustomOrderForm = () => {
   const fetchCustomers = async () => {
     try {
       const response = await selectCustomer();
-      setCustomerList(response || []);
+      setCustomerList(Array.isArray(response) ? response : []);
     } catch (error) {
       console.error("Error fetching customers:", error);
       toast.error("Failed to fetch customers.");
@@ -654,7 +636,7 @@ const CustomOrderForm = () => {
   const fetchProducts = async () => {
     try {
       const response = await selectProductNumber();
-      setProductList(response || []);
+      setProductList(Array.isArray(response) ? response : []);
     } catch (error) {
       console.error("Error fetching products:", error);
       toast.error("Failed to fetch products.");
@@ -664,7 +646,7 @@ const CustomOrderForm = () => {
   const fetchPartNumber = async () => {
     try {
       const response = await selectPartNumber();
-      setPartList(response || []);
+      setPartList(Array.isArray(response) ? response : []);
     } catch (error) {
       console.error("Error fetching part numbers:", error);
       toast.error("Failed to fetch part numbers.");
@@ -674,7 +656,7 @@ const CustomOrderForm = () => {
   const fetchProcess = async () => {
     try {
       const response = await selectProcess();
-      setProcessList(response || []);
+      setProcessList(Array.isArray(response) ? response : []);
     } catch (error) {
       console.error("Error fetching processes:", error);
       toast.error("Failed to fetch processes.");
@@ -960,7 +942,7 @@ const CustomOrderForm = () => {
 
               const res = await addCustomOrder(finalData);
 
-              if (res.status === 201) {
+              if (res && res.status === 201) {
                 toast.success("Custom Order Created!");
                 resetForm();
                 setInventoryList([]); // Form clear hone par list reset
@@ -1445,7 +1427,7 @@ const CustomOrderForm = () => {
                               <option value="">Select Process</option>
                               {processList.map((p) => (
                                 <option key={p.id} value={p.id}>
-                                  {p.name}    ({p.machineName})
+                                  {p.name} ({p.machineName})
                                 </option>
                               ))}
                             </select>
@@ -1538,7 +1520,7 @@ const CustomOrderForm = () => {
                                 <option value="">Select Process</option>
                                 {processList.map((p) => (
                                   <option key={p.id} value={p.id}>
-                                    {p.name}  ({p.machineName})
+                                    {p.name} ({p.machineName})
                                   </option>
                                 ))}
                               </Field>
@@ -1652,7 +1634,8 @@ const CustomOrderForm = () => {
                                         <option value="">Select Process</option>
                                         {processList.map((p) => (
                                           <option key={p.id} value={p.id}>
-                                            {p.name || p.processName} ({p.machineName})
+                                            {p.name || p.processName} (
+                                            {p.machineName})
                                           </option>
                                         ))}
                                       </select>

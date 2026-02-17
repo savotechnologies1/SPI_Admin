@@ -3,27 +3,59 @@ import OrderStatus from "./OrderStatus";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProfile } from "../../redux/profileSlice";
-import { useNavigate } from "react-router-dom";
 import { dashBoardData } from "./https/dashboardApi";
 import Productivity from "./Productivity";
 import DashboardCards from "./DashBoardCard";
+import { AppDispatch } from "../../redux/store";
+
+interface ProductivityItem {
+  process: string;
+  machineName: string;
+  completedPartCost: number;
+  cycleTime: number;
+  totalQty: number;
+  scrapQuantity: number;
+  productivity: number;
+  efficiency: number;
+}
+
+interface OrderItem {
+  date: string;
+  orderNo: string;
+  firstName: string;
+  lastName: string;
+  product?: string;
+  qty: number;
+}
+
+interface OrderList {
+  total: number;
+  list: OrderItem[];
+}
+
+interface DashboardDetailsData {
+  productivityData: ProductivityItem[];
+  openOrders?: OrderList;
+  fulfilledOrders?: OrderList;
+}
 
 const DasboardDetails = () => {
-  const [photo, setPhoto] = useState(null);
-  const [dashboardDetails, setDashboardDetails] = useState(null);
-  const [profileImg, setProfileImg] = useState(null);
-  const [selectedMonthForApi, setSelectedMonthForApi] = useState("");
-  const dispatch = useDispatch();
-  const profile = useSelector((state) => state.profile.data);
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [dashboardDetails, setDashboardDetails] =
+    useState<DashboardDetailsData | null>(null);
+  const [profileImg, setProfileImg] = useState<string | null>(null);
+  const [selectedMonthForApi, setSelectedMonthForApi] = useState<string>("");
+  const dispatch = useDispatch<AppDispatch>();
+  const profile: any = useSelector((state: any) => state.profile.data);
   const apiUrl = import.meta.env.VITE_SERVER_URL;
   useEffect(() => {
     dispatch(fetchProfile());
   }, [dispatch]);
 
-  const dashboardApi = async (month) => {
+  const dashboardApi = async (month: string) => {
     try {
       const data = await dashBoardData(month);
-      setDashboardDetails(data);
+      setDashboardDetails(data as DashboardDetailsData);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     }
@@ -38,10 +70,9 @@ const DasboardDetails = () => {
     }
   }, [profile, selectedMonthForApi]);
 
-  const handleMonthChangeFromChild = (month) => {
+  const handleMonthChangeFromChild = (month: string) => {
     setSelectedMonthForApi(month);
   };
-  console.log("dashboardDetailsdashboardDetails", dashboardDetails);
 
   if (!dashboardDetails) {
     return (

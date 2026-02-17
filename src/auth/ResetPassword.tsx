@@ -34,7 +34,6 @@ const ResetPassword = () => {
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
-      {/* Left Image Section - Hidden on mobile */}
       <div className="hidden lg:block lg:w-1/2 relative bg-gray-100">
         <img
           src={signin}
@@ -43,14 +42,11 @@ const ResetPassword = () => {
         />
       </div>
 
-      {/* Right Form Section */}
       <div className="w-full lg:w-1/2 bg-white flex items-center justify-center py-8 lg:py-0 relative">
-        {/* Logo - Hidden on mobile, visible on desktop */}
         <div className="absolute top-6 right-6 hidden lg:block">
           <img className="w-40" src={logo} alt="Company Logo" />
         </div>
 
-        {/* Mobile Logo - Centered at top */}
         <div className="absolute top-4 left-0 right-0 mx-auto lg:hidden">
           <img className="w-32 mx-auto" src={logo} alt="Company Logo" />
         </div>

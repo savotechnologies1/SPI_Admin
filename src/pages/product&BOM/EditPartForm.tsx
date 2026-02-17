@@ -46,15 +46,13 @@ const EditPartForm = () => {
   const [existingImages, setExistingImages] = useState([]);
   const selectedImages = watch("image");
   const [previewImages, setPreviewImages] = useState([]);
-  const [suppliers, setSuppliers] = useState([]); // Suppliers की पूरी लिस्ट
-  const [searchTerm, setSearchTerm] = useState(""); // इनपुट में दिखने वाला नाम
-  const [showDropdown, setShowDropdown] = useState(false); // लिस्ट दिखाने के लिए
+  const [suppliers, setSuppliers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  // सर्च के लिए फिल्टर logic
   const filteredSuppliers = suppliers.filter((s) =>
     s.name?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-  // 1. Suppliers की लिस्ट लाना
   useEffect(() => {
     const fetchSuppliers = async () => {
       try {
@@ -67,13 +65,10 @@ const EditPartForm = () => {
     fetchSuppliers();
   }, []);
 
-  // 2. पुराने डेटा को लोड करते समय Search Term सेट करना (Modified fetchProcessDetail)
   const fetchProcessDetail = async () => {
     try {
       const response = await getPartNumberDetail(id);
       const data = response.data;
-
-      // Supplier ka full name taiyar karein
       const supplierName = data.supplier
         ? `${data.supplier.companyName || ""} `.trim()
         : data.companyName || "";
@@ -83,11 +78,9 @@ const EditPartForm = () => {
         processId: data.processId || "",
         cycleTime: data.cycleTime || "",
         processOrderRequired: data.processOrderRequired ? "true" : "false",
-        // Backend ko 'companyName' field me ID chahiye
         companyId: data.companyName || "",
       });
 
-      // Input box me Name dikhane ke liye
       setSearchTerm(supplierName);
       setExistingImages(data.partImages || []);
     } catch (error) {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import edit from "../../assets/edit_icon.png";
 import { FaCircle, FaTrash } from "react-icons/fa";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
@@ -14,6 +14,17 @@ import {
   deleteScheduleOrder,
   scheduleStockOrderListApi,
 } from "./https/schedulingApis";
+
+// Custom Debounce Hook
+function useDebounce(value: string, delay: number): string {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+  return debouncedValue;
+}
+
 interface WorkInstructionItem {
   id: string;
   imageUrl: string;
@@ -36,29 +47,25 @@ const StockOrderScheduleList: React.FC = () => {
   const rowsPerPage = 10;
   const debouncedSearchVal = useDebounce(searchVal, 500);
 
-  // Custom Debounce Hook (your implementation is fine)
-  function useDebounce(value: string, delay: number) {
-    const [debouncedValue, setDebouncedValue] = useState(value);
-    useEffect(() => {
-      const handler = setTimeout(() => setDebouncedValue(value), delay);
-      return () => clearTimeout(handler);
-    }, [value, delay]);
-    return debouncedValue;
-  }
-
   // Fetcher function
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fetchScheduleList = async (page = 1, type = "all", searchTerm = "") => {
     setIsLoading(true); // 2. API call shuru hone par loading true
     try {
       // Pass all parameters to the API call
-      const response = await scheduleStockOrderListApi(
+      const response: any = await scheduleStockOrderListApi(
         page,
         rowsPerPage,
         type,
         searchTerm,
       );
-      setWorkData(response.data.data || []);
-      setTotalPages(response.data.pagination?.totalPages || 1);
+      // Handle both array response and axios response
+      if (Array.isArray(response)) {
+        setWorkData([]);
+      } else {
+        setWorkData(response.data.data || []);
+        setTotalPages(response.data.pagination?.totalPages || 1);
+      }
       setIsLoading(false); // 3. API call khatam hone par loading false
     } catch (error) {
       console.error("Failed to fetch schedule list:", error);
@@ -92,7 +99,8 @@ const StockOrderScheduleList: React.FC = () => {
     if (!id || !orderId) return;
 
     try {
-      await deleteScheduleOrder(id, { orderId });
+      // API expects object with orderId property
+      await deleteScheduleOrder(id, { orderId } as any);
       fetchScheduleList(currentPage, selectedType, debouncedSearchVal);
     } catch (error) {
       console.error("Failed to delete:", error);
