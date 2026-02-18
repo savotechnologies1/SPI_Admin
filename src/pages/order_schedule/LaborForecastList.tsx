@@ -145,7 +145,7 @@ const LaborForecastList = () => {
                 />
               </div>
 
-              <div className="w-full md:w-1/2">
+              {/* <div className="w-full md:w-1/2">
                 <label className="font-semibold">
                   Forecast Hours (per unit)
                 </label>
@@ -155,7 +155,7 @@ const LaborForecastList = () => {
                   placeholder="e.g. 8"
                   className="border py-3 px-4 rounded-md w-full"
                 />
-              </div>
+              </div> */}
 
               <div>
                 <p

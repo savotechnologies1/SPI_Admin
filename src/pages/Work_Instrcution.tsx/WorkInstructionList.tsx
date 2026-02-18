@@ -3,7 +3,6 @@ import edit from "../../assets/edit_icon.png";
 import { FaCircle, FaSpinner, FaTrash } from "react-icons/fa";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import add from "../../assets/add.png";
-import { Trash2 } from "lucide-react";
 import {
   deleteWorkInstruction,
   workInstructionList,
@@ -29,29 +28,11 @@ const WorkInstructionList: React.FC = () => {
   const rowsPerPage = 5;
   const [showConfirm, setShowConfirm] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false); // Loader state
+  const [isLoading, setIsLoading] = useState(false);
   const toggleOptions = (index: number) => {
     setOpenOptionsIndex((prev) => (prev === index ? null : index));
   };
-
   const { id } = useParams();
-
-  if (id) {
-    // id is available if needed
-  }
-
-  const getColorClass = (color: string) => {
-    switch (color) {
-      case "green":
-        return "bg-green-200 text-green-700";
-      case "yellow":
-        return "bg-yellow-200 text-yellow-800";
-      case "red":
-        return "bg-red-200 text-red-700";
-      default:
-        return "bg-gray-200 text-gray-600";
-    }
-  };
 
   const navigate = useNavigate();
   const handleEdit = (id: string) => {
@@ -107,8 +88,7 @@ const WorkInstructionList: React.FC = () => {
     searchTerm = "",
     type = "",
   ) => {
-    setIsLoading(true); // 1. Start Loader
-
+    setIsLoading(true);
     try {
       const response = await workInstructionList(
         page,
@@ -118,7 +98,7 @@ const WorkInstructionList: React.FC = () => {
       );
       setWorkData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
-      setIsLoading(false); // 1. Start Loader
+      setIsLoading(false);
     } catch (error) {
       console.error("Failed to fetch work instructions:", error);
     }
