@@ -206,6 +206,7 @@ const VacationList = () => {
                         </div>
                       </div>
                     </td>
+                    
                     <td className="px-2 py-3 text-xs md:text-sm font-medium hidden sm:table-cell">
                       {item.start_date}
                     </td>

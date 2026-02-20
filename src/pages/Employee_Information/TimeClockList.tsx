@@ -9,7 +9,7 @@ import data from "../../components/Data/TimeClockData";
 import { selectProcessApi } from "../Work_Instrcution.tsx/https/workInstructionApi";
 import { allTimeClock } from "./https/EmployeeApis";
 import { Loader } from "lucide-react";
-
+import { format } from "date-fns"; // Agar import nahi hai to ise add karein
 // Define interfaces for better type checking (if using TypeScript)
 interface CustomerItem {
   id: string;
@@ -246,8 +246,8 @@ const TimeClockList = () => {
                           {item.hours}
                         </td>
                         <td className="px-2 py-3 text-xs md:text-sm font-medium hidden md:table-cell">
-                          {item.createDate}
-                        </td>
+  {item.createDate ? format(new Date(item.createDate), "MM/dd/yyyy") : "N/A"}
+</td>
                         {/* <td className="px-2 py-3 text-xs md:text-sm font-medium hidden lg:table-cell">
                           {item.vacationHours || "N/A"}
                         </td> */}

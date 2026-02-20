@@ -112,32 +112,32 @@ const CycleTime = ({ partId }: { partId: string }) => {
           Cycle Time Comparison
         </h1>
         <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-          <div className="flex flex-col">
-            <label className="text-xs text-gray-500 mb-1">Start Date</label>
-            <DatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              selectsStart
-              startDate={startDate}
-              endDate={endDate}
-              dateFormat="yyyy-MM-dd"
-              className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-xs text-gray-500 mb-1">End Date</label>
-            <DatePicker
-              selected={endDate}
-              onChange={(date) => setEndDate(date)}
-              selectsEnd
-              startDate={startDate}
-              endDate={endDate}
-              minDate={startDate || undefined}
-              dateFormat="yyyy-MM-dd"
-              className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
-            />
-          </div>
+       <div className="flex flex-col">
+                 <label className="text-xs text-gray-500 mb-1">Start Date</label>
+                 <DatePicker
+                   selected={startDate}
+                   onChange={(date) => setStartDate(date)}
+                   selectsStart
+                   startDate={startDate}
+                   endDate={endDate}
+                   dateFormat="MM/dd/yyyy" // <-- Yahan change kiya
+                   className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
+                 />
+               </div>
+     
+               <div className="flex flex-col">
+                 <label className="text-xs text-gray-500 mb-1">End Date</label>
+                 <DatePicker
+                   selected={endDate}
+                   onChange={(date) => setEndDate(date)}
+                   selectsEnd
+                   startDate={startDate}
+                   endDate={endDate}
+                   minDate={startDate || undefined}
+                   dateFormat="MM/dd/yyyy" // <-- Yahan change kiya
+                   className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
+                 />
+               </div>
         </div>
       </div>
 

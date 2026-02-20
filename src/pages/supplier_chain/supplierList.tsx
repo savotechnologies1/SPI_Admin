@@ -150,14 +150,14 @@ const SupplierList = () => {
                 <tr className="bg-[#F4F6F8]">
                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
                     Name
-                  </th> 
-                  
+                  </th>
+
                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium">
                     Company Name
                   </th>
                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium hidden sm:table-cell">
                     Address
-                  </th> 
+                  </th>
                   <th className="px-2 py-2 md:px-3 md:py-3 text-left text-gray-400 text-xs md:text-sm font-medium hidden md:table-cell">
                     Billing Terms
                   </th>
@@ -188,7 +188,7 @@ const SupplierList = () => {
                           <p className="text-xs text-gray-400 truncate max-w-[100px] md:max-w-none">
                             {item.email}
                           </p>
-                          
+
                         </div>
                       </div>
                     </td> <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
@@ -205,12 +205,12 @@ const SupplierList = () => {
                     </td>
                     <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
                       <span
-                        className={`px-2 py-1 md:px-3 rounded-full text-xs md:text-sm font-mediumtext-green-800 bg-green-100`}
+                        className={`px-2 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-green-800 bg-green-100`}
                       >
-                        {new Date(item.createdAt).toLocaleString("en-IN", {
-                          timeZone: "Asia/Kolkata",
-                          day: "2-digit",
+                        {new Date(item.createdAt).toLocaleDateString("en-US", {
+                          // timeZone: "Asia/Kolkata", // Agar timezone rakhna chahte hain to ise rehne dein
                           month: "2-digit",
+                          day: "2-digit",
                           year: "numeric",
                         })}
                       </span>
@@ -277,9 +277,8 @@ const SupplierList = () => {
                 <button
                   onClick={handlePreviousPage}
                   disabled={currentPage === 1}
-                  className={`p-1 md:p-2 rounded ${
-                    currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                  className={`p-1 md:p-2 rounded ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                 >
                   <FontAwesomeIcon icon={faArrowLeft} />
                 </button>
@@ -287,11 +286,10 @@ const SupplierList = () => {
                 <button
                   onClick={handleNextPage}
                   disabled={currentPage === totalPages}
-                  className={`p-1 md:p-2 rounded ${
-                    currentPage === totalPages
+                  className={`p-1 md:p-2 rounded ${currentPage === totalPages
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-gray-300"
-                  }`}
+                    }`}
                 >
                   <FontAwesomeIcon icon={faArrowRight} />
                 </button>

@@ -24,14 +24,14 @@ const CustomerRelation = () => {
             <DatePicker
               selected={startDate}
               onChange={(date) => setStartDate(date!)}
-              dateFormat="dd/MM/yyyy"
+              dateFormat="MM/dd/yyyy" // <-- Yahan change kiya hai
               className="border rounded-md p-1 text-xs"
             />
             <span>-</span>
             <DatePicker
               selected={endDate}
               onChange={(date) => setEndDate(date!)}
-              dateFormat="dd/MM/yyyy"
+              dateFormat="MM/dd/yyyy" // <-- Yahan change kiya hai
               className="border rounded-md p-1 text-xs"
             />
           </div>
