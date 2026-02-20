@@ -16,7 +16,7 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 const StackedCostGraph = () => {
@@ -24,21 +24,20 @@ const StackedCostGraph = () => {
     labels: ["Cost"],
     datasets: [
       {
-        label: "Component 1", // e.g., fixed cost
-        data: [30], // percentage or value
+        label: "Component 1",
+        data: [30],
         backgroundColor: "yellow",
       },
       {
-        label: "Component 2", // e.g., remaining cost
+        label: "Component 2",
         data: [70],
         backgroundColor: "darkblue",
       },
-      // Add more components if needed
     ],
   };
 
   const options = {
-    indexAxis: "y", // horizontal bar
+    indexAxis: "y",
     responsive: true,
     plugins: {
       legend: {

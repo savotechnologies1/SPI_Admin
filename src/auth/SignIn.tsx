@@ -54,7 +54,12 @@ const SignIn = () => {
     <div className="bg-[#F5F6FA] min-h-screen flex items-center justify-center p-4">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <div className="flex justify-between items-center mb-8">
-          <img src={logo} alt="Logo" className="w-30 2xl:w-36" />
+          <img
+            src={logo}
+            alt="Logo"
+            className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 2xl:h-20 w-auto object-contain"
+          />
+
           <img src={setting} alt="Settings" />
         </div>
 

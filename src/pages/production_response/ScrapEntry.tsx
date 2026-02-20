@@ -10,22 +10,19 @@ const ScrapEntry = () => {
   return (
     <div className="p-6 mt-5">
       <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition font-medium"
-          title="Go Back"
-        >
-          <FaArrowLeft />
-          Back
-        </button>
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition font-medium"
+        title="Go Back"
+      >
+        <FaArrowLeft />
+        Back
+      </button>
       <div className="flex flex-wrap items-center gap-4">
-      
-
         <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
           Scrap Entry
         </h1>
       </div>
 
-      {/* Breadcrumb */}
       <div className="flex items-center gap-2 mt-3 text-[14px]">
         <NavLink to="/dashboardDetailes" className="text-black hover:underline">
           Dashboard
@@ -36,9 +33,7 @@ const ScrapEntry = () => {
         <span className="font-medium text-black">Scrap Entry</span>
       </div>
 
-      {/* Content Box */}
       <div className="bg-white mt-5 rounded-lg shadow-sm border">
-        {/* Tabs */}
         <div className="flex gap-2 border-b px-4 pt-4">
           <button
             onClick={() => setActiveTab("part")}
@@ -65,7 +60,6 @@ const ScrapEntry = () => {
           </button>
         </div>
 
-        {/* Tab Content */}
         <div className="p-4">
           {activeTab === "part" ? <PartForm /> : <ProductForm />}
         </div>

@@ -1,32 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-
-import CustomItemSelected from "./CustomItemSelected";
-
 const CustomOrderScheduleForm = () => {
-  // const [formData, setFormData] = useState({
-  //   orderNumber: "",
-  //   orderDate: "2025-02-26",
-  //   shipDate: "2025-02-26",
-  //   customer: "Cortez Herring",
-  //   customerName: "",
-  //   customerEmail: "",
-  //   customerPhone: "",
-  //   productNumber: "",
-  //   cost: "",
-  //   quantity: "",
-  //   description: "",
-  //   file: null,
-  //   partFamily: "Cortez Herring",
-  //   partNumber: "",
-  //   partDesc: "",
-  //   partQuantity: "",
-  //   partCost: "",
-  //   time: "09:33 AM",
-  //   process: "Cortez Herring",
-  //   assignTo: "Cortez Herring",
-  // });
-
   const [file, setFile] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,17 +99,8 @@ const CustomOrderScheduleForm = () => {
               <span></span> <p className="text-[#B71D18] text-sm">Clear Cart</p>
             </div>
           </div>
-
-          {/* Submit Button */}
-          {/* <div className=" mt-6">
-          <button className="px-6 py-2 bg-brand text-white text-md  hover:bg-[#1a2e57] transition ml-6 ">
-             Order
-          </button>
-        </div> */}
         </form>
       </div>
-
-      {/* <CustomItemSelected /> */}
     </>
   );
 };

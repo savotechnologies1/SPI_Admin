@@ -9,4 +9,4 @@ const TableCard = ({ title, children }: TableCardProps) => (
     {children}
   </div>
 );
-export default TableCard
+export default TableCard;

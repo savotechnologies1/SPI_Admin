@@ -705,7 +705,8 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                 </p>
               )}
 
-            {Array.isArray(availableItems) && availableItems.map((item) => {
+            {Array.isArray(availableItems) &&
+              availableItems.map((item) => {
                 // FIX: Default date logic handle karne ke liye variable
                 const displayDate =
                   itemInputs[item.id]?.shipDate ||
@@ -756,8 +757,10 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                           onChange={(date) =>
                             handleInputChange(item.id, "shipDate", date as Date)
                           }
-                          dateFormat="dd MMM yyyy"
-                          className="border py-2 px-4 rounded-md font-semibold w-full sm:w-44 text-center"
+                          dateFormat="MM/dd/yyyy" // <-- US Format: Month/Day/Year
+                          placeholderText="MM/DD/YYYY"
+                          wrapperClassName="w-full sm:w-44"
+                          className="border py-2 px-4 rounded-md font-semibold w-full sm:w-44 text-center outline-none"
                         />
                       </div>
                     </div>
@@ -787,8 +790,10 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                       onChange={(date) =>
                         updateScheduledDate(item.id, date as Date)
                       }
-                      dateFormat="dd MMM yyyy"
-                      className="border py-2 px-4 rounded-md font-semibold w-full sm:w-44"
+                      dateFormat="MM/dd/yyyy" // <-- US Format: Month/Day/Year
+                      placeholderText="MM/DD/YYYY"
+                      wrapperClassName="w-full sm:w-44"
+                      className="border py-2 px-4 rounded-md font-semibold w-full sm:w-44 outline-none"
                     />
                   </div>
                   <button onClick={() => removeItem(item.id)}>

@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 const initialProcess = { totalTime: "", processId: "", part: "" };
 
 import { RiDeleteBin6Line } from "react-icons/ri";
+import DatePicker from "react-datepicker";
 
 const generateNewOrderNumber = () => Date.now().toString();
 interface BOMEntry {
@@ -61,7 +62,6 @@ const CustomOrderForm = () => {
   }>({});
   const inputRefs = useRef<(HTMLDivElement | null)[]>([]);
   const getSystemLocalDate = () => {
-    // 'en-CA' locale se format YYYY-MM-DD milta hai jo HTML date input ke liye zaroori hai
     return new Date().toLocaleDateString("en-CA");
   };
   useEffect(() => {
@@ -447,40 +447,69 @@ const CustomOrderForm = () => {
 
             return (
               <Form>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-6 ">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-6">
+                  {/* Order Number */}
                   <div>
                     <label className="font-semibold">Order Number</label>
                     <Field
                       name="orderNumber"
                       type="text"
                       readOnly
-                      className="border py-3 px-4 rounded-md w-full bg-gray-100"
+                      className="border py-3 px-4 rounded-md w-full bg-gray-100 h-[50px] outline-none"
                     />
                   </div>
-                  <div>
-                    <label className="font-semibold">Order Date</label>
-                    <Field
-                      name="orderDate"
-                      type="date"
-                      className="border py-3 px-4 rounded-md w-full"
-                    />
+
+                  {/* Order Date - Updated to DatePicker */}
+                  <div className="flex flex-col">
+                    <label className="font-semibold mb-1">Order Date</label>
+                    <div className="relative w-full">
+                      <DatePicker
+                        selected={
+                          values.orderDate ? new Date(values.orderDate) : null
+                        }
+                        onChange={(date) =>
+                          setFieldValue(
+                            "orderDate",
+                            date ? date.toLocaleDateString("en-CA") : "",
+                          )
+                        }
+                        dateFormat="MM/dd/yyyy"
+                        placeholderText="MM/DD/YYYY"
+                        wrapperClassName="w-full"
+                        className="border py-3 px-4 rounded-md w-full placeholder-gray-600 outline-none h-[50px] border-gray-300"
+                      />
+                    </div>
                     <ErrorMessage
                       name="orderDate"
                       component="div"
                       className="text-red-500 text-sm mt-1"
                     />
                   </div>
-                  <div>
-                    <label className="font-semibold">Ship Date</label>
-                    <Field
-                      name="shipDate"
-                      type="date"
-                      className={`border py-3 px-4 rounded-md w-full ${
-                        touched.shipDate && errors.shipDate
-                          ? "border-red-500"
-                          : ""
-                      }`}
-                    />
+
+                  {/* Ship Date - Updated to DatePicker */}
+                  <div className="flex flex-col">
+                    <label className="font-semibold mb-1">Ship Date</label>
+                    <div className="relative w-full">
+                      <DatePicker
+                        selected={
+                          values.shipDate ? new Date(values.shipDate) : null
+                        }
+                        onChange={(date) =>
+                          setFieldValue(
+                            "shipDate",
+                            date ? date.toLocaleDateString("en-CA") : "",
+                          )
+                        }
+                        dateFormat="MM/dd/yyyy"
+                        placeholderText="MM/DD/YYYY"
+                        wrapperClassName="w-full"
+                        className={`border py-3 px-4 rounded-md w-full placeholder-gray-600 outline-none h-[50px] ${
+                          touched.shipDate && errors.shipDate
+                            ? "border-red-500"
+                            : "border-gray-300"
+                        }`}
+                      />
+                    </div>
                     <ErrorMessage
                       name="shipDate"
                       component="div"

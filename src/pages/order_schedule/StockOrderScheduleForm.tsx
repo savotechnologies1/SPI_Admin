@@ -16,7 +16,7 @@ const StockOrderScheduleForm = () => {
     const fetchInitialData = async () => {
       setIsLoading(true);
       try {
-        const response = await searchStockOrder({}); // call with empty object
+        const response = await searchStockOrder({});
 
         setSearchResults(response || []);
       } catch (error) {

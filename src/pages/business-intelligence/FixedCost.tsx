@@ -37,7 +37,6 @@ const FixedCost = () => {
     }
   };
   const [graphData, setGraphData] = useState<any>(null);
-  console.log("graphDatagraphData", graphData?.totals);
   const costing = graphData
     ? [
         {
@@ -138,7 +137,6 @@ const FixedCost = () => {
           )}
         </div>
 
-        {/* Graph */}
         <div className="flex-1 bg-white rounded-xl shadow-md p-6">
           <FixedCostGraph onDataFetched={setGraphData} />
         </div>

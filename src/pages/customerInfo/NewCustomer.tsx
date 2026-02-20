@@ -2,15 +2,15 @@ import { useForm } from "react-hook-form";
 import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import { addCustomer } from "./https/customersApi";
-import { ChangeEvent } from "react"; // Import ChangeEvent
+import { ChangeEvent } from "react";
 
 interface CustomerFormData {
   firstName: string;
   lastName: string;
   email: string;
-  customerPhone: string; // Changed to string to handle input type "number" better with RHF
+  customerPhone: string;
   address: string;
-  billingTerms: string; // Changed to string for easier input handling and validation
+  billingTerms: string;
 }
 
 const NewCustomer = () => {
@@ -18,18 +18,17 @@ const NewCustomer = () => {
     register,
     handleSubmit,
     formState: { errors },
-    setError, // Added setError for manual validation
-    clearErrors, // Added clearErrors
-  } = useForm<CustomerFormData>(); // Specify type for useForm
+    setError,
+    clearErrors,
+  } = useForm<CustomerFormData>();
   const navigate = useNavigate();
 
   const onSubmit = async (data: CustomerFormData) => {
     try {
-      // Ensure phone number and billing terms are parsed correctly for API
       const apiPayload = {
         ...data,
-        customerPhone: data.customerPhone.trim(), // Trim phone number
-        billingTerms: parseInt(data.billingTerms, 10), // Convert billingTerms to number
+        customerPhone: data.customerPhone.trim(),
+        billingTerms: parseInt(data.billingTerms, 10),
       };
 
       const response = await addCustomer(apiPayload);
@@ -37,17 +36,15 @@ const NewCustomer = () => {
         navigate("/customer-list");
       }
     } catch (error: unknown) {
-      console.error("Failed to add customer:", error); // Log the error for debugging
-      // You might want to display a user-friendly error message here
+      console.error("Failed to add customer:", error);
     }
   };
 
   const handleNumericInput = (
     e: ChangeEvent<HTMLInputElement>,
-    fieldName: "customerPhone" | "billingTerms"
+    fieldName: "customerPhone" | "billingTerms",
   ) => {
     const value = e.target.value;
-    // Allow empty string or numbers only
     if (!/^\d*$/.test(value) && value !== "") {
       setError(fieldName, {
         type: "manual",
@@ -69,7 +66,7 @@ const NewCustomer = () => {
         <div className="flex gap-4 items-center ">
           <p
             className={`text-xs sm:text-[16px] text-black`}
-            onClick={() => navigate("dashboardDetailes")} // Changed to navigate function
+            onClick={() => navigate("dashboardDetailes")}
           >
             <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
           </p>
@@ -134,11 +131,11 @@ const NewCustomer = () => {
           </label>
           <div className="mt-2 w-full mb-6">
             <input
-              type="email" // Changed type to "email" for better native validation
+              type="email"
               {...register("email", {
                 required: "Email address is required.",
                 pattern: {
-                  value: /^\S+@\S+$/i, // Simple regex for email format
+                  value: /^\S+@\S+$/i,
                   message: "Invalid email address.",
                 },
                 validate: (value) =>
@@ -156,8 +153,8 @@ const NewCustomer = () => {
           </label>
           <div className="mt-2 w-full mb-6">
             <input
-              type="text" // Changed type to "text" to allow custom numeric validation via onInput
-              inputMode="numeric" // Suggest numeric keyboard on mobile
+              type="text"
+              inputMode="numeric"
               {...register("customerPhone", {
                 required: "Phone Number is required.",
                 validate: (value) =>
@@ -202,11 +199,11 @@ const NewCustomer = () => {
                 validate: (value) =>
                   !value ||
                   value.trim() !== "" ||
-                  "Address cannot be just spaces.", // Optional, allow empty but not just spaces
+                  "Address cannot be just spaces.",
               })}
               placeholder="Address"
               className="border py-4 px-4 rounded-md w-full resize-none"
-              rows={4} // You can adjust rows as needed
+              rows={4}
             />
             {errors.address && (
               <p className="text-red-500 text-sm">{errors.address.message}</p>
@@ -218,8 +215,8 @@ const NewCustomer = () => {
           </label>
           <div className="mt-2 w-full">
             <input
-              type="text" // Changed type to "text" for custom numeric validation
-              inputMode="numeric" // Suggest numeric keyboard on mobile
+              type="text"
+              inputMode="numeric"
               {...register("billingTerms", {
                 required: "Billing Terms are required.",
                 validate: (value) =>

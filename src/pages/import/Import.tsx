@@ -1,37 +1,5 @@
-// import React, { useState } from 'react'
-// import cloud from '../../assets/cloud_check.png'
-// const Import = () => {
-//   const [file, setFile] = useState<File | null>(null);
-
-//   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     if (event.target.files && event.target.files.length > 0) {
-//       setFile(event.target.files[0]);
-//     }
-//   };
-
-//   return (
-//     <div className="flex  p-10  bg-gray-100 ">
-//     <div className="bg-white p-6 py-20 rounded-lg shadow-lg w-full  text-center items-center justify-center flex flex-col">
-//       <div>
-//       <img src={cloud} alt="" />
-//       </div>
-//       <p className="text-lg font-bold mt-2">Choose a file or drag & drop it here</p>
-//       <p className="text-gray-500 text-sm">JPEG, PNG, PDG, and MP4 formats, up to 50 MB</p>
-//       <label className="mt-8 block bg-brand text-white px-4 py-2 rounded-lg cursor-pointer">
-//         <input type="file" className="hidden" onChange={handleFileChange} />
-//         Browse File
-//       </label>
-//       {file && <p className="mt-2 text-gray-700 text-sm">Selected: {file.name}</p>}
-//     </div>
-//   </div>
-//      )
-// }
-
-// export default Import
-
 import React, { useRef, useState } from "react";
-import axios from "axios";
-import cloud from "../../assets/cloud_check.png";
+
 import { importApi } from "./https/importsApi";
 import { toast } from "react-toastify";
 
@@ -287,257 +255,6 @@ const supplierTemplate = [
   ],
 ];
 
-// const Import: React.FC = () => {
-//   const [selected, setSelected] = useState<TemplateType>("");
-//   const [file, setFile] = useState<File | null>(null);
-//   const [errors, setErrors] = useState<string[]>([]); // ✅ Error state
-//   // Template data return
-//   const getTemplateData = () => {
-//     switch (selected) {
-//       case "process":
-//         return processTemplate;
-//       case "part":
-//         return partTemplate;
-//       case "product":
-//         return productTemplate;
-//       case "employee":
-//         return employeeTemplate;
-//       case "customer":
-//         return customerTemplate;
-//       case "supplier":
-//         return supplierTemplate;
-//       default:
-//         return [];
-//     }
-//   };
-
-//   // File change handler
-//   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     if (event.target.files && event.target.files.length > 0) {
-//       setFile(event.target.files[0]);
-//     }
-//   };
-//   const handleErrorDownload = () => {
-//     if (!errors.length) return;
-
-//     const csvContent =
-//       "data:text/csv;charset=utf-8," +
-//       ["S.No,Error"].join(",") +
-//       "\n" +
-//       errors.map((err, i) => `${i + 1},"${err}"`).join("\n");
-
-//     const link = document.createElement("a");
-//     link.href = encodeURI(csvContent);
-//     link.download = `${selected}_import_errors.csv`;
-//     link.click();
-//   };
-//   // Download CSV template
-//   const handleDownload = () => {
-//     const data = getTemplateData();
-//     if (!data.length) return;
-
-//     const csvContent =
-//       "data:text/csv;charset=utf-8," +
-//       data.map((row) => row.join(",")).join("\n");
-
-//     const link = document.createElement("a");
-//     link.href = encodeURI(csvContent);
-//     link.download = `${selected}_template.csv`;
-//     link.click();
-//   };
-
-//   const handleUpload = async () => {
-//     if (!file || !selected) {
-//       alert("Please select a template type and file first!");
-//       return;
-//     }
-
-//     const formData = new FormData();
-//     formData.append("ImportFile", file);
-
-//     try {
-//       let url = "";
-//       if (selected === "process") {
-//         url = "process/import";
-//       } else if (selected === "part") {
-//         url = "parts/import";
-//       } else if (selected === "product") {
-//         url = "product-tree/import";
-//       } else if (selected === "employee") {
-//         url = "emp/import";
-//       } else if (selected === "customer") {
-//         url = "cust/import";
-//       } else if (selected === "supplier") {
-//         url = "supp/import";
-//       }
-//       const response = await importApi(url, formData);
-//       console.log("responseresponse", response);
-
-//       const summary = response?.data?.summary; // ✅ yaha se access karo
-
-//       if (summary && summary.errorCount > 0 && summary.errors?.length) {
-//         setErrors(summary.errors); // ✅ Save errors in state
-//         alert("Some rows failed. Please download error file.");
-//       } else {
-//         setErrors([]);
-//         alert("File uploaded successfully ✅");
-//       }
-//     } catch (error: any) {
-//       console.error("Upload failed:", error);
-//       alert(error.response?.data?.error || "Upload failed!");
-//     }
-//   };
-
-//   console.log("errorserrors", errors);
-
-//   return (
-//     <>
-//       <div className="p-6 mt-5">
-//         <h2 className="text-2xl font-semibold mb-4">Import CSV</h2>
-
-//         {/* Select options */}
-//         <div className="flex gap-4 mb-6">
-//           <button
-//             className={`px-4 py-2 rounded-lg ${
-//               selected === "process" ? "bg-blue-600 text-white" : "bg-gray-200"
-//             }`}
-//             onClick={() => setSelected("process")}
-//           >
-//             Add Process
-//           </button>
-//           <button
-//             className={`px-4 py-2 rounded-lg ${
-//               selected === "part" ? "bg-blue-600 text-white" : "bg-gray-200"
-//             }`}
-//             onClick={() => setSelected("part")}
-//           >
-//             Add Parts
-//           </button>
-//           <button
-//             className={`px-4 py-2 rounded-lg ${
-//               selected === "product" ? "bg-blue-600 text-white" : "bg-gray-200"
-//             }`}
-//             onClick={() => setSelected("product")}
-//           >
-//             Add Product
-//           </button>{" "}
-//           <button
-//             className={`px-4 py-2 rounded-lg ${
-//               selected === "employee" ? "bg-blue-600 text-white" : "bg-gray-200"
-//             }`}
-//             onClick={() => setSelected("employee")}
-//           >
-//             Add Employee
-//           </button>
-//           <button
-//             className={`px-4 py-2 rounded-lg ${
-//               selected === "customer" ? "bg-blue-600 text-white" : "bg-gray-200"
-//             }`}
-//             onClick={() => setSelected("customer")}
-//           >
-//             Add Customer
-//           </button>
-//           <button
-//             className={`px-4 py-2 rounded-lg ${
-//               selected === "supplier" ? "bg-blue-600 text-white" : "bg-gray-200"
-//             }`}
-//             onClick={() => setSelected("supplier")}
-//           >
-//             Add Supplier
-//           </button>
-//         </div>
-
-//         {/* Template preview */}
-//         {selected && (
-//           <div className="bg-white shadow-md rounded-lg p-4">
-//             <h3 className="text-lg font-semibold mb-3 capitalize">
-//               {selected} Template
-//             </h3>
-
-//             <div className="overflow-x-auto">
-//               <table className="min-w-full border border-gray-300">
-//                 <thead>
-//                   <tr className="bg-gray-100">
-//                     {getTemplateData()[0]?.map((col, i) => (
-//                       <th
-//                         key={i}
-//                         className="border px-3 py-2 text-left text-sm font-semibold"
-//                       >
-//                         {col}
-//                       </th>
-//                     ))}
-//                   </tr>
-//                 </thead>
-//                 <tbody>
-//                   {getTemplateData()
-//                     .slice(1)
-//                     .map((row, i) => (
-//                       <tr key={i} className="odd:bg-gray-50">
-//                         {row.map((cell, j) => (
-//                           <td key={j} className="border px-3 py-2 text-sm">
-//                             {cell}
-//                           </td>
-//                         ))}
-//                       </tr>
-//                     ))}
-//                 </tbody>
-//               </table>
-//             </div>
-
-//             {/* Download Button */}
-//             <button
-//               onClick={handleDownload}
-//               className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-//             >
-//               Download Template
-//             </button>
-//           </div>
-//         )}
-//       </div>
-
-//       {/* File Upload Section */}
-//       <div className="flex p-10 bg-gray-100">
-//         <div className="bg-white p-6 py-20 rounded-lg shadow-lg w-full text-center items-center justify-center flex flex-col">
-//           {/* Browse File */}
-//           <label className="mt-8 block bg-blue-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-700">
-//             <input type="file" className="hidden" onChange={handleFileChange} />
-//             Browse File
-//           </label>
-//           {file && (
-//             <p className="mt-2 text-gray-700 text-sm">Selected: {file.name}</p>
-//           )}
-
-//           {/* Upload button */}
-//           <button
-//             onClick={handleUpload}
-//             className="mt-6 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-//           >
-//             Submit CSV File
-//           </button>
-
-//           {/* ✅ Error download button */}
-//           {errors.length > 0 && (
-//             <button
-//               onClick={handleErrorDownload}
-//               className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-//             >
-//               Download Errors
-//             </button>
-//           )}
-//         </div>
-//       </div>
-//       {/* <button
-//         onClick={handleDownload}
-//         className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-//       >
-//         Error Download Template
-//       </button> */}
-//     </>
-//   );
-// };
-
-// export default Import;
-
 const Import: React.FC = () => {
   const [selected, setSelected] = useState<TemplateType>("");
   const [file, setFile] = useState<File | null>(null);
@@ -565,17 +282,12 @@ const Import: React.FC = () => {
   };
   const handleConflictDownload = (conflicts) => {
     if (!conflicts || !conflicts.length) return;
-
-    // 1. CSV Headers define karein
     const headers = [
       "Product Number",
       "Field Name",
       "Old Value (DB)",
       "New Value (CSV)",
     ].join(",");
-
-    // 2. Data ko rows me convert karein
-    // Hum flatMap use karenge taaki har ek change ke liye ek alag row bane
     const rows = conflicts
       .flatMap((item) => {
         return item.changes.map((change) => {
@@ -590,16 +302,13 @@ const Import: React.FC = () => {
       .join("\n");
 
     const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + rows;
-
-    // 3. Download link trigger karein (Aapka logic)
     const link = document.createElement("a");
     link.href = encodeURI(csvContent);
     link.download = `Product_Import_Conflicts.csv`;
-    document.body.appendChild(link); // Safe side ke liye body me add karein
+    document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
-  // File change handler
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       setFile(event.target.files[0]);
@@ -626,7 +335,7 @@ const Import: React.FC = () => {
 
   const handleConfirm = () => {
     setShowConfirmModal(false);
-    handleUpload(true); // 🔁 "Apply Changes" click karne par true ke saath dobara upload
+    handleUpload(true);
   };
 
   const handleCancel = () => {
@@ -634,7 +343,6 @@ const Import: React.FC = () => {
     toast.info("Import cancelled by user.");
   };
 
-  // Download CSV template
   const handleDownload = () => {
     const data = getTemplateData();
     if (!data.length) return;
@@ -649,78 +357,6 @@ const Import: React.FC = () => {
     link.click();
   };
 
-  // const handleUpload = async (isConfirmed: boolean = false) => {
-  //   if (!file || !selected) {
-  //     toast.error("Please select a template type and file first!");
-  //     return;
-  //   }
-
-  //   setIsUploading(true);
-
-  //   const formData = new FormData();
-  //   formData.append("ImportFile", file);
-
-  //   // Yahan fix: strictly check boolean taaki event object se confusion na ho
-  //   if (isConfirmed === true) {
-  //     formData.append("confirmChanges", "true");
-  //   } else {
-  //     formData.append("confirmChanges", "false");
-  //   }
-
-  //   try {
-  //     let url = "";
-  //     if (selected === "process") url = "process/import";
-  //     else if (selected === "part") url = "parts/import";
-  //     else if (selected === "product") url = "product-tree/import";
-  //     else if (selected === "employee") url = "emp/import";
-  //     else if (selected === "customer") url = "cust/import";
-  //     else if (selected === "supplier") url = "supp/import";
-
-  //     const response = await importApi(url, formData);
-  //     const responseData = response?.data;
-  //     const status = response?.status;
-
-  //     if (status === 409 && responseData?.requiresConfirmation) {
-  //       console.log("responseDataresponseData", responseData);
-  //       // Backend se aaye messages ko merge karke popup mein dikhana
-  //       const conflictMessages = responseData.conflicts
-  //         ? responseData.conflicts.map((c: any) => c.message).join("\n\n")
-  //         : "Changes detected in existing products.";
-
-  //       setConfirmMessage(conflictMessages);
-  //       setShowConfirmModal(true); // ✅ Modal show hoga
-  //     }
-  //     // Status 200/201 (Success) handles here
-  //     if (response?.status === 201 || response?.status === 200) {
-  //       toast.success(response.data.message || "Upload successful ✅");
-  //       setFile(null);
-  //       setErrors([]);
-  //     }
-  //   } catch (error: any) {
-  //     console.log("errorerrorerror", error);
-  //     // 🛑 FIXED: Jab 409 error aayega, Axios seedha yahan bhejega
-  //     const responseData = error.response?.data;
-  //     const status = error.response?.status;
-
-  //     if (status === 409 && responseData?.requiresConfirmation) {
-  //       console.log("responseDataresponseData", responseData);
-  //       // Backend se aaye messages ko merge karke popup mein dikhana
-  //       const conflictMessages = responseData.conflicts
-  //         ? responseData.conflicts.map((c: any) => c.message).join("\n\n")
-  //         : "Changes detected in existing products.";
-
-  //       setConfirmMessage(conflictMessages);
-  //       setShowConfirmModal(true); // ✅ Modal show hoga
-  //     } else if (responseData?.errors) {
-  //       setErrors(responseData.errors);
-  //       toast.error("Upload failed due to validation errors.");
-  //     } else {
-  //       toast.error(responseData?.message || "Upload failed. Check your file.");
-  //     }
-  //   } finally {
-  //     setIsUploading(false);
-  //   }
-  // };
   const [conflictData, setConflictData] = useState(null);
   const handleUpload = async (isConfirmed: boolean = false) => {
     if (!file || !selected) {
@@ -769,16 +405,10 @@ const Import: React.FC = () => {
     } catch (error: any) {
       const responseData = error.response?.data;
       const status = error.response?.status;
-
-      // 1. Handle Confirmation (409)
-
-      // 2. Handle Validation Summary Errors (400)
       if (responseData?.summary?.errors) {
         setErrors(responseData.summary.errors);
         toast.error(responseData.message || "Import failed due to errors.");
-      }
-      // 3. Handle Generic Errors
-      else {
+      } else {
         toast.error(
           responseData?.message || "Upload failed. Please check your file.",
         );
@@ -880,7 +510,6 @@ const Import: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left Column - Template Selection */}
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
               <svg
@@ -960,7 +589,7 @@ const Import: React.FC = () => {
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white ">
                       {getTemplateData()
-                        .slice(1, 4) // Show only first 3 rows for preview
+                        .slice(1, 4)
                         .map((row, i) => (
                           <tr key={i}>
                             {row.map((cell, j) => (
@@ -990,7 +619,6 @@ const Import: React.FC = () => {
             )}
           </div>
 
-          {/* Right Column - File Upload */}
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
               <svg
@@ -1087,7 +715,7 @@ const Import: React.FC = () => {
             <button
               onClick={(e) => {
                 e.preventDefault();
-                handleUpload(false); // Shuruat hamesha false flag se hogi
+                handleUpload(false);
               }}
               disabled={!file || !selected || isUploading}
               className={`mt-6 w-full py-3 rounded-lg font-medium transition-all flex items-center justify-center ${
@@ -1141,7 +769,6 @@ const Import: React.FC = () => {
               )}
             </button>
 
-            {/* Error Download Button */}
             {errors.length > 0 && (
               <div className="mt-4 p-4 bg-red-50 rounded-lg border border-red-200">
                 <div className="flex items-center text-red-800 mb-2">

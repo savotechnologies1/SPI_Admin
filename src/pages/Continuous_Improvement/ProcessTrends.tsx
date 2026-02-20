@@ -136,59 +136,6 @@ export default function ProcessTrends() {
             </ResponsiveContainer>
           </div>
         </div>
-
-        {/* Machine Chart */}
-        {/* <div className="bg-white shadow-md rounded-xl md:rounded-2xl p-3 md:p-4 lg:col-span-2">
-          <h2 className="text-base md:text-lg font-medium mb-2">Machine</h2>
-          <div className="h-[250px] sm:h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={machineData}>
-                <CartesianGrid stroke="#e0e0e0" strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="name" 
-                  fontSize={window.innerWidth < 768 ? 10 : 12}
-                  tickMargin={window.innerWidth < 768 ? 5 : 10}
-                />
-                <YAxis 
-                  fontSize={window.innerWidth < 768 ? 10 : 12}
-                />
-                <Tooltip 
-                  contentStyle={{
-                    fontSize: '12px',
-                    borderRadius: '8px',
-                    padding: '8px'
-                  }}
-                />
-                <Legend 
-                  wrapperStyle={{
-                    paddingTop: window.innerWidth < 768 ? '10px' : '0'
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="2022"
-                  stroke="#8884d8"
-                  strokeWidth={2}
-                  dot={{ r: window.innerWidth < 768 ? 3 : 4 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="2023"
-                  stroke="#ff6b6b"
-                  strokeWidth={2}
-                  dot={{ r: window.innerWidth < 768 ? 3 : 4 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="2024"
-                  stroke="#00bcd4"
-                  strokeWidth={2}
-                  dot={{ r: window.innerWidth < 768 ? 3 : 4 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div> */}
       </div>
     </div>
   );

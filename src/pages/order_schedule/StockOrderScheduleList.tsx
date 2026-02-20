@@ -110,7 +110,8 @@ const StockOrderScheduleList: React.FC = () => {
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return "N/A";
     try {
-      return new Date(dateString).toLocaleDateString("en-GB"); // DD/MM/YYYY
+      // Pehle yahan 'en-GB' tha (DD/MM/YYYY), ab 'en-US' hai (MM/DD/YYYY)
+      return new Intl.DateTimeFormat("en-US").format(new Date(dateString));
     } catch (error) {
       return "Invalid Date";
     }

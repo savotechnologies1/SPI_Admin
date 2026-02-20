@@ -10,12 +10,10 @@ const StockOrderSchedule = () => {
     <div className="p-4 mt-5">
       <div className="flex flex-col sm:flex-row justify-between gap-2 mb-4 md:mb-0  ">
         <div>
-          {" "}
           <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
             Stock Order Schedule
           </h1>
         </div>
-      
       </div>
       <div className="flex justify-between  items-center">
         <div className="flex gap-2 items-center ">
