@@ -473,18 +473,33 @@ const formatCycleTime = (dateString) => {
     if (isNaN(startTime.getTime())) {
       return "Invalid Time";
     }
+
     const now = new Date();
     const diffMs = now - startTime;
 
-    // Math.max use kiya hai taaki agar difference 0 se chota ho toh 0 dikhaye
-    const diffMinutes = Math.max(0, Math.floor(diffMs / (1000 * 60)));
+    // Difference negative na ho isliye Math.max(0, ...)
+    const totalMinutes = Math.max(0, Math.floor(diffMs / (1000 * 60)));
 
-    return `${diffMinutes} min`;
+    if (totalMinutes < 60) {
+      // Agar 60 min se kam hai toh sirf minutes dikhao
+      return `${totalMinutes} min`;
+    } else {
+      // Agar 60 min ya usse zyada hai toh hours aur minutes me convert karo
+      const hours = Math.floor(totalMinutes / 60);
+      const remainingMinutes = totalMinutes % 60;
+
+      if (remainingMinutes === 0) {
+        return `${hours} hr`;
+      } else {
+        return `${hours} hr ${remainingMinutes} min`;
+      }
+    }
   } catch (error) {
     console.error("Could not format cycle time:", dateString, error);
     return "N/A";
   }
 };
+
 const RunSchedule = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -781,7 +796,7 @@ const RunSchedule = () => {
                           Part Number
                         </th>
                         <th className="border border-white px-2 py-1 text-xs sm:text-sm">
-                          Type/Date
+                         Date
                         </th>
                       </tr>
                     </thead>
