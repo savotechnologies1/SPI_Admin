@@ -71,12 +71,12 @@ const ForgetPassword = () => {
               >
                 Email
               </Tab>
-              <Tab
+              {/* <Tab
                 className="py-2 px-4 md:px-6 cursor-pointer text-sm md:text-base text-center flex-1"
                 selectedClassName="bg-white rounded-full shadow-sm font-medium"
               >
                 Mobile Number
-              </Tab>
+              </Tab> */}
             </TabList>
 
             <TabPanel className="mt-6">
@@ -113,7 +113,7 @@ const ForgetPassword = () => {
               </form>
             </TabPanel>
 
-            <TabPanel className="mt-6">
+            {/* <TabPanel className="mt-6">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4">
                   <label className="block text-gray-700 mb-2 font-medium">
@@ -145,7 +145,7 @@ const ForgetPassword = () => {
                   Send OTP
                 </button>
               </form>
-            </TabPanel>
+            </TabPanel> */}
           </Tabs>
 
           <div className="text-center text-sm">
