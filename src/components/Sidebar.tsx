@@ -405,8 +405,8 @@ const sections: Section[] = [
           },
 
           {
-            key: "Time Clock approval",
-            label: "Time Clock approval",
+            key: "Time Clock List",
+            label: "Time Clock List",
             path: "/time-clock",
           },
           {

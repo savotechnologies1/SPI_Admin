@@ -9,45 +9,12 @@ import scrap_cost from "../../assets/scrap_cost.png";
 import customer_return from "../../assets/customer_return.png";
 import supplier_return from "../../assets/supplier_return.png";
 import CustomerReturn from "./CustomerReturn";
-import SupplierReturn from "./SupplierReturn";
 import ScrapBar from "./ScrapBar";
 import MultiLineChart from "./MultiLineChart";
 import DatePicker from "react-datepicker";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-
-const data_1 = [
-  {
-    num: "1",
-    text: "shift",
-    img: img1,
-    scrap: scrap_1,
-    scrap_img: scrap_cost,
-    increase: "-$10k",
-    bgColor: "bg-orange-50",
-    textColor: "text-red-500",
-  },
-  {
-    num: "129",
-    text: "Actual",
-    img: img2,
-    scrap: scrap_2,
-    scrap_img: customer_return,
-    increase: "+200",
-    bgColor: "bg-green-50",
-    textColor: "text-green-500",
-  },
-  {
-    num: "1",
-    text: "Scrap",
-    img: img3,
-    scrap: scrap_3,
-    scrap_img: supplier_return,
-    increase: "+200",
-    bgColor: "bg-brand-50",
-    textColor: "text-green-500",
-  },
-];
+import { Calendar, Info } from "lucide-react";
 
 // const CurrentQuality = () => {
 //   return (
@@ -125,38 +92,41 @@ const data_1 = [
 // --- SCRAP BAR COMPONENT (Child) ---
 
 // --- MAIN CURRENT QUALITY COMPONENT (Parent) ---
+
 const CurrentQuality = () => {
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  // 1. Initialize with current date instead of ""
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [summary, setSummary] = useState({
     totalActual: 0,
     totalScrap: 0,
     totalScheduled: 0,
-    count: 0,
   });
   const [details, setDetails] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
-  // API Fetch Function
   const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
+      const params = {};
+
+      // Safe Date Check
+      if (startDate) params.startDate = startDate.toISOString();
+      if (endDate) params.endDate = endDate.toISOString();
+
       const response = await axios.get(
         `${BASE_URL}/api/admin/current-status-overview`,
-        {
-          params: { startDate, endDate },
-        }
+        { params },
       );
 
-      // Maan lijiye backend return karta hai: { summary: {...}, details: [...] }
+      // Handle response structure
       if (response.data.summary) {
         setSummary(response.data.summary);
-        setDetails(response.data.details);
+        setDetails(response.data.details || []);
       } else {
-        // Fallback agar backend purana format bhej raha ho
-        setDetails(response.data);
+        setDetails(response.data || []);
       }
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
@@ -169,110 +139,95 @@ const CurrentQuality = () => {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
-  // Data for the 3 Cards
-  console.log("summarysummary", summary);
   const statsData = [
     {
-      num: `${summary.totalActual} / ${summary.totalScheduled}`,
-      text: "Actual / Scheduled",
-      // img: img2,
-      increase:
+      title: "Production Progress",
+      value: `${summary.totalActual} / ${summary.totalScheduled}`,
+      subText: "Actual vs Scheduled",
+      percentage:
         summary.totalScheduled > 0
           ? ((summary.totalActual / summary.totalScheduled) * 100).toFixed(1) +
             "%"
           : "0%",
-      bgColor: "bg-green-50",
-      textColor: "text-green-500",
+      color: "text-blue-600",
+      bg: "bg-blue-50",
     },
     {
-      num: summary.totalScrap || "0",
-      text: "Total Scrap",
-      // img: img3,
-      increase:
+      title: "Total Scrap",
+      value: summary.totalScrap || "0",
+      subText: "Total Quantity",
+      percentage:
         summary.totalActual > 0
-          ? ((summary.totalScrap / summary.totalActual) * 100).toFixed(1) + "%"
-          : "0%",
-      bgColor: "bg-brand-50",
-      textColor: "text-red-500",
+          ? (
+              (summary.totalScrap /
+                (summary.totalActual + summary.totalScrap)) *
+              100
+            ).toFixed(1) + "% Rate"
+          : "0% Rate",
+      color: "text-red-600",
+      bg: "bg-red-50",
     },
   ];
 
   return (
-    <div className="p-7">
-      <div>
-        <h1 className="font-bold text-[20px] md:text-[24px] text-black">
-          Current Quality Performance
-        </h1>
-      </div>
+    <div className="p-6 bg-gray-50 min-h-screen mt-5">
+      {/* Header & Filter */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <div>
+          <h1 className="text-2xl font-extrabold text-gray-900">
+            Current Quality Performance
+          </h1>
+        </div>
 
-      {/* Filter Section */}
-      <div className="flex flex-wrap justify-between mt-4 items-center gap-4">
-        <div className="flex gap-4 items-center">
-          <p className="text-sm text-black font-semibold">
-            <NavLink to={"/dashboardDetailes"}>Quality Performance :</NavLink>
-          </p>
-          <div className="flex items-center gap-2">
-            <input
-              type="date"
-              className="border p-2 rounded-md text-sm shadow-sm"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <span className="font-bold">-</span>
-            <input
-              type="date"
-              className="border p-2 rounded-md text-sm shadow-sm"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-          </div>
+        {/* Date Filter Bar */}
+        <div className="flex items-center bg-white shadow-sm border rounded-lg px-3 py-2 gap-2">
+          <Calendar size={18} className="text-gray-400" />
+          <DatePicker
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+            className="w-24 text-sm outline-none cursor-pointer"
+            placeholderText="Start Date"
+          />
+          <span className="text-gray-300">|</span>
+          <DatePicker
+            selected={endDate}
+            onChange={(date) => setEndDate(date)}
+            minDate={startDate}
+            className="w-24 text-sm outline-none cursor-pointer"
+            placeholderText="End Date"
+          />
           {loading && (
-            <span className="text-xs text-blue-500 animate-pulse">
-              Loading...
-            </span>
+            <div className="ml-2 w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           )}
         </div>
       </div>
 
       {/* Summary Cards */}
-      <div className="mt-6">
-        <h1 className="font-semibold text-xl mb-4">Quality Summary</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {statsData.map((item, index) => (
-            <div
-              key={index}
-              className="flex flex-col justify-between bg-white rounded-md p-4 border shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-full ${item.bgColor}`}>
-                  {/* <img className="w-[30px]" src={item.scrap_img} alt="" /> */}
-                  <div
-                    className={`w-6 h-6 rounded-full border-2 ${item.textColor}`}
-                  />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 uppercase font-medium">
-                    {item.text}
-                  </p>
-                  <p className="font-bold text-2xl">{item.num}</p>
-                </div>
-              </div>
-              <div className="mt-4 text-sm text-gray-600 border-t pt-2">
-                Performance:
-                <span
-                  className={`ml-2 font-bold px-2 py-0.5 rounded ${item.bgColor} ${item.textColor}`}
-                >
-                  {item.increase}
-                </span>
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {statsData.map((item, idx) => (
+          <div
+            key={idx}
+            className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm"
+          >
+            <p className="text-gray-500 text-sm font-medium uppercase tracking-wider">
+              {item.title}
+            </p>
+            <div className="flex justify-between items-end mt-2">
+              <h2 className="text-3xl font-bold text-gray-800">{item.value}</h2>
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-bold ${item.bg} ${item.color}`}
+              >
+                {item.percentage}
+              </span>
             </div>
-          ))}
-        </div>
+            <p className="text-xs text-gray-400 mt-2">{item.subText}</p>
+          </div>
+        ))}
       </div>
 
-      {/* Scrap Bar Chart */}
-      <div className="mt-8 bg-white rounded-md shadow-md border">
-        <ScrapBar startDate={startDate} endDate={endDate} apiData={details} />
+      {/* Graph Section */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <ScrapBar apiData={details} />
       </div>
     </div>
   );

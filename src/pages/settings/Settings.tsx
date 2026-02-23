@@ -65,7 +65,7 @@ const Settings = () => {
         (ci) => ({
           value: ci.name,
           label: ci.name,
-        })
+        }),
       )
     : [];
 
@@ -87,7 +87,7 @@ const Settings = () => {
         city: data.city?.label,
       },
       profileImg,
-      isFile
+      isFile,
     );
   };
   useEffect(() => {
@@ -121,7 +121,7 @@ const Settings = () => {
         if (stateOption) {
           const cities = City.getCitiesOfState(
             countryOption.value,
-            stateOption.value
+            stateOption.value,
           );
           const foundCity = cities.find((ci) => ci.name === data.city);
           cityOption = foundCity
@@ -279,7 +279,7 @@ const Settings = () => {
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={stateOptions}
+                      options={countryOptions}
                       placeholder="Select country..."
                     />
                   )}

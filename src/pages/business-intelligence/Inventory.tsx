@@ -18,19 +18,38 @@ interface ChartItem {
   rawDate: string;
   cost: number;
 }
-const formatFullDate = (date: string | Date) =>
-  new Intl.DateTimeFormat(undefined, {
+const formatFullDate = (date: string | Date) => {
+  return new Intl.DateTimeFormat("en-US", {
     day: "2-digit",
-    month: "short",
+    month: "long",
     year: "numeric",
   }).format(new Date(date));
+};
 
 const formatXAxis = (dateStr: string, period: Period) => {
   const date = new Date(dateStr);
+
   if (period === "yearly") {
-    return date.getFullYear().toString();
+    return date.getFullYear().toString(); // "2026"
   }
-  return new Intl.DateTimeFormat(undefined, {
+
+  if (period === "monthly") {
+    // Monthly mein 30 din ka data hai, isliye sirf "Feb 23" dikhao
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "2-digit",
+    }).format(date);
+  }
+
+  if (period === "weekly") {
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "2-digit",
+    }).format(date);
+  }
+
+  // Daily: "23 Feb"
+  return new Intl.DateTimeFormat("en-US", {
     day: "2-digit",
     month: "short",
   }).format(date);
@@ -185,32 +204,65 @@ const Inventory = () => {
             <p className="text-center py-10 text-gray-500">Loading graph...</p>
           ) : (
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={chartData}>
+              <LineChart
+                data={chartData}
+                margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+              >
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
-                  stroke="#e0e0e0"
+                  stroke="#f0f0f0"
                 />
-                <XAxis dataKey="date" fontSize={12} tickMargin={10} />
-                <YAxis fontSize={12} tickFormatter={(value) => `$${value}`} />
+                <XAxis
+                  dataKey="date"
+                  fontSize={10}
+                  tickMargin={10}
+                  // Interval settings for clarity
+                  interval={
+                    period === "daily"
+                      ? 2 // Har 3rd day dikhao (1, 4, 7...)
+                      : period === "monthly"
+                        ? 0 // Saare 12 mahine dikhao
+                        : 0
+                  }
+                />
+                <YAxis
+                  fontSize={11}
+                  tickFormatter={(value) => `$${value}`}
+                  width={50}
+                />
                 <Tooltip
+                  contentStyle={{
+                    borderRadius: "8px",
+                    border: "none",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  }}
                   labelFormatter={(label, payload) => {
                     if (payload?.[0]?.payload?.rawDate) {
-                      return period === "yearly"
-                        ? `Year: ${new Date(payload[0].payload.rawDate).getFullYear()}`
-                        : `Date: ${formatFullDate(payload[0].payload.rawDate)}`;
+                      const raw = payload[0].payload.rawDate;
+                      if (period === "yearly")
+                        return `Year: ${new Date(raw).getFullYear()}`;
+                      if (period === "monthly")
+                        return new Intl.DateTimeFormat("en-US", {
+                          month: "long",
+                          year: "numeric",
+                        }).format(new Date(raw));
+                      return formatFullDate(raw);
                     }
                     return label;
                   }}
                 />
-                <Legend />
                 <Line
                   name="Inventory Cost"
                   type="monotone"
                   dataKey="cost"
                   stroke="#4f46e5"
-                  strokeWidth={3}
-                  dot={{ r: 4 }}
+                  strokeWidth={2.5}
+                  dot={
+                    period === "daily" || period === "monthly"
+                      ? { r: 2 }
+                      : { r: 4 }
+                  }
                   activeDot={{ r: 6 }}
                 />
               </LineChart>
@@ -252,7 +304,7 @@ const Inventory = () => {
                       {part.minStock}
                     </td>
                     <td className="px-6 py-4 text-right font-semibold">
-                      {part.availStock.toString().padStart(2, "0")}
+                      {part?.availStock?.toString().padStart(2, "0")}
                     </td>
                   </tr>
                 ))

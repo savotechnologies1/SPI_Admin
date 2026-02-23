@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 export const selecEmployeeProcessApi = async () => {
   try {
     const response = await axiosInstance.get(
-      `/select-schedule-employee-process`
+      `/select-schedule-employee-process`,
     );
     return response.data;
   } catch (error: any) {
@@ -27,40 +27,43 @@ export const stationLogin = async (userData: object) => {
 
 export const stationProcessDetail = async (
   id: string,
-  stationUserId: string
+  stationUserId: string,
 ) => {
   try {
     const response = await axiosInstance.get(
-      `/get-schedule-process-information/${id}?stationUserId=${stationUserId}`
+      `/get-schedule-process-information/${id}?stationUserId=${stationUserId}`,
     );
     return response.data;
   } catch (error) {
     throw error;
   }
 };
-
 
 export const stationTrainingProcessDetail = async (
   id: string,
-  stationUserId: string
+  stationUserId: string,
 ) => {
   try {
     const response = await axiosInstance.get(
-      `/get-training-schedule/${id}?stationUserId=${stationUserId}`
+      `/get-training-schedule/${id}?stationUserId=${stationUserId}`,
     );
     return response.data;
   } catch (error) {
     throw error;
   }
 };
-export const traningStatus = async (data: { stationUserId: string, processId: string, productId: string }) => {
+export const traningStatus = async (data: {
+  stationUserId: string;
+  processId: string;
+  productId: string;
+}) => {
   try {
     const response = await axiosInstance.get(`/trainig-status`, {
       params: {
         stationUserId: data.stationUserId,
         processId: data.processId,
-        productId: data.productId
-      }
+        productId: data.productId,
+      },
     });
     return response.data;
   } catch (error) {
@@ -72,9 +75,9 @@ export const traningStatus = async (data: { stationUserId: string, processId: st
 //   try {
 //     // URL ko dhyan se check karein
 //     const response = await axiosInstance.get(`/trainig-status/${params.processId}`, {
-//       params: { 
+//       params: {
 //         stationId: params.stationUserId, // Yeh string honi chahiye, object nahi
-//         productId: params.productId 
+//         productId: params.productId
 //       }
 //     });
 //     return response.data;
@@ -102,10 +105,41 @@ export const completeOrder = async (
   employeeId: string,
   productId: string,
   type: string,
-  completedBy: string
+  completedBy: string,
 ) => {
   try {
     const response = await axiosInstance.put(`/complete-order/${id}`, {
+      orderId,
+      order_type,
+      partId,
+      employeeId,
+      productId,
+      type,
+      completedBy,
+    });
+
+    if (response.status === 201) {
+      toast.success(response.data.message);
+    }
+
+    return response;
+  } catch (error: any) {
+    toast.error(error?.response?.data?.message || "Something went wrong");
+  }
+};
+
+export const completeScanOrder = async (
+  id: string,
+  orderId: string,
+  order_type: string,
+  partId: string,
+  employeeId: string,
+  productId: string,
+  type: string,
+  completedBy: string,
+) => {
+  try {
+    const response = await axiosInstance.put(`/scan-complete/${id}`, {
       orderId,
       order_type,
       partId,
@@ -158,10 +192,16 @@ export const completeTraningApi = async (id: string) => {
 //     toast.error(error?.response?.data?.message || "Failed to update step.");
 //   }
 // };
-export const updateStepTime = async (data: { productionId: string; stepId: string }) => {
+export const updateStepTime = async (data: {
+  productionId: string;
+  stepId: string;
+}) => {
   try {
     // Data ko body ke roop mein bhejein (second parameter)
-    const response = await axiosInstance.post(`/production-response/update-step-time`, data);
+    const response = await axiosInstance.post(
+      `/production-response/update-step-time`,
+      data,
+    );
     return response.data;
   } catch (error) {
     throw error;
@@ -172,7 +212,7 @@ export const scrapOrder = async (
   orderId: string,
   order_type: string,
   partId: string,
-  employeeId: string
+  employeeId: string,
 ) => {
   try {
     const response = await axiosInstance.put(`/scrap-order/${id}`, {
@@ -195,14 +235,14 @@ export const scrapOrder = async (
 export const processPartScan = async (
   productionId: string,
   scannedBarcode: string,
-  employeeId: string
+  employeeId: string,
 ) => {
   const response = await axiosInstance.post(
     `/production/${productionId}/scan`,
     {
       barcode: scannedBarcode,
       employeeId: employeeId,
-    }
+    },
   );
   return response.data;
 };
@@ -225,11 +265,11 @@ export const allScrapEntries = async (
   page = 1,
   limit = 5,
   selectedValue: string,
-  debouncedSearchVal: string
+  debouncedSearchVal: string,
 ) => {
   try {
     const response = await axiosInstance.get(
-      `/all-scrap-entry?page=${page}&limit=${limit}&filterScrap=${selectedValue}&search=${debouncedSearchVal}`
+      `/all-scrap-entry?page=${page}&limit=${limit}&filterScrap=${selectedValue}&search=${debouncedSearchVal}`,
     );
 
     return response.data;

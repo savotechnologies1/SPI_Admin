@@ -3,117 +3,6 @@ import DataTable from "./DataTable";
 import TableCard from "./TableCard";
 import { useEffect, useState } from "react";
 
-const sampleData = [
-  {
-    Process: "Inspection",
-    "Part Desc.": "Quick Brackets for Inner ",
-    Qty: "01",
-    Scrap: "01",
-  },
-  {
-    Process: "Inspection",
-    "Part Desc.": "Quick Brackets for Inner ",
-    Qty: "01",
-    Scrap: "01",
-  },
-  {
-    Process: "Inspection",
-    "Part Desc.": "Quick Brackets for Inner ",
-    Qty: "01",
-    Scrap: "01",
-  },
-  {
-    Process: "Inspection",
-    "Part Desc.": "Quick Brackets for Inner ",
-    Qty: "01",
-    Scrap: "01",
-  },
-];
-
-const sampleData1 = [
-  {
-    Process: "Inspection",
-    "Part Desc.": "Quick Brackets for Inner ",
-    "Cycle Time": "01",
-  },
-  {
-    Process: "Inspection",
-    "Part Desc.": "Quick Brackets for Inner ",
-    "Cycle Time": "01",
-  },
-  {
-    Process: "Inspection",
-    "Part Desc.": "Quick Brackets for Inner ",
-    "Cycle Time": "01",
-  },
-  {
-    Process: "Inspection",
-    "Part Desc.": "Quick Brackets for Inner ",
-    "Cycle Time": "01",
-  },
-];
-const sampleData2 = [
-  {
-    ID: "100",
-    "Part Desc.": "Quick Brackets for Inner ",
-    "Machine Timer": "01",
-    "Op Timer": "01",
-    "Total CT": "01",
-  },
-  {
-    ID: "100",
-    "Part Desc.": "Quick Brackets for Inner ",
-    "Machine Timer": "01",
-    "Op Timer": "01",
-    "Total CT": "01",
-  },
-  {
-    ID: "100",
-    "Part Desc.": "Quick Brackets for Inner ",
-    "Machine Timer": "01",
-    "Op Timer": "01",
-    "Total CT": "01",
-  },
-  {
-    ID: "100",
-    "Part Desc.": "Quick Brackets for Inner ",
-    "Machine Timer": "01",
-    "Op Timer": "01",
-    "Total CT": "01",
-  },
-  {
-    ID: "100",
-    "Part Desc.": "Quick Brackets for Inner ",
-    "Machine Timer": "01",
-    "Op Timer": "01",
-    "Total CT": "01",
-  },
-  {
-    ID: "100",
-    "Part Desc.": "Quick Brackets for Inner ",
-    "Machine Timer": "01",
-    "Op Timer": "01",
-    "Total CT": "01",
-  },
-  {
-    ID: "100",
-    "Part Desc.": "Quick Brackets for Inner ",
-    "Machine Timer": "01",
-    "Op Timer": "01",
-    "Total CT": "01",
-  },
-];
-
-const columnsManual = ["Process", "Part Desc.", "Qty", "Scrap"];
-const columnsManual1 = ["Process", "Part Desc.", "Cycle Time"];
-const columnsManual2 = [
-  "ID",
-  "Part Desc.",
-  "Machine Timer",
-  "Op Timer",
-  "Total CT",
-];
-
 // const Monitor = () => {
 //   const [startDate, setStartDate] = useState(new Date("2024-08-25"));
 //   const [endDate, setEndDate] = useState(new Date("2025-11-25"));
@@ -166,6 +55,7 @@ const columnsManual2 = [
 
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
+import { Calendar } from "lucide-react";
 
 const Monitor = () => {
   const [startDate, setStartDate] = useState(new Date());
@@ -183,10 +73,6 @@ const Monitor = () => {
           endDate: endDate.toISOString(),
         },
       });
-      console.log(
-        "res.data.productionScrap)res.data.productionScrap)",
-        res.data
-      );
       setManualData(res.data.manualTable);
       setMonitorData(res.data.monitorTable);
       setProductionScrapData(res.data.productionScrap);
@@ -198,39 +84,59 @@ const Monitor = () => {
   useEffect(() => {
     fetchData();
   }, [startDate, endDate]);
-  console.log("manualDatamanualData", productionScrapData);
-
-  const tableList = [
-    { title: "Manual", columns: columnsManual, data: manualData },
-    { title: "Part to Monitor", columns: columnsManual1, data: monitorData },
-  ];
 
   return (
-    <>
-      <div className="flex items-center gap-2 justify-end">
-        <DatePicker
-          selected={startDate}
-          onChange={(date) => setStartDate(date)}
-          dateFormat="dd/MM/yyyy"
-          className="border rounded-md p-1 text-xs"
-        />
-        <span>-</span>
-        <DatePicker
-          selected={endDate}
-          onChange={(date) => setEndDate(date)}
-          dateFormat="dd/MM/yyyy"
-          className="border rounded-md p-1 text-xs"
-        />
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <h1 className="text-2xl font-bold text-gray-800">
+          Monitoring Dashboard
+        </h1>
+
+        <div className="flex items-center gap-3 bg-white p-2 rounded-xl border border-gray-200 shadow-sm ml-auto">
+          {/* Start Date */}
+          <div className="flex items-center gap-2 px-2 hover:bg-gray-50 rounded-md transition-colors">
+            <Calendar size={16} className="text-blue-500" />
+            <div className="flex flex-col">
+              <span className="text-[10px] text-gray-400 font-bold uppercase leading-none">
+                From
+              </span>
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                dateFormat="MM/dd/yyyy" // <-- Format Changed Here
+                className="bg-transparent text-sm font-medium outline-none text-gray-700 w-24 cursor-pointer"
+              />
+            </div>
+          </div>
+
+          <div className="h-8 w-[1px] bg-gray-200"></div>
+
+          {/* End Date */}
+          <div className="flex items-center gap-2 px-2 hover:bg-gray-50 rounded-md transition-colors">
+            <div className="flex flex-col text-right">
+              <span className="text-[10px] text-gray-400 font-bold uppercase leading-none">
+                To
+              </span>
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                dateFormat="MM/dd/yyyy"
+                minDate={startDate}
+                className="bg-transparent text-sm font-medium outline-none text-gray-700 w-24 cursor-pointer"
+              />
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="flex  justify-between items-center gap-8 p-6">
-        {/* <DataTable columns={table.columns} data={table.data} /> */}
+
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
         <DataTable
           manualData={manualData}
           monitorData={monitorData}
           productionScrapData={productionScrapData}
         />
       </div>
-    </>
+    </div>
   );
 };
 

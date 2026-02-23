@@ -3,6 +3,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import DataTable from "../Operation_performance/DataTable";
+import "react-datepicker/dist/react-datepicker.css";
+
+import { Calendar, ArrowRight } from "lucide-react";
 
 const MonitorManagement = () => {
   const [startDate, setStartDate] = useState(new Date());
@@ -32,37 +35,89 @@ const MonitorManagement = () => {
   useEffect(() => {
     fetchData();
   }, [startDate, endDate]);
-  console.log("manualDatamanualData", manualData);
 
   return (
-    <>
-      <div>
-        <h1 className="font-bold text-2xl mt-11 px-6">Monitor</h1>
+    <div className="p-6 bg-gray-50 min-h-screen mt-5">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 mt-5">
+        <div>
+          <h1 className="font-bold text-2xl text-gray-800 tracking-tight">
+            Monitor Dashboard
+          </h1>
+          <p className="text-gray-500 text-sm mt-1">
+            Real-time production & manual tracking
+          </p>
+        </div>
+
+        {/* Date Picker Bar - Styled & Aligned Right */}
+        <div className="flex items-center bg-white border border-gray-200 shadow-sm rounded-2xl p-2 gap-2 ml-auto">
+          {/* Start Date */}
+          <div className="flex items-center gap-3 px-3 py-1 hover:bg-gray-50 rounded-xl transition-all cursor-pointer">
+            <div className="bg-blue-50 p-2 rounded-lg text-blue-600">
+              <Calendar size={18} />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] text-gray-400 font-bold uppercase leading-none">
+                From
+              </span>
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                dateFormat="MM/dd/yyyy" // Updated Format
+                className="bg-transparent text-sm font-semibold text-gray-700 outline-none w-24 cursor-pointer"
+              />
+            </div>
+          </div>
+
+          <ArrowRight size={16} className="text-gray-300" />
+
+          {/* End Date */}
+          <div className="flex items-center gap-3 px-3 py-1 hover:bg-gray-50 rounded-xl transition-all cursor-pointer">
+            <div className="flex flex-col text-left">
+              <span className="text-[10px] text-gray-400 font-bold uppercase leading-none">
+                To
+              </span>
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                dateFormat="MM/dd/yyyy" // Updated Format
+                minDate={startDate}
+                className="bg-transparent text-sm font-semibold text-gray-700 outline-none w-24 cursor-pointer"
+              />
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="flex items-center gap-2 justify-end">
-        <DatePicker
-          selected={startDate}
-          onChange={(date) => setStartDate(date)}
-          dateFormat="dd/MM/yyyy"
-          className="border rounded-md p-1 text-xs"
-        />
-        <span>-</span>
-        <DatePicker
-          selected={endDate}
-          onChange={(date) => setEndDate(date)}
-          dateFormat="dd/MM/yyyy"
-          className="border rounded-md p-1 text-xs"
-        />
-      </div>
-      <div className="flex  justify-between items-center gap-8 p-6">
-        {/* <DataTable columns={table.columns} data={table.data} /> */}
+
+      {/* Table Section */}
+      <div className="bg-white rounded-3xl shadow-md border border-gray-100 p-6">
         <DataTable
           manualData={manualData}
           monitorData={monitorData}
           productionScrapData={productionScrapData}
         />
       </div>
-    </>
+
+      {/* Inline Style to beautify the DatePicker Popup */}
+      <style>{`
+        .react-datepicker {
+          border: none !important;
+          border-radius: 12px !important;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+          font-family: inherit !important;
+        }
+        .react-datepicker__header {
+          background-color: #fff !important;
+          border-bottom: 1px solid #f3f4f6 !important;
+          border-top-left-radius: 12px !important;
+          border-top-right-radius: 12px !important;
+        }
+        .react-datepicker__day--selected {
+          background-color: #3b82f6 !important;
+          border-radius: 6px !important;
+        }
+      `}</style>
+    </div>
   );
 };
 

@@ -8,6 +8,7 @@ import { selectProductApi } from "../Work_Instrcution.tsx/https/workInstructionA
 import Select from "react-select";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
 
 const validationSchema = Yup.object({
   order_date: Yup.date().required("Order Date is required"),
@@ -146,17 +147,20 @@ const SupplierOrdersForm = () => {
                   >
                     Order Date
                   </label>
-                  <Field
-                    id="order_date"
-                    name="order_date"
-                    type="date"
-                    className="border py-3 px-4 rounded-md w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  <DatePicker
+                    selected={
+                      values.order_date ? new Date(values.order_date) : null
+                    }
+                    onChange={(date) => setFieldValue("order_date", date)}
+                    dateFormat="MM/dd/yyyy"
+                    placeholderText="Select Order Date"
+                    className="border py-3 px-4 rounded-md w-full focus:ring-2 focus:ring-blue-500 outline-none"
                   />
-                  <ErrorMessage
-                    name="order_date"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
+                  {errors.order_date && touched.order_date && (
+                    <div className="text-red-500 text-sm mt-1">
+                      {errors.order_date}
+                    </div>
+                  )}
                 </div>
                 <div className="md:col-span-2">
                   <label
@@ -360,17 +364,20 @@ const SupplierOrdersForm = () => {
                   >
                     Required By (Need Date)
                   </label>
-                  <Field
-                    id="need_date"
-                    name="need_date"
-                    type="date"
-                    className="border py-3 px-4 rounded-md w-full"
+                  <DatePicker
+                    selected={
+                      values.need_date ? new Date(values.need_date) : null
+                    }
+                    onChange={(date) => setFieldValue("need_date", date)}
+                    dateFormat="MM/dd/yyyy"
+                    placeholderText="Select Need Date"
+                    className="border py-3 px-4 rounded-md w-full focus:ring-2 focus:ring-blue-500 outline-none"
                   />
-                  <ErrorMessage
-                    name="need_date"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
+                  {errors.need_date && touched.need_date && (
+                    <div className="text-red-500 text-sm mt-1">
+                      {errors.need_date}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

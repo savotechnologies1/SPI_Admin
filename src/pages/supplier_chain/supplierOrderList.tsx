@@ -13,6 +13,7 @@ import {
   supplierOrderListApi,
   updateSupplierOrderStatus,
 } from "./https/suppliersApi";
+import { format } from "date-fns";
 interface WorkInstructionItem {
   id: string;
   imageUrl: string;
@@ -451,7 +452,6 @@ const SupplierOrderList: React.FC = () => {
                         item.order_number
                       )}
                     </td>
-
                     <td className="px-4 py-3">
                       {editableRowId === item.id ? (
                         <input
@@ -461,11 +461,12 @@ const SupplierOrderList: React.FC = () => {
                           onChange={handleEditChange}
                           className="border px-2 py-1 rounded w-full"
                         />
+                      ) : item.order_date ? (
+                        format(new Date(item.order_date), "MM/dd/yyyy")
                       ) : (
-                        item.order_date
+                        ""
                       )}
                     </td>
-
                     <td className="px-4 py-3">
                       {item?.supplier === null
                         ? "not available"

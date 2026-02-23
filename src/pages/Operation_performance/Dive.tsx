@@ -848,12 +848,16 @@ const Dive = () => {
           <DatePicker
             selected={startDate}
             onChange={(d) => setStartDate(d!)}
+            dateFormat="MM/dd/yyyy" // <-- Ye line add karein
+            placeholderText="MM/DD/YYYY"
             className="border p-1.5 rounded text-sm bg-gray-50"
           />
           <span className="text-gray-400">to</span>
           <DatePicker
             selected={endDate}
             onChange={(d) => setEndDate(d!)}
+            dateFormat="MM/dd/yyyy" // <-- Ye line add karein
+            placeholderText="MM/DD/YYYY"
             className="border p-1.5 rounded text-sm bg-gray-50"
           />
         </div>
