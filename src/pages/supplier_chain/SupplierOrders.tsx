@@ -29,7 +29,6 @@ const SupplierOrders = () => {
             <FaCircle className="text-[6px] text-gray-500" />
           </span>
           <span className="text-[14px] hover:cursor-pointer">
-            {" "}
             Supplier Order
           </span>
         </div>

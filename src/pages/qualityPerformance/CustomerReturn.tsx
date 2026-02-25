@@ -1,7 +1,6 @@
 import data from "../../components/Data/customerReturnData";
 import client_icon from "../../assets/client.png";
 import date_icon from "../../assets/date.png";
-
 import pin from "../../assets/pin.png";
 import copy from "../../assets/copy.png";
 import filter from "../../assets/byte_filter.png";
@@ -13,7 +12,6 @@ const CustomerReturn = () => {
     <div className=" py-6 bg-white rounded-lg">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
-          {" "}
           <h1 className="text-xl font-semibold px-4  ">Customer Return</h1>
         </div>
         <div className="flex flex-col sm:flex-row  gap-2 items-center px-4">

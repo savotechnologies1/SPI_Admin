@@ -7,9 +7,9 @@ export const importApi = async (url: string, formData: FormData) => {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
-    if (response.status === 200 || response.status === 201) {
-      toast.success(response.data.message);
-    }
+    // if (response.status === 200 || response.status === 201) {
+    //   toast.success(response.data.message);
+    // }
 
     return response;
   } catch (error: unknown) {

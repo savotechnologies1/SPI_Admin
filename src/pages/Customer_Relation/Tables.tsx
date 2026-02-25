@@ -1,22 +1,27 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const columnsManual = [
-  "Date",
-  "Order",
-  "First Name",
-  "Last Name",
-  "Product Qty",
-  "Qty",
-];
+interface TablesProps {
+  startDate: Date;
+  endDate: Date;
+}
 
-const Tables = ({ startDate, endDate }) => {
-  const [data, setData] = useState({
-    openOrders: [],
-    fulfilledOrders: [],
-    supplierReturn: [],
-    performance: [],
-  });
+interface DataState {
+  openOrders: Record<string, unknown>[];
+  fulfilledOrders: Record<string, unknown>[];
+  supplierReturn: Record<string, unknown>[];
+  performance: Record<string, unknown>[];
+  scapEntries: Record<string, unknown>[];
+}
+
+const Tables: React.FC<TablesProps> = ({ startDate, endDate }) => {
+  const [data, setData] = useState<DataState>(() => ({
+    openOrders: [] as Record<string, unknown>[],
+    fulfilledOrders: [] as Record<string, unknown>[],
+    supplierReturn: [] as Record<string, unknown>[],
+    performance: [] as Record<string, unknown>[],
+    scapEntries: [] as Record<string, unknown>[],
+  }));
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
   useEffect(() => {
@@ -31,7 +36,7 @@ const Tables = ({ startDate, endDate }) => {
             },
           },
         );
-        setData(res.data.data);
+        setData(res.data.data as DataState);
       } catch (error) {
         console.error("Error fetching supplier relation:", error);
       }
@@ -50,7 +55,7 @@ const Tables = ({ startDate, endDate }) => {
       );
     }
 
-    const columns = Object.keys(rows[0]);
+    const columns = rows.length > 0 ? Object.keys(rows[0]) : [];
 
     return (
       <div className="border rounded-lg shadow bg-white p-4">
@@ -97,7 +102,7 @@ const Tables = ({ startDate, endDate }) => {
         {renderTable("Open Orders", data.openOrders)}
         {renderTable("Fulfilled Orders", data.fulfilledOrders)}
         {renderTable("Performance", data.performance)}
-        {renderTable("Scrap Entries", data.scapEntries)}
+        {renderTable("Scrap Entries", data.scapEntries || [])}
       </div>
     </div>
   );

@@ -19,42 +19,52 @@ const getTodayDate = () => {
 
 const formatDollar = (value) => `$${Number(value).toLocaleString()}`;
 
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format } from "date-fns";
+
 const Costing = () => {
+  // State: startDate aur endDate ko Date Object rakha hai
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [cardsData, setCardsData] = useState([]);
   const [monthlyCOGS, setMonthlyCOGS] = useState([]);
-  const [startDate, setStartDate] = useState(getTodayDate());
-  const [endDate, setEndDate] = useState(getTodayDate());
 
-  const BASE_URL = import.meta.env.VITE_SERVER_URL;
+  const BASE_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:5000";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Backend ko hamesha YYYY-MM-DD chahiye hota hai, isliye format badla
+        const formattedStart = format(startDate, "yyyy-MM-dd");
+        const formattedEnd = format(endDate, "yyyy-MM-dd");
+
         const res = await axios.get(`${BASE_URL}/api/admin/costing-data`, {
-          params: { startDate, endDate },
+          params: { startDate: formattedStart, endDate: formattedEnd },
         });
+
         const data = res.data;
+
+        // Cards Data Update
         setCardsData([
           {
             num: formatDollar(data.totalYearCost || 0),
             text: "Total COGS",
             scrap_img: scrap_cost,
-            textColor: "text-red-500",
           },
           {
             num: formatDollar(data.supplierReturn || 0),
             text: "Supplier Return",
             scrap_img: supplier_return,
-            textColor: "text-green-500",
           },
           {
             num: formatDollar(data.scrapCost || 0),
             text: "Total Scrap Cost",
             scrap_img: scrap_cost,
-            textColor: "text-orange-500",
           },
         ]);
 
+        // Chart Data Update
         const months = [
           "Jan",
           "Feb",
@@ -70,10 +80,10 @@ const Costing = () => {
           "Dec",
         ];
         const cogs = data.monthlyCOGS || {};
+        const yearKey = formattedStart.split("-")[0];
 
         const chartData = months.map((month, index) => {
           const monthNum = String(index + 1).padStart(2, "0");
-          const yearKey = startDate.split("-")[0];
           const key = `${yearKey}-${monthNum}`;
           return { name: month, value: cogs[key] || 0 };
         });
@@ -87,43 +97,56 @@ const Costing = () => {
     fetchData();
   }, [startDate, endDate]);
 
+  // Aaj ki date check karne ke liye helper
+  const isToday = (date) => {
+    const today = new Date();
+    return date.toDateString() === today.toDateString();
+  };
+
   return (
     <div className="p-4 bg-gray-50 min-h-screen">
+      {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h1 className="font-semibold text-2xl text-gray-800">
           Costing Analysis
         </h1>
 
-        {/* --- Date Picker UI --- */}
+        {/* Custom Date Picker Container */}
         <div className="flex items-center gap-2 bg-white p-2 rounded-lg shadow-sm border border-gray-200">
+          {/* From Date */}
           <div className="flex flex-col px-2">
             <label className="text-[10px] font-bold text-gray-400 uppercase">
               From
             </label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="text-sm outline-none bg-transparent cursor-pointer"
+            <DatePicker
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
+              dateFormat="MM/dd/yyyy" // <-- Aapka format yaha set hai
+              className="text-sm outline-none bg-transparent cursor-pointer w-24 text-gray-700"
             />
           </div>
+
           <div className="h-8 w-[1px] bg-gray-200 mx-1"></div>
+
+          {/* To Date */}
           <div className="flex flex-col px-2">
             <label className="text-[10px] font-bold text-gray-400 uppercase">
               To
             </label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="text-sm outline-none bg-transparent cursor-pointer"
+            <DatePicker
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+              dateFormat="MM/dd/yyyy" // <-- Aapka format yaha set hai
+              className="text-sm outline-none bg-transparent cursor-pointer w-24 text-gray-700"
             />
           </div>
-          {(startDate !== getTodayDate() || endDate !== getTodayDate()) && (
+
+          {/* Today Button */}
+          {(!isToday(startDate) || !isToday(endDate)) && (
             <button
               onClick={() => {
-                setStartDate(getTodayDate());
-                setEndDate(getTodayDate());
+                setStartDate(new Date());
+                setEndDate(new Date());
               }}
               className="ml-2 text-xs text-blue-500 font-semibold hover:underline"
             >
@@ -134,11 +157,11 @@ const Costing = () => {
       </div>
 
       {/* Cards Section */}
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {cardsData.map((item, index) => (
           <div
             key={index}
-            className="flex items-center gap-4 bg-white rounded-xl w-full p-5 shadow-sm border border-gray-100"
+            className="flex items-center gap-4 bg-white rounded-xl p-5 shadow-sm border border-gray-100"
           >
             <div className="p-3 bg-blue-50 rounded-lg">
               <img
@@ -155,14 +178,14 @@ const Costing = () => {
         ))}
       </div>
 
-      {/* Monthly COGS Line Chart */}
+      {/* Chart Section */}
       <div className="bg-white shadow-sm rounded-2xl p-6 border border-gray-100">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-bold text-gray-700">
             Monthly COGS Trend
           </h2>
           <p className="text-xs text-gray-400">
-            Values based on {startDate.split("-")[0]}
+            Year: {startDate.getFullYear()}
           </p>
         </div>
 
@@ -187,7 +210,7 @@ const Costing = () => {
                 tickLine={false}
                 fontSize={12}
                 tick={{ fill: "#9CA3AF" }}
-                tickFormatter={(value) => `$${value}`}
+                tickFormatter={(val) => `$${val}`}
                 width={60}
               />
               <Tooltip

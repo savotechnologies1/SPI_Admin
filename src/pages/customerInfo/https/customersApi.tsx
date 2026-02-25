@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
+import { AxiosError } from "axios";
 
 export const addCustomer = async (apiData: object) => {
   // eslint-disable-next-line no-useless-catch
@@ -10,7 +11,11 @@ export const addCustomer = async (apiData: object) => {
     }
     return response;
   } catch (error) {
-    toast.error(error.response.data.message);
+    if (error instanceof AxiosError && error.response) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error("An unexpected error occurred");
+    }
   }
 };
 
@@ -18,7 +23,7 @@ export const customerList = async (page = 1, limit = 5, searchVal: string) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/all-customer-list?page=${page}&limit=${limit}&search=${searchVal}`
+      `/all-customer-list?page=${page}&limit=${limit}&search=${searchVal}`,
     );
     return response.data;
   } catch (error) {
@@ -40,14 +45,18 @@ export const editCustomer = async (data: object, id: string) => {
   try {
     const response = await axiosInstance.put(
       `/edit-customer-detail/${id}`,
-      data
+      data,
     );
     if (response.status === 201) {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: unknown) {
-    toast.error(error.response.data.message);
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error("An unexpected error occurred");
+    }
   }
 };
 
@@ -58,7 +67,11 @@ export const deleteCustomer = async (id: string) => {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: unknown) {
-    toast.error(error.response.data.message);
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error("An unexpected error occurred");
+    }
   }
 };

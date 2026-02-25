@@ -1,8 +1,9 @@
 import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { addEmployee } from "../https/EmployeeApis";
-
+import DatePicker from "react-datepicker"; // DatePicker import kiya
+import "react-datepicker/dist/react-datepicker.css"; // CSS import kiya
 type FormData = {
   firstName: string;
   lastName: string;
@@ -20,6 +21,7 @@ type FormData = {
 const AddEmployee = () => {
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
     setError,
@@ -214,13 +216,23 @@ const AddEmployee = () => {
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Start Date</label>
-            <input
-              type="date"
-              {...register("startDate", {
-                required: "Start Date is required",
-              })}
-              placeholder="Start date"
-              className="w-full border px-4 py-2 rounded-md text-gray-600"
+            <Controller
+              control={control}
+              name="startDate"
+              rules={{ required: "Start Date is required" }}
+              render={({ field }) => (
+                <DatePicker
+                  placeholderText="MM/DD/YYYY" // Placeholder yahan se aayega
+                  onChange={(date) =>
+                    field.onChange(date ? date.toISOString() : date)
+                  }
+                  selected={field.value ? new Date(field.value) : null}
+                  dateFormat="MM/dd/yyyy" // Format set kar diya
+                  className="w-full border px-4 py-2 rounded-md text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  // Datepicker container ko full width banane ke liye wrapper class zaroori hai
+                  wrapperClassName="w-full"
+                />
+              )}
             />
             {errors.startDate && (
               <p className="text-red-500 text-sm mt-1">

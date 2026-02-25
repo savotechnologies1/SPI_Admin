@@ -12,16 +12,12 @@ import DatePicker from "react-datepicker";
 
 const validationSchema = Yup.object({
   order_date: Yup.date().required("Order Date is required"),
-
-  // When 'showFields' is false, 'supplier_id' is required.
   supplier_id: Yup.string().when("showFields", {
     is: false,
     then: (schema) =>
       schema.required("Please select a supplier or add a new one."),
     otherwise: (schema) => schema.notRequired(),
   }),
-
-  // The following fields are ONLY required when 'showFields' is true.
   firstName: Yup.string().when("showFields", {
     is: true,
     then: (schema) =>
@@ -40,7 +36,6 @@ const validationSchema = Yup.object({
         .required("Email is required for a new supplier."),
   }),
 
-  // These validations remain the same
   part_id: Yup.string().required("Product is required"),
   quantity: Yup.number()
     .min(1, "Quantity must be at least 1")

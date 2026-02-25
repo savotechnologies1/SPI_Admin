@@ -10,21 +10,25 @@ import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import { forgetPassword } from "./https/authApi";
 
+interface FormData {
+  email: string;
+}
+
 const ForgetPassword = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<FormData>();
 
   const navigate = useNavigate();
-  const onSubmit = async (data: string) => {
+  const onSubmit = async (data: FormData) => {
     try {
-      const response = await forgetPassword(data);
+      const response = await forgetPassword(data.email);
       console.log("(response(response", response);
 
-      if (response.status === 200) {
+      if (response?.status === 200) {
         navigate("/otp-verify");
       }
     } catch (error) {
@@ -99,7 +103,7 @@ const ForgetPassword = () => {
                   />
                   {errors.email && (
                     <p className="text-red-500 text-xs mt-1">
-                      {String(errors.email.message)}
+                      {errors.email.message?.toString() || "An error occurred"}
                     </p>
                   )}
                 </div>

@@ -18,8 +18,24 @@ ChartJS.register(
   Legend,
 );
 
-const ScrapBar = ({ qualityData }) => {
+interface QualityDataItem {
+  processName?: string;
+  machineName?: string;
+  partDescription?: string;
+  partNumber?: string;
+  scrapQuantity: number;
+  scheduleQuantity: number;
+}
+
+interface ScrapBarProps {
+  qualityData: QualityDataItem[];
+}
+
+const ScrapBar = ({ qualityData }: ScrapBarProps) => {
   const chartDataEntries = qualityData.filter((item) => item.scrapQuantity > 0);
+
+  const legendPosition = window.innerWidth < 768 ? "bottom" : "top";
+
   const data = {
     labels: chartDataEntries.map((item) =>
       item.partNumber ? item.partDescription : item.partNumber,
@@ -41,7 +57,7 @@ const ScrapBar = ({ qualityData }) => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: window.innerWidth < 768 ? "bottom" : "top",
+        position: legendPosition as "bottom" | "top",
         labels: {
           usePointStyle: true,
           boxWidth: 8,
@@ -50,9 +66,13 @@ const ScrapBar = ({ qualityData }) => {
       },
       tooltip: {
         callbacks: {
-          afterLabel: (context) => {
+          afterLabel: (context: any) => {
             const item = chartDataEntries[context.dataIndex];
-            return item.partDescription ? `Desc: ${item.partDescription}` : "";
+            return item
+              ? item.partDescription
+                ? `Desc: ${item.partDescription}`
+                : ""
+              : "";
           },
         },
       },

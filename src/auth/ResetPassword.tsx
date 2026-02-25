@@ -3,7 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import signin from "../assets/signin.png";
 import { useState } from "react";
-import { forgetPassword, resetPassword } from "./https/authApi";
+import { resetPassword } from "./https/authApi";
+
+interface FormData {
+  newPassword: string;
+  confirmPassword: string;
+}
 
 const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,10 +18,10 @@ const ResetPassword = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm<FormData>();
 
   const navigate = useNavigate();
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FormData) => {
     if (data.newPassword !== data.confirmPassword) {
       alert("Passwords do not match");
       return;
@@ -24,7 +29,7 @@ const ResetPassword = () => {
 
     try {
       const response = await resetPassword(data);
-      if (response.status === 200) {
+      if (response?.status === 200) {
         navigate("/sign-in");
       }
     } catch (error) {

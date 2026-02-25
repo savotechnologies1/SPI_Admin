@@ -28,7 +28,7 @@ const CustomerList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
-  const [showConfirmId, setShowConfirmId] = useState(null);
+  const [showConfirmId, setShowConfirmId] = useState<string | null>(null);
 
   const rowsPerPage = 10;
 
@@ -107,7 +107,7 @@ const CustomerList = () => {
         <div className="flex flex-wrap items-center mt-2 gap-1 md:gap-2">
           <p
             className={`text-sm md:text-base text-black`}
-            onClick={() => "dashboardDetailes"}
+            onClick={() => navigate("/dashboardDetailes")}
           >
             <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
           </p>
@@ -241,7 +241,7 @@ const CustomerList = () => {
                               day: "2-digit",
                               month: "2-digit",
                               year: "numeric",
-                            }
+                            },
                           )}
                         </span>
                       </td>
@@ -285,8 +285,10 @@ const CustomerList = () => {
                                 <button
                                   className="px-4 py-2 bg-red-500 text-white rounded"
                                   onClick={() => {
-                                    handleDelete(showConfirmId);
-                                    setShowConfirmId(null);
+                                    if (showConfirmId) {
+                                      handleDelete(showConfirmId);
+                                      setShowConfirmId(null);
+                                    }
                                   }}
                                 >
                                   Delete

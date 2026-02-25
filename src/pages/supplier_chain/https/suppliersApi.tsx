@@ -1,8 +1,10 @@
 import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
-import { AxiosError } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 
-export const addSupplier = async (apiData: object) => {
+export const addSupplier = async (
+  apiData: object,
+): Promise<AxiosResponse | undefined> => {
   try {
     const response = await axiosInstance.post("/add-supplier", apiData);
     if (response.status === 201) {
@@ -22,7 +24,7 @@ export const addSupplier = async (apiData: object) => {
 export const supplierList = async (page = 1, limit = 5, searchVal: string) => {
   try {
     const response = await axiosInstance.get(
-      `/all-supplier?page=${page}&limit=${limit}&search=${searchVal}`
+      `/all-supplier?page=${page}&limit=${limit}&search=${searchVal}`,
     );
     return response.data;
   } catch (error) {
@@ -102,11 +104,11 @@ export const addSupplierOrder = async (apiData: object) => {
 export const supplierOrderListApi = async (
   page = 1,
   limit = 5,
-  searchVal: string
+  searchVal: string,
 ) => {
   try {
     const response = await axiosInstance.get(
-      `/supplier-order-list?page=${page}&limit=${limit}&search=${searchVal}`
+      `/supplier-order-list?page=${page}&limit=${limit}&search=${searchVal}`,
     );
     return response.data;
   } catch (error) {
@@ -118,7 +120,7 @@ export const editSupplierOrder = async (id: string, data: object) => {
   try {
     const response = await axiosInstance.put(
       `/update-supplier-order/${id}`,
-      data
+      data,
     );
     if (response.status === 201) {
       toast.success(response.data.message);
@@ -149,7 +151,7 @@ export const deleteSupplierOrder = async (id: string) => {
 export const deleteSupplierInventory = async (id: string) => {
   try {
     const response = await axiosInstance.patch(
-      `/delete-supplier-invetory/${id}`
+      `/delete-supplier-invetory/${id}`,
     );
     if (response.status === 200) {
       toast.success(response.data.message);
@@ -160,7 +162,7 @@ export const deleteSupplierInventory = async (id: string) => {
   }
 };
 
-export const sendSupplierEmailApi = async (id) => {
+export const sendSupplierEmailApi = async (id: string) => {
   try {
     const response = await axiosInstance.post(`/supplier-order-email`, {
       id: id,
@@ -177,7 +179,7 @@ export const sendSupplierEmailApi = async (id) => {
 export const supplierOrderDetail = async (id: string) => {
   try {
     const response = await axiosInstance.get(
-      `/get-supplier-order-detail/${id}`
+      `/get-supplier-order-detail/${id}`,
     );
     return response.data;
   } catch (error) {
@@ -189,10 +191,10 @@ export const updateSupplierOrderStatus = async (
   id: string,
   quantity: string,
   part_id: string,
-  status: string
+  status: string,
 ) => {
   try {
-    const response = await axiosInstance.patch(`/change-order-status/${id}`, {
+    await axiosInstance.patch(`/change-order-status/${id}`, {
       quantity: quantity,
       part_id: part_id,
       status: status,

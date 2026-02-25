@@ -1,4 +1,17 @@
-const SupplierReturn = ({ qualityData }) => {
+interface QualityDataItem {
+  processName?: string;
+  machineName?: string;
+  partDescription?: string;
+  partNumber?: string;
+  scrapQuantity: number;
+  scheduleQuantity: number;
+}
+
+interface SupplierReturnProps {
+  qualityData: QualityDataItem[];
+}
+
+const SupplierReturn = ({ qualityData }: SupplierReturnProps) => {
   console.log("qualityData", qualityData);
 
   return (

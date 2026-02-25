@@ -1,17 +1,20 @@
-import {
-  Pin,
-  Copy,
-  Filter,
-  Maximize2,
-  MoreHorizontal,
-  Calendar,
-  User,
-} from "lucide-react";
+import { Calendar, User } from "lucide-react";
 
-const ReturnTable = ({ title, data, nameLabel }) => {
+interface ReturnTableProps {
+  title: string;
+  data: Array<{
+    date: string;
+    customerName?: string;
+    supplierName?: string;
+    partNumber: string;
+    quantity: number;
+  }>;
+  nameLabel: string;
+}
+
+const ReturnTable = ({ title, data, nameLabel }: ReturnTableProps) => {
   return (
     <div className="mt-6 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-      {/* Table Header Section - Icons match your screenshot */}
       <div className="flex justify-between items-center p-4">
         <h2 className="text-xl font-bold text-[#1a1a1a]">{title}</h2>
       </div>
@@ -43,7 +46,6 @@ const ReturnTable = ({ title, data, nameLabel }) => {
                   key={index}
                   className="text-[13px] hover:bg-gray-50 transition-colors"
                 >
-                  {/* Date Column */}
                   <td className="p-4 text-gray-600 whitespace-nowrap">
                     {new Date(item.date).toLocaleDateString("en-US", {
                       month: "short",
@@ -52,23 +54,19 @@ const ReturnTable = ({ title, data, nameLabel }) => {
                     })}
                   </td>
 
-                  {/* Name Column (Bold like screenshot) */}
                   <td className="p-4 font-bold text-gray-800">
                     {item.customerName || item.supplierName || "N/A"}
                   </td>
 
-                  {/* Part Description Column */}
                   <td className="p-4 text-gray-600">
                     <div className="max-w-[350px]">
                       <p className="leading-tight">{item.partNumber}</p>
                     </div>
                   </td>
 
-                  {/* Is Scrap & Defect (Hardcoded as per screenshot) */}
                   <td className="p-4 text-gray-600">Yes</td>
-                  <td className="p-4 text-gray-600">{item.defectDesc}</td>
+                  <td className="p-4 text-gray-600">Broke</td>
 
-                  {/* Qty Column */}
                   <td className="p-4 text-right font-medium text-gray-700">
                     {(item.quantity || 0).toFixed(2)}
                   </td>
@@ -77,7 +75,7 @@ const ReturnTable = ({ title, data, nameLabel }) => {
             ) : (
               <tr>
                 <td
-                  colSpan="6"
+                  colSpan={6 as any}
                   className="p-10 text-center text-gray-400 italic"
                 >
                   No records found for the selected range.

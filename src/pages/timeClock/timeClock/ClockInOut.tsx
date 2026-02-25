@@ -16,7 +16,6 @@ const ClockInOut = () => {
 
       <div className="flex flex-col xl:flex-row p-6 justify-between gap-10">
         <div className="w-full sm:w-[80%] md:w-[100%] lg:w-[50%] xl:w-[40%] bg-white shadow-lg rounded-2xl py-6 sm:py-10 px-4 sm:px-6 text-center">
-          {/* Profile Image */}
           <div className="flex justify-center">
             <img
               className="w-16 h-16 sm:w-[70px] sm:h-[70px] rounded-full bg-[#d1a822] object-cover"
@@ -24,8 +23,6 @@ const ClockInOut = () => {
               alt="Profile"
             />
           </div>
-
-          {/* User Info */}
           <div className="mt-3 sm:mt-4">
             <p className="text-gray-600 text-xs sm:text-sm">#15652542</p>
             <h2 className="text-base sm:text-lg font-bold mt-1">
@@ -36,7 +33,6 @@ const ClockInOut = () => {
             </p>
           </div>
 
-          {/* Details */}
           <div className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-4 sm:gap-x-4 ">
             <div className="col-span-2 sm:col-span-1">
               <p className="text-xs text-gray-500">Joined</p>
@@ -59,7 +55,6 @@ const ClockInOut = () => {
           </div>
         </div>
         <div className="w-full xl:w-[60%] ">
-          {" "}
           <QuickPunch />
         </div>
       </div>

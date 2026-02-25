@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  sendEmailToTheEmployeeApi,
   sendVacationReqStatus,
 } from "../https/EmployeeApis";
 type Props = { employeeId: string; isOpen: boolean; onClose: () => void };
@@ -18,17 +17,11 @@ const VacationReqModel = ({ employeeId, isOpen, onClose, status }: Props) => {
     setIsCopied(false);
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedPassword);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
-  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const data = { id: employeeId, email, status: status };
     console.log({ id: employeeId, email, status: status });
     await sendVacationReqStatus(data);
-    // const response = await sendEmailToTheEmployeeApi(data);
     closeModal();
   };
   if (!isOpen) return null;

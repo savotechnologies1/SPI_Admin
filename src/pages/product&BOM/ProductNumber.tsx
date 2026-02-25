@@ -26,10 +26,10 @@ interface Part {
   availStock?: number;
   companyName?: string;
   minStock?: number;
-  processOrderRequired: Boolean;
-  instructionRequired: Boolean;
-  // isProductSchedule: Boolean;
+  processOrderRequired: boolean;
+  instructionRequired: boolean;
   processId: string;
+  processDesc?: string;
 }
 
 const ProductNumber = () => {
@@ -42,17 +42,11 @@ const ProductNumber = () => {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<Part>({
-    defaultValues: {
-      supplierOrderQty: 0,
-      availStock: 0,
-      minStock: null,
-    },
-  });
+  } = useForm<Part>();
   const processId = watch("processId");
-  const [processData, setProcessData] = useState([]);
+  const [processData, setProcessData] = useState<any[]>([]);
   const [partData, setPartData] = useState<any[]>([]);
-  const [bomEntries, setBomEntries] = useState([
+  const [bomEntries, setBomEntries] = useState<any[]>([
     {
       partNumber: "",
       qty: "",
@@ -64,17 +58,16 @@ const ProductNumber = () => {
   ]);
 
   const processOrderRequired = watch("processOrderRequired");
-  const isProcessRequired = processOrderRequired === "true";
+  const isProcessRequired = processOrderRequired === true || "true";
   const [suggestions, setSuggestions] = useState<{ [index: number]: string[] }>(
     {},
   );
   const inputRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [selectedImages, setSelectedImages] = useState<FileList | null>(null);
-  const [suppliers, setSuppliers] = useState<any[]>([]); // Suppliers स्टोर करने के लिए
-  const [searchTerm, setSearchTerm] = useState(""); // इनपुट में दिखने वाला नाम
-  const [showDropdown, setShowDropdown] = useState(false); // लिस्ट दिखाने के लिए
+  const [suppliers, setSuppliers] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  // Filtered Suppliers: जो टाइप किया गया है उसके आधार पर लिस्ट छोटी होगी
   const filteredSuppliers = suppliers.filter((s) =>
     s.name?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
@@ -84,7 +77,7 @@ const ProductNumber = () => {
         const res = await selectSupplier();
         setSuppliers(res);
       } catch (err) {
-        console.error("Suppliers load failed", err);
+        throw err;
       }
     };
     fetchSuppliers();
@@ -134,7 +127,7 @@ const ProductNumber = () => {
         setProcessData(process);
         setPartData(parts?.data || []);
       } catch (err) {
-        console.error(err);
+        throw err;
       }
     })();
   }, []);
@@ -152,7 +145,7 @@ const ProductNumber = () => {
   }, []);
   const handleBOMChange = (index: number, field: string, value: string) => {
     const updated = [...bomEntries];
-    updated[index][field] = value; // now workInstruction will be string
+    updated[index][field] = value;
     setBomEntries(updated);
 
     if (field === "partNumber") {
@@ -182,7 +175,7 @@ const ProductNumber = () => {
       setBomEntries(updated);
       setSuggestions((prev) => ({ ...prev, [index]: [] }));
     } catch (error) {
-      console.error("Failed to fetch part details", error);
+      throw error;
     }
   };
 
@@ -194,14 +187,14 @@ const ProductNumber = () => {
         qty: "",
         process: "",
         cycleTime: "",
-        workInstruction: false,
+        workInstruction: "",
+        isSaved: false,
       },
     ]);
   };
   const handleSaveBOMs = () => {
     const updated = [...bomEntries];
     let saved = false;
-
     const validated = updated.map((entry) => {
       if (!entry.isSaved && entry.partNumber && entry.qty && entry.process) {
         saved = true;
@@ -215,7 +208,7 @@ const ProductNumber = () => {
       qty: "",
       process: "",
       cycleTime: "",
-      workInstruction: false,
+      workInstruction: "",
       isSaved: false,
     });
 
@@ -269,9 +262,20 @@ const ProductNumber = () => {
         toast.success("Product created successfully !");
       }
 
-      if (addPart) addPart(data);
+      if (addPart)
+        addPart({
+          partNumber: data.productNumber,
+          partFamily: data.partFamily,
+          productNumber: data.productNumber,
+          description: data.partDescription,
+          cost: data.cost,
+          leadTime: data.leadTime,
+          availableStock: String(data.availStock || 0),
+          orderQty: data.supplierOrderQty || 0,
+          cycleTime: data.cycleTime || 0,
+        });
     } catch (err) {
-      console.error("Submission error:", err);
+      throw err;
     }
   };
   const [previewImages, setPreviewImages] = useState<string[]>([]);
@@ -389,7 +393,6 @@ const ProductNumber = () => {
             defaultValue={0}
             {...register("supplierOrderQty", {
               valueAsNumber: true,
-              // required: "Supplier order quantity is required",
             })}
             placeholder="Order Qty"
             className="border p-2 rounded w-full"
@@ -400,22 +403,9 @@ const ProductNumber = () => {
             </p>
           )}
         </label>
-        {/* <label className="col-span-4 md:col-span-1">
-          Company Name
-          <input
-            type="text"
-            {...register("companyName")}
-            placeholder="Company"
-            className="border p-2 rounded w-full"
-          />
-        </label> */}
         <div className="col-span-4 md:col-span-1 relative">
           <label className="block mb-1">Company Name</label>
-
-          {/* Hidden Input: यह फॉर्म सबमिट करते समय 'companyName' की ID भेजेगा */}
           <input type="hidden" {...register("companyName")} />
-
-          {/* Search Input: यह यूजर को टाइप करने के लिए दिखेगा */}
           <input
             type="text"
             value={searchTerm}
@@ -424,16 +414,13 @@ const ProductNumber = () => {
             onChange={(e) => {
               setSearchTerm(e.target.value);
               setShowDropdown(true);
-              // अगर इनपुट खाली हो जाए तो फॉर्म वैल्यू भी साफ़ कर दें
               if (e.target.value === "") setValue("companyName", "");
             }}
             onFocus={() => setShowDropdown(true)}
-            // Blur पर थोड़े डिले के साथ बंद करें ताकि क्लिक रजिस्टर हो सके
             onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
             className="border p-2 rounded w-full focus:ring-2 focus:ring-brand focus:outline-none"
           />
 
-          {/* Dropdown Suggestions List */}
           {showDropdown && searchTerm && filteredSuppliers.length > 0 && (
             <ul className="absolute z-[100] w-full bg-white border border-gray-300 rounded shadow-xl mt-1 max-h-40 overflow-y-auto">
               {filteredSuppliers.map((s) => (
@@ -441,9 +428,9 @@ const ProductNumber = () => {
                   key={s.id}
                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b last:border-0"
                   onMouseDown={() => {
-                    setSearchTerm(s.name); // इनपुट में नाम सेट करें
-                    setValue("companyName", s.id); // फॉर्म में ID सेट करें
-                    setShowDropdown(false); // लिस्ट बंद करें
+                    setSearchTerm(s.name);
+                    setValue("companyName", s.id);
+                    setShowDropdown(false);
                   }}
                 >
                   {s.name}
@@ -477,7 +464,6 @@ const ProductNumber = () => {
             type="number"
             {...register("availStock", {
               valueAsNumber: true,
-              // required: "Available stock is required",
             })}
             placeholder="Available Stock"
             className="border p-2 rounded w-full"
@@ -486,15 +472,6 @@ const ProductNumber = () => {
             <p className="text-red-500 text-xs">{errors.availStock.message}</p>
           )}
         </label>
-        {/* <label className="col-span-4 md:col-span-1">
-          Cycle Time
-          <input
-            type="number"
-            {...register("cycleTime", { valueAsNumber: true })}
-            placeholder="Cycle Time"
-            className="border p-2 rounded w-full"
-          />
-        </label> */}{" "}
         <div className="col-span-4 md:col-span-1">
           <label>Cycle Time (minutes)</label>
           <div className="flex gap-2">
@@ -505,10 +482,13 @@ const ProductNumber = () => {
                   value: /^[1-9]\d*$/,
                   message: "Only positive integers are allowed",
                 },
-                validate: (value) =>
-                  value.trim() !== "" || "Cycle time is required",
+                validate: (value: any) =>
+                  (value !== undefined &&
+                    value !== null &&
+                    String(value).trim() !== "") ||
+                  "Cycle time is required",
               })}
-              type="text" // 'number' से 'text' में बदला
+              type="text"
               inputMode="numeric"
               placeholder="Enter time"
               onKeyDown={(e) => {
@@ -516,24 +496,8 @@ const ProductNumber = () => {
                   e.preventDefault();
                 }
               }}
-              // ध्यान दें: handleNumericInput फंक्शन को आपको PartForm में भी परिभाषित करना होगा।
-              // onInput={(e: ChangeEvent<HTMLInputElement>) => handleNumericInput(e, "cycleTimeValue")}
-              className="border p-2 rounded w-full" // py-4 px-4 से p-2 में बदला ताकि अन्य इनपुट्स से मेल खाए
+              className="border p-2 rounded w-full"
             />
-            {/* <select
-              {...register("cycleTimeUnit", {
-                required: "Unit is required",
-              })}
-              className="border p-2 rounded w-1/3" // py-4 px-2 से p-2 में बदला
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Unit
-              </option>
-              <option value="sec">Sec</option>
-              <option value="min">Min</option>
-              <option value="hr">Hr</option>
-            </select> */}
           </div>
           {(errors.cycleTime || errors.cycleTime) && (
             <p className="text-red-500 text-sm">
@@ -541,7 +505,6 @@ const ProductNumber = () => {
             </p>
           )}
         </div>
-        {/* Process Order Required */}
         <div className="col-span-4 md:col-span-1">
           <label>Process Order Required</label>
           <select
@@ -583,23 +546,6 @@ const ProductNumber = () => {
                 </p>
               )}
             </div>
-
-            {/* Process Description */}
-            {/* <label className="block col-span-4 md:col-span-1">
-              Process Description
-              <textarea
-                {...register("processDesc", {
-                  required: "Process Description is required",
-                })}
-                placeholder="Process Description"
-                className="border p-2 rounded w-full"
-              />
-              {errors.processDesc && (
-                <p className="text-red-500 text-sm">
-                  {errors.processDesc.message}
-                </p>
-              )}
-            </label> */}
           </>
         )}
         <div className="col-span-4 md:col-span-1">
@@ -620,24 +566,6 @@ const ProductNumber = () => {
             </p>
           )}
         </div>
-        {/* <div className="col-span-4 md:col-span-1">
-          <label>Product Schedule </label>
-          <select
-            {...register("isProductSchedule", {
-              required: "Please select Yes or No",
-            })}
-            className="border p-2 rounded w-full"
-          >
-            <option value="">Select</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-          </select>
-          {errors.isProductSchedule && (
-            <p className="text-red-500 text-sm">
-              {errors.isProductSchedule.message}
-            </p>
-          )}
-        </div> */}
         {previewImages.length > 0 && (
           <div className="col-span-4 flex gap-3 flex-wrap mt-2">
             {previewImages.map((img, idx) => (
@@ -672,7 +600,6 @@ const ProductNumber = () => {
               : "Tap or Click to Add Pictures"}
           </div>
         </label>
-        {/* BOM Section */}
         <div className="col-span-4 mt-4">
           <p className="font-semibold text-lg mb-2">Bill of Material (BOM)</p>
 
@@ -683,9 +610,7 @@ const ProductNumber = () => {
               ref={(el) => (inputRefs.current[index] = el)}
             >
               <p className="font-semibold mb-2">Part #{index + 1}</p>
-
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {/* Part Number */}
                 <div className="relative">
                   <label className="text-sm font-medium">Part Number</label>
                   <input
@@ -727,8 +652,6 @@ const ProductNumber = () => {
                     className="border p-2 rounded w-full mt-1"
                   />
                 </div>
-
-                {/* Process */}
                 <div>
                   <label className="text-sm font-medium">Process</label>
                   <input
@@ -743,10 +666,8 @@ const ProductNumber = () => {
                   />
                 </div>
 
-                {/* Cycle Time */}
                 <div>
                   <label className="text-sm font-medium">
-                    {" "}
                     Cycle Time (minutes)
                   </label>
                   <input
@@ -760,8 +681,6 @@ const ProductNumber = () => {
                     className="border p-2 rounded w-full mt-1"
                   />
                 </div>
-
-                {/* Work Instruction */}
                 <div>
                   <label className="text-sm font-medium">
                     Work Instruction

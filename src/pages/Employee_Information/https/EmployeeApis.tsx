@@ -9,7 +9,7 @@ export const addEmployee = async (apiData: object) => {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };
@@ -19,11 +19,11 @@ export const employeeList = async (
   limit = 5,
   isShopFloor: string,
   searchVal: string,
-  status = "" // 👈 Add status
+  status = "", // 👈 Add status
 ) => {
   try {
     const response = await axiosInstance.get(
-      `/all-employee?page=${page}&limit=${limit}&processLogin=${isShopFloor}&search=${searchVal}&status=${status}`
+      `/all-employee?page=${page}&limit=${limit}&processLogin=${isShopFloor}&search=${searchVal}&status=${status}`,
     );
     console.log("response.data", response.data);
     return response.data;
@@ -50,7 +50,7 @@ export const editEmployee = async (data: object, id: string) => {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: unknown) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };
@@ -58,12 +58,11 @@ export const editEmployee = async (data: object, id: string) => {
 export const deleteEmployee = async (id: string) => {
   try {
     const response = await axiosInstance.patch(`/delete-employee/${id}`);
-    console.log("response222", response);
     if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: unknown) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };
@@ -73,13 +72,13 @@ export const sendEmailToTheEmployeeApi = async (apiData: object) => {
   try {
     const response = await axiosInstance.post(
       "/send-email-to-employee",
-      apiData
+      apiData,
     );
     if (response.status === 201) {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };
@@ -88,12 +87,12 @@ export const vacationList = async (
   page = 1,
   limit = 5,
   sortBy: string,
-  search: string
+  search: string,
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/all-vacation-request?page=${page}&limit=${limit}&sortBy=${sortBy}&search=${search}`
+      `/all-vacation-request?page=${page}&limit=${limit}&sortBy=${sortBy}&search=${search}`,
     );
     console.log("response.dataresponse.data", response.data);
     return response.data;
@@ -117,7 +116,7 @@ export const vacationReqStatus = async (data: object) => {
   try {
     const response = await axiosInstance.patch(
       `/change-vacation-request-status`,
-      data
+      data,
     );
     return response.data;
   } catch (error) {
@@ -129,12 +128,12 @@ export const allTimeClock = async (
   page: Number,
   limit: Number,
   filter: string,
-  search: string
+  search: string,
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/all-time-clock-list?page=${page}&limit=${limit}&filter=${filter}&search=${search}`
+      `/all-time-clock-list?page=${page}&limit=${limit}&filter=${filter}&search=${search}`,
     );
     console.log("response.dataresponse.data", response.data);
     return response.data;

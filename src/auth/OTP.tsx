@@ -2,12 +2,13 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import signin from "../assets/signin.png";
-import { forgetPassword, otpVarify } from "./https/authApi";
-import { ChangeEvent, useEffect, useState } from "react";
+import { otpVarify } from "./https/authApi";
+import { ChangeEvent, useEffect, useState, useRef } from "react";
 
 const OTP = () => {
   const { handleSubmit } = useForm();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
@@ -19,19 +20,23 @@ const OTP = () => {
     setOtp(newOtp);
 
     // Move to next input if current has value
-    if (value && e.target.nextSibling) {
-      e.target.nextSibling.focus();
+    if (value && index < 5 && inputRefs.current[index + 1]) {
+      inputRefs.current[index + 1]?.focus();
     }
   };
   const onSubmit = async () => {
     const otpString = otp.join("");
     const email = localStorage.getItem("email");
+    if (!email) {
+      console.error("Email not found in localStorage");
+      return;
+    }
     try {
       const response = await otpVarify({
         email: email,
         otp: otpString,
       });
-      if (response.status === 200) {
+      if (response?.status === 200) {
         navigate("/reset-password");
       }
     } catch (error) {
@@ -105,6 +110,9 @@ const OTP = () => {
                   type="text"
                   maxLength={1}
                   value={digit}
+                  ref={(el) => {
+                    inputRefs.current[index] = el;
+                  }}
                   onChange={(e) => handleChange(e, index)}
                   className="w-16 h-16 border-2 border-[#052C89] rounded-lg text-center text-2xl focus:outline-none focus:ring-2 focus:ring-[#052C89]"
                 />

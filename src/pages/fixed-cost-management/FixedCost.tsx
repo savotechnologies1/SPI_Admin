@@ -1,11 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 import axios from "axios";
 import { toast } from "react-toastify";
 const FixedCost = () => {
-  const [records, setRecords] = useState([]);
+  const [records, setRecords] = useState<
+    {
+      id: number;
+      category: string;
+      name: string;
+      cost: number;
+      depreciation: number;
+    }[]
+  >([]);
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
   const validationSchema = Yup.object({
@@ -31,13 +39,13 @@ const FixedCost = () => {
         </h3>
 
         <Formik
-          initialValues={{ category: "", name: "", cost: "", depreciation: "" }}
+          initialValues={{ category: "", name: "", cost: 0, depreciation: 0 }}
           validationSchema={validationSchema}
           onSubmit={async (values, { resetForm }) => {
             try {
               const response = await axios.post(
                 `${BASE_URL}/api/admin/fixed-data-calulation`,
-                values
+                values,
               );
               console.log("responseresponse", response);
               toast.success("Fixed cost added successfully!");

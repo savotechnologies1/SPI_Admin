@@ -18,8 +18,6 @@ const Layout = () => {
         }`}
       >
         <div className="pt-16">
-          {" "}
-          {/* This matches the height of your navbar */}
           <Navbar />
           <Outlet />
         </div>

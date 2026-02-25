@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, SetStateAction } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaCircle, FaSpinner, FaTrash } from "react-icons/fa";
 import search_2 from "../../../assets/search_2.png";
@@ -15,12 +15,27 @@ import {
 } from "../https/EmployeeApis";
 import { Mail } from "lucide-react";
 import EmailPasswordModal from "./EmailPasswordModal";
+import { format } from "date-fns";
+
+interface EmployeeData {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  hourlyRate: string;
+  employeeId: string;
+  shift: string;
+  startDate: string;
+  pin: string;
+  processLogin: boolean;
+  status: string;
+}
 
 const Employees = () => {
   const [activeTab, setActiveTab] = useState("All ");
   // const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
-  const [customerData, setCustomerData] = useState<CustomerItem[]>([]);
+  const [customerData, setCustomerData] = useState<EmployeeData[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
@@ -29,7 +44,7 @@ const Employees = () => {
   const [showModal, setShowModal] = useState(false);
   const [employeeId, setEmployeeId] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Loader State
-  const [deleteId, setDeleteId] = useState(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
@@ -49,10 +64,10 @@ const Employees = () => {
   const normalizedTab = activeTab?.trim().toLowerCase();
   const navigate = useNavigate();
 
-  const handleEdit = (id) => {
+  const handleEdit = (id: string) => {
     navigate(`/edit-employee/${id}`);
   };
-  const sendEmailToTheEmployee = async (id) => {
+  const sendEmailToTheEmployee = async (id: string) => {
     try {
       const response = await sendEmailToTheEmployeeApi(id);
     } catch (error) {}
@@ -87,7 +102,6 @@ const Employees = () => {
   const statusCounts = customerData.reduce(
     (acc, item) => {
       const status = item.status?.toLowerCase().trim();
-      console.log("******************", status);
       acc[status] = (acc[status] || 0) + 1;
       acc["all"] += 1;
       return acc;
@@ -113,17 +127,15 @@ const Employees = () => {
         navigate("/employees");
       }
     } catch (error: unknown) {
-      console.log("errorerror", error);
+      throw error
     }
   };
 
-  const handleSelectChange = (event) => {
+  const handleSelectChange = (event: { target: { value: string } }) => {
     const newValue = event.target.value;
     setSelectedValue(newValue);
-
-    console.log("A new option was selected:", newValue);
   };
-  const handleMailClick = (id) => {
+  const handleMailClick = (id: string) => {
     setEmployeeId(id);
     setShowModal(true);
   };
@@ -327,7 +339,9 @@ const Employees = () => {
                           {item.shift}
                         </td>
                         <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
-                          {item.startDate}
+                          {item.startDate
+                            ? format(new Date(item.startDate), "MM/dd/yyyy")
+                            : "-"}
                         </td>
                         <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
                           {item.pin}

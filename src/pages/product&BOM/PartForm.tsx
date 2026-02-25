@@ -26,17 +26,19 @@ interface FormDataType {
   companyName: string;
   minStock: number;
   availStock: number;
-  cycleTime: number;
+  cycleTime: string;
   processOrderRequired: string;
   instructionRequired: string;
   processId: string;
   processDesc: string;
-  image: FileList;
+  image: File[] | null;
 }
+
 interface ProcessItem {
   id: string;
   name: string;
   partFamily: string;
+  machineName?: string;
 }
 
 interface PartItem {
@@ -47,8 +49,12 @@ interface PartItem {
   partNumber: string;
   partFamily: string;
   cost: number;
-  cycleTimeValue: number | string;
-  cycleTimeUnit: "sec" | "min" | "hr" | "";
+  cycleTime: number | string;
+}
+
+interface Supplier {
+  id: string;
+  name: string;
 }
 
 const PartForm = () => {
@@ -56,14 +62,14 @@ const PartForm = () => {
     register,
     handleSubmit,
     watch,
-    reset,
     setValue,
     formState: { errors },
   } = useForm<FormDataType>({
     defaultValues: {
       supplierOrderQty: 0,
       availStock: 0,
-      minStock: null,
+      minStock: 0,
+      image: [],
     },
   });
 
@@ -75,72 +81,54 @@ const PartForm = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemToDeleteId, setItemToDeleteId] = useState<string | null>(null);
   const rowsPerPage = 5;
+
   const processId = watch("processId");
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const processOrderRequired = watch("processOrderRequired");
-  const [suppliers, setSuppliers] = useState<any[]>([]); // Suppliers list store karne ke liye
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+
   const isProcessRequired = processOrderRequired === "true";
+
   if (!context) {
     throw new Error("PartContext must be used within a PartProvider");
   }
-  const [searchTerm, setSearchTerm] = useState(""); // UI में दिखाने के लिए
-  const companySearch = watch("companyName"); // इनपुट वैल्यू ट्रैक करने के लिए
+
+  const fetchSuppliers = async () => {
+    try {
+      const res = await selectSupplier();
+      setSuppliers(res);
+    } catch (err) {
+      throw err;
+    }
+  };
 
   useEffect(() => {
-    const fetchSuppliers = async () => {
-      try {
-        const res = await selectSupplier();
-        setSuppliers(res);
-      } catch (err) {
-        console.error(err);
-      }
-    };
     fetchSuppliers();
   }, []);
 
-  // सर्च के लिए फिल्टर
   const filteredSuppliers = suppliers.filter((s) =>
     s.name?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+
   const getAllPartList = async (page: number) => {
     try {
       const response = await partNumberList(page, rowsPerPage);
       setPartData(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 
-  // API से Suppliers की लिस्ट लाना
-  useEffect(() => {
-    const fetchSuppliers = async () => {
-      try {
-        const res = await selectSupplier();
-        // अगर रिस्पॉन्स सीधा एरे है: [{"id":"1","name":"shikha"}]
-        setSuppliers(res);
-      } catch (err) {
-        console.error("Suppliers load failed", err);
-      }
-    };
-    fetchSuppliers();
-  }, []);
-
-  // // Filtered Suppliers logic
-  // const filteredSuppliers = suppliers.filter((s) => {
-  //   const fullName = `${s.firstName} ${s.lastName}`.toLowerCase();
-  //   const email = s.email?.toLowerCase() || "";
-  //   const search = companySearch?.toLowerCase() || "";
-  //   return search && (fullName.includes(search) || email.includes(search));
-  // });
   useEffect(() => {
     const fetchData = async () => {
       try {
         const processList = await selectProcess();
         setProcessData(processList);
       } catch (error) {
-        console.log(error);
+        throw error;
       }
       getAllPartList(currentPage);
     };
@@ -167,34 +155,23 @@ const PartForm = () => {
   const onSubmit = async (data: FormDataType) => {
     try {
       const formData = new FormData();
-      formData.append("partFamily", data.partFamily);
-      formData.append("partNumber", data.partNumber);
-      formData.append("partDescription", data.partDescription);
-      formData.append("cost", data.cost.toString());
-      formData.append("leadTime", data.leadTime.toString());
-      formData.append("supplierOrderQty", data.supplierOrderQty.toString());
-      formData.append("companyName", data.companyName);
-      formData.append("minStock", data.minStock.toString());
-      formData.append("availStock", data.availStock.toString());
-      formData.append("cycleTime", `${data.cycleTime}`);
-      formData.append("processOrderRequired", data.processOrderRequired);
-      formData.append("instructionRequired", data.instructionRequired);
-      formData.append("processId", data.processId);
-      formData.append("processDesc", data.processDesc);
+      Object.entries(data).forEach(([key, value]) => {
+        if (key !== "image") {
+          formData.append(key, value as string);
+        }
+      });
 
-      if (data.image && data.image.length > 0) {
-        Array.from(data.image).forEach((file) =>
-          formData.append("partImages", file),
-        );
+      if (selectedImages.length > 0) {
+        selectedImages.forEach((file) => formData.append("partImages", file));
       }
 
       const response = await createPartNumber(formData);
       if (response && response.status === 201) {
+        toast.success("Part created successfully");
         navigate("/part-table");
-        getAllPartList(currentPage);
       }
     } catch (error) {
-      console.error(error);
+      toast.error("Failed to create part");
     }
   };
 
@@ -222,27 +199,16 @@ const PartForm = () => {
       <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-black">
         Part Number
       </h1>
-      <div className="flex flex-wrap items-center mt-2 gap-1 md:gap-2">
-        <NavLink
-          to="/dashboardDetailes"
-          className="text-xs sm:text-sm md:text-base text-black"
-        >
+      <div className="flex flex-wrap items-center mt-2 gap-1 md:gap-2 text-xs sm:text-sm md:text-base">
+        <NavLink to="/dashboardDetailes" className="text-black">
           Dashboard
         </NavLink>
-
         <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
-        <NavLink
-          to="/part-table"
-          className="text-xs sm:text-sm md:text-base text-black"
-        >
-          <span className="text-xs sm:text-sm md:text-base">
-            Product and BOM
-          </span>
+        <NavLink to="/part-table" className="text-black">
+          Product and BOM
         </NavLink>
         <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
-        <span className="text-xs sm:text-sm md:text-base">
-          Edit Part Number
-        </span>
+        <span className="text-gray-500">Edit Part Number</span>
       </div>
 
       <div className="mt-6 bg-white p-6 w-full rounded-2xl shadow-md">
@@ -250,6 +216,7 @@ const PartForm = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
         >
+          {/* Part Family */}
           <label className="block col-span-4 md:col-span-2">
             Part Family
             <select
@@ -261,7 +228,8 @@ const PartForm = () => {
               <option value="">Select Part Family</option>
               {processData.map((item) => (
                 <option key={item.id} value={item.partFamily}>
-                  {item.partFamily} ({item.machineName})
+                  {item.partFamily}{" "}
+                  {item.machineName ? `(${item.machineName})` : ""}
                 </option>
               ))}
             </select>
@@ -271,6 +239,7 @@ const PartForm = () => {
               </p>
             )}
           </label>
+
           <label className="block col-span-4 md:col-span-2">
             Part Number
             <input
@@ -287,6 +256,7 @@ const PartForm = () => {
               </p>
             )}
           </label>
+
           <label className="block col-span-4">
             Part Description
             <textarea
@@ -302,13 +272,13 @@ const PartForm = () => {
               </p>
             )}
           </label>
+
           <div className="col-span-4 md:col-span-1">
             <label>Cost</label>
             <input
               type="number"
               step="0.01"
               {...register("cost", { valueAsNumber: true })}
-              placeholder="Cost ($)"
               className="border p-2 rounded w-full"
             />
           </div>
@@ -317,38 +287,24 @@ const PartForm = () => {
             <input
               type="number"
               {...register("leadTime", { valueAsNumber: true })}
-              placeholder="Lead Time Days"
               className="border p-2 rounded w-full"
             />
           </div>
           <div className="col-span-4 md:col-span-1">
-            <label>Order Quantity by Supplier</label>
+            <label>Order Qty (Supplier)</label>
             <input
               type="number"
               {...register("supplierOrderQty", { valueAsNumber: true })}
-              placeholder="Order Qty"
               className="border p-2 rounded w-full"
             />
           </div>
-          {/* <div className="col-span-4 md:col-span-1">
-            <label>Company Name</label>
-            <input
-              type="text"
-              {...register("companyName")}
-              placeholder="Company"
-              className="border p-2 rounded w-full"
-            />
-          </div> */}
+
           <div className="col-span-4 md:col-span-1 relative">
             <label className="block mb-1">Company (Supplier)</label>
-
-            {/* असली field जो submit होगी (Hidden) */}
             <input
               type="hidden"
               {...register("companyName", { required: "Supplier is required" })}
             />
-
-            {/* दिखने वाला Input */}
             <input
               type="text"
               value={searchTerm}
@@ -357,15 +313,12 @@ const PartForm = () => {
               onChange={(e) => {
                 setSearchTerm(e.target.value);
                 setShowDropdown(true);
-                // अगर यूजर खुद टाइप करके हटा दे, तो ID भी क्लियर कर दें
                 if (e.target.value === "") setValue("companyName", "");
               }}
               onFocus={() => setShowDropdown(true)}
               onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
               className="border p-2 rounded w-full focus:ring-2 focus:ring-brand focus:outline-none"
             />
-
-            {/* Dropdown List */}
             {showDropdown && searchTerm && filteredSuppliers.length > 0 && (
               <ul className="absolute z-[100] w-full bg-white border border-gray-300 rounded shadow-xl mt-1 max-h-40 overflow-y-auto">
                 {filteredSuppliers.map((s) => (
@@ -373,8 +326,8 @@ const PartForm = () => {
                     key={s.id}
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b last:border-0"
                     onMouseDown={() => {
-                      setSearchTerm(s.name); // इनपुट में 'shikha jatav' दिखेगा
-                      setValue("companyName", s.id); // Backend में '16b245' (ID) जाएगा
+                      setSearchTerm(s.name);
+                      setValue("companyName", s.id);
                       setShowDropdown(false);
                     }}
                   >
@@ -383,189 +336,93 @@ const PartForm = () => {
                 ))}
               </ul>
             )}
-
             {errors.companyName && (
               <p className="text-red-500 text-sm mt-1">
-                {errors.companyName.message as string}
+                {errors.companyName.message}
               </p>
             )}
           </div>
+
           <div className="col-span-4 md:col-span-1">
             <label>Minimum Stock</label>
             <input
               type="number"
               {...register("minStock", {
-                required: "Minimum Stock is required",
+                required: "Required",
                 valueAsNumber: true,
-                validate: (value) => {
-                  const supplierOrderQty = watch("supplierOrderQty");
-                  if (supplierOrderQty === null || isNaN(supplierOrderQty))
-                    return true;
-                  // return (
-                  //   value <= supplierOrderQty ||
-                  //   "Minimum Stock must be less than Order Quantity"
-                  // );
-                },
               })}
-              placeholder="Minimum Stock"
               className="border p-2 rounded w-full"
             />
-            {errors.minStock && (
-              <p className="text-red-500 text-sm">{errors.minStock.message}</p>
-            )}
           </div>
+
           <div className="col-span-4 md:col-span-1">
             <label>Available Stock</label>
             <input
               type="number"
-              {...register("availStock", {
-                // required: "Available Stock is required",
-                valueAsNumber: true,
-              })}
-              placeholder="Available Stock"
+              {...register("availStock", { valueAsNumber: true })}
               className="border p-2 rounded w-full"
             />
-            {errors.availStock && (
-              <p className="text-red-500 text-sm">
-                {errors.availStock.message}
-              </p>
-            )}
           </div>
-          {/* <div className="col-span-4 md:col-span-1">
-            <label>Cycle Time</label>
+
+          <div className="col-span-4 md:col-span-1">
+            <label>Cycle Time (min)</label>
             <input
-              type="number"
-              {...register("cycleTime", { valueAsNumber: true })}
-              placeholder="Cycle Time"
+              {...register("cycleTime", { required: "Required" })}
+              type="text"
+              inputMode="numeric"
               className="border p-2 rounded w-full"
             />
-          </div> */}
-          <div className="col-span-4 md:col-span-1">
-            <label>Cycle Time (minutes)</label>
-            <div className="flex gap-2">
-              <input
-                {...register("cycleTime", {
-                  required: "Cycle time is required",
-                  pattern: {
-                    value: /^[1-9]\d*$/,
-                    message: "Only positive integers are allowed",
-                  },
-                  validate: (value) =>
-                    value.trim() !== "" || "Cycle time is required",
-                })}
-                type="text"
-                inputMode="numeric"
-                placeholder="Enter time"
-                onKeyDown={(e) => {
-                  if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
-                    e.preventDefault();
-                  }
-                }}
-                className="border p-2 rounded w-full"
-              />{" "}
-              {/* <select
-                {...register("cycleTimeUnit", {
-                  required: "Unit is required",
-                })}
-                className="border p-2 rounded w-1/3" // py-4 px-2 से p-2 में बदला
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  Unit
-                </option>
-                <option value="sec">Sec</option>
-                <option value="min">Min</option>
-                <option value="hr">Hr</option>
-              </select> */}
-            </div>
-            {/* {(errors.cycleTimeValue || errors.cycleTimeUnit) && (
-              <p className="text-red-500 text-sm">
-                {errors.cycleTimeValue?.message ||
-                  errors.cycleTimeUnit?.message}
-              </p>
-            )} */}
+          </div>
 
-            {errors.cycleTime && (
-              <p className="text-red-500 text-sm">{errors.cycleTime.message}</p>
-            )}
-          </div>{" "}
           <div className="col-span-4 md:col-span-1">
             <label>Process Order Required</label>
             <select
-              {...register("processOrderRequired", {
-                required: "Please select Yes or No",
-              })}
+              {...register("processOrderRequired", { required: "Required" })}
               className="border p-2 rounded w-full"
             >
               <option value="">Select</option>
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
-            {errors.processOrderRequired && (
-              <p className="text-red-500 text-sm">
-                {errors.processOrderRequired.message}
-              </p>
-            )}
           </div>
-          {/* यहाँ कंडीशनल रेंडरिंग है */}
+
           {isProcessRequired && (
             <>
               <div className="col-span-4 md:col-span-2">
                 <label>Process</label>
                 <select
-                  {...register("processId", {
-                    required: "Process is required",
-                  })}
+                  {...register("processId", { required: "Required" })}
                   className="border p-2 rounded w-full"
                 >
                   <option value="">Select Process</option>
                   {processData.map((item) => (
                     <option key={item.id} value={item.id}>
-                      {item.name} ({item.machineName})
+                      {item.name}
                     </option>
                   ))}
                 </select>
-                {errors.processId && (
-                  <p className="text-red-500 text-sm">
-                    {errors.processId.message}
-                  </p>
-                )}
               </div>
-
               <label className="block col-span-4 md:col-span-2">
                 Process Description
                 <textarea
-                  {...register("processDesc", {
-                    required: "Process description is required",
-                  })}
-                  placeholder="Process Description"
+                  {...register("processDesc")}
                   className="border p-2 rounded w-full"
                 />
-                {errors.processDesc && (
-                  <p className="text-red-500 text-sm">
-                    {errors.processDesc.message}
-                  </p>
-                )}
               </label>
             </>
           )}
+
           {selectedImages.length > 0 && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 col-span-4 mt-4">
+            <div className="flex flex-wrap gap-3 col-span-4 mt-4">
               {selectedImages.map((file, index) => (
-                <div
-                  key={index}
-                  className="relative w-24 h-24 border border-gray-300 rounded-lg overflow-hidden group"
-                >
+                <div key={index} className="relative w-24 h-24">
                   <img
                     src={URL.createObjectURL(file)}
                     alt={`preview-${index}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-lg border border-gray-300"
                   />
-
-                  <MdCancel
-                    className="absolute -top-2 -right-2 text-red-600 bg-white rounded-full cursor-pointer shadow-md  z-10
-                   opacity-90 hover:opacity-100 hover:scale-110 transition"
-                    size={22}
+                  <button
+                    type="button"
                     onClick={() => {
                       const updatedImages = selectedImages.filter(
                         (_, i) => i !== index,
@@ -573,16 +430,21 @@ const PartForm = () => {
                       setSelectedImages(updatedImages);
                       setValue("image", updatedImages);
                     }}
-                  />
+                    className="absolute -top-2 -right-2 bg-white rounded-full text-red-600 shadow-md hover:scale-110 transition-transform z-10"
+                  >
+                    <MdCancel size={22} />
+                  </button>
                 </div>
               ))}
             </div>
           )}
-          <label className="block col-span-4 md:col-span-2 cursor-pointer border bg-gray-100 p-4 rounded text-center">
-            {watch("image")?.length
-              ? `${watch("image").length} image(s) selected`
-              : "Tap or Click to Add Pictures"}
 
+          <label className="block col-span-4 md:col-span-2 cursor-pointer border-2 border-dashed border-gray-300 bg-gray-50 p-4 rounded-lg text-center hover:bg-gray-100 transition">
+            <span className="text-gray-600 font-medium">
+              {selectedImages.length > 0
+                ? `${selectedImages.length} image(s) selected`
+                : "Tap or Click to Add Pictures"}
+            </span>
             <input
               type="file"
               multiple
@@ -598,19 +460,12 @@ const PartForm = () => {
                 }
               }}
             />
-
-            {/* <input
-              type="file"
-              multiple
-              {...register("image")}
-              className="hidden"
-              accept="image/*"
-            /> */}
           </label>
+
           <div className="flex justify-between items-center col-span-4">
             <button
               type="submit"
-              className="bg-brand text-white py-2 rounded px-4"
+              className="bg-brand text-white py-2 rounded-lg px-6 font-semibold shadow-md hover:bg-opacity-90 transition"
             >
               Add/Edit Part Number
             </button>
@@ -618,8 +473,8 @@ const PartForm = () => {
         </form>
       </div>
 
-      <div className="mt-6 bg-white p-6 rounded-2xl shadow-md">
-        <table className="text-sm w-full">
+      <div className="mt-6 bg-white p-6 rounded-2xl shadow-md overflow-x-auto">
+        <table className="text-sm w-full min-w-[600px]">
           <thead className="bg-[#F4F6F8] text-left text-gray-500">
             <tr>
               <th className="px-4 py-3 font-medium">Process</th>
@@ -627,26 +482,28 @@ const PartForm = () => {
               <th className="px-4 py-3 font-medium">Part Family</th>
               <th className="px-4 py-3 font-medium">Cost</th>
               <th className="px-4 py-3 font-medium">Cycle Time</th>
-              <th className="px-4 py-3 font-medium">Delete</th>
+              <th className="px-4 py-3 font-medium">Action</th>
             </tr>
           </thead>
           <tbody className="text-gray-800">
             {partData.map((item) => (
               <tr
                 key={item.part_id}
-                className="border-b border-dashed border-gray-200"
+                className="border-b border-dashed border-gray-200 hover:bg-gray-50"
               >
-                <td className="px-4 py-4">{item.process?.processName}</td>
+                <td className="px-4 py-4">
+                  {item.process?.processName || "N/A"}
+                </td>
                 <td className="px-4 py-4">{item.partNumber}</td>
                 <td className="px-4 py-4">{item.partFamily}</td>
-                <td className="px-4 py-4">{item.cost}</td>
+                <td className="px-4 py-4">${item.cost}</td>
                 <td className="px-4 py-4">{item.cycleTime}</td>
                 <td className="px-4 py-4">
                   <button
-                    className="text-brand hover:underline"
                     onClick={() => setItemToDeleteId(item.part_id)}
+                    className="text-red-500 hover:text-red-700 transition"
                   >
-                    <FaTrash className="text-red-500 cursor-pointer" />
+                    <FaTrash />
                   </button>
                 </td>
               </tr>
@@ -655,19 +512,21 @@ const PartForm = () => {
         </table>
 
         {itemToDeleteId && (
-          <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-xl shadow-lg">
-              <h2 className="text-lg font-semibold mb-4">Are you sure?</h2>
-              <p className="mb-4">Do you really want to delete this part?</p>
+          <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-[1000]">
+            <div className="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full">
+              <h2 className="text-lg font-bold mb-2">Delete Part?</h2>
+              <p className="text-gray-600 mb-6">
+                This action cannot be undone. Are you sure?
+              </p>
               <div className="flex justify-end space-x-3">
                 <button
-                  className="px-4 py-2 bg-gray-300 rounded"
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg"
                   onClick={() => setItemToDeleteId(null)}
                 >
                   Cancel
                 </button>
                 <button
-                  className="px-4 py-2 bg-red-500 text-white rounded"
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg"
                   onClick={() => handleDelete(itemToDeleteId)}
                 >
                   Delete
@@ -677,28 +536,22 @@ const PartForm = () => {
           </div>
         )}
 
-        <div className="flex flex-row justify-between items-center bg-white py-2 px-2 md:px-4 gap-2">
-          <p className="text-xs md:text-sm text-gray-600">
+        <div className="flex justify-between items-center mt-4">
+          <p className="text-sm text-gray-500">
             Page {currentPage} of {totalPages}
           </p>
           <div className="flex gap-2">
             <button
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
-              className={`p-1 md:p-2 rounded ${
-                currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className={`p-2 rounded border ${currentPage === 1 ? "bg-gray-50 text-gray-300" : "hover:bg-gray-100"}`}
             >
               <FontAwesomeIcon icon={faArrowLeft} />
             </button>
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
-              className={`p-1 md:p-2 rounded ${
-                currentPage === totalPages
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-gray-300"
-              }`}
+              className={`p-2 rounded border ${currentPage === totalPages ? "bg-gray-50 text-gray-300" : "hover:bg-gray-100"}`}
             >
               <FontAwesomeIcon icon={faArrowRight} />
             </button>

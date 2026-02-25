@@ -2,15 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { PartContext } from "../../components/Context/PartContext";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import edit from "../../assets/edit.png";
-import more from "../../assets/more.png";
-import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 import {
-  createPartNumber,
   deleteProductImage,
-  getPartDetail,
   getPartNumberDetail,
   getProcessDetail,
   partNumberList,
@@ -19,8 +13,54 @@ import {
 } from "./https/partProductApis";
 import { MdCancel } from "react-icons/md";
 import { selectSupplier } from "../supplier_chain/https/suppliersApi";
+
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
+
+// --- Interfaces ---
+interface PartImage {
+  id: string;
+  imageUrl: string;
+}
+
+interface ProcessItem {
+  id: string;
+  name: string;
+  partFamily: string;
+  machineName?: string;
+}
+
+interface SupplierItem {
+  id: string;
+  name?: string;
+  companyName?: string;
+}
+
+interface PartFormInputs {
+  partFamily: string;
+  partNumber: string;
+  partDescription: string;
+  cost: number;
+  leadTime: number;
+  supplierOrderQty: number;
+  companyName: string;
+  companyId: string;
+  minStock: number;
+  availStock: number;
+  cycleTime: string | number;
+  processOrderRequired: string | boolean;
+  processId: string;
+  processDesc: string;
+  instructionRequired: string;
+  image: FileList | null;
+}
+
 const EditPartForm = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const context = useContext(PartContext);
+
+  if (!context) throw new Error("PartContext must be used within a PartProvider");
+
   const {
     register,
     handleSubmit,
@@ -28,31 +68,25 @@ const EditPartForm = () => {
     watch,
     reset,
     formState: { errors },
-  } = useForm();
-  const selectedProcessId = watch("processId");
+  } = useForm<PartFormInputs>();
 
-  const context = useContext(PartContext);
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const rowsPerPage = 5;
-  const [totalPages, setTotalPages] = useState(1);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  if (!context)
-    throw new Error("PartContext must be used within a PartProvider");
-
-  const [processData, setProcessData] = useState([]);
-  const [partData, setPartData] = useState([]);
-  const [existingImages, setExistingImages] = useState([]);
-  const selectedImages = watch("image");
-  const [previewImages, setPreviewImages] = useState([]);
-  const [suppliers, setSuppliers] = useState([]);
+  const [processData, setProcessData] = useState<ProcessItem[]>([]);
+  const [existingImages, setExistingImages] = useState<PartImage[]>([]);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [suppliers, setSuppliers] = useState<SupplierItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const filteredSuppliers = suppliers.filter((s) =>
-    s.name?.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const selectedProcessId = watch("processId");
+  const selectedImages = watch("image");
+  const processOrderRequired = watch("processOrderRequired");
+
+  const filteredSuppliers = suppliers.filter((s) => {
+    const name = s.companyName || s.name || "";
+    return name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
+  // Fetch Suppliers
   useEffect(() => {
     const fetchSuppliers = async () => {
       try {
@@ -65,12 +99,15 @@ const EditPartForm = () => {
     fetchSuppliers();
   }, []);
 
+  // Fetch Initial Data (Process & Detail)
   const fetchProcessDetail = async () => {
+    if (!id) return;
     try {
       const response = await getPartNumberDetail(id);
       const data = response.data;
+      
       const supplierName = data.supplier
-        ? `${data.supplier.companyName || ""} `.trim()
+        ? (data.supplier.companyName || "").trim()
         : data.companyName || "";
 
       reset({
@@ -78,7 +115,7 @@ const EditPartForm = () => {
         processId: data.processId || "",
         cycleTime: data.cycleTime || "",
         processOrderRequired: data.processOrderRequired ? "true" : "false",
-        companyId: data.companyName || "",
+        companyId: data.companyId || data.companyName || "",
       });
 
       setSearchTerm(supplierName);
@@ -87,544 +124,248 @@ const EditPartForm = () => {
       console.error("Error fetching detail:", error);
     }
   };
-  // const onSubmit = async (data) => {
-  //   const formData = new FormData();
 
-  //   formData.append("partFamily", data.partFamily);
-  //   formData.append("partNumber", data.partNumber);
-  //   formData.append("partDescription", data.partDescription);
-  //   formData.append("cost", data.cost);
-  //   formData.append("leadTime", data.leadTime);
-  //   formData.append("supplierOrderQty", data.supplierOrderQty);
-  //   formData.append("companyName", data.companyName);
-  //   formData.append("minStock", data.minStock);
-  //   formData.append("availStock", data.availStock);
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const processes = await selectProcess();
+        setProcessData(processes);
+        await fetchProcessDetail();
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchInitialData();
+  }, [id]);
 
-  //   formData.append("cycleTime", data.cycleTime);
+  // Handle Process Description Auto-fill
+  useEffect(() => {
+    if (!selectedProcessId) {
+      setValue("processDesc", "");
+      return;
+    }
+    getProcessDetail(selectedProcessId).then((res) => {
+      setValue("processDesc", res.data?.processDesc || "");
+    });
+  }, [selectedProcessId, setValue]);
 
-  //   formData.append("processOrderRequired", data.processOrderRequired);
-  //   formData.append("processId", data.processId);
-  //   formData.append("processDesc", data.processDesc);
-  //   formData.append("instructionRequired", data.instructionRequired);
+  // Handle Image Previews
+  useEffect(() => {
+    if (selectedImages && selectedImages.length > 0) {
+      const files = Array.from(selectedImages);
+      const urls = files.map((file) => URL.createObjectURL(file));
+      setPreviewImages(urls);
+      return () => urls.forEach((url) => URL.revokeObjectURL(url));
+    } else {
+      setPreviewImages([]);
+    }
+  }, [selectedImages]);
 
-  //   if (data.image?.length) {
-  //     for (let file of data.image) {
-  //       formData.append("partImages", file);
-  //     }
-  //   }
+  const handleRemoveSelectedImage = (index: number) => {
+    if (!selectedImages) return;
+    const files = Array.from(selectedImages);
+    files.splice(index, 1);
+    const dataTransfer = new DataTransfer();
+    files.forEach((file) => dataTransfer.items.add(file));
+    setValue("image", dataTransfer.files);
+  };
 
-  //   try {
-  //     const response = await updatePartNumber(id, formData);
-  //     if (response.status === 200) {
-  //       navigate("/part-table");
-  //     }
-  //   } catch (err) {
-  //     console.error("Error updating part", err);
-  //   }
-  // };
-  const onSubmit = async (data) => {
+  const handleDeleteImg = async (imageId: string) => {
+    try {
+      await deleteProductImage(imageId);
+      if (id) await fetchProcessDetail();
+    } catch (error) {
+      console.error("Failed to delete image:", error);
+    }
+  };
+
+  const onSubmit = async (data: PartFormInputs) => {
+    if (!id) return;
     const formData = new FormData();
 
-    // बाकी फील्ड्स...
-    formData.append("partFamily", data.partFamily);
-    formData.append("partNumber", data.partNumber);
-    formData.append("partDescription", data.partDescription);
-    formData.append("cost", data.cost);
-    formData.append("leadTime", data.leadTime);
-    formData.append("supplierOrderQty", data.supplierOrderQty);
-    formData.append("companyName", data.companyName);
-    formData.append("minStock", data.minStock);
-    formData.append("availStock", data.availStock);
-
-    formData.append("cycleTime", data.cycleTime);
-
-    formData.append("processOrderRequired", data.processOrderRequired);
-    formData.append("processId", data.processId);
-    formData.append("processDesc", data.processDesc);
-    formData.append("instructionRequired", data.instructionRequired);
-
-    formData.append("companyId", data.companyId);
-
-    if (data.image?.length) {
-      for (let file of data.image) {
-        formData.append("partImages", file);
+    // Append all text fields
+    Object.entries(data).forEach(([key, value]) => {
+      if (key !== "image" && value !== undefined) {
+        formData.append(key, String(value));
       }
+    });
+
+    // Append new images
+    if (data.image && data.image.length > 0) {
+      Array.from(data.image).forEach((file) => {
+        formData.append("partImages", file);
+      });
     }
 
-    // ... (बाकी कोड)
     try {
       const response = await updatePartNumber(id, formData);
-      if (response.status === 200) {
+      if (response && response.status === 200) {
         navigate("/part-table");
       }
     } catch (err) {
       console.error("Error updating part", err);
     }
   };
-  const getAllPartList = async (page = 1) => {
-    try {
-      const response = await partNumberList(page, rowsPerPage);
-      setPartData(response.data);
-      setTotalPages(response.pagination?.totalPages || 1);
-    } catch (error) {}
-  };
 
-  const fetchProcessList = async () => {
-    try {
-      const response = await selectProcess();
-      setProcessData(response);
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  // const fetchProcessDetail = async () => {
-  //   try {
-  //     const response = await getPartNumberDetail(id);
-  //     const data = response.data;
-
-  //     reset({
-  //       ...data,
-  //       partFamily: data.partFamily,
-  //       processId: data.processId || "",
-  //       cycleTime: data.cycleTime || "",
-  //       processOrderRequired: data.processOrderRequired ? "true" : "false",
-  //     });
-
-  //     setExistingImages(data.partImages.map((img) => img));
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  const handleNumericInput = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    fieldName: "cycleTime",
-  ) => {
-    const value = e.target.value;
-    if (!/^(?:[1-9]\d*)?$/.test(value) && value !== "") {
-      setError(fieldName, {
-        type: "manual",
-        message: "Only positive integers are allowed",
-      });
-    } else {
-      clearErrors(fieldName);
-    }
-  };
-  const handleDeleteImg = async (imageId) => {
-    try {
-      await deleteProductImage(imageId);
-      await fetchProcessDetail(id);
-    } catch (error) {
-      console.error("Failed to delete image:", error);
-    }
-  };
-  const processOrderRequired = watch("processOrderRequired");
-  console.log("processOrderRequired", processOrderRequired);
-  // Update preview image URLs on image selection
-  useEffect(() => {
-    if (selectedImages?.length) {
-      const newPreviews = Array.from(selectedImages).map((file) =>
-        URL.createObjectURL(file),
-      );
-      setPreviewImages(newPreviews);
-
-      return () => {
-        newPreviews.forEach((url) => URL.revokeObjectURL(url));
-      };
-    } else {
-      setPreviewImages([]);
-    }
-  }, [selectedImages]);
-  const handleRemoveSelectedImage = (index) => {
-    const updatedFiles = Array.from(selectedImages);
-    updatedFiles.splice(index, 1);
-
-    // Create a new DataTransfer object to mimic FileList
-    const dataTransfer = new DataTransfer();
-    updatedFiles.forEach((file) => dataTransfer.items.add(file));
-
-    setValue("image", dataTransfer.files); // Update the form field
-  };
-
-  useEffect(() => {
-    const fetchProcessDescription = async () => {
-      // If no process is selected, clear the description and stop.
-      if (!selectedProcessId) {
-        setValue("processDesc", "");
-        return;
-      }
-
-      try {
-        // Fetch details for the *specific* selected process
-        const res = await getProcessDetail(selectedProcessId);
-        // Set the description from the API response
-        setValue("processDesc", res.data?.processDesc || "");
-      } catch (err) {
-        // If the API call fails, clear the description and notify the user
-        setValue("processDesc", "");
-        console.error(err);
-      }
-    };
-
-    fetchProcessDescription();
-  }, [selectedProcessId, setValue]); // This effect runs whenever the selected process ID changes
-
-  useEffect(() => {
-    fetchProcessDetail();
-  }, [id]);
-
-  useEffect(() => {
-    fetchProcessList();
-    getAllPartList();
-  }, []);
   return (
-    // ... your JSX is unchanged, it will work automatically now
     <div className="p-4 md:p-7">
-      <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-black">
-        Edit Part Number
-      </h1>
-      <div className="flex flex-wrap items-center mt-2 gap-1 md:gap-2">
-        <NavLink
-          to="/dashboardDetailes"
-          className="text-xs sm:text-sm md:text-base text-black"
-        >
-          Dashboard
-        </NavLink>
-        <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
-        <NavLink
-          to="/part-table"
-          className="text-xs sm:text-sm md:text-base text-black"
-        >
-          <span className="text-xs sm:text-sm md:text-base">
-            product and Bom
-          </span>
-        </NavLink>
-        <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
-        <span className="text-xs sm:text-sm md:text-base">
-          Edit Part Number
-        </span>
+      <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-black">Edit Part Number</h1>
+      
+      <div className="flex flex-wrap items-center mt-2 gap-1 md:gap-2 text-sm text-gray-600">
+        <NavLink to="/dashboardDetailes" className="text-black">Dashboard</NavLink>
+        <FaCircle className="text-[4px] md:text-[6px]" />
+        <NavLink to="/part-table" className="text-black">Product and BOM</NavLink>
+        <FaCircle className="text-[4px] md:text-[6px]" />
+        <span className="text-gray-400">Edit Part Number</span>
       </div>
 
       <div className="mt-6 bg-white p-6 w-full rounded-2xl shadow-md">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-        >
-          {/* Part Family */}
+        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          
           <label className="block col-span-4 md:col-span-2">
             Part Family
-            {/* Part Family Dropdown */}
-            <select
-              {...register("partFamily")}
-              className="border p-2 rounded w-full"
-            >
+            <select {...register("partFamily")} className="border p-2 rounded w-full">
               <option value="">Select Part Family</option>
               {processData.map((item) => (
                 <option key={item.id} value={item.partFamily}>
-                  {/* सुनिश्चित करें कि item.partFamily मौजूद है */}
                   {item.partFamily} ({item.machineName})
                 </option>
               ))}
             </select>
           </label>
 
-          {/* Part Number */}
           <label className="block col-span-4 md:col-span-2">
             Part Number
-            <input
-              type="text"
-              {...register("partNumber")}
-              placeholder="Enter Part Number"
-              className="border p-2 rounded w-full"
-            />
+            <input type="text" {...register("partNumber")} className="border p-2 rounded w-full" />
           </label>
 
-          {/* Part Description */}
           <label className="block col-span-4">
             Part Description
-            <textarea
-              {...register("partDescription")}
-              placeholder="Part Description"
-              className="border p-2 rounded w-full"
-            />
+            <textarea {...register("partDescription")} className="border p-2 rounded w-full" />
           </label>
 
           <label className="block col-span-4 md:col-span-1">
-            Cost
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              {...register("cost", {
-                required: "Cost is required",
-                min: { value: 0, message: "Cost cannot be negative" },
-              })}
-              placeholder="Enter Cost"
-              className="border p-2 rounded w-full"
-            />
+            Cost ($)
+            <input type="number" step="0.01" {...register("cost", { required: "Required" })} className="border p-2 rounded w-full" />
           </label>
 
-          <div className="col-span-4 md:col-span-1">
-            <label>Lead Time (Days)</label>
-            <input
-              type="number"
-              {...register("leadTime")}
-              placeholder="Lead Time Days"
-              className="border p-2 rounded w-full"
-            />
-          </div>
+          <label className="block col-span-4 md:col-span-1">
+            Lead Time (Days)
+            <input type="number" {...register("leadTime")} className="border p-2 rounded w-full" />
+          </label>
 
-          <div className="col-span-4 md:col-span-1">
-            <label>Order Quantity by Supplier</label>
-            <input
-              type="number"
-              {...register("supplierOrderQty")}
-              placeholder="Order Qty"
-              className="border p-2 rounded w-full"
-            />
-          </div>
+          <label className="block col-span-4 md:col-span-1">
+            Order Qty
+            <input type="number" {...register("supplierOrderQty")} className="border p-2 rounded w-full" />
+          </label>
+
+          {/* Supplier Search Dropdown */}
           <div className="col-span-4 md:col-span-1 relative">
             <label className="block mb-1">Company Name</label>
-            <input
-              type="hidden"
-              {...register("companyId", { required: "Company is required" })}
-            />
-
+            <input type="hidden" {...register("companyId", { required: "Required" })} />
             <input
               type="text"
               value={searchTerm}
-              placeholder="Search Supplier..."
-              autoComplete="off"
               onChange={(e) => {
-                const val = e.target.value;
-                setSearchTerm(val);
+                setSearchTerm(e.target.value);
                 setShowDropdown(true);
-
-                if (val === "") {
-                  setValue("companyId", "");
-                }
+                if (e.target.value === "") setValue("companyId", "");
               }}
               onFocus={() => setShowDropdown(true)}
               onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-              className={`border p-2 rounded w-full focus:ring-2 focus:ring-brand focus:outline-none ${errors.companyId ? "border-red-500" : ""}`}
+              className="border p-2 rounded w-full focus:ring-2 focus:ring-brand focus:outline-none"
             />
-
             {showDropdown && searchTerm && filteredSuppliers.length > 0 && (
-              <ul className="absolute z-[100] w-full bg-white border border-gray-300 rounded shadow-xl mt-1 max-h-40 overflow-y-auto">
+              <ul className="absolute z-[100] w-full bg-white border rounded shadow-xl mt-1 max-h-40 overflow-y-auto">
                 {filteredSuppliers.map((s) => (
                   <li
                     key={s.id}
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b last:border-0"
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b"
                     onMouseDown={() => {
-                      setSearchTerm(s.companyName);
+                      const name = s.companyName || s.name || "";
+                      setSearchTerm(name);
                       setValue("companyId", s.id);
                       setShowDropdown(false);
                     }}
                   >
-                    {s.companyName}
+                    {s.companyName || s.name}
                   </li>
                 ))}
               </ul>
             )}
-
-            {errors.companyId && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.companyId.message}
-              </p>
-            )}
-          </div>
-          {/* Minimum Stock */}
-          <div className="col-span-4 md:col-span-1">
-            <label>Minimum Stock</label>
-            <input
-              type="number"
-              {...register("minStock", {
-                // required: "Minimum Stock is required",
-                valueAsNumber: true,
-                // validate: (value) => {
-                //   const supplierOrderQty = watch("supplierOrderQty");
-                //   if (supplierOrderQty === null || isNaN(supplierOrderQty))
-                //     return true;
-                //   return (
-                //     value <= supplierOrderQty ||
-                //     "Minimum Stock must be less than Order Quantity"
-                //   );
-                // },
-              })}
-              placeholder="Minimum Stock"
-              className="border p-2 rounded w-full"
-            />
-            {errors.minStock && (
-              <p className="text-red-500 text-sm">{errors.minStock.message}</p>
-            )}
           </div>
 
-          {/* Available Stock */}
-          <div className="col-span-4 md:col-span-1">
-            <label>Available Stock</label>
-            <input
-              type="number"
-              {...register("availStock", {
-                // required: "Available Stock is required",
-                valueAsNumber: true,
-              })}
-              placeholder="Available Stock"
-              className="border p-2 rounded w-full"
-            />
-            {errors.availStock && (
-              <p className="text-red-500 text-sm">
-                {errors.availStock.message}
-              </p>
-            )}
-          </div>
+          <label className="block col-span-4 md:col-span-1">
+            Min Stock
+            <input type="number" {...register("minStock")} className="border p-2 rounded w-full" />
+          </label>
 
-          <div className="col-span-4 md:col-span-1">
-            <label className="font-semibold">Cycle Time (Minutes)</label>
-            <input
-              {...register("cycleTime", {
-                required: "Cycle time is required",
-                pattern: {
-                  value: /^[1-9]\d*$/, // केवल positive integers
-                  message: "Only positive integers are allowed",
-                },
-              })}
-              type="number"
-              placeholder="Enter time in minutes"
-              className="border p-2 rounded w-full"
-            />
-            {errors.cycleTime && (
-              <p className="text-red-500 text-sm">{errors.cycleTime.message}</p>
-            )}
-          </div>
-          <div className="col-span-4 md:col-span-1">
-            <label>Work Instruction Required</label>
-            <select
-              {...register("instructionRequired")}
-              className="border p-2 rounded w-full"
-            >
+          <label className="block col-span-4 md:col-span-1">
+            Avail Stock
+            <input type="number" {...register("availStock")} className="border p-2 rounded w-full" />
+          </label>
+
+          <label className="block col-span-4 md:col-span-1">
+            Cycle Time (Min)
+            <input type="number" {...register("cycleTime", { required: "Required" })} className="border p-2 rounded w-full" />
+          </label>
+
+          <label className="block col-span-4 md:col-span-1">
+            Instruction Required
+            <select {...register("instructionRequired")} className="border p-2 rounded w-full">
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
-          </div>
-          <div className="col-span-3 md:col-span-1">
-            <label>Process Order Required</label>
-            <select
-              {...register("processOrderRequired", {
-                setValueAs: (v) => v === "true",
-              })}
-              className="border p-2 rounded w-full"
-            >
+          </label>
+
+          <label className="block col-span-4 md:col-span-1">
+            Process Required
+            <select {...register("processOrderRequired")} className="border p-2 rounded w-full">
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
-          </div>
+          </label>
 
-          {/* Process */}
-          {/* <label className="block col-span-4 md:col-span-2">
-            Process
-            <select
-              {...register("processId", {
-                required:
-                  processOrderRequired === true ? "Process is required" : false,
-              })}
-              className="border p-2 rounded w-full"
-            >
-              <option value="">Select Process</option>
-              {processData.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {`${item.name}`} ({`${item.machineName}`})
-                </option>
-              ))}
-            </select>
-            {errors.processId && (
-              <p className="text-red-500 text-sm">{errors.processId.message}</p>
-            )}
-          </label> */}
-          {/* Process Order Required */}
-
-          {/* Conditional Fields: Sirf tab dikhenge jab processOrderRequired true ho */}
-          {processOrderRequired === true && (
+          {processOrderRequired === "true" && (
             <>
-              {/* Process */}
               <label className="block col-span-4 md:col-span-1">
                 Process
-                <select
-                  {...register("processId", {
-                    required: "Process is required",
-                  })}
-                  className="border p-2 rounded w-full"
-                >
+                <select {...register("processId", { required: "Required" })} className="border p-2 rounded w-full">
                   <option value="">Select Process</option>
                   {processData.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {`${item.name}`} ({`${item.machineName}`})
-                    </option>
+                    <option key={item.id} value={item.id}>{item.name} ({item.machineName})</option>
                   ))}
                 </select>
-                {errors.processId && (
-                  <p className="text-red-500 text-sm">
-                    {errors.processId.message}
-                  </p>
-                )}
               </label>
-
-              {/* Process Description */}
-              <label className="block col-span-4 md:col-span-1">
+              <label className="block col-span-4 md:col-span-2">
                 Process Description
-                <textarea
-                  {...register("processDesc", {
-                    required: "Process description is required",
-                  })}
-                  placeholder="Process Description"
-                  className="border p-2 rounded w-full"
-                />
-                {errors.processDesc && (
-                  <p className="text-red-500 text-sm">
-                    {errors.processDesc.message}
-                  </p>
-                )}
+                <textarea {...register("processDesc")} className="border p-2 rounded w-full" />
               </label>
             </>
           )}
 
-          {/* Process Description */}
-
-          {/* Images */}
+          {/* Image Display Section */}
           <div className="col-span-4">
-            <label className="block font-medium mb-2">Uploaded Images</label>
-            {previewImages.length > 0 && (
-              <div className="col-span-4 mt-2 ">
-                <div className="flex gap-2">
-                  {previewImages.map((imgUrl, i) => (
-                    <div key={i} className="relative flex-shrink-0">
-                      <img
-                        src={imgUrl}
-                        alt={`Preview ${i}`}
-                        className="w-20 h-20 object-cover border rounded"
-                      />
-                      <MdCancel
-                        className="absolute -top-2 -right-2 cursor-pointer text-red-600 bg-white rounded-full"
-                        size={20}
-                        onClick={() => handleRemoveSelectedImage(i)}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="flex gap-2 flex-wrap">
-              {existingImages.map((img, i) => (
-                <div key={img.id} className="relative">
-                  <img
-                    src={`${BASE_URL}/uploads/partImages/${img.imageUrl}`}
-                    alt={`Uploaded ${i}`}
-                    className="w-20 h-20 object-cover border rounded"
-                  />
+            <label className="block font-medium mb-2">Images</label>
+            <div className="flex flex-wrap gap-3">
+              {/* Previews of new selected images */}
+              {previewImages.map((imgUrl, i) => (
+                <div key={`new-${i}`} className="relative w-20 h-20">
+                  <img src={imgUrl} className="w-full h-full object-cover border rounded-lg" alt="preview" />
                   <MdCancel
-                    className="absolute -top-2 -right-2 cursor-pointer text-red-600 bg-white rounded-full"
-                    size={20}
+                    className="absolute -top-2 -right-2 cursor-pointer text-red-600 bg-white rounded-full shadow-sm"
+                    size={22}
+                    onClick={() => handleRemoveSelectedImage(i)}
+                  />
+                </div>
+              ))}
+              {/* Existing images from server */}
+              {existingImages.map((img) => (
+                <div key={img.id} className="relative w-20 h-20">
+                  <img src={`${BASE_URL}/uploads/partImages/${img.imageUrl}`} className="w-full h-full object-cover border rounded-lg" alt="existing" />
+                  <MdCancel
+                    className="absolute -top-2 -right-2 cursor-pointer text-red-600 bg-white rounded-full shadow-sm"
+                    size={22}
                     onClick={() => handleDeleteImg(img.id)}
                   />
                 </div>
@@ -632,24 +373,13 @@ const EditPartForm = () => {
             </div>
           </div>
 
-          {/* Image Upload */}
-          <label className="block col-span-4 md:col-span-2 cursor-pointer border bg-gray-100 p-4 rounded text-center">
-            {selectedImages?.[0]?.name || "Tap or Click to Add Picture"}
-            <input
-              type="file"
-              {...register("image")}
-              className="hidden"
-              accept="image/*"
-              multiple
-            />
+          <label className="block col-span-4 md:col-span-2 cursor-pointer border-2 border-dashed border-gray-300 bg-gray-50 p-4 rounded-lg text-center hover:bg-gray-100 transition">
+            <span className="text-gray-500">Tap or Click to Add Pictures</span>
+            <input type="file" {...register("image")} className="hidden" accept="image/*" multiple />
           </label>
 
-          {/* Submit Button */}
           <div className="flex justify-end items-center col-span-4">
-            <button
-              type="submit"
-              className="bg-brand text-white py-2 rounded px-4"
-            >
+            <button type="submit" className="bg-brand text-white py-2 rounded-lg px-8 font-bold shadow-lg hover:bg-opacity-90 transition">
               Save
             </button>
           </div>

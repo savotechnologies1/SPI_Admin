@@ -1,5 +1,17 @@
 import avatar from "../../assets/Avatar.png";
-const data = [
+
+export interface TimeClockDataType {
+  id: string;
+  name: string;
+  email: string;
+  Process: string;
+  Hours: string;
+  Vacation: string;
+  Hour: string;
+  avatar: string;
+}
+
+const data: TimeClockDataType[] = [
   {
     id: "1",
     name: "Jayvion Sim",

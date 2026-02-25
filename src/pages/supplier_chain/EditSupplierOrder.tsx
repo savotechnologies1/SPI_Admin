@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotateRight } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +12,26 @@ import {
 import { selectProductApi } from "../Work_Instrcution.tsx/https/workInstructionApi";
 import Select from "react-select";
 import { FaCircle } from "react-icons/fa";
+
+interface SupplierOption {
+  id: string;
+  name: string;
+}
+
+interface ProductOption {
+  id: string;
+  partNumber: string;
+}
+
+interface OrderFormValues {
+  order_number: string;
+  order_date: string;
+  supplier_id: string;
+  part_id: string;
+  quantity: string;
+  cost: string;
+  need_date: string;
+}
 const validationSchema = Yup.object({
   order_date: Yup.date().required("Order Date is required"),
   supplier_id: Yup.string(),
@@ -26,11 +46,13 @@ const validationSchema = Yup.object({
 const EditSupplierOrder = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [supplierData, setSupplierData] = useState([]);
-  const [productData, setProductData] = useState([]);
-  const [initialValues, setInitialValues] = useState(null);
+  const [supplierData, setSupplierData] = useState<SupplierOption[]>([]);
+  const [productData, setProductData] = useState<ProductOption[]>([]);
+  const [initialValues, setInitialValues] = useState<OrderFormValues | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchDropdownData = async () => {
@@ -76,7 +98,11 @@ const EditSupplierOrder = () => {
     fetchDropdownData();
     fetchOrderDetails();
   }, [id]);
-  const handleUpdate = async (values, { setSubmitting }) => {
+  const handleUpdate = async (
+    values: OrderFormValues,
+    { setSubmitting }: FormikHelpers<OrderFormValues>,
+  ) => {
+    if (!id) return;
     try {
       await editSupplierOrder(id, values);
       alert("Order updated successfully!");

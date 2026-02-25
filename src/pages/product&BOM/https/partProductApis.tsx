@@ -1,26 +1,31 @@
 import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
-import { data } from "react-router-dom";
+import axios from "axios";
 
-export const createPartNumber = async (apiData: object) => {
-  // eslint-disable-next-line no-useless-catch
+export const createPartNumber = async (apiData: FormData | object) => {
   try {
     const response = await axiosInstance.post("/create-part-number", apiData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
+
     if (response.status === 201) {
-      toast.success(response.data.message);
+      toast.success(response.data.message || "Part created successfully!");
     }
     return response;
-  } catch (error) {
-    toast.error(error.response.data.message);
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
+      toast.error(errorMessage);
+    } else {
+      toast.error("An unexpected error occurred");
+    }
+    throw error;
   }
 };
-
 export const updatePartNumber = async (id: string, apiData: object) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.put(
       `/update-part-number/${id}`,
@@ -29,14 +34,18 @@ export const updatePartNumber = async (id: string, apiData: object) => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      }
+      },
     );
     if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error) {
-    toast.error(error.response.data.message);
+  } catch (error: unknown) {
+    if (error && typeof error === "object" && "response" in error) {
+      toast.error(
+        (error as any).response?.data?.message || "An error occurred",
+      );
+    }
   }
 };
 
@@ -50,14 +59,18 @@ export const updateProductNumber = async (apiData: object, id: string) => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      }
+      },
     );
-    if (response.status === 201) {
+    if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error) {
-    toast.error(error.response.data.message);
+  } catch (error: unknown) {
+    if (error && typeof error === "object" && "response" in error) {
+      toast.error(
+        (error as any).response?.data?.message || "An error occurred",
+      );
+    }
   }
 };
 
@@ -75,7 +88,7 @@ export const partNumberList = async (page = 1, limit = 5) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/part-number-list?page=${page}&limit=${limit}`
+      `/part-number-list?page=${page}&limit=${limit}`,
     );
     return response.data;
   } catch (error) {
@@ -103,14 +116,18 @@ export const createProductNumber = async (apiData: object) => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      }
+      },
     );
     if (response.status === 201) {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error) {
-    toast.error(error.response.data.message);
+  } catch (error: unknown) {
+    if (error && typeof error === "object" && "response" in error) {
+      toast.error(
+        (error as any).response?.data?.message || "An error occurred",
+      );
+    }
   }
 };
 
@@ -126,12 +143,12 @@ export const bomList = async (
   page = 1,
   limit = 5,
   searchVal: string,
-  selectedValue: string
+  selectedValue: string,
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/bom-data-list?page=${page}&limit=${limit}&search=${searchVal}&type=${selectedValue}`
+      `/bom-data-list?page=${page}&limit=${limit}&search=${searchVal}&type=${selectedValue}`,
     );
     return response.data;
   } catch (error) {
@@ -143,7 +160,7 @@ export const productTree = async (page = 1, limit = 5, searchVal: string) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
-      `/get-product-tree?page=${page}&limit=${limit}&search=${searchVal}`
+      `/get-product-tree?page=${page}&limit=${limit}&search=${searchVal}`,
     );
     return response.data;
   } catch (error) {
@@ -178,9 +195,10 @@ export const getProcessDetail = async (id: string) => {
 export const deletePartNumber = async (id: string) => {
   try {
     const response = await axiosInstance.patch(`/delete-part-number/${id}`);
-
     return response;
-  } catch (error) {}
+  } catch (error) {
+    return error;
+  }
 };
 
 export const deleteProductNumber = async (id: string) => {
@@ -218,7 +236,7 @@ export const deleteProductImage = async (id: string) => {
 export const deleteProductPartNumber1 = async (id: string) => {
   try {
     const response = await axiosInstance.delete(
-      `/delete-product-part-number/${id}`
+      `/delete-product-part-number/${id}`,
     );
     if (response.status === 200) {
       toast.success(response.data.message);

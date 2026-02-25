@@ -60,14 +60,6 @@ const EditSuppliers = () => {
     fetchProcessDetail();
   }, [id]);
 
-  const handleDelete = async () => {
-    try {
-      const response = await deleteSupplier(id!);
-      navigate("/all-supplier");
-    } catch (error: unknown) {
-      throw error;
-    }
-  };
   return (
     <div className="p-7">
       <div>
@@ -154,7 +146,9 @@ const EditSuppliers = () => {
           <label className="font-semibold">Company Name</label>
           <div className="mt-2 w-full mb-6">
             <input
-              {...register("companyName", { required: "Company Name is required" })}
+              {...register("companyName", {
+                required: "Company Name is required",
+              })}
               type="text"
               placeholder="Company Name"
               className="border py-4 px-4 rounded-md w-full"

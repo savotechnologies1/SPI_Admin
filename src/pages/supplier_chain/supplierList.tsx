@@ -2,7 +2,6 @@ import { SetStateAction, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaCircle, FaTrash } from "react-icons/fa";
 import search_2 from "../../assets/search_2.png";
-import more from "../../assets/more.png";
 import edit from "../../assets/edit_icon.png";
 import add from "../../assets/add.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,6 +12,7 @@ interface CustomerItem {
   id: string;
   firstName: string;
   lastName: string;
+  companyName: string;
   address: string;
   email: string;
   billingTerms: string;
@@ -24,7 +24,6 @@ const SupplierList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
-  const [showConfirm, setShowConfirm] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const rowsPerPage = 5;
@@ -35,11 +34,10 @@ const SupplierList = () => {
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
-  const handleChange = (e: { target: { value: SetStateAction<string> } }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchVal(e.target.value);
   };
-  const fetchCustomerList = async (page = 1) => {
-    // eslint-disable-next-line no-useless-catch
+  const fetchCustomerList = async (page: number = 1) => {
     try {
       const response = await supplierList(page, rowsPerPage, searchVal);
       setCustomerData(response.data);
@@ -107,24 +105,6 @@ const SupplierList = () => {
           <div className="flex flex-col bg-white rounded-t">
             <div className="p-2 md:p-4">
               <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 p-2 md:p-4">
-                {/* <div className="flex flex-col w-full sm:w-auto">
-                  <label
-                    htmlFor="role"
-                    className="text-xs md:text-sm font-medium text-gray-500"
-                  >
-                    Role
-                  </label>
-                  <select
-                    id="role"
-                    className="mt-1 block w-full sm:w-40 md:w-52 rounded-md border-gray-300 text-sm md:text-base"
-                    defaultValue="Project Coordinator"
-                  >
-                    <option>Newly added</option>
-                    <option>Developer</option>
-                    <option>Designer</option>
-                  </select>
-                </div> */}
-
                 <div className="flex-1 w-full relative border p-2 md:p-3 rounded-md">
                   <input
                     type="text"
@@ -188,10 +168,10 @@ const SupplierList = () => {
                           <p className="text-xs text-gray-400 truncate max-w-[100px] md:max-w-none">
                             {item.email}
                           </p>
-
                         </div>
                       </div>
-                    </td> <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
+                    </td>{" "}
+                    <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
                       {item.companyName}
                     </td>
                     <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
@@ -277,8 +257,9 @@ const SupplierList = () => {
                 <button
                   onClick={handlePreviousPage}
                   disabled={currentPage === 1}
-                  className={`p-1 md:p-2 rounded ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
+                  className={`p-1 md:p-2 rounded ${
+                    currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 >
                   <FontAwesomeIcon icon={faArrowLeft} />
                 </button>
@@ -286,10 +267,11 @@ const SupplierList = () => {
                 <button
                   onClick={handleNextPage}
                   disabled={currentPage === totalPages}
-                  className={`p-1 md:p-2 rounded ${currentPage === totalPages
+                  className={`p-1 md:p-2 rounded ${
+                    currentPage === totalPages
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-gray-300"
-                    }`}
+                  }`}
                 >
                   <FontAwesomeIcon icon={faArrowRight} />
                 </button>

@@ -5,7 +5,9 @@ import search_2 from "../../assets/search_2.png";
 import more from "../../assets/more.png";
 import back from "../../assets/back.png";
 import next from "../../assets/next.png";
-import data from "../../../components/Data/TimeClockData";
+import data, {
+  TimeClockDataType,
+} from "../../../components/Data/TimeClockData";
 
 const TimeClockList = () => {
   const navigate = useNavigate();
@@ -25,17 +27,6 @@ const TimeClockList = () => {
   const startIndex = (currentPage - 1) * rowsPerPage;
   const visibleRows = data.slice(startIndex, startIndex + rowsPerPage);
 
-  // const handleRowClick = (index: number) => {
-  //   setSelectedRow(selectedRow === index ? null : index);
-  // };
-
-  // const openModal = () => {
-  //   setIsOpen(true);
-  // };
-
-  // const update = () => {
-  //   navigate('/update');
-  // };
   const handleRowClicked = () => {
     navigate("/time-sheet");
   };
@@ -51,7 +42,7 @@ const TimeClockList = () => {
           <div className="flex flex-wrap items-center mt-2 gap-1 md:gap-2">
             <p
               className="text-sm md:text-base text-black"
-              onClick={() => "dashboardDetailes"}
+              onClick={() => navigate("/dashboardDetailes")}
             >
               <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
             </p>
@@ -137,7 +128,7 @@ const TimeClockList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {visibleRows.map((item) => (
+                  {visibleRows.map((item: TimeClockDataType) => (
                     <React.Fragment key={item.id}>
                       <tr
                         className={`border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100`}

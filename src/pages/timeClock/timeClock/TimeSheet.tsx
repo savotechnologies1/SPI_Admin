@@ -45,7 +45,7 @@ const TimeSheet: FC = () => {
       setTimeSheetData(response.data.data);
       setPagination(response.data.pagination);
     } catch (err) {
-      if (err && typeof err === 'object' && 'response' in err) {
+      if (err && typeof err === "object" && "response" in err) {
         const error = err as { response?: { data?: { message?: string } } };
         setError(error.response?.data?.message || "Error fetching data");
       } else {

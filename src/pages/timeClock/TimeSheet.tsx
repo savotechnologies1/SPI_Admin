@@ -127,7 +127,7 @@ const TimeSheet = () => {
 
   const currentRows = data.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
 
   const goToPreviousPage = () => {
@@ -148,10 +148,8 @@ const TimeSheet = () => {
   return (
     <>
       <div className="p-6 bg-gray-100 min-h-screen mt-5">
-        {/* Breadcrumb */}
         <div className="flex items-center text-sm text-gray-500 mb-4"></div>
         <div>
-          {" "}
           <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
             Time List
           </h1>
@@ -173,14 +171,10 @@ const TimeSheet = () => {
             <span>
               <FaCircle className="text-[6px] text-gray-500" />
             </span>
-            <span className="text-[14px] hover:cursor-pointer">
-              {" "}
-              time Sheet
-            </span>
+            <span className="text-[14px] hover:cursor-pointer">time Sheet</span>
           </div>
         </div>
 
-        {/* Filters */}
         <div className="bg-white  p-4 mt-6">
           <div className="flex flex-col md:flex-row justify-between gap-4 items-end">
             <div className="w-full md:w-1/2">
@@ -205,7 +199,6 @@ const TimeSheet = () => {
           </div>
         </div>
 
-        {/* Table */}
         <div className="bg-white overflow-x-auto  ">
           <table className="min-w-full border-collapse">
             <thead>
@@ -255,8 +248,6 @@ const TimeSheet = () => {
               ))}
             </tbody>
           </table>
-
-          {/* Pagination */}
           <div className="flex justify-between items-center mt-4 p-2">
             <button
               onClick={goToPreviousPage}
@@ -303,7 +294,6 @@ const TimeSheet = () => {
           </td>
         </div>
       </div>
-      {/* Modal */}
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
           <div className="bg-white p-4 md:p-6 rounded-lg w-3/4 sm:w-full max-w-md">

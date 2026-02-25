@@ -24,10 +24,14 @@ const EditCustomer = () => {
     reset,
   } = useForm<CustomerFormData>();
 
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const onSubmit = async (data: CustomerFormData) => {
+    if (!id) {
+      console.error("Customer ID is missing");
+      return;
+    }
     try {
       const response = await editCustomer(data, id);
       if (response?.status === 200) {
@@ -39,6 +43,10 @@ const EditCustomer = () => {
   };
 
   const fetchProcessDetail = async () => {
+    if (!id) {
+      console.error("Customer ID is missing");
+      return;
+    }
     try {
       const response = await customerDetail(id);
       const data = response.data;
@@ -61,6 +69,10 @@ const EditCustomer = () => {
   }, [id]);
 
   const handleDelete = async () => {
+    if (!id) {
+      console.error("Customer ID is missing");
+      return;
+    }
     try {
       const response = await deleteCustomer(id);
       if (response?.status === 200) {

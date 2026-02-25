@@ -38,6 +38,10 @@ const EditEmployee = () => {
 
   const onSubmit = async (data: FormData) => {
     console.log("Form Submitted:", data);
+    if (!id) {
+      console.error("Employee ID is missing");
+      return;
+    }
     try {
       const response = await editEmployee(data, id);
       if (response?.status === 200) {
@@ -50,13 +54,17 @@ const EditEmployee = () => {
   };
 
   const fetchEmployeeDetail = async () => {
+    if (!id) {
+      console.error("Employee ID is missing");
+      return;
+    }
     try {
       const response = await employeeDetail(id);
       const data = response.data;
       console.log("Employee Detail data:", data);
 
       // Format date for input[type="date"]
-      const formattedStartDate = data.startDate
+      const formattedStartDate = data?.startDate
         ? new Date(data.startDate).toISOString().split("T")[0]
         : "";
 
@@ -87,6 +95,10 @@ const EditEmployee = () => {
   }, [id, reset]); // Add reset to dependencies if you want to refetch on ID change
 
   const handleDelete = async () => {
+    if (!id) {
+      console.error("Employee ID is missing");
+      return;
+    }
     try {
       const response = await deleteEmployee(id);
       if (response?.status === 200) {
