@@ -85,9 +85,11 @@ export const traningStatus = async (data: {
 //     throw error;
 //   }
 // };
-export const stationLogoutApi = async (id: string) => {
+export const stationLogoutApi = async (id: string, logoutData) => {
   try {
-    const response = await axiosInstance.post(`/station-logout/${id}`);
+    const response = await axiosInstance.post(`/station-logout/${id}`, {
+      logoutData,
+    });
     if (response.status === 200) {
       toast.success(response.data.message);
     }
@@ -96,7 +98,6 @@ export const stationLogoutApi = async (id: string) => {
     toast.error(error.response.data.message);
   }
 };
-
 export const completeOrder = async (
   id: string,
   orderId: string,

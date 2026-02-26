@@ -71,42 +71,58 @@ const Training = () => {
       year: "numeric",
     });
   };
-const formatCycleTime = (dateString) => {
-  if (!dateString) return "N/A";
 
-  try {
-    const startTime = new Date(dateString);
-    if (isNaN(startTime.getTime())) {
-      return "Invalid Time";
-    }
+  const formatCycleTime = (dateString) => {
+    if (!dateString) return "N/A";
 
-    const now = new Date();
-    const diffMs = now - startTime;
-
-    // Difference negative na ho isliye Math.max(0, ...)
-    const totalMinutes = Math.max(0, Math.floor(diffMs / (1000 * 60)));
-
-    if (totalMinutes < 60) {
-      // Agar 60 min se kam hai toh sirf minutes dikhao
-      return `${totalMinutes} min`;
-    } else {
-      // Agar 60 min ya usse zyada hai toh hours aur minutes me convert karo
-      const hours = Math.floor(totalMinutes / 60);
-      const remainingMinutes = totalMinutes % 60;
-
-      if (remainingMinutes === 0) {
-        return `${hours} hr`;
-      } else {
-        return `${hours} hr ${remainingMinutes} min`;
+    try {
+      const startTime = new Date(dateString);
+      if (isNaN(startTime.getTime())) {
+        return "Invalid Time";
       }
-    }
-  } catch (error) {
-    console.error("Could not format cycle time:", dateString, error);
-    return "N/A";
-  }
-};
 
-  // 2. Training Certification Check
+      const now = new Date();
+      const diffMs = now - startTime;
+
+      // Total minutes nikaalein
+      const totalMinutes = Math.max(0, Math.floor(diffMs / (1000 * 60)));
+
+      // 1. Agar 24 ghante (1440 min) se zyada hai
+      if (totalMinutes >= 1440) {
+        const days = Math.floor(totalMinutes / 1440);
+        const remainingMinutesAfterDays = totalMinutes % 1440;
+        const hours = Math.floor(remainingMinutesAfterDays / 60);
+        const mins = remainingMinutesAfterDays % 60;
+
+        let result = `${days} day${days > 1 ? "s" : ""}`;
+        if (hours > 0) result += ` ${hours} hr`;
+        if (mins > 0) result += ` ${mins} min`;
+
+        return result;
+      }
+
+      // 2. Agar 1 ghante (60 min) se zyada hai
+      else if (totalMinutes >= 60) {
+        const hours = Math.floor(totalMinutes / 60);
+        const mins = totalMinutes % 60;
+
+        if (mins === 0) {
+          return `${hours} hr`;
+        } else {
+          return `${hours} hr ${mins} min`;
+        }
+      }
+
+      // 3. Agar sirf minutes hain
+      else {
+        return `${totalMinutes} min`;
+      }
+    } catch (error) {
+      console.error("Could not format cycle time:", dateString, error);
+      return "N/A";
+    }
+  };
+
   const verifyTraining = async (productId: string) => {
     if (
       !stationUserId ||
@@ -129,7 +145,6 @@ const formatCycleTime = (dateString) => {
     }
   };
 
-  // 3. Fetch Job and Instructions
   const fetchJobDetails = async () => {
     if (!processId || !stationUserId) {
       navigate("/station-login");
@@ -250,9 +265,7 @@ const formatCycleTime = (dateString) => {
                         <th className="border border-white px-2 py-1">
                           Part Number (Learning)
                         </th>
-                        <th className="border border-white px-2 py-1">
-                           Date
-                        </th>
+                        <th className="border border-white px-2 py-1">Date</th>
                       </tr>
                     </thead>
                     <tbody>
