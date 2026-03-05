@@ -1166,14 +1166,9 @@ const RunWithScan = () => {
       if (isNaN(startTime.getTime())) {
         return "Invalid Time";
       }
-
       const now = new Date();
       const diffMs = now - startTime;
-
-      // Total minutes nikaalein
       const totalMinutes = Math.max(0, Math.floor(diffMs / (1000 * 60)));
-
-      // 1. Agar 24 ghante (1440 min) se zyada hai
       if (totalMinutes >= 1440) {
         const days = Math.floor(totalMinutes / 1440);
         const remainingMinutesAfterDays = totalMinutes % 1440;
@@ -1185,10 +1180,7 @@ const RunWithScan = () => {
         if (mins > 0) result += ` ${mins} min`;
 
         return result;
-      }
-
-      // 2. Agar 1 ghante (60 min) se zyada hai
-      else if (totalMinutes >= 60) {
+      } else if (totalMinutes >= 60) {
         const hours = Math.floor(totalMinutes / 60);
         const mins = totalMinutes % 60;
 
@@ -1197,10 +1189,7 @@ const RunWithScan = () => {
         } else {
           return `${hours} hr ${mins} min`;
         }
-      }
-
-      // 3. Agar sirf minutes hain
-      else {
+      } else {
         return `${totalMinutes} min`;
       }
     } catch (error) {
@@ -1416,7 +1405,9 @@ const RunWithScan = () => {
             </div>
             <div className="flex flex-col items-center">
               <p className="text-xs">Cycle Time</p>
-              <p className="text-sm">{formatCycleTime(jobData.cycleTime)}</p>
+              <p className="text-sm md:text-base font-bold text-white">
+                {formatCycleTime(jobData.cycleTime)}
+              </p>
             </div>
           </div>
         </div>

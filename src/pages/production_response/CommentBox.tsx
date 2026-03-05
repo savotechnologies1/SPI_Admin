@@ -3,8 +3,6 @@ import axios from "axios";
 import { sendStationNotification } from "./https/productionResponseApi";
 
 export default function CommentBox({ employeeInfo }) {
-  console.log(employeeInfo);
-
   const [comment, setComment] = useState("");
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -24,8 +22,6 @@ export default function CommentBox({ employeeInfo }) {
       alert("Please enter a comment or choose an image.");
       return;
     }
-    console.log("comment", comment, image);
-
     const formData = new FormData();
     formData.append("comment", comment);
     formData.append("employeeId", employeeInfo.id);
@@ -35,9 +31,6 @@ export default function CommentBox({ employeeInfo }) {
 
     try {
       const res = await sendStationNotification(formData);
-      console.log("Response:", res.data);
-
-      // Reset fields
       setComment("");
       setImage(null);
       setPreview(null);

@@ -1074,12 +1074,12 @@ const RunSchedule = () => {
             </div>
             <div className="flex flex-col items-center text-white">
               <p className="text-sm md:text-base font-semibold">Cycle Time</p>
-              <p className="text-sm md:text-base">
+              {/* <p className="text-sm md:text-base">
+                {jobData?.cycleTime || "0.00"}
+              </p> */}
+              <p className="text-sm md:text-base font-bold text-white">
                 {formatCycleTime(jobData?.cycleTime)}
               </p>
-              {/* <p className="text-sm md:text-base font-bold text-white">
-                {formatTotalDuration(jobData?.cycleTime)}
-              </p> */}
             </div>
           </div>
         </div>

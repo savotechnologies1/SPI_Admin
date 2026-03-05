@@ -381,6 +381,7 @@ const SupplierOrderList: React.FC = () => {
                             className="text-brand cursor-pointer w-5 h-5"
                             onClick={() => sendSupplierEmail(item)}
                           />
+
                           <button
                             className="text-brand"
                             onClick={() => editWorkInstruction(item)}
@@ -391,12 +392,10 @@ const SupplierOrderList: React.FC = () => {
                               className="w-4 h-4 md:w-5 md:h-5"
                             />
                           </button>
-
                           <FaTrash
                             className="text-red-500 cursor-pointer w-5 h-5"
                             onClick={() => setSelectedId(item.id)}
                           />
-
                           {selectedId === item.id && (
                             <div className="fixed inset-0 bg-black/40 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
                               <div className="bg-white p-6 rounded-xl shadow-lg max-w-sm w-full">
