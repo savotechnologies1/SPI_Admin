@@ -319,7 +319,6 @@ const SupplierOrderList: React.FC = () => {
                         item?.part?.partNumber
                       )}
                     </td>
-
                     <td className="px-4 py-3">
                       {editableRowId === item.id ? (
                         <input
@@ -331,7 +330,7 @@ const SupplierOrderList: React.FC = () => {
                         />
                       ) : (
                         <span className="px-2 py-1 rounded text-xs font-semibold bg-gray-200 text-gray-600">
-                          {new Date(item.need_date).toLocaleDateString()}
+                          {new Date(item.need_date).toLocaleDateString("en-US")}
                         </span>
                       )}
                     </td>

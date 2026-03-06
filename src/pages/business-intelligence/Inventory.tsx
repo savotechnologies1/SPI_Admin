@@ -30,11 +30,10 @@ const formatXAxis = (dateStr: string, period: Period) => {
   const date = new Date(dateStr);
 
   if (period === "yearly") {
-    return date.getFullYear().toString(); // "2026"
+    return date.getFullYear().toString();
   }
 
   if (period === "monthly") {
-    // Monthly mein 30 din ka data hai, isliye sirf "Feb 23" dikhao
     return new Intl.DateTimeFormat("en-US", {
       month: "short",
       day: "2-digit",
@@ -47,8 +46,6 @@ const formatXAxis = (dateStr: string, period: Period) => {
       day: "2-digit",
     }).format(date);
   }
-
-  // Daily: "23 Feb"
   return new Intl.DateTimeFormat("en-US", {
     day: "2-digit",
     month: "short",
@@ -95,7 +92,7 @@ const Inventory = () => {
   const [turnoverRatio, setTurnoverRatio] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 5; // Ek
+  const rowsPerPage = 5;
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
   const fetchInventoryGraph = async () => {
@@ -168,7 +165,7 @@ const Inventory = () => {
               Total Inventory Cost
             </p>
             <h2 className="text-2xl font-bold text-gray-800">
-              ${" "}
+              $
               {totalInventoryCost.toLocaleString(undefined, {
                 minimumFractionDigits: 2,
               })}
@@ -217,13 +214,8 @@ const Inventory = () => {
                   dataKey="date"
                   fontSize={10}
                   tickMargin={10}
-                  // Interval settings for clarity
                   interval={
-                    period === "daily"
-                      ? 2 // Har 3rd day dikhao (1, 4, 7...)
-                      : period === "monthly"
-                        ? 0 // Saare 12 mahine dikhao
-                        : 0
+                    period === "daily" ? 2 : period === "monthly" ? 0 : 0
                   }
                 />
                 <YAxis
@@ -325,7 +317,6 @@ const Inventory = () => {
               {Math.min(indexOfLastRow, totalItems)} of {totalItems}
             </span>
             <div className="flex gap-4">
-              {/* Previous Button */}
               <button
                 onClick={handlePrev}
                 disabled={currentPage === 1}

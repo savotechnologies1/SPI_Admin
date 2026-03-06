@@ -24,7 +24,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 
 const Costing = () => {
-  // State: startDate aur endDate ko Date Object rakha hai
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [cardsData, setCardsData] = useState([]);
@@ -35,7 +34,6 @@ const Costing = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Backend ko hamesha YYYY-MM-DD chahiye hota hai, isliye format badla
         const formattedStart = format(startDate, "yyyy-MM-dd");
         const formattedEnd = format(endDate, "yyyy-MM-dd");
 
@@ -44,8 +42,6 @@ const Costing = () => {
         });
 
         const data = res.data;
-
-        // Cards Data Update
         setCardsData([
           {
             num: formatDollar(data.totalYearCost || 0),
@@ -64,7 +60,6 @@ const Costing = () => {
           },
         ]);
 
-        // Chart Data Update
         const months = [
           "Jan",
           "Feb",
@@ -97,7 +92,6 @@ const Costing = () => {
     fetchData();
   }, [startDate, endDate]);
 
-  // Aaj ki date check karne ke liye helper
   const isToday = (date) => {
     const today = new Date();
     return date.toDateString() === today.toDateString();
@@ -111,9 +105,7 @@ const Costing = () => {
           Costing Analysis
         </h1>
 
-        {/* Custom Date Picker Container */}
         <div className="flex items-center gap-2 bg-white p-2 rounded-lg shadow-sm border border-gray-200">
-          {/* From Date */}
           <div className="flex flex-col px-2">
             <label className="text-[10px] font-bold text-gray-400 uppercase">
               From
@@ -121,7 +113,7 @@ const Costing = () => {
             <DatePicker
               selected={startDate}
               onChange={(date) => setStartDate(date)}
-              dateFormat="MM/dd/yyyy" // <-- Aapka format yaha set hai
+              dateFormat="MM/dd/yyyy"
               className="text-sm outline-none bg-transparent cursor-pointer w-24 text-gray-700"
             />
           </div>
@@ -136,12 +128,11 @@ const Costing = () => {
             <DatePicker
               selected={endDate}
               onChange={(date) => setEndDate(date)}
-              dateFormat="MM/dd/yyyy" // <-- Aapka format yaha set hai
+              dateFormat="MM/dd/yyyy"
               className="text-sm outline-none bg-transparent cursor-pointer w-24 text-gray-700"
             />
           </div>
 
-          {/* Today Button */}
           {(!isToday(startDate) || !isToday(endDate)) && (
             <button
               onClick={() => {
@@ -156,7 +147,6 @@ const Costing = () => {
         </div>
       </div>
 
-      {/* Cards Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {cardsData.map((item, index) => (
           <div
@@ -178,7 +168,6 @@ const Costing = () => {
         ))}
       </div>
 
-      {/* Chart Section */}
       <div className="bg-white shadow-sm rounded-2xl p-6 border border-gray-100">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-bold text-gray-700">

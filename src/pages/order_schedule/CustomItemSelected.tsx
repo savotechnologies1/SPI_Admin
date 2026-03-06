@@ -90,36 +90,35 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
   const [availableItems, setAvailableItems] = useState<ItemForUI[]>([]);
   const [selectedItems, setSelectedItems] = useState<ItemForUI[]>([]);
   const navigate = useNavigate();
-
   useEffect(() => {
-    if (!items) return;
+    if (!items) {
+      setAvailableItems([]);
+      return;
+    }
 
-    setAvailableItems((prevAvailableItems) => {
-      const prevItemsMap = new Map(
-        prevAvailableItems.map((item) => [item.id, item]),
-      );
+    // जब भी items (search results) बदलेंगे, available list अपडेट होगी
+    const newTransformedItems = items.map((apiItem) => {
+      // BOM list में से पहली प्रोसेस निकालें (डिस्प्ले के लिए)
+      const processName =
+        apiItem.bomList?.[0]?.processName || "Multiple Processes";
 
-      const newTransformedItems = items.map((apiItem) => {
-        const processName =
-          apiItem.bomList?.[0]?.processName || "No Process Specified";
-        console.log("apiItemapiItem", apiItem);
-        return {
-          id: apiItem.id,
-          img1: "https://via.placeholder.com/150",
-          orderNumber: apiItem.orderNumber,
-          text1: apiItem.product?.partDescription || "Custom Assembly",
-          text2: processName,
-          qty: apiItem.productQuantity,
-          inputQty: "1",
-          allProcesses: apiItem.processDetails || [],
-          originalData: apiItem,
-          processName: processName,
-        };
-      });
-      return newTransformedItems;
+      return {
+        id: apiItem.id,
+        img1: "https://via.placeholder.com/150",
+        orderNumber: apiItem.orderNumber,
+        // अगर product object है तो उसकी description लें
+        text1: apiItem.product?.partDescription || "Custom Order",
+        text2: processName,
+        qty: apiItem.productQuantity || 1,
+        inputQty: "1",
+        allProcesses: apiItem.processDetails || [],
+        originalData: apiItem,
+        processName: processName,
+      };
     });
-  }, [items]);
 
+    setAvailableItems(newTransformedItems);
+  }, [items]); // ← यह Dependency बहुत ज़रूरी है
   const addToSelected = (itemToAdd: ItemForUI) => {
     const existingItemIndex = selectedItems.findIndex(
       (item) => item.id === itemToAdd.id,

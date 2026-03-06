@@ -606,17 +606,25 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       ),
     );
   };
-
+  const formatLocalDate = (date: Date) => {
+    if (!date) return null;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`; // यह हमेशा "2026-03-08" देगा
+  };
   const navigate = useNavigate();
-
   const scheduleAllData = async () => {
     setLoading(true);
     try {
       const payloads = selectedItems.flatMap((item) => {
+        // यहाँ Helper Function का इस्तेमाल करें
+        const formattedDate = formatLocalDate(new Date(item.shipDate));
+
         const productPayload = {
           order_id: item.id,
           orderDate: item.orderDate,
-          delivery_date: item.shipDate, // API expects delivery_date, sending our shipDate
+          delivery_date: formattedDate, // अब यहाँ सही डेट जाएगी
           submitted_date: new Date(),
           customersId: item.customer.id,
           status: "new",
@@ -633,7 +641,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
         const componentPayloads = allNestedParts.map((comp) => ({
           order_id: item.id,
           orderDate: item.orderDate,
-          delivery_date: item.shipDate,
+          delivery_date: formattedDate, // यहाँ भी सही डेट
           submitted_date: new Date(),
           customersId: item.customer.id,
           status: "new",
@@ -658,7 +666,6 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       setLoading(false);
     }
   };
-
   const handleInputChange = (
     itemId: string,
     field: "qty" | "shipDate",

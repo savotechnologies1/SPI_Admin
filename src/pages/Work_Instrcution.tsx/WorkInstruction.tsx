@@ -79,21 +79,7 @@ const WorkInstruction = () => {
             return errors;
           }}
           onSubmit={async (values, { setSubmitting }) => {
-            // try {
-            //   console.log("valllllllllllueeeeeeeeee", values);
-            //   const response: any = await addWorkInstruction({
-            //     processId: values.process,
-            //     productId: values.product,
-            //   });
-            //   console.log("responseresponse", response.data.data.processId);
-            //   if (response.status === 201) {
-            //     navigate("/add-work-instruction");
-            //   }
-            // } catch (error) {
-            //   console.error("Error adding instruction:", error);
-            // } finally {
-            //   setSubmitting(false);
-            // }
+          
           }}
         >
           {({ errors, touched }) => (

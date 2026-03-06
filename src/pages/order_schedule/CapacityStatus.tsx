@@ -102,7 +102,7 @@ const CapacityStatus = () => {
                     </td>
                     <td className="py-3 px-4 text-sm">
                       {row.order_date
-                        ? new Date(row.order_date).toLocaleDateString()
+                        ? new Date(row.order_date).toLocaleDateString("en-US")
                         : "-"}
                     </td>
                   </tr>

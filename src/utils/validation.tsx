@@ -28,7 +28,6 @@ export const customOrderValidation = Yup.object().shape({
   shipDate: Yup.date()
     .required("Ship date is required")
     .min(Yup.ref("orderDate"), "Ship date cannot be before order date"),
-  customerName: Yup.string().required("Customer name is required"),
   customerPhone: Yup.string()
     .matches(/^[0-9]+$/, "Phone number must be only digits")
     .min(7, "Phone number must be at least 7 digits")
@@ -38,7 +37,6 @@ export const customOrderValidation = Yup.object().shape({
     .min(1, "Quantity must be at least 1")
     .required("Quantity is required"),
   totalCost: Yup.number().required("Total cost could not be calculated"),
-
 });
 
 export const stockOrderShedule = Yup.object().shape({
