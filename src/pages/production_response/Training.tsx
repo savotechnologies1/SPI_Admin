@@ -521,24 +521,56 @@ const Training = () => {
     });
   };
 
-  const formatCycleTime = (dateString: any) => {
+  const formatCycleTime = (dateString) => {
     if (!dateString) return "N/A";
+
     try {
       const startTime = new Date(dateString);
+      if (isNaN(startTime.getTime())) {
+        return "Invalid Time";
+      }
+
       const now = new Date();
-      const diffMs = now.getTime() - startTime.getTime();
+      const diffMs = now - startTime;
+
+      // Total minutes nikaalein
       const totalMinutes = Math.max(0, Math.floor(diffMs / (1000 * 60)));
-      if (totalMinutes >= 60) {
+
+      // 1. Agar 24 ghante (1440 min) se zyada hai
+      if (totalMinutes >= 1440) {
+        const days = Math.floor(totalMinutes / 1440);
+        const remainingMinutesAfterDays = totalMinutes % 1440;
+        const hours = Math.floor(remainingMinutesAfterDays / 60);
+        const mins = remainingMinutesAfterDays % 60;
+
+        let result = `${days} day${days > 1 ? "s" : ""}`;
+        if (hours > 0) result += ` ${hours} hr`;
+        if (mins > 0) result += ` ${mins} min`;
+
+        return result;
+      }
+
+      // 2. Agar 1 ghante (60 min) se zyada hai
+      else if (totalMinutes >= 60) {
         const hours = Math.floor(totalMinutes / 60);
         const mins = totalMinutes % 60;
-        return `${hours} hr ${mins} min`;
+
+        if (mins === 0) {
+          return `${hours} hr`;
+        } else {
+          return `${hours} hr ${mins} min`;
+        }
       }
-      return `${totalMinutes} min`;
-    } catch {
+
+      // 3. Agar sirf minutes hain
+      else {
+        return `${totalMinutes} min`;
+      }
+    } catch (error) {
+      console.error("Could not format cycle time:", dateString, error);
       return "N/A";
     }
   };
-
   // Logic Simplified: Training check hata diya taaki training block na ho
   const fetchJobDetails = async () => {
     if (!processId || !stationUserId) {
