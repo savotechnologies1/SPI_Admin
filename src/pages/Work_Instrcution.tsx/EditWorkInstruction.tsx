@@ -21,7 +21,6 @@ import {
   workInstructionDetail,
 } from "./https/workInstructionApi";
 
-// --- TYPES ---
 type Process = { id: string; name: string };
 type Product = { id: string; partNumber: string };
 type SelectOption = { value: string; label: string };
@@ -91,7 +90,6 @@ const EditWorkInstruction = () => {
                   preview: `${BASE_URL}/uploads/workInstructionImg/${img.name}`,
                 }),
               ),
-              // FIX 1: Accessing .name instead of the whole object
               workInstructionVideo:
                 step.workInstructionVideo?.length > 0
                   ? {
@@ -283,8 +281,6 @@ const EditWorkInstruction = () => {
                   const stepErrors =
                     (errors.steps?.[index] as FormikErrors<Step>) || {};
                   const stepTouched = touched.steps?.[index] || {};
-
-                  // FIX 2: Correct Video Source logic (No Hooks inside loop)
                   const videoSrc = step.workInstructionVideo
                     ? step.workInstructionVideo instanceof File
                       ? URL.createObjectURL(step.workInstructionVideo)
@@ -337,7 +333,6 @@ const EditWorkInstruction = () => {
                       </div>
 
                       <div className="flex flex-col md:flex-row gap-4 mb-6">
-                        {/* Images Section */}
                         <div className="w-full sm:w-1/2">
                           <label className="font-semibold block mb-2">
                             Upload Images
@@ -383,7 +378,6 @@ const EditWorkInstruction = () => {
                           </div>
                         </div>
 
-                        {/* Video Section */}
                         <div className="w-full sm:w-1/2">
                           <label className="font-semibold block mb-2">
                             Upload Video (Optional)
@@ -418,7 +412,6 @@ const EditWorkInstruction = () => {
                               >
                                 <source src={videoSrc} type="video/mp4" />
                               </video>
-                              {/* Fix: Click to open video in new tab if needed */}
                               <a
                                 href={videoSrc}
                                 target="_blank"

@@ -1554,8 +1554,9 @@ const RunWithScan = () => {
         scanRef.current = "";
       }
       lastKeyTime.current = currentTime;
-
+console.log("Keconsole.log(aaaaaaaa;y:", event.key);
       if (event.key === "Enter") {
+        console.log("Key:", event.key);
         // Cleaning: Barcode scanner prefix/suffix aur random digits ko hatane ke liye regex
         // Hum sirf letters (a-z) check kar rahe hain kyunki commands 'complete' aur 'scrap' hain
         const rawValue = scanRef.current.toLowerCase();

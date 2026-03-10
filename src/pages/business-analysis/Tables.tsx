@@ -24,7 +24,6 @@ const Tables = ({ metrics }) => {
 
   const BreakdownItem = ({ label, amount, isHeader = false }) => (
     <div className={`mb-4 ${isHeader ? "" : "pl-0"}`}>
-      {/* Value */}
       <div
         className={`text-gray-800 ${
           isHeader ? "text-2xl font-bold" : "text-xl font-bold text-gray-700"
@@ -32,7 +31,6 @@ const Tables = ({ metrics }) => {
       >
         {formatCurrency(amount)}
       </div>
-      {/* Label */}
       <div
         className={`text-xs uppercase tracking-wide mt-1 ${
           isHeader ? "font-bold text-gray-600" : "font-semibold text-gray-400"

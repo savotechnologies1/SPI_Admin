@@ -465,10 +465,10 @@ const sections: Section[] = [
         path: "/business-analysis",
       },
       {
-        key: "projecion ",
-        label: "Projecion  ",
+        key: "Projection ",
+        label: "Projection  ",
         icon: projection,
-        path: "/projecion",
+        path: "/projection",
       },
       {
         key: "Import",

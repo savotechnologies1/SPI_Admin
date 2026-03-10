@@ -249,7 +249,7 @@ const App = () => {
               element={<BusinessIntelligence />}
             />
             <Route path="business-analysis" element={<BusinessAnalysis />} />
-            <Route path="projecion" element={<Projection />} />
+            <Route path="projection" element={<Projection />} />
             <Route path="fixed-cost-management" element={<FixedCost />} />
           </Route>
         </Routes>

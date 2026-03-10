@@ -27,7 +27,6 @@ const BusinessIntelligence = () => {
   return (
     <div>
       <div className="p-7">
-        {" "}
         <h1 className="font-bold text-[20px] md:text-[24px] text-black">
           Business Intelligence
         </h1>

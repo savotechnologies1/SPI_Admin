@@ -203,7 +203,6 @@ const WorkInstructionList: React.FC = () => {
                   </td>
                 </tr>
               ) : workData.length === 0 ? (
-                /* --- EMPTY STATE --- */
                 <tr>
                   <td
                     colSpan={6}

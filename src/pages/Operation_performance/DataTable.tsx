@@ -53,9 +53,7 @@ const DataTable: React.FC<DataTableProps> = ({
             <tbody>
               {manualData.map((item, index) => (
                 <tr key={index} className="even:bg-gray-50">
-                  <td className="px-3 py-2 border">
-                    {item.process} ({item.machineName})
-                  </td>
+                  <td className="px-3 py-2 border">{item.process}</td>
                   <td className="px-3 py-2 border">{item.part}</td>
                   <td className="px-3 py-2 border">{item.qty}</td>
                   <td className="px-3 py-2 border">{item.scrap}</td>
@@ -80,12 +78,10 @@ const DataTable: React.FC<DataTableProps> = ({
             <tbody>
               {monitorData.map((item, index) => (
                 <tr key={index} className="even:bg-gray-50">
-                  <td className="px-3 py-2 border">
-                    {item.processName}({item.machineName})
-                  </td>
+                  <td className="px-3 py-2 border">{item.process}</td>
                   <td className="px-3 py-2 border">{item.part}</td>
                   <td className="px-3 py-2 border">
-                    {item.cycleTime ? item.cycleTime : "00"} min
+                    {item.cycleTime ? item.cycleTime : "00"}
                   </td>
                 </tr>
               ))}
@@ -108,9 +104,7 @@ const DataTable: React.FC<DataTableProps> = ({
             <tbody>
               {productionScrapData.map((item, index) => (
                 <tr key={index} className="even:bg-gray-50">
-                  <td className="px-3 py-2 border">
-                    {item.processName}({item.machineName})
-                  </td>
+                  <td className="px-3 py-2 border">{item.process}</td>
                   <td className="px-3 py-2 border">{item.part}</td>
                   <td className="px-3 py-2 border">{item.scrap}</td>
                 </tr>
