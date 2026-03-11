@@ -31,6 +31,17 @@ const TimeSheet: FC = () => {
   const [currentFilter, setCurrentFilter] = useState<string>("This Week");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const pageSize = 8;
+  const formatDateTime = (dateStr: string | null) => {
+    if (!dateStr || dateStr === "-") return "-";
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr;
+
+    return date.toLocaleString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
 
   const fetchTimeSheet = useCallback(async () => {
     setIsLoading(true);
@@ -64,7 +75,19 @@ const TimeSheet: FC = () => {
     pagination?.hasNext && setCurrentPage((prev) => prev + 1);
   const handlePreviousPage = () =>
     pagination?.hasPrevious && setCurrentPage((prev) => prev - 1);
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "-";
 
+    const date = new Date(dateStr);
+
+    if (isNaN(date.getTime())) return dateStr;
+
+    return date.toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+    });
+  };
   const tableHeaders = [
     "Date",
     "Employee",
@@ -156,7 +179,7 @@ const TimeSheet: FC = () => {
                     className="hover:bg-gray-50 transition-colors"
                   >
                     <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-700">
-                      {entry.date}
+                      {formatDate(entry.date)}
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap">
                       <div className="text-sm font-bold text-gray-800">
@@ -167,11 +190,14 @@ const TimeSheet: FC = () => {
                       </div>
                     </td>
                     <td className="px-4 py-4 text-xs text-gray-600">
-                      {entry.loginTime || "-"}
+                      {formatDateTime(entry.loginTime)}
                     </td>
+
+                    {/* Logout Time Column (Updated) */}
                     <td className="px-4 py-4 text-xs text-gray-600">
-                      {entry.logout || "-"}
+                      {formatDateTime(entry.logout)}
                     </td>
+
                     <td className="px-4 py-4 text-sm font-semibold text-blue-600">
                       {entry.workHours}
                     </td>
