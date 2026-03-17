@@ -118,7 +118,9 @@ const LiveProductionGoal = () => {
         // दोनों API को एक साथ fetch करने के लिए Promise.all का उपयोग
         const [overviewRes, processRes] = await Promise.all([
           fetch(`${BASE_URL}/api/admin/production/overview`),
-          fetch( `${BASE_URL}/api/admin/production/processes/hourly?tz=${userTimeZone}`)
+          fetch(
+            `${BASE_URL}/api/admin/production/processes/hourly?tz=${userTimeZone}`,
+          ),
         ]);
 
         const overview = await overviewRes.json();

@@ -54,7 +54,7 @@ interface PartItem {
 
 interface Supplier {
   id: string;
-  name: string;
+  companyName: string;
 }
 
 const PartForm = () => {
@@ -109,7 +109,7 @@ const PartForm = () => {
   }, []);
 
   const filteredSuppliers = suppliers.filter((s) =>
-    s.name?.toLowerCase().includes(searchTerm.toLowerCase()),
+    s.companyName?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const getAllPartList = async (page: number) => {
@@ -326,12 +326,12 @@ const PartForm = () => {
                     key={s.id}
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b last:border-0"
                     onMouseDown={() => {
-                      setSearchTerm(s.name);
+                      setSearchTerm(s.companyName);
                       setValue("companyName", s.id);
                       setShowDropdown(false);
                     }}
                   >
-                    {s.name}
+                    {s.companyName}
                   </li>
                 ))}
               </ul>

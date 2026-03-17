@@ -498,7 +498,6 @@ const Training = () => {
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
-  // 1. Station User ID Helper (Simple & Plain)
   const getUserId = () => {
     const rawData = localStorage.getItem("stationUserId");
     if (!rawData) return null;
@@ -550,7 +549,6 @@ const Training = () => {
         return result;
       }
 
-      // 2. Agar 1 ghante (60 min) se zyada hai
       else if (totalMinutes >= 60) {
         const hours = Math.floor(totalMinutes / 60);
         const mins = totalMinutes % 60;
@@ -561,8 +559,6 @@ const Training = () => {
           return `${hours} hr ${mins} min`;
         }
       }
-
-      // 3. Agar sirf minutes hain
       else {
         return `${totalMinutes} min`;
       }
@@ -571,7 +567,6 @@ const Training = () => {
       return "N/A";
     }
   };
-  // Logic Simplified: Training check hata diya taaki training block na ho
   const fetchJobDetails = async () => {
     if (!processId || !stationUserId) {
       navigate("/station-login");

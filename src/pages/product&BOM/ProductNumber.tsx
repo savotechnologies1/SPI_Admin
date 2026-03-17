@@ -69,7 +69,7 @@ const ProductNumber = () => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const filteredSuppliers = suppliers.filter((s) =>
-    s.name?.toLowerCase().includes(searchTerm.toLowerCase()),
+    s.companyName?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
   useEffect(() => {
     const fetchSuppliers = async () => {
@@ -428,12 +428,12 @@ const ProductNumber = () => {
                   key={s.id}
                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b last:border-0"
                   onMouseDown={() => {
-                    setSearchTerm(s.name);
+                    setSearchTerm(s.companyName);
                     setValue("companyName", s.id);
                     setShowDropdown(false);
                   }}
                 >
-                  {s.name}
+                  {s.companyName}
                 </li>
               ))}
             </ul>
