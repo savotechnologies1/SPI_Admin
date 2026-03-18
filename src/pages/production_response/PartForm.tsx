@@ -166,7 +166,6 @@ const PartForm = () => {
 
       const response = await createPartNumber(formData);
       if (response && response.status === 201) {
-        toast.success("Part created successfully!");
         navigate("/part-table");
       }
     } catch (error) {

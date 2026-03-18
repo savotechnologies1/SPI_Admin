@@ -422,8 +422,8 @@ const DailyScheduleList = () => {
     const fetchProcesses = async () => {
       try {
         // Aapka selectProcess API call yahan aayega
-        // const res = await selectProcess();
-        // setProcesses(res || []);
+        const res = await selectProcess();
+        setProcesses(res || []);
       } catch (error) {
         console.error(error);
       }
@@ -492,9 +492,7 @@ const DailyScheduleList = () => {
       <div className="flex flex-col md:flex-row gap-3 mb-4">
         {/* Date Picker Section */}
         <div className="flex flex-col w-full md:w-1/2 gap-2">
-          <label className="font-semibold text-gray-700">
-            Select Date (MM/DD/YYYY)
-          </label>
+          <label className="font-semibold text-gray-700">Select Date</label>
           <Controller
             control={control}
             name="date"
@@ -502,7 +500,7 @@ const DailyScheduleList = () => {
               <DatePicker
                 selected={field.value}
                 onChange={(date) => field.onChange(date)}
-                dateFormat="MM/dd/yyyy" // 🔥 Input box mein format
+                dateFormat="MM/dd/yyyy"
                 className="w-full border py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
                 isClearable
                 placeholderText="Select Date"
@@ -521,7 +519,7 @@ const DailyScheduleList = () => {
             <option value="">All Processes</option>
             {processes.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.processName} ({p.machineName})
+                {p.name} ({p.machineName})
               </option>
             ))}
           </select>

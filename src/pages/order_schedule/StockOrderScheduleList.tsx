@@ -201,25 +201,18 @@ const StockOrderScheduleList: React.FC = () => {
               ) : (
                 workData.map((rowItem) => (
                   <tr key={rowItem.id} className="border-b hover:bg-gray-50">
-                    {/* Order Number: Backend ke 'order' object se */}
                     <td className="px-4 py-3 font-medium">
                       {rowItem.order?.orderNumber || "N/A"}
                     </td>
-
-                    {/* Product Name/Number: Stock ke liye productNumber, Custom ke liye product partNumber */}
                     <td className="px-4 py-3">
                       {rowItem.order_type === "Stock Order"
                         ? rowItem.order?.productNumber || "N/A"
                         : rowItem.order?.product?.partNumber ||
                           rowItem.order?.productNumber}
                     </td>
-
-                    {/* Part Number: 'partDetails' object se jo backend ne merge karke diya hai */}
                     <td className="px-4 py-3">
                       {rowItem.partDetails?.partNumber || "N/A"}
                     </td>
-
-                    {/* Process: Part ya CustomPart ke nested process se */}
                     <td className="px-4 py-3">
                       {rowItem.part?.process?.processName ||
                         rowItem.customPart?.process?.processName ||
@@ -229,21 +222,17 @@ const StockOrderScheduleList: React.FC = () => {
                         rowItem.customPart?.process?.machineName}
                       )
                     </td>
-
-                    {/* Source: Library hai ya Manual entry */}
-
                     <td className="px-4 py-3">
                       {formatDate(rowItem.order_date)}
                     </td>
                     <td className="px-4 py-3">
                       {formatDate(rowItem.delivery_date)}
                     </td>
-                    {/* 7. Performed By (Completed By) - This shows "Admin (Name)" or "Worker Name" */}
                     <td className="px-4 py-3 text-sm text-gray-700">
                       {rowItem.status === "completed" ? (
                         <span className="font-medium">
                           {!rowItem.completedByEmployee
-                            ? "System"
+                            ? "Admin"
                             : `${rowItem?.completedByEmployee?.firstName} ${rowItem?.completedByEmployee?.lastName}`}
                         </span>
                       ) : (
@@ -251,7 +240,6 @@ const StockOrderScheduleList: React.FC = () => {
                       )}
                     </td>
 
-                    {/* 8. Station Employee (The worker assigned to this station) */}
                     <td className="px-4 py-3 text-sm text-gray-700">
                       {rowItem.completedByEmployee ? (
                         <div className="flex flex-col">
@@ -264,7 +252,6 @@ const StockOrderScheduleList: React.FC = () => {
                       )}
                     </td>
 
-                    {/* Status */}
                     <td className="px-4 py-3">
                       <span
                         className={`px-2 py-1 text-xs font-medium rounded-full ${

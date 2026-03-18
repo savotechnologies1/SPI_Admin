@@ -77,7 +77,7 @@ const QualityPerformance = () => {
   const data_1 = [
     {
       num: totalData ?? 0,
-      text: "Scrap Cost",
+      text: "Scrap Qty",
       img: img1,
       scrap: scrap_1,
       scrap_img: scrap_cost,

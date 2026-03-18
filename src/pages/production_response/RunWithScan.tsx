@@ -1508,24 +1508,44 @@ const RunWithScan = () => {
     fetchJobDetails(id);
   }, [id, fetchJobDetails]);
 
+  // const handleScanComplete = useCallback(async () => {
+  //   if (!jobData || isCompleting) return;
+  //   setIsCompleting(true);
+  //   try {
+  //     await axiosInstance.post(`${BASE_URL}/api/admin/scan-complete/${id}`, {
+  //       orderId: jobData.order_id,
+  //       partId: jobData.part_id,
+  //       employeeId: jobData.employeeInfo.id,
+  //       order_type: jobData.order_type,
+  //     });
+  //     fetchJobDetails(id);
+  //   } catch (error) {
+  //     console.error("Complete Scan Failed:", error);
+  //   } finally {
+  //     setIsCompleting(false);
+  //   }
+  // }, [jobData, id, isCompleting, fetchJobDetails]);
   const handleScanComplete = useCallback(async () => {
     if (!jobData || isCompleting) return;
     setIsCompleting(true);
     try {
-      await axiosInstance.post(`${BASE_URL}/api/admin/scan-complete/${id}`, {
-        orderId: jobData.order_id,
-        partId: jobData.part_id,
-        employeeId: jobData.employeeInfo.id,
-        order_type: jobData.order_type,
-      });
-      fetchJobDetails(id);
+      // Use jobData.productionId instead of 'id' from useParams
+      await axiosInstance.post(
+        `${BASE_URL}/api/admin/scan-complete/${jobData.productionId}`,
+        {
+          orderId: jobData.order_id,
+          partId: jobData.part_id,
+          employeeId: jobData.employeeInfo.id,
+          order_type: jobData.order_type,
+        },
+      );
+      fetchJobDetails(id); // Reload data
     } catch (error) {
       console.error("Complete Scan Failed:", error);
     } finally {
       setIsCompleting(false);
     }
   }, [jobData, id, isCompleting, fetchJobDetails]);
-
   const handleScanScrap = useCallback(async () => {
     if (!jobData) return;
     try {
@@ -1554,7 +1574,7 @@ const RunWithScan = () => {
         scanRef.current = "";
       }
       lastKeyTime.current = currentTime;
-console.log("Keconsole.log(aaaaaaaa;y:", event.key);
+      console.log("Keconsole.log(aaaaaaaa;y:", event.key);
       if (event.key === "Enter") {
         console.log("Key:", event.key);
         // Cleaning: Barcode scanner prefix/suffix aur random digits ko hatane ke liye regex
