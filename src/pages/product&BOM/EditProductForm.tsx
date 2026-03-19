@@ -403,7 +403,7 @@ const EditProductForm = () => {
                       setShowDropdown(false);
                     }}
                   >
-                    {s.companyName}
+                    {s.companyName} ({s.name})
                   </li>
                 ))}
               </ul>

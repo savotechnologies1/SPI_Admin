@@ -133,7 +133,6 @@ const NewCustomer = () => {
             <input
               type="email"
               {...register("email", {
-                required: "Email address is required.",
                 pattern: {
                   value: /^\S+@\S+$/i,
                   message: "Invalid email address.",
@@ -156,7 +155,6 @@ const NewCustomer = () => {
               type="text"
               inputMode="numeric"
               {...register("customerPhone", {
-                required: "Phone Number is required.",
                 validate: (value) =>
                   value.trim() !== "" || "Phone Number is required.",
               })}
@@ -218,7 +216,6 @@ const NewCustomer = () => {
               type="text"
               inputMode="numeric"
               {...register("billingTerms", {
-                required: "Billing Terms are required.",
                 validate: (value) =>
                   value.trim() !== "" || "Billing Terms are required.",
               })}

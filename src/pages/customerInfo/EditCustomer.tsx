@@ -148,7 +148,6 @@ const EditCustomer = () => {
             <input
               type="email"
               {...register("email", {
-                required: "Email is required.",
                 pattern: {
                   value: /^\S+@\S+$/i,
                   message: "Invalid email address.",
@@ -168,7 +167,6 @@ const EditCustomer = () => {
             <input
               type="tel"
               {...register("customerPhone", {
-                required: "Phone number is required.",
                 pattern: {
                   value: /^[0-9]{10,15}$/,
                   message: "Phone number must be 10 to 15 digits.",
@@ -211,7 +209,6 @@ const EditCustomer = () => {
             <input
               type="number"
               {...register("billingTerms", {
-                required: "Billing Terms is required.",
                 min: {
                   value: 1,
                   message: "Must be at least 1 day.",

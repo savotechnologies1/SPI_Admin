@@ -59,7 +59,8 @@ const EditPartForm = () => {
   const navigate = useNavigate();
   const context = useContext(PartContext);
 
-  if (!context) throw new Error("PartContext must be used within a PartProvider");
+  if (!context)
+    throw new Error("PartContext must be used within a PartProvider");
 
   const {
     register,
@@ -105,7 +106,7 @@ const EditPartForm = () => {
     try {
       const response = await getPartNumberDetail(id);
       const data = response.data;
-      
+
       const supplierName = data.supplier
         ? (data.supplier.companyName || "").trim()
         : data.companyName || "";
@@ -209,22 +210,33 @@ const EditPartForm = () => {
 
   return (
     <div className="p-4 md:p-7">
-      <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-black">Edit Part Number</h1>
-      
+      <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-black">
+        Edit Part Number
+      </h1>
+
       <div className="flex flex-wrap items-center mt-2 gap-1 md:gap-2 text-sm text-gray-600">
-        <NavLink to="/dashboardDetailes" className="text-black">Dashboard</NavLink>
+        <NavLink to="/dashboardDetailes" className="text-black">
+          Dashboard
+        </NavLink>
         <FaCircle className="text-[4px] md:text-[6px]" />
-        <NavLink to="/part-table" className="text-black">Product and BOM</NavLink>
+        <NavLink to="/part-table" className="text-black">
+          Product and BOM
+        </NavLink>
         <FaCircle className="text-[4px] md:text-[6px]" />
         <span className="text-gray-400">Edit Part Number</span>
       </div>
 
       <div className="mt-6 bg-white p-6 w-full rounded-2xl shadow-md">
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        >
           <label className="block col-span-4 md:col-span-2">
             Part Family
-            <select {...register("partFamily")} className="border p-2 rounded w-full">
+            <select
+              {...register("partFamily")}
+              className="border p-2 rounded w-full"
+            >
               <option value="">Select Part Family</option>
               {processData.map((item) => (
                 <option key={item.id} value={item.partFamily}>
@@ -236,33 +248,56 @@ const EditPartForm = () => {
 
           <label className="block col-span-4 md:col-span-2">
             Part Number
-            <input type="text" {...register("partNumber")} className="border p-2 rounded w-full" />
+            <input
+              type="text"
+              {...register("partNumber")}
+              className="border p-2 rounded w-full"
+            />
           </label>
 
           <label className="block col-span-4">
             Part Description
-            <textarea {...register("partDescription")} className="border p-2 rounded w-full" />
+            <textarea
+              {...register("partDescription")}
+              className="border p-2 rounded w-full"
+            />
           </label>
 
           <label className="block col-span-4 md:col-span-1">
             Cost ($)
-            <input type="number" step="0.01" {...register("cost", { required: "Required" })} className="border p-2 rounded w-full" />
+            <input
+              type="number"
+              step="0.01"
+              {...register("cost", { required: "Required" })}
+              className="border p-2 rounded w-full"
+            />
           </label>
 
           <label className="block col-span-4 md:col-span-1">
             Lead Time (Days)
-            <input type="number" {...register("leadTime")} className="border p-2 rounded w-full" />
+            <input
+              type="number"
+              {...register("leadTime")}
+              className="border p-2 rounded w-full"
+            />
           </label>
 
           <label className="block col-span-4 md:col-span-1">
             Order Qty
-            <input type="number" {...register("supplierOrderQty")} className="border p-2 rounded w-full" />
+            <input
+              type="number"
+              {...register("supplierOrderQty")}
+              className="border p-2 rounded w-full"
+            />
           </label>
 
           {/* Supplier Search Dropdown */}
           <div className="col-span-4 md:col-span-1 relative">
             <label className="block mb-1">Company Name</label>
-            <input type="hidden" {...register("companyId", { required: "Required" })} />
+            <input
+              type="hidden"
+              {...register("companyId", { required: "Required" })}
+            />
             <input
               type="text"
               value={searchTerm}
@@ -288,7 +323,7 @@ const EditPartForm = () => {
                       setShowDropdown(false);
                     }}
                   >
-                    {s.companyName || s.name}
+                    {s.companyName} ({s.name})
                   </li>
                 ))}
               </ul>
@@ -297,22 +332,37 @@ const EditPartForm = () => {
 
           <label className="block col-span-4 md:col-span-1">
             Min Stock
-            <input type="number" {...register("minStock")} className="border p-2 rounded w-full" />
+            <input
+              type="number"
+              {...register("minStock")}
+              className="border p-2 rounded w-full"
+            />
           </label>
 
           <label className="block col-span-4 md:col-span-1">
             Avail Stock
-            <input type="number" {...register("availStock")} className="border p-2 rounded w-full" />
+            <input
+              type="number"
+              {...register("availStock")}
+              className="border p-2 rounded w-full"
+            />
           </label>
 
           <label className="block col-span-4 md:col-span-1">
             Cycle Time (Min)
-            <input type="number" {...register("cycleTime", { required: "Required" })} className="border p-2 rounded w-full" />
+            <input
+              type="number"
+              {...register("cycleTime", { required: "Required" })}
+              className="border p-2 rounded w-full"
+            />
           </label>
 
           <label className="block col-span-4 md:col-span-1">
             Instruction Required
-            <select {...register("instructionRequired")} className="border p-2 rounded w-full">
+            <select
+              {...register("instructionRequired")}
+              className="border p-2 rounded w-full"
+            >
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
@@ -320,7 +370,10 @@ const EditPartForm = () => {
 
           <label className="block col-span-4 md:col-span-1">
             Process Required
-            <select {...register("processOrderRequired")} className="border p-2 rounded w-full">
+            <select
+              {...register("processOrderRequired")}
+              className="border p-2 rounded w-full"
+            >
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
@@ -330,16 +383,24 @@ const EditPartForm = () => {
             <>
               <label className="block col-span-4 md:col-span-1">
                 Process
-                <select {...register("processId", { required: "Required" })} className="border p-2 rounded w-full">
+                <select
+                  {...register("processId", { required: "Required" })}
+                  className="border p-2 rounded w-full"
+                >
                   <option value="">Select Process</option>
                   {processData.map((item) => (
-                    <option key={item.id} value={item.id}>{item.name} ({item.machineName})</option>
+                    <option key={item.id} value={item.id}>
+                      {item.name} ({item.machineName})
+                    </option>
                   ))}
                 </select>
               </label>
               <label className="block col-span-4 md:col-span-2">
                 Process Description
-                <textarea {...register("processDesc")} className="border p-2 rounded w-full" />
+                <textarea
+                  {...register("processDesc")}
+                  className="border p-2 rounded w-full"
+                />
               </label>
             </>
           )}
@@ -351,7 +412,11 @@ const EditPartForm = () => {
               {/* Previews of new selected images */}
               {previewImages.map((imgUrl, i) => (
                 <div key={`new-${i}`} className="relative w-20 h-20">
-                  <img src={imgUrl} className="w-full h-full object-cover border rounded-lg" alt="preview" />
+                  <img
+                    src={imgUrl}
+                    className="w-full h-full object-cover border rounded-lg"
+                    alt="preview"
+                  />
                   <MdCancel
                     className="absolute -top-2 -right-2 cursor-pointer text-red-600 bg-white rounded-full shadow-sm"
                     size={22}
@@ -362,7 +427,11 @@ const EditPartForm = () => {
               {/* Existing images from server */}
               {existingImages.map((img) => (
                 <div key={img.id} className="relative w-20 h-20">
-                  <img src={`${BASE_URL}/uploads/partImages/${img.imageUrl}`} className="w-full h-full object-cover border rounded-lg" alt="existing" />
+                  <img
+                    src={`${BASE_URL}/uploads/partImages/${img.imageUrl}`}
+                    className="w-full h-full object-cover border rounded-lg"
+                    alt="existing"
+                  />
                   <MdCancel
                     className="absolute -top-2 -right-2 cursor-pointer text-red-600 bg-white rounded-full shadow-sm"
                     size={22}
@@ -375,11 +444,20 @@ const EditPartForm = () => {
 
           <label className="block col-span-4 md:col-span-2 cursor-pointer border-2 border-dashed border-gray-300 bg-gray-50 p-4 rounded-lg text-center hover:bg-gray-100 transition">
             <span className="text-gray-500">Tap or Click to Add Pictures</span>
-            <input type="file" {...register("image")} className="hidden" accept="image/*" multiple />
+            <input
+              type="file"
+              {...register("image")}
+              className="hidden"
+              accept="image/*"
+              multiple
+            />
           </label>
 
           <div className="flex justify-end items-center col-span-4">
-            <button type="submit" className="bg-brand text-white py-2 rounded-lg px-8 font-bold shadow-lg hover:bg-opacity-90 transition">
+            <button
+              type="submit"
+              className="bg-brand text-white py-2 rounded-lg px-8 font-bold shadow-lg hover:bg-opacity-90 transition"
+            >
               Save
             </button>
           </div>
