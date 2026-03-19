@@ -44,7 +44,7 @@ const Costing = () => {
         const data = res.data;
         setCardsData([
           {
-            num: formatDollar(data.totalYearCost || 0),
+            num: formatDollar(data.totalCOGS || 0),
             text: "Total COGS",
             scrap_img: scrap_cost,
           },

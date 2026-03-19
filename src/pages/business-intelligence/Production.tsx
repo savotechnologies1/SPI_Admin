@@ -250,7 +250,7 @@ const Production = () => {
   const [totals, setTotals] = useState({
     totalCompleted: 0,
     totalScrapCost: 0,
-    totalSupplierReturnCost: 0,
+    totalSupplierReturn: 0, // 'Cost' word hata diya backend se match karne ke liye
   });
 
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
@@ -282,37 +282,35 @@ const Production = () => {
     }
     return fullMonthArray;
   };
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(
+        `${BASE_URL}/api/admin/production-efficiency`,
+        {
+          params: {
+            month: selectedMonth + 1, // selectedMonth 0-indexed hota hai, hume 1-12 chahiye
+            year: selectedYear,
+          },
+        },
+      );
+
+      // Graph Data formatting
+      const formattedGraphData = generateFullMonthData(
+        res.data.data,
+        selectedMonth,
+        selectedYear,
+      );
+
+      setChartData(formattedGraphData);
+      setTotals(res.data.totals);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const firstDay = new Date(selectedYear, selectedMonth, 1)
-        .toISOString()
-        .split("T")[0];
-      const lastDay = new Date(selectedYear, selectedMonth + 1, 0)
-        .toISOString()
-        .split("T")[0];
-      try {
-        const res = await axios.get(
-          `${BASE_URL}/api/admin/production-efficiency`,
-          {
-            params: { startDate: firstDay, endDate: lastDay },
-          },
-        );
-        const formattedGraphData = generateFullMonthData(
-          res.data.data,
-          selectedMonth,
-          selectedYear,
-        );
-        setChartData(formattedGraphData);
-        setTotals(res.data.totals);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
     fetchData();
-    // 3. Dependency array mein selectedYear add kiya
-  }, [selectedMonth, selectedYear, BASE_URL]);
-
+  }, [selectedMonth, selectedYear, BASE_URL]); // dependency array mein dono rakhein
   const data = {
     labels: chartData.map((item) => item.day),
     datasets: [
@@ -333,20 +331,31 @@ const Production = () => {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
-      y: {
-        beginAtZero: true,
-        ticks: { stepSize: 1 },
-        title: { display: true, text: "Quantity" },
-      },
-      x: {
-        title: { display: true, text: "Day of Month" },
-      },
+      y: { beginAtZero: true, title: { display: true, text: "Qty" } },
+      x: { title: { display: true, text: "Day of Month" } },
     },
     plugins: {
-      legend: { position: "top" as const },
+      legend: { display: false },
     },
   };
 
+  // const options = {
+  //   responsive: true,
+  //   maintainAspectRatio: false,
+  //   scales: {
+  //     y: {
+  //       beginAtZero: true,
+  //       ticks: { stepSize: 1 },
+  //       title: { display: true, text: "Quantity" },
+  //     },
+  //     x: {
+  //       title: { display: true, text: "Day of Month" },
+  //     },
+  //   },
+  //   plugins: {
+  //     legend: { position: "top" as const },
+  //   },
+  // };
   const totalsCards = [
     {
       text: "Total Completed",
@@ -354,11 +363,12 @@ const Production = () => {
     },
     {
       text: "Total Scrap Cost",
-      num: `$${totals.totalScrapCost || 0}`,
+      num: `$${totals.totalScrapCost || 0}`, // Backend key 'totalScrapCost' hai (Sahi hai)
     },
     {
       text: "Total Supplier Return",
-      num: `$${totals.totalSupplierReturnCost || 0}`,
+      // FIXED: Yahan 'totalSupplierReturnCost' ki jagah 'totalSupplierReturn' karein
+      num: `$${totals.totalSupplierReturn || 0}`,
     },
   ];
 
