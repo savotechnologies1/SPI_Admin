@@ -336,14 +336,14 @@ const ProductForm = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className=" p-4">
       <form
         onSubmit={formik.handleSubmit}
         className="space-y-4"
         autoComplete="off"
       >
         {/* PRODUCT SEARCH */}
-        <div className="bg-white p-4 border rounded-md relative">
+        <div className="relative">
           <label className="block font-semibold mb-1">Search Product *</label>
           <input
             type="text"
@@ -433,8 +433,8 @@ const ProductForm = () => {
               className="border py-3 px-4 rounded-md w-full text-gray-600 bg-white"
               {...formik.getFieldProps("scrapStatus")}
             >
-              <option value="yes">Yes (Reduce Stock)</option>
-              <option value="no">No (Keep Stock)</option>
+              <option value="yes">Yes </option>
+              <option value="no">No </option>
             </select>
           </div>
         </div>
@@ -459,7 +459,7 @@ const ProductForm = () => {
               !formik.values.partId ||
               !formik.values.returnQuantity
             }
-            className="px-10 py-3 bg-blue-600 text-white font-bold hover:bg-blue-800 transition rounded-md shadow-md disabled:bg-gray-400"
+            className="px-10 py-3 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-800 transition disabled:bg-gray-400"
           >
             {formik.isSubmitting ? "Saving..." : "Save Product Scrap"}
           </button>

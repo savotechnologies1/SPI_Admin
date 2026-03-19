@@ -334,10 +334,14 @@ const SupplierOrderList: React.FC = () => {
                         </span>
                       )}
                     </td>
-
                     <td className="px-4 py-3">
                       <select
                         value={item.status}
+                        // Logic: Agar status 'delivered' ya 'cancelled' hai, toh dropdown band (disable) kar do
+                        disabled={
+                          item.status?.toLowerCase() === "delivered" ||
+                          item.status?.toLowerCase() === "cancelled"
+                        }
                         onChange={(e) =>
                           handleStatusChange(
                             item.id,
@@ -346,9 +350,13 @@ const SupplierOrderList: React.FC = () => {
                             e.target.value,
                           )
                         }
-                        className={`px-2 py-1 rounded text-xs font-semibold border-none outline-none cursor-pointer ${getColorClass(
-                          item.status,
-                        )}`}
+                        className={`px-2 py-1 rounded text-xs font-semibold border-none outline-none transition-all ${
+                          // Styling: Disabled hone par cursor change aur halka transparent
+                          item.status?.toLowerCase() === "delivered" ||
+                          item.status?.toLowerCase() === "cancelled"
+                            ? "opacity-60 cursor-not-allowed"
+                            : "cursor-pointer hover:ring-1 hover:ring-gray-300"
+                        } ${getColorClass(item.status)}`}
                         onClick={(e) => e.stopPropagation()}
                       >
                         <option value="Pending">Pending</option>

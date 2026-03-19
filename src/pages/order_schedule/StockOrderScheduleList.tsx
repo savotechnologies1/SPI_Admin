@@ -97,10 +97,10 @@ const StockOrderScheduleList: React.FC = () => {
   };
   const handleDelete = async (id: string, orderId: string) => {
     if (!id || !orderId) return;
-
+    console.log("orderIdorderId", orderId);
     try {
       // API expects object with orderId property
-      await deleteScheduleOrder(id, { orderId } as any);
+      await deleteScheduleOrder(id, orderId as any);
       fetchScheduleList(currentPage, selectedType, debouncedSearchVal);
     } catch (error) {
       console.error("Failed to delete:", error);

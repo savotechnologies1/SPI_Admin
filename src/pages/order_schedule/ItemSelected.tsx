@@ -551,11 +551,38 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
   const [itemInputs, setItemInputs] = useState<ItemInputState>({});
   const [loading, setLoading] = useState(false);
 
+  // const scheduleItem = (itemToAdd: SearchResultItem) => {
+  //   const inputs = itemInputs[itemToAdd.id];
+  //   const qtyToSchedule = parseInt(inputs?.qty || "0", 10);
+
+  //   // FIX: Pehle state ki date check karo, fir item ki date, fir current date (fixed at midnight)
+  //   const shipDate =
+  //     inputs?.shipDate ||
+  //     (itemToAdd.shipDate ? new Date(itemToAdd.shipDate) : new Date());
+
+  //   if (isNaN(qtyToSchedule) || qtyToSchedule <= 0) {
+  //     toast.error("Please enter a valid quantity to schedule.");
+  //     return;
+  //   }
+
+  //   const newScheduledItem: ScheduledItem = {
+  //     ...itemToAdd,
+  //     scheduledQty: qtyToSchedule,
+  //     shipDate: shipDate,
+  //   };
+
+  //   setSelectedItems((prev) => [...prev, newScheduledItem]);
+
+  //   setItemInputs((prev) => {
+  //     const newInputs = { ...prev };
+  //     delete newInputs[itemToAdd.id];
+  //     return newInputs;
+  //   });
+  // };
   const scheduleItem = (itemToAdd: SearchResultItem) => {
     const inputs = itemInputs[itemToAdd.id];
     const qtyToSchedule = parseInt(inputs?.qty || "0", 10);
 
-    // FIX: Pehle state ki date check karo, fir item ki date, fir current date (fixed at midnight)
     const shipDate =
       inputs?.shipDate ||
       (itemToAdd.shipDate ? new Date(itemToAdd.shipDate) : new Date());
@@ -567,6 +594,7 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
 
     const newScheduledItem: ScheduledItem = {
       ...itemToAdd,
+      instanceId: `${itemToAdd.id}-${Date.now()}-${Math.random()}`, // Unique ID banaya
       scheduledQty: qtyToSchedule,
       shipDate: shipDate,
     };
@@ -579,13 +607,19 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
       return newInputs;
     });
   };
-
-  const removeItem = (itemIdToRemove: string) => {
+  const removeItem = (instanceIdToRemove: string) => {
     setSelectedItems(
-      selectedItems.filter((item) => item.id !== itemIdToRemove),
+      selectedItems.filter((item) => item.instanceId !== instanceIdToRemove),
     );
   };
 
+  const updateScheduledDate = (instanceId: string, date: Date) => {
+    setSelectedItems(
+      selectedItems.map((item) =>
+        item.instanceId === instanceId ? { ...item, shipDate: date } : item,
+      ),
+    );
+  };
   const flattenBOM = (components, parentQty) => {
     let flatList: any[] = [];
     components?.forEach((comp) => {
@@ -599,13 +633,13 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
     return flatList;
   };
 
-  const updateScheduledDate = (itemId: string, date: Date) => {
-    setSelectedItems(
-      selectedItems.map((item) =>
-        item.id === itemId ? { ...item, shipDate: date } : item,
-      ),
-    );
-  };
+  // const updateScheduledDate = (itemId: string, date: Date) => {
+  //   setSelectedItems(
+  //     selectedItems.map((item) =>
+  //       item.id === itemId ? { ...item, shipDate: date } : item,
+  //     ),
+  //   );
+  // };
   const formatLocalDate = (date: Date) => {
     if (!date) return null;
     const year = date.getFullYear();
@@ -803,7 +837,9 @@ const ItemSelected = ({ availableItems, isLoading }: ItemSelectedProps) => {
                       className="border py-2 px-4 rounded-md font-semibold w-full sm:w-44 outline-none"
                     />
                   </div>
-                  <button onClick={() => removeItem(item.id)}>
+                  <button onClick={() => removeItem(item.instanceId)}>
+                    {" "}
+                    {/* instanceId bheja */}
                     <FaTrashAlt className="text-red-500 " />
                   </button>
                 </div>

@@ -1263,7 +1263,7 @@ const PartForm = () => {
       supplier: "", // Input field text
       supplierId: "", // Actual ID for backend
       returnQuantity: "",
-      scrapStatus: "yes", // Matches "yes" or "no" logic in controller
+      scrapStatus: " ", // Matches "yes" or "no" logic in controller
       defectDesc: "",
     },
     onSubmit: async (values, { setSubmitting, resetForm }) => {
@@ -1281,7 +1281,6 @@ const PartForm = () => {
         setSubmitting(true);
         const res = await ScrapEntryApi(payload);
         if (res) {
-          toast.success("Scrap entry created successfully");
           resetForm();
           setPartSuggestions([]);
           setSupplierSuggestions([]);
@@ -1353,8 +1352,8 @@ const PartForm = () => {
   }, [formik.values.supplier, formik.values.supplierId, supplierData]);
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white rounded-xl shadow-lg border p-8">
+    <div className="p-6">
+      <div className="">
         <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">
           New Scrap Entry
         </h2>
@@ -1464,8 +1463,8 @@ const PartForm = () => {
                 value={formik.values.scrapStatus}
                 onChange={formik.handleChange}
               >
-                <option value="yes">Yes (Decrease Inventory)</option>
-                <option value="no">No (Log Only)</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
               </select>
             </div>
           </div>
@@ -1486,7 +1485,7 @@ const PartForm = () => {
           </div>
 
           {/* ACTION BUTTONS */}
-          <div className="flex items-center gap-4 pt-4">
+          <div className="flex justify-between  items-center gap-4 pt-4">
             <button
               type="submit"
               disabled={
@@ -1494,7 +1493,7 @@ const PartForm = () => {
                 !formik.values.partId ||
                 !formik.values.returnQuantity
               }
-              className="flex-1 bg-blue-600 text-white font-bold py-4 px-6 rounded-lg hover:bg-blue-800 transition shadow-lg disabled:bg-gray-400 disabled:shadow-none"
+              className="px-10 py-3 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-800 transition disabled:bg-gray-400"
             >
               {formik.isSubmitting ? "Saving Entry..." : "Submit Scrap Entry"}
             </button>
