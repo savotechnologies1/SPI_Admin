@@ -585,30 +585,53 @@ const RunSchedule = () => {
 
     return () => clearInterval(timer); // Memory leak se bachne ke liye cleanup
   }, [jobData?.cycleTime]);
+  // const fetchJobDetails = async (jobId: string | undefined) => {
+  //   if (!jobId) {
+  //     setLoading(false);
+  //     // navigate("/station-login");
+  //     return;
+  //   }
+  //   try {
+  //     setLoading(true);
+  //     const stationUserId = localStorage.getItem("stationUserId");
+  //     const response = await stationProcessDetail(jobId, stationUserId);
+  //     const data = response?.data;
+  //     if (data) {
+  //       setJobData(data);
+  //     }
+  //   } catch (error: any) {
+  //     console.log("errorerror", error.response.data.message);
+  //     if (error?.status === 404) {
+  //       navigate("/station-login");
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const fetchJobDetails = async (jobId: string | undefined) => {
     if (!jobId) {
       setLoading(false);
-      // navigate("/station-login");
       return;
     }
     try {
       setLoading(true);
       const stationUserId = localStorage.getItem("stationUserId");
       const response = await stationProcessDetail(jobId, stationUserId);
-      const data = response?.data;
-      if (data) {
-        setJobData(data);
+
+      if (response?.data) {
+        setJobData(response.data);
       }
     } catch (error: any) {
-      console.log("errorerror", error.response.data.message);
-      if (error?.status === 404) {
-        navigate("/station-login");
-      }
+      console.error("Fetch Error:", error);
+
+      // AGAR KOI BHI ERROR AAYE (400 - Child pending, ya 404 - No Job)
+      // Toh seedha logout karke bhej do login page par
+      localStorage.removeItem("stationUserId"); // User ID clear karein
+      navigate("/station-login"); // Login page par bhej dein
     } finally {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchJobDetails(id);
   }, [id, navigate]);
@@ -782,7 +805,7 @@ const RunSchedule = () => {
   //     </div>
   //   );
   // }
-
+  if (!jobData) return null;
   const {
     part,
     order,

@@ -10,6 +10,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler,
 } from "chart.js";
 
 ChartJS.register(
@@ -20,6 +21,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
+  Filler,
 );
 
 // const Chart = () => {
@@ -163,7 +165,6 @@ const Chart = () => {
 
   const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
-  // --- Helper Function: 1 se lekar mahine ke aakhri din tak ka data fill karne ke liye ---
   const generateFullMonthData = (
     apiData: any[],
     month: number,
@@ -173,10 +174,7 @@ const Chart = () => {
     const fullMonthArray = [];
 
     for (let day = 1; day <= daysInMonth; day++) {
-      // Date format: YYYY-MM-DD (Backend se match karne ke liye)
       const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
-      // API data mein check karo (split use kar rahe hain taaki ISO string handle ho sake)
       const found = apiData?.find(
         (item) => item.date.split("T")[0] === dateStr,
       );
@@ -192,12 +190,11 @@ const Chart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // FIX: Params badal diye hain backend ki requirement ke hisaab se
         const res = await axios.get(
           `${BASE_URL}/api/admin/production-efficiency`,
           {
             params: {
-              month: selectedMonth + 1, // backend 1-12 leta hai
+              month: selectedMonth + 1, 
               year: selectedYear,
             },
           },
