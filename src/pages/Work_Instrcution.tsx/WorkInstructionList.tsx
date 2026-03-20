@@ -215,13 +215,17 @@ const WorkInstructionList: React.FC = () => {
                 workData.map((item, index) => (
                   <tr key={item.id} className="border-b hover:bg-gray-50">
                     <td className="px-4 py-3">{item.instructionTitle}</td>
-                    <td className="px-4 py-3">{item.process.processName}</td>
+                    <td className="px-4 py-3">
+                      {item.process.processName} ({item.process.machineName})
+                    </td>
                     <td className="px-4 py-3">{item.PartNumber.partNumber}</td>
                     <td className="px-4 py-3">{item.steps.length}</td>
 
                     <td className="px-4 py-3">
                       <span className="px-2 py-1 rounded text-xs font-semibold bg-gray-200 text-gray-600">
-                 {item.createdAt ? format(new Date(item.createdAt), "MM/dd/yyyy") : "N/A"}
+                        {item.createdAt
+                          ? format(new Date(item.createdAt), "MM/dd/yyyy")
+                          : "N/A"}
                       </span>
                     </td>
 

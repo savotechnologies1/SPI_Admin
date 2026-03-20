@@ -83,8 +83,16 @@ const EditPartForm = () => {
   const processOrderRequired = watch("processOrderRequired");
 
   const filteredSuppliers = suppliers.filter((s) => {
-    const name = s.companyName || s.name || "";
-    return name.toLowerCase().includes(searchTerm.toLowerCase());
+    const company = (s.companyName || "").toLowerCase();
+    const fName = (s.firstName || "").toLowerCase();
+    const lName = (s.lastName || "").toLowerCase();
+    const search = searchTerm.toLowerCase();
+
+    return (
+      company.includes(search) ||
+      fName.includes(search) ||
+      lName.includes(search)
+    );
   });
 
   // Fetch Suppliers
@@ -107,9 +115,18 @@ const EditPartForm = () => {
       const response = await getPartNumberDetail(id);
       const data = response.data;
 
-      const supplierName = data.supplier
-        ? (data.supplier.companyName || "").trim()
-        : data.companyName || "";
+      // यहाँ बदलाव करें: Company Name (FirstName LastName) फॉर्मेट बनाने के लिए
+      let supplierDisplay = "";
+      if (data.supplier) {
+        const company = (data.supplier.companyName || "").trim();
+        const firstName = (data.supplier.firstName || "").trim();
+        const lastName = (data.supplier.lastName || "").trim();
+
+        // अगर Supplier डेटा है तो फॉर्मेट: Company (First Last)
+        supplierDisplay = `${company} (${firstName} ${lastName})`.trim();
+      } else {
+        supplierDisplay = data.companyName || "";
+      }
 
       reset({
         ...data,
@@ -119,7 +136,7 @@ const EditPartForm = () => {
         companyId: data.companyId || data.companyName || "",
       });
 
-      setSearchTerm(supplierName);
+      setSearchTerm(supplierDisplay); // अब यहाँ कंबाइन नाम सेट होगा
       setExistingImages(data.partImages || []);
     } catch (error) {
       console.error("Error fetching detail:", error);
@@ -312,20 +329,28 @@ const EditPartForm = () => {
             />
             {showDropdown && searchTerm && filteredSuppliers.length > 0 && (
               <ul className="absolute z-[100] w-full bg-white border rounded shadow-xl mt-1 max-h-40 overflow-y-auto">
-                {filteredSuppliers.map((s) => (
-                  <li
-                    key={s.id}
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b"
-                    onMouseDown={() => {
-                      const name = s.companyName || s.name || "";
-                      setSearchTerm(name);
-                      setValue("companyId", s.id);
-                      setShowDropdown(false);
-                    }}
-                  >
-                    {s.companyName} ({s.name})
-                  </li>
-                ))}
+                {filteredSuppliers.map((s) => {
+                  // यहाँ कंबाइन नाम का वेरिएबल बनाएं
+                  const displayName = `${s.companyName} (${s.firstName} ${s.lastName})`;
+
+                  return (
+                    <li
+                      key={s.id}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b"
+                      onMouseDown={() => {
+                        setSearchTerm(displayName); // क्लिक करने पर कंबाइन नाम दिखेगा
+                        setValue("companyId", s.id);
+                        setShowDropdown(false);
+                      }}
+                    >
+                      {/* लिस्ट में भी वही फॉर्मेट दिखेगा */}
+                      <span className="font-semibold">{s.companyName}</span>
+                      <span className="text-gray-500 ml-1">
+                        ({s.firstName} {s.lastName})
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>

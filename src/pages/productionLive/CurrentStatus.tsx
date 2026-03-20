@@ -646,7 +646,7 @@ const CurrentStatus = () => {
                 <tr className="bg-gray-100 text-gray-600">
                   <th className="py-2 px-4 text-left">Process</th>
                   <th className="py-2 px-4 text-left">Machine</th>
-                  <th className="py-2 px-4 text-left">Part ID</th>
+                  <th className="py-2 px-4 text-left">Parts</th>
                 </tr>
               </thead>
               <tbody>

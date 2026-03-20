@@ -245,7 +245,9 @@ const LaborForecastList = () => {
               >
                 <td className="px-4 py-4">
                   <p className="font-bold text-gray-800">{item.product_name}</p>
-                  <p className="text-gray-500 text-xs">{item.sub_name}</p>
+                  <p className="text-gray-500 text-xs">
+                    {item.sub_name} ({item.machineName})
+                  </p>
                 </td>
                 <td className="px-4 py-4 text-blue-600 font-bold">
                   {item.Available}

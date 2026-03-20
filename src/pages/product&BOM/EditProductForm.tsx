@@ -110,10 +110,18 @@ const EditProductForm = () => {
   const processOrderRequired = watch("processOrderRequired");
   const isProcessRequired = processOrderRequired === "true";
 
-  const filteredSuppliers = suppliers.filter((s) =>
-    s.companyName?.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const filteredSuppliers = suppliers.filter((s) => {
+    const company = (s.companyName || "").toLowerCase();
+    const fName = (s.firstName || "").toLowerCase();
+    const lName = (s.lastName || "").toLowerCase();
+    const search = searchTerm.toLowerCase();
 
+    return (
+      company.includes(search) ||
+      fName.includes(search) ||
+      lName.includes(search)
+    );
+  });
   // Fetch Suppliers
   useEffect(() => {
     const fetchSuppliers = async () => {
@@ -134,10 +142,18 @@ const EditProductForm = () => {
       const response = await getProductNumberDetail(id);
       const data = response.data;
 
-      const supplierName = data.supplier
-        ? data.supplier.companyName
-        : data.companyName || "";
-      setSearchTerm(supplierName);
+      // --- यहाँ बदलाव करें: Company Name (FirstName LastName) ---
+      let supplierDisplay = "";
+      if (data.supplier) {
+        const company = (data.supplier.companyName || "").trim();
+        const fName = (data.supplier.firstName || "").trim();
+        const lName = (data.supplier.lastName || "").trim();
+        supplierDisplay = `${company} (${fName} ${lName})`.trim();
+      } else {
+        supplierDisplay = data.companyName || "";
+      }
+      setSearchTerm(supplierDisplay);
+      // ------------------------------------------------------
 
       reset({
         partFamily: data.partFamily || "",
@@ -145,7 +161,7 @@ const EditProductForm = () => {
         partDescription: data.partDescription || "",
         cost: data.cost || 0,
         leadTime: data.leadTime || 0,
-        companyName: data.companyName || "",
+        companyName: data.companyId || data.companyName || "", // ID स्टोर करें
         minStock: data.minStock || 0,
         availStock: data.availStock || 0,
         cycleTime: data.cycleTime || 0,
@@ -176,7 +192,6 @@ const EditProductForm = () => {
       console.error("Failed to fetch product details:", error);
     }
   };
-
   useEffect(() => {
     fetchProductDetail();
     const fetchInitialData = async () => {
@@ -378,6 +393,7 @@ const EditProductForm = () => {
           {/* Supplier Dropdown */}
           <div className="col-span-4 md:col-span-1 relative">
             <label className="block mb-1">Company Name</label>
+            {/* hidden field ID के लिए */}
             <input type="hidden" {...register("companyName")} />
             <input
               type="text"
@@ -389,27 +405,34 @@ const EditProductForm = () => {
               }}
               onFocus={() => setShowDropdown(true)}
               onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-              className="border p-2 rounded w-full"
+              className="border p-2 rounded w-full focus:ring-2 focus:ring-brand focus:outline-none"
             />
             {showDropdown && searchTerm && filteredSuppliers.length > 0 && (
               <ul className="absolute z-[100] w-full bg-white border rounded shadow-xl mt-1 max-h-40 overflow-y-auto">
-                {filteredSuppliers.map((s) => (
-                  <li
-                    key={s.id}
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                    onMouseDown={() => {
-                      setSearchTerm(s.companyName);
-                      setValue("companyName", s.id);
-                      setShowDropdown(false);
-                    }}
-                  >
-                    {s.companyName} ({s.name})
-                  </li>
-                ))}
+                {filteredSuppliers.map((s) => {
+                  // डिस्प्ले नाम का फॉर्मेट
+                  const displayName = `${s.companyName} (${s.firstName} ${s.lastName})`;
+
+                  return (
+                    <li
+                      key={s.id}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b"
+                      onMouseDown={() => {
+                        setSearchTerm(displayName); // क्लिक करने पर कंबाइन नाम सेट होगा
+                        setValue("companyName", s.id); // बैकएंड के लिए ID सेट होगी
+                        setShowDropdown(false);
+                      }}
+                    >
+                      <span className="font-semibold">{s.companyName}</span>
+                      <span className="text-gray-500 ml-1">
+                        ({s.firstName} {s.lastName})
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
-
           <div className="col-span-4 md:col-span-1">
             <label>Min Stock</label>
             <input
