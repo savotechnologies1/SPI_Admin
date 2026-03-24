@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { FaTrash, FaSpinner, FaEnvelope } from "react-icons/fa";
-import {
-  deleteSupplierInventory,
-  sendSupplierEmailApi,
-} from "./https/suppliersApi";
 import { toast } from "react-toastify";
 
 const SupplierInventory = () => {

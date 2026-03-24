@@ -110,7 +110,7 @@ const TimeSheet: FC = () => {
       );
 
       alert(res.data.message);
-      fetchTimeSheet(); // Table ko refresh karne ke liye
+      fetchTimeSheet();
     } catch (err) {
       console.error(err);
       alert("Approval failed");

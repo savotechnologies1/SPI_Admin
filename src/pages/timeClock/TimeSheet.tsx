@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
-// import ItemSelector from "./ItemSelector";
 import more from "../../assets/more.png";
 
 const TimeSheet = () => {

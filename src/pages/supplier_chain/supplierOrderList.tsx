@@ -99,7 +99,7 @@ const SupplierOrderList: React.FC = () => {
   };
 
   const fetchWorkInstructionList = async (page = 1, searchTerm = "") => {
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
     try {
       const response = await supplierOrderListApi(
         page,
@@ -115,7 +115,7 @@ const SupplierOrderList: React.FC = () => {
     } catch (error) {
       console.error("Failed to fetch work instructions:", error);
     } finally {
-      setIsLoading(false); // End loading
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -337,7 +337,6 @@ const SupplierOrderList: React.FC = () => {
                     <td className="px-4 py-3">
                       <select
                         value={item.status}
-                        // Logic: Agar status 'delivered' ya 'cancelled' hai, toh dropdown band (disable) kar do
                         disabled={
                           item.status?.toLowerCase() === "delivered" ||
                           item.status?.toLowerCase() === "cancelled"
@@ -351,7 +350,6 @@ const SupplierOrderList: React.FC = () => {
                           )
                         }
                         className={`px-2 py-1 rounded text-xs font-semibold border-none outline-none transition-all ${
-                          // Styling: Disabled hone par cursor change aur halka transparent
                           item.status?.toLowerCase() === "delivered" ||
                           item.status?.toLowerCase() === "cancelled"
                             ? "opacity-60 cursor-not-allowed"

@@ -68,16 +68,6 @@ const Settings = () => {
         }),
       )
     : [];
-
-  // const onSubmit = (data) => {
-  //   console.log("Submitted:", {
-  //     ...data,
-  //     country: data.country?.label,
-  //     state: data.state?.label,
-  //     city: data.city?.label,
-  //   });
-  // };
-
   const onSubmit = async (data: any) => {
     await updateProfile(
       {
@@ -94,8 +84,6 @@ const Settings = () => {
     const fetchUserData = async () => {
       const res = await getProfile();
       const data = res.data;
-
-      // Load profile image
       if (data?.profileImg) {
         const imageUrl = `${IMAGE_URL}/uploads/profileImg/${data.profileImg}`;
         setPhoto(imageUrl);
@@ -275,7 +263,6 @@ const Settings = () => {
                 <Controller
                   name="country"
                   control={control}
-                  // rules={{ required: "Country is required" }}
                   render={({ field }) => (
                     <Select
                       {...field}
@@ -294,7 +281,6 @@ const Settings = () => {
                 <Controller
                   name="state"
                   control={control}
-                  // rules={{ required: "State is required" }}
                   render={({ field }) => (
                     <Select
                       {...field}
@@ -314,7 +300,6 @@ const Settings = () => {
                 <Controller
                   name="city"
                   control={control}
-                  // rules={{ required: "City is required" }}
                   render={({ field }) => (
                     <Select
                       {...field}

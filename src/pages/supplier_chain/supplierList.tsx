@@ -188,7 +188,6 @@ const SupplierList = () => {
                         className={`px-2 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-green-800 bg-green-100`}
                       >
                         {new Date(item.createdAt).toLocaleDateString("en-US", {
-                          // timeZone: "Asia/Kolkata", // Agar timezone rakhna chahte hain to ise rehne dein
                           month: "2-digit",
                           day: "2-digit",
                           year: "numeric",

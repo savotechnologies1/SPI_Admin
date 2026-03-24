@@ -72,11 +72,7 @@ const WorkInstructionList: React.FC = () => {
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newValue = event.target.value;
     setSelectedValue(newValue);
-
-    console.log("A new option was selected:", newValue);
   };
-  console.log("searchValsearchVal", searchVal);
-
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
@@ -191,7 +187,6 @@ const WorkInstructionList: React.FC = () => {
             </thead>
             <tbody>
               {isLoading ? (
-                /* --- LOADER ROW --- */
                 <tr>
                   <td colSpan={6} className="py-20 text-center">
                     <div className="flex flex-col items-center justify-center gap-2">
