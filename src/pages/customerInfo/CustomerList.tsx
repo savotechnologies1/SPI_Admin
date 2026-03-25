@@ -1,15 +1,10 @@
 import { SetStateAction, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaArrowRight, FaCircle, FaTrash } from "react-icons/fa";
+import { FaCircle, FaTrash } from "react-icons/fa";
 import search_2 from "../../assets/search_2.png";
-import more from "../../assets/more.png";
 import edit from "../../assets/edit_icon.png";
 import add from "../../assets/add.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { customerList, deleteCustomer } from "./https/customersApi";
-import back from "../../assets/back.png";
-import next from "../../assets/next.png";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 interface CustomerItem {
   id: string;
@@ -27,7 +22,6 @@ const CustomerList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
-  const [showConfirm, setShowConfirm] = useState(false);
   const [showConfirmId, setShowConfirmId] = useState<string | null>(null);
 
   const rowsPerPage = 10;
@@ -46,7 +40,6 @@ const CustomerList = () => {
   };
 
   const fetchCustomerList = async (page = 1) => {
-    // eslint-disable-next-line no-useless-catch
     try {
       const response = await customerList(page, rowsPerPage, searchVal);
       setCustomerData(response.data);
@@ -129,24 +122,6 @@ const CustomerList = () => {
           <div className="flex flex-col bg-white rounded-t">
             <div className="p-2 md:p-4">
               <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 p-2 md:p-4">
-                {/* <div className="flex flex-col w-full sm:w-auto">
-                  <label
-                    htmlFor="role"
-                    className="text-xs md:text-sm font-medium text-gray-500"
-                  >
-                    Role
-                  </label>
-                  <select
-                    id="role"
-                    className="mt-1 block w-full sm:w-40 md:w-52 rounded-md border-gray-300 text-sm md:text-base"
-                    defaultValue="Project Coordinator"
-                  >
-                    <option>Newly added</option>
-                    <option>Developer</option>
-                    <option>Designer</option>
-                  </select>
-                </div> */}
-
                 <div className="flex-1 w-full relative border p-2 md:p-3 rounded-md">
                   <input
                     type="text"
@@ -198,7 +173,6 @@ const CustomerList = () => {
                       key={item.id}
                       className="border-b border-dashed border-gray-200 pl-4"
                     >
-                      {/* Name & Email */}
                       <td className="px-2 py-3 md:px-3 md:py-4">
                         <div className="flex items-center">
                           <div>
@@ -212,27 +186,22 @@ const CustomerList = () => {
                         </div>
                       </td>
 
-                      {/* Address */}
                       <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell max-w-[150px] whitespace-normal break-words">
                         {item.address}
                       </td>
 
-                      {/* Phone */}
                       <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
                         {item.customerPhone}
                       </td>
 
-                      {/* Billing Terms */}
                       <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden md:table-cell ">
                         {item.billingTerms} Days
                       </td>
 
-                      {/* Submitted By */}
                       <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden md:table-cell ">
                         Admin
                       </td>
 
-                      {/* Created At */}
                       <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
                         <span className="px-2 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-green-800 bg-green-100">
                           {new Date(item.createdAt).toLocaleDateString(
@@ -252,7 +221,6 @@ const CustomerList = () => {
                           className="text-brand hover:underline"
                           onClick={() => editCustomer(item.id)}
                         >
-                          {/* Replace with icon if needed */}
                           <img
                             src={edit}
                             alt="Edit"
@@ -265,7 +233,6 @@ const CustomerList = () => {
                           onClick={() => setShowConfirmId(item.id)}
                         />
 
-                        {/* Confirm Delete Modal */}
                         {showConfirmId === item.id && (
                           <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
                             <div className="bg-white p-6 rounded-xl shadow-lg">
@@ -345,8 +312,6 @@ const CustomerList = () => {
           </div>
         </div>
       </div>
-
-      {/* Modal */}
     </div>
   );
 };

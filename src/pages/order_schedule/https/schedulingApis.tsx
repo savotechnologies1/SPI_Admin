@@ -1,10 +1,8 @@
 import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
 import { AxiosError } from "axios";
-import { useNavigate } from "react-router-dom";
 
 export const addStockOrder = async (apiData: object) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.post("/create-stock-order", apiData);
     console.log("responseresponse", response);
@@ -43,7 +41,6 @@ export const selectProductNumber = async () => {
     const response = await axiosInstance.get(
       `/select-product-number-for-stock`,
     );
-    // Handle both { data: [...] } and [...] response formats
     const data = response.data?.data ?? response.data ?? [];
     return Array.isArray(data) ? data : [];
   } catch (error: unknown) {
@@ -62,7 +59,6 @@ export const selectPartNumber = async () => {
     const response = await axiosInstance.get(
       `/select-part-number-for-custom-order`,
     );
-    // Handle both { data: [...] } and [...] response formats
     const data = response.data?.data ?? response.data ?? [];
     return Array.isArray(data) ? data : [];
   } catch (error: unknown) {
@@ -79,7 +75,6 @@ export const selectPartNumber = async () => {
 export const getProductParts = async (id: string) => {
   try {
     const response = await axiosInstance.get(`/product-parts/${id}`);
-    // Handle both { data: [...] } and [...] response formats
     const data = response.data?.data ?? response.data ?? [];
     return Array.isArray(data) ? data : [];
   } catch (error: unknown) {
@@ -95,7 +90,6 @@ export const getProductParts = async (id: string) => {
 export const selectProcess = async () => {
   try {
     const response = await axiosInstance.get(`/select-process`);
-    // Handle both { data: [...] } and [...] response formats
     const data = response.data?.data ?? response.data ?? [];
     return Array.isArray(data) ? data : [];
   } catch (error: unknown) {
@@ -111,13 +105,11 @@ export const selectProcess = async () => {
 export const addCustomOrder = async (apiData: object) => {
   try {
     const response = await axiosInstance.post("/add-custom-orders", apiData);
-    console.log("responseresponse", response);
 
     return response;
   } catch (err: unknown) {
     const axiosError = err as AxiosError<{ message: string }>;
-    console.log("errorerrorerror", err);
-    console.log("999999errerrerrerrerr", axiosError.response?.data?.message);
+
     const msg = axiosError.response?.data?.message || "Something went wrong";
     toast.error(axiosError.response?.data?.message);
     return null;
@@ -132,9 +124,6 @@ export const searchStockOrder = async (searchParams: object) => {
       params: searchParams,
     });
 
-    console.log("responseresponseresponse", response.data.message);
-
-    // Check if response.data has a data property (common API pattern)
     const data = response.data?.data ?? response.data ?? [];
     return Array.isArray(data) ? data : [];
   } catch (error) {
@@ -150,8 +139,6 @@ export const searchStockOrder = async (searchParams: object) => {
 
 export const searchCustomOrder = async (searchParams: object) => {
   try {
-    console.log("searchParams", searchParams);
-
     const response = await axiosInstance.get("/search-custom-order", {
       params: searchParams,
     });
@@ -169,7 +156,6 @@ export const searchCustomOrder = async (searchParams: object) => {
 export const scheduleStockOrder = async (apiData: object) => {
   try {
     const response = await axiosInstance.post("/stock-order-schedule", apiData);
-    console.log("response.statusresponse.status", response.data.message);
 
     return response;
   } catch (error: unknown) {
@@ -244,7 +230,6 @@ export const validateQty = async (productId: string, quantity: number) => {
       alert(data.message);
     }
   } catch (error) {
-    console.error("API error:", error);
     alert("Something went wrong.");
   }
 };
@@ -265,18 +250,15 @@ export const deleteEmployee = async (id: string) => {
 
 export const deleteScheduleOrder = async (id: string, orderId: string) => {
   try {
-    console.log("orderIdorderId", orderId);
     const response = await axiosInstance.delete(
       `/delete-schedule-order/${id}?orderId=${orderId}`,
     );
-    console.log("response222", response);
     if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response;
   } catch (error: unknown) {
     const axiosError = error as AxiosError<{ message: string }>;
-    console.log("errorerror", error);
     toast.error(axiosError.response?.data?.message);
   }
 };

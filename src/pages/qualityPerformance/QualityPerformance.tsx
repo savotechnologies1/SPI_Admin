@@ -1,10 +1,6 @@
 import { NavLink } from "react-router-dom";
 import img1 from "../../assets/green.png";
-import img2 from "../../assets/yellow.png";
-import img3 from "../../assets/orange.png";
 import scrap_1 from "../../assets/scrap_1.png";
-import scrap_2 from "../../assets/scrap_2.png";
-import scrap_3 from "../../assets/scrap_3.png";
 import scrap_cost from "../../assets/scrap_cost.png";
 import customer_return from "../../assets/customer_return.png";
 import supplier_return from "../../assets/supplier_return.png";

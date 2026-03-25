@@ -12,16 +12,10 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-
-const getTodayDate = () => {
-  return new Date().toLocaleDateString("en-CA");
-};
-
-const formatDollar = (value) => `$${Number(value).toLocaleString()}`;
-
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
+const formatDollar = (value) => `$${Number(value).toLocaleString()}`;
 
 const Costing = () => {
   const [startDate, setStartDate] = useState(new Date());
@@ -99,7 +93,6 @@ const Costing = () => {
 
   return (
     <div className="p-4 bg-gray-50 min-h-screen">
-      {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h1 className="font-semibold text-2xl text-gray-800">
           Costing Analysis
@@ -119,8 +112,6 @@ const Costing = () => {
           </div>
 
           <div className="h-8 w-[1px] bg-gray-200 mx-1"></div>
-
-          {/* To Date */}
           <div className="flex flex-col px-2">
             <label className="text-[10px] font-bold text-gray-400 uppercase">
               To

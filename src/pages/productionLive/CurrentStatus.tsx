@@ -27,8 +27,6 @@ const CurrentStatus = () => {
     const map = new Map();
 
     data.forEach((item) => {
-      console.log("itemitemitemitemitem", item);
-
       if (!map.has(item.processName)) {
         map.set(item.processName, {
           processName: item.processName,

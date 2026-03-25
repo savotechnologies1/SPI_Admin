@@ -12,8 +12,6 @@ interface SupplierReturnProps {
 }
 
 const SupplierReturn = ({ qualityData }: SupplierReturnProps) => {
-  console.log("qualityData", qualityData);
-
   return (
     <div className="py-6 bg-white rounded-lg">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">

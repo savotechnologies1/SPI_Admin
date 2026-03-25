@@ -60,7 +60,6 @@ const ProcessTable = () => {
     <div className="">
       <div className="flex justify-between items-center ">
         <Tabs selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
-          {/* Tabs Header */}
           <TabList className="flex space-x-6 border-b-2 ">
             <Tab
               className={`cursor-pointer px-4 py-2 ${

@@ -15,7 +15,6 @@ const TimeClockList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
   const totalPages = Math.ceil(data.length / rowsPerPage);
-  // const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
@@ -56,7 +55,6 @@ const TimeClockList = () => {
             </span>
           </div>
 
-          {/* Table Section */}
           <div className="rounded-md mt-4 bg-white">
             <div className="p-2 md:p-4">
               <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 p-2 md:p-4">
@@ -78,7 +76,6 @@ const TimeClockList = () => {
                   </select>
                 </div>
 
-                {/* Search Field */}
                 <div className="flex-1 w-full relative border p-2 md:p-3 rounded-md">
                   <input
                     type="text"
@@ -171,32 +168,11 @@ const TimeClockList = () => {
                           {item.Hour}
                         </td>
                       </tr>
-                      {/* {selectedRow === index && (
-                        <tr>
-                          <td colSpan={6} className="px-2 py-3 text-end">
-                            <div className="flex flex-col sm:flex-row justify-end gap-2">
-                              <button
-                                onClick={openModal}
-                                className="px-3 py-1 md:px-4 md:py-2 bg-gradient-to-b from-[#22C55E] to-[#118D57] text-white rounded-md text-xs md:text-sm"
-                              >
-                                Approve
-                              </button>
-                              <button
-                                onClick={update}
-                                className="px-3 py-1 md:px-4 md:py-2 bg-gradient-to-b from-[#FFAC82] to-[#FF5630] text-white rounded-md text-xs md:text-sm"
-                              >
-                                Send to Edit
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      )} */}
                     </React.Fragment>
                   ))}
                 </tbody>
               </table>
 
-              {/* Pagination Controls */}
               <div className="flex flex-col sm:flex-row justify-between items-center bg-white py-2 px-2 md:px-4 gap-2">
                 <p className="text-xs md:text-sm text-gray-600">
                   Page {currentPage} of {totalPages}
@@ -229,7 +205,6 @@ const TimeClockList = () => {
         </div>
       </div>
 
-      {/* Modal */}
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
           <div className="bg-white p-4 md:p-6 rounded-lg w-3/4 sm:w-full max-w-md">

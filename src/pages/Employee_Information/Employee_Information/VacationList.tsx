@@ -9,15 +9,12 @@ import next from "../../../assets/next.png";
 import data from "../../../components/Data/vacationListData";
 import add from "../../../assets/add.png";
 import { Mail } from "lucide-react";
-
 import {
   deleteEmployee,
-  employeeList,
   sendEmailToTheEmployeeApi,
   vacationList,
   vacationReqStatus,
 } from "../https/EmployeeApis";
-import EmailPasswordModal from "./EmailPasswordModal";
 import VacationReqModel from "./VacationReqModel";
 const VacationList = () => {
   const [activeTab, setActiveTab] = useState("All ");
@@ -25,9 +22,7 @@ const VacationList = () => {
   const [customerData, setCustomerData] = useState<CustomerItem[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchVal, setSearchVal] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
-  const [selectedValue, setSelectedValue] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [employeeId, setEmployeeId] = useState("");
   const [status, setStatus] = useState("");
@@ -40,11 +35,6 @@ const VacationList = () => {
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
-  const handleChange = (e: { target: { value: SetStateAction<string> } }) => {
-    setSearchVal(e.target.value);
-  };
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const visibleRows = data.slice(startIndex, startIndex + rowsPerPage);
 
   const handleTabs = (value: string) => {
     setActiveTab(value);
@@ -54,13 +44,6 @@ const VacationList = () => {
 
   const handleEdit = (id) => {
     navigate(`/edit-vaction-request/${id}`);
-  };
-  const sendEmailToTheEmployee = async (id) => {
-    try {
-      const response = await sendEmailToTheEmployeeApi(id);
-    } catch (error) {
-      throw error;
-    }
   };
 
   const fetchEmployeeList = async (page = 1) => {
@@ -106,13 +89,8 @@ const VacationList = () => {
         navigate("/employees");
       }
     } catch (error: unknown) {
-      thr
+      throw error;
     }
-  };
-
-  const handleSelectChange = (event) => {
-    const newValue = event.target.value;
-    setSelectedValue(newValue);
   };
   const handleMailClick = (id, status) => {
     setEmployeeId(id);
@@ -239,7 +217,6 @@ const VacationList = () => {
                 ))}
               </div>
 
-              {/* Filters */}
               <div className="p-2 md:p-4">
                 <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 p-2 md:p-4">
                   <select
@@ -341,19 +318,6 @@ const VacationList = () => {
                           {item.notes}
                         </td>
                         <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
-                          {/* <select
-                            value={item.status}
-                            onChange={(e) =>
-                              handleStatusChange(item.id, e.target.value)
-                            }
-                            className="px-2 py-1 rounded-full text-xs md:text-sm font-medium border border-gray-300 bg-white"
-                          >
-                            <option value="PENDING">Pending</option>
-                            <option value="ACTIVE">Active</option>
-                            <option value="BANNED">Banned</option>
-                            <option value="REJECTED">Rejected</option>
-                          </select> */}
-
                           <select
                             value={item.status}
                             onChange={(e) =>
@@ -370,24 +334,6 @@ const VacationList = () => {
                           </select>
                         </td>
 
-                        {/* 
-                        <td className="px-2 py-3 md:px-3 md:py-4">
-                          <span
-                            className={`px-2 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium ${
-                              item.status === "active"
-                                ? "text-green-800 bg-green-100"
-                                : item.status === "pending"
-                                ? "text-[#B76E00] bg-yellow-100"
-                                : item.status === "banned"
-                                ? "text-[#B71D18] bg-[#FF563029]"
-                                : item.status === "rejected"
-                                ? "text-[#637381] bg-gray-100"
-                                : "text-gray-800 bg-gray-100"
-                            }`}
-                          >
-                            {item.status}
-                          </span>
-                        </td> */}
                         <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
                           <Mail
                             onClick={() =>
@@ -460,7 +406,6 @@ const VacationList = () => {
                   onClose={() => setShowModal(false)}
                 />
               )}
-              {/* Pagination */}
               <div className="flex flex-row justify-between items-center bg-white py-2 px-2 md:px-4 gap-2 ">
                 <p className="text-xs md:text-sm text-gray-600">
                   Page {currentPage} of {totalPages}

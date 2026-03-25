@@ -2,8 +2,8 @@ import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { addEmployee } from "../https/EmployeeApis";
-import DatePicker from "react-datepicker"; // DatePicker import kiya
-import "react-datepicker/dist/react-datepicker.css"; // CSS import kiya
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 type FormData = {
   firstName: string;
   lastName: string;
@@ -38,7 +38,6 @@ const AddEmployee = () => {
       }
     } catch (error: unknown) {
       console.error("Failed to add employee:", error);
-      // Handle error display to the user if needed
     }
   };
 
@@ -74,9 +73,8 @@ const AddEmployee = () => {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white p-6 rounded-xl shadow-md 2xl:w-2/3 mt-4 space-y-4" // Removed max-w-xl to allow wider forms for 2-column layout
+        className="bg-white p-6 rounded-xl shadow-md 2xl:w-2/3 mt-4 space-y-4"
       >
-        {/* Employee Name - First Name & Last Name pair */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">First Name</label>
@@ -109,8 +107,6 @@ const AddEmployee = () => {
             )}
           </div>
         </div>
-
-        {/* Full Name & Email pair */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Full Name</label>
@@ -147,8 +143,6 @@ const AddEmployee = () => {
             )}
           </div>
         </div>
-
-        {/* Hourly Rate & Shift pair */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Hourly Rate</label>
@@ -212,7 +206,6 @@ const AddEmployee = () => {
           </div>
         </div>
 
-        {/* Start Date & Pin pair */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Start Date</label>
@@ -222,14 +215,13 @@ const AddEmployee = () => {
               rules={{ required: "Start Date is required" }}
               render={({ field }) => (
                 <DatePicker
-                  placeholderText="MM/DD/YYYY" // Placeholder yahan se aayega
+                  placeholderText="MM/DD/YYYY"
                   onChange={(date) =>
                     field.onChange(date ? date.toISOString() : date)
                   }
                   selected={field.value ? new Date(field.value) : null}
                   dateFormat="MM/dd/yyyy" // Format set kar diya
                   className="w-full border px-4 py-2 rounded-md text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  // Datepicker container ko full width banane ke liye wrapper class zaroori hai
                   wrapperClassName="w-full"
                 />
               )}
@@ -276,8 +268,6 @@ const AddEmployee = () => {
             )}
           </div>
         </div>
-
-        {/* Employee Role & Station Login pair */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Employee Role</label>
@@ -315,7 +305,6 @@ const AddEmployee = () => {
           </div>
         </div>
 
-        {/* Status (single field, can be paired with a dummy or another single field if design changes) */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Status</label>
@@ -337,10 +326,7 @@ const AddEmployee = () => {
               </p>
             )}
           </div>
-          {/* You can add another field here if you have one to pair with Status */}
-          <div className="sm:w-1/2">
-            {/* Empty div for spacing or another field */}
-          </div>
+          <div className="sm:w-1/2"></div>
         </div>
 
         <div className="flex justify-end pt-2 mt-6">

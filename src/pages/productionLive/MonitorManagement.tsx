@@ -49,7 +49,6 @@ const MonitorManagement = () => {
         </div>
 
         <div className="flex items-center bg-white border border-gray-200 shadow-sm rounded-2xl p-2 gap-2 ml-auto">
-          {/* Start Date */}
           <div className="flex items-center gap-3 px-3 py-1 hover:bg-gray-50 rounded-xl transition-all cursor-pointer">
             <div className="bg-blue-50 p-2 rounded-lg text-blue-600">
               <Calendar size={18} />

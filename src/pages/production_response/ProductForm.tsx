@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import {
   ScrapEntryApi,
   selectProductNamber1,
-  selectProductNumber,
 } from "./https/productionResponseApi";
 import { selectCustomer } from "../order_schedule/https/schedulingApis";
-import { selectProductInfoApi } from "../Work_Instrcution.tsx/https/workInstructionApi";
-
 import { toast } from "react-toastify";
 
 const ProductForm = () => {
@@ -18,20 +15,19 @@ const ProductForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      searchPart: "", // UI Input for Product
-      partId: "", // Product ID for Backend
-      customer: "", // UI Input for Customer
-      customerId: "", // Customer ID for Backend
+      searchPart: "",
+      partId: "",
+      customer: "",
+      customerId: "",
       returnQuantity: "",
       scrapStatus: "yes",
-      type: "product", // Backend logic identifies this as product scrap
+      type: "product",
       defectDesc: "",
     },
     onSubmit: async (values, { setSubmitting, resetForm }) => {
-      // Backend Payload Mapping
       const payload = {
         type: values.type,
-        partId: values.partId, // Product selected from list
+        partId: values.partId,
         customerId: values.customerId || null,
         returnQuantity: Number(values.returnQuantity),
         scrapStatus: values.scrapStatus,
@@ -56,7 +52,6 @@ const ProductForm = () => {
     },
   });
 
-  // 1. Initial Data Fetching
   useEffect(() => {
     (async () => {
       try {
@@ -65,7 +60,6 @@ const ProductForm = () => {
           selectCustomer(),
         ]);
 
-        // Handle data formats
         setProductData(
           Array.isArray(products) ? products : products?.data || [],
         );
@@ -78,7 +72,6 @@ const ProductForm = () => {
     })();
   }, []);
 
-  // 2. Real-time Product Filtering
   useEffect(() => {
     const query = formik.values.searchPart.toLowerCase().trim();
     if (query && !formik.values.partId) {
@@ -91,7 +84,6 @@ const ProductForm = () => {
     }
   }, [formik.values.searchPart, formik.values.partId, productData]);
 
-  // 3. Real-time Customer Filtering
   useEffect(() => {
     const query = formik.values.customer.toLowerCase().trim();
     if (query && !formik.values.customerId) {
@@ -117,7 +109,6 @@ const ProductForm = () => {
         className="space-y-4"
         autoComplete="off"
       >
-        {/* PRODUCT SEARCH */}
         <div className="relative">
           <label className="block font-semibold mb-1">Search Product *</label>
           <input
@@ -127,7 +118,7 @@ const ProductForm = () => {
             value={formik.values.searchPart}
             onChange={(e) => {
               formik.setFieldValue("searchPart", e.target.value);
-              formik.setFieldValue("partId", ""); // Reset ID when typing
+              formik.setFieldValue("partId", "");
             }}
           />
           {productSuggestions.length > 0 && (
@@ -155,7 +146,6 @@ const ProductForm = () => {
           )}
         </div>
 
-        {/* CUSTOMER SEARCH */}
         <div className="bg-white p-4 border rounded-md relative">
           <label className="block font-semibold mb-1">
             Customer (Optional)
@@ -189,7 +179,6 @@ const ProductForm = () => {
           )}
         </div>
 
-        {/* QUANTITY & STATUS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-white p-4 border rounded-md">
             <label className="block font-semibold mb-1">
@@ -213,8 +202,6 @@ const ProductForm = () => {
             </select>
           </div>
         </div>
-
-        {/* DEFECT DESCRIPTION */}
         <div className="bg-white p-4 border rounded-md">
           <label className="block font-semibold mb-1">Defect Description</label>
           <textarea
@@ -225,7 +212,6 @@ const ProductForm = () => {
           />
         </div>
 
-        {/* BUTTONS */}
         <div className="flex items-center justify-between p-4 bg-gray-50 rounded-md">
           <button
             type="submit"

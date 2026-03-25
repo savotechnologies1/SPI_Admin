@@ -170,10 +170,6 @@ const SupplierOrderList: React.FC = () => {
     part_id: string,
     newStatus: string,
   ) => {
-    console.log(
-      `Status change for Order ID: ${orderId}, New Status: ${newStatus}`,
-    );
-
     try {
       await updateSupplierOrderStatus(orderId, quantity, part_id, newStatus);
       setWorkData((currentData) =>

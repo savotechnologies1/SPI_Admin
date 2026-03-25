@@ -19,8 +19,6 @@ import { MdCancel } from "react-icons/md";
 import { selectSupplier } from "../supplier_chain/https/suppliersApi";
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
-
-// --- Interfaces ---
 interface BOMItem {
   id?: string;
   part_id?: string;
@@ -122,7 +120,6 @@ const EditProductForm = () => {
       lName.includes(search)
     );
   });
-  // Fetch Suppliers
   useEffect(() => {
     const fetchSuppliers = async () => {
       try {
@@ -135,14 +132,11 @@ const EditProductForm = () => {
     fetchSuppliers();
   }, []);
 
-  // Fetch Product Detail
   const fetchProductDetail = async () => {
     if (!id) return;
     try {
       const response = await getProductNumberDetail(id);
       const data = response.data;
-
-      // --- यहाँ बदलाव करें: Company Name (FirstName LastName) ---
       let supplierDisplay = "";
       if (data.supplier) {
         const company = (data.supplier.companyName || "").trim();
@@ -153,7 +147,6 @@ const EditProductForm = () => {
         supplierDisplay = data.companyName || "";
       }
       setSearchTerm(supplierDisplay);
-      // ------------------------------------------------------
 
       reset({
         partFamily: data.partFamily || "",
@@ -203,7 +196,6 @@ const EditProductForm = () => {
     fetchInitialData();
   }, [id]);
 
-  // Handle Process Description
   useEffect(() => {
     if (!selectedProcessId) {
       setValue("processDesc", "");
@@ -214,7 +206,6 @@ const EditProductForm = () => {
     });
   }, [selectedProcessId, setValue]);
   const onSubmitProduct = async (data: ProductFormData) => {
-    // 1. Check if id exists
     if (!id) {
       console.error("Product ID is missing");
       return;
@@ -229,7 +220,6 @@ const EditProductForm = () => {
     formData.append("parts", JSON.stringify(bomItems));
 
     try {
-      // अब TypeScript को पता है कि id 'string' ही है
       const response = await updateProductNumber(formData, id);
       if (response && response.status === 200) {
         navigate("/product-tree");
@@ -238,7 +228,6 @@ const EditProductForm = () => {
       console.error("Error updating product:", err);
     }
   };
-  // BOM Handlers
   const handleAddBOMRow = () => {
     setBomItems([
       ...bomItems,
@@ -390,10 +379,9 @@ const EditProductForm = () => {
             />
           </div>
 
-          {/* Supplier Dropdown */}
           <div className="col-span-4 md:col-span-1 relative">
             <label className="block mb-1">Company Name</label>
-            {/* hidden field ID के लिए */}
+
             <input type="hidden" {...register("companyName")} />
             <input
               type="text"
@@ -410,7 +398,6 @@ const EditProductForm = () => {
             {showDropdown && searchTerm && filteredSuppliers.length > 0 && (
               <ul className="absolute z-[100] w-full bg-white border rounded shadow-xl mt-1 max-h-40 overflow-y-auto">
                 {filteredSuppliers.map((s) => {
-                  // डिस्प्ले नाम का फॉर्मेट
                   const displayName = `${s.companyName} (${s.firstName} ${s.lastName})`;
 
                   return (
@@ -418,8 +405,8 @@ const EditProductForm = () => {
                       key={s.id}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b"
                       onMouseDown={() => {
-                        setSearchTerm(displayName); // क्लिक करने पर कंबाइन नाम सेट होगा
-                        setValue("companyName", s.id); // बैकएंड के लिए ID सेट होगी
+                        setSearchTerm(displayName);
+                        setValue("companyName", s.id);
                         setShowDropdown(false);
                       }}
                     >

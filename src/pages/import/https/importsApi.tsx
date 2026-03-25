@@ -7,10 +7,6 @@ export const importApi = async (url: string, formData: FormData) => {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
-    // if (response.status === 200 || response.status === 201) {
-    //   toast.success(response.data.message);
-    // }
-
     return response;
   } catch (error: unknown) {
     const axiosError = error as AxiosError<{
@@ -19,7 +15,6 @@ export const importApi = async (url: string, formData: FormData) => {
     }>;
 
     if (axiosError.response) {
-      // Don't toast here — handle in handleUpload
       return axiosError.response;
     } else {
       toast.error("Something went wrong");

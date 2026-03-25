@@ -160,7 +160,6 @@ const NewCustomer = () => {
               })}
               placeholder="Phone Number"
               onKeyDown={(e) => {
-                // Allow only numbers, backspace, delete, arrow keys, tab
                 if (
                   !/[0-9]/.test(e.key) &&
                   e.key !== "Backspace" &&
@@ -183,7 +182,6 @@ const NewCustomer = () => {
               </p>
             )}
           </div>
-          {/* Address */}
           <label className="font-semibold " htmlFor="">
             Address
           </label>

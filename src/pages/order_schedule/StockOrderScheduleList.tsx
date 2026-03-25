@@ -1,13 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
-import edit from "../../assets/edit_icon.png";
 import { FaCircle, FaTrash } from "react-icons/fa";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import add from "../../assets/add.png";
-import { Trash2 } from "lucide-react";
-import {
-  deleteWorkInstruction,
-  workInstructionList,
-} from "../Work_Instrcution.tsx/https/workInstructionApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -15,7 +9,6 @@ import {
   scheduleStockOrderListApi,
 } from "./https/schedulingApis";
 
-// Custom Debounce Hook
 function useDebounce(value: string, delay: number): string {
   const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {
@@ -37,55 +30,49 @@ interface WorkInstructionItem {
 }
 
 const StockOrderScheduleList: React.FC = () => {
-  const [workData, setWorkData] = useState<any[]>([]); // Use any[] for now for simplicity
+  const [workData, setWorkData] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
-  const [selectedType, setSelectedType] = useState("all"); // Filter state
+  const [selectedType, setSelectedType] = useState("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const rowsPerPage = 10;
   const debouncedSearchVal = useDebounce(searchVal, 500);
 
-  // Fetcher function
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fetchScheduleList = async (page = 1, type = "all", searchTerm = "") => {
-    setIsLoading(true); // 2. API call shuru hone par loading true
+    setIsLoading(true);
     try {
-      // Pass all parameters to the API call
       const response: any = await scheduleStockOrderListApi(
         page,
         rowsPerPage,
         type,
         searchTerm,
       );
-      // Handle both array response and axios response
       if (Array.isArray(response)) {
         setWorkData([]);
       } else {
         setWorkData(response.data.data || []);
         setTotalPages(response.data.pagination?.totalPages || 1);
       }
-      setIsLoading(false); // 3. API call khatam hone par loading false
+      setIsLoading(false);
     } catch (error) {
       console.error("Failed to fetch schedule list:", error);
     }
   };
 
-  // Effect to fetch data when page, filter, or debounced search changes
   useEffect(() => {
     fetchScheduleList(currentPage, selectedType, debouncedSearchVal);
   }, [currentPage, selectedType, debouncedSearchVal]);
 
-  // Handlers for UI changes
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchVal(e.target.value);
-    setCurrentPage(1); // Reset to page 1 on new search
+    setCurrentPage(1);
   };
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedType(e.target.value);
-    setCurrentPage(1); // Reset to page 1 on new filter
+    setCurrentPage(1);
   };
 
   const handleNextPage = () => {
@@ -97,9 +84,7 @@ const StockOrderScheduleList: React.FC = () => {
   };
   const handleDelete = async (id: string, orderId: string) => {
     if (!id || !orderId) return;
-    console.log("orderIdorderId", orderId);
     try {
-      // API expects object with orderId property
       await deleteScheduleOrder(id, orderId as any);
       fetchScheduleList(currentPage, selectedType, debouncedSearchVal);
     } catch (error) {
@@ -110,13 +95,11 @@ const StockOrderScheduleList: React.FC = () => {
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return "N/A";
     try {
-      // Pehle yahan 'en-GB' tha (DD/MM/YYYY), ab 'en-US' hai (MM/DD/YYYY)
       return new Intl.DateTimeFormat("en-US").format(new Date(dateString));
     } catch (error) {
       return "Invalid Date";
     }
   };
-  console.log("workData", workData);
   return (
     <div className="p-6 bg-gray-100 min-h-screen mt-5">
       <div className="flex justify-between">
@@ -125,11 +108,6 @@ const StockOrderScheduleList: React.FC = () => {
         </h1>
 
         <div className="flex relative">
-          {/* <button className="py-2 px-7 rounded-lg border-gray-100 bg-brand text-white flex gap-1 items-center h-fit hover:cursor-pointer">
-            <NavLink to="/add-work-instruction">
-              <span className="">New Work Instruction</span>
-            </NavLink>
-          </button> */}
           <div className="absolute top-3 left-2">
             <img src={add} alt="" className="w-4 h-4" />
           </div>

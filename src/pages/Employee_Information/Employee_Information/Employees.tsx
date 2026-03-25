@@ -2,17 +2,12 @@ import { useEffect, useState, SetStateAction } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaCircle, FaSpinner, FaTrash } from "react-icons/fa";
 import search_2 from "../../../assets/search_2.png";
-import more from "../../../assets/more.png";
 import edit from "../../../assets/edit_icon.png";
 import add from "../../../assets/add.png";
 import back from "../../../assets/back.png";
 import next from "../../../assets/next.png";
 import data from "../../../components/Data/employeeData";
-import {
-  deleteEmployee,
-  employeeList,
-  sendEmailToTheEmployeeApi,
-} from "../https/EmployeeApis";
+import { deleteEmployee, employeeList } from "../https/EmployeeApis";
 import { Mail } from "lucide-react";
 import EmailPasswordModal from "./EmailPasswordModal";
 import { format } from "date-fns";
@@ -33,7 +28,6 @@ interface EmployeeData {
 
 const Employees = () => {
   const [activeTab, setActiveTab] = useState("All ");
-  // const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
   const [customerData, setCustomerData] = useState<EmployeeData[]>([]);
   const [totalPages, setTotalPages] = useState(1);
@@ -43,7 +37,7 @@ const Employees = () => {
   const [selectedValue, setSelectedValue] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [employeeId, setEmployeeId] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Loader State
+  const [isLoading, setIsLoading] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -67,15 +61,9 @@ const Employees = () => {
   const handleEdit = (id: string) => {
     navigate(`/edit-employee/${id}`);
   };
-  const sendEmailToTheEmployee = async (id: string) => {
-    try {
-      const response = await sendEmailToTheEmployeeApi(id);
-    } catch (error) {}
-    console.log("heree iss the edididid", id);
-  };
 
   const fetchEmployeeList = async (page = 1) => {
-    setIsLoading(true); // API shuru
+    setIsLoading(true);
     try {
       const response = await employeeList(
         page,
@@ -91,14 +79,13 @@ const Employees = () => {
     } catch (error) {
       console.error("Error fetching employees:", error);
     } finally {
-      setIsLoading(false); // API khatam
+      setIsLoading(false);
     }
   };
   useEffect(() => {
     fetchEmployeeList(currentPage);
   }, [currentPage, selectedValue, searchVal, activeTab]);
 
-  console.log("customerDa222tacustomerData", customerData);
   const statusCounts = customerData.reduce(
     (acc, item) => {
       const status = item.status?.toLowerCase().trim();
@@ -127,7 +114,7 @@ const Employees = () => {
         navigate("/employees");
       }
     } catch (error: unknown) {
-      throw error
+      throw error;
     }
   };
 
@@ -185,7 +172,6 @@ const Employees = () => {
         <div className="rounded-md mt-4">
           <div className="rounded-md mt-4">
             <div className="flex flex-col bg-white rounded-t">
-              {/* Tabs */}
               <div className="flex gap-4 font-semibold px-2 py-4 items-center hover:cursor-pointer border-b overflow-x-auto whitespace-nowrap">
                 {categorys.map((category) => (
                   <div
@@ -221,7 +207,6 @@ const Employees = () => {
                 ))}
               </div>
 
-              {/* Filters */}
               <div className="p-2 md:p-4">
                 <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 p-2 md:p-4">
                   <select
@@ -289,7 +274,6 @@ const Employees = () => {
 
                 <tbody className="relative min-h-[200px]">
                   {isLoading ? (
-                    /* --- LOADER --- */
                     <tr>
                       <td colSpan={9} className="py-20 text-center">
                         <div className="flex flex-col items-center justify-center gap-2">
@@ -301,7 +285,6 @@ const Employees = () => {
                       </td>
                     </tr>
                   ) : customerData.length === 0 ? (
-                    /* --- NO DATA MESSAGE --- */
                     <tr>
                       <td
                         colSpan={9}
@@ -311,7 +294,6 @@ const Employees = () => {
                       </td>
                     </tr>
                   ) : (
-                    /* --- DATA ROWS --- */
                     customerData.map((item, index) => (
                       <tr
                         key={index}
@@ -387,7 +369,7 @@ const Employees = () => {
                           <button className="text-brand hover:underline">
                             <FaTrash
                               className="text-red-500 cursor-pointer h-7"
-                              onClick={() => setDeleteId(item.id)} // Set the id of employee to delete
+                              onClick={() => setDeleteId(item.id)}
                             />
                           </button>
 
@@ -406,7 +388,7 @@ const Employees = () => {
                                 <div className="flex justify-end space-x-3">
                                   <button
                                     className="px-4 py-2 bg-gray-300 rounded"
-                                    onClick={() => setDeleteId(null)} // Cancel clears deleteId (closes modal)
+                                    onClick={() => setDeleteId(null)}
                                   >
                                     Cancel
                                   </button>
@@ -414,7 +396,7 @@ const Employees = () => {
                                     className="px-4 py-2 bg-red-500 text-white rounded"
                                     onClick={async () => {
                                       await handleDelete(item.id);
-                                      setDeleteId(null); // Close modal after deletion
+                                      setDeleteId(null);
                                     }}
                                   >
                                     Delete
@@ -428,126 +410,6 @@ const Employees = () => {
                     ))
                   )}
                 </tbody>
-                {/* 
-                <tbody>
-                  {customerData
-                    .filter((item) => {
-                      if (normalizedTab === "all") return true;
-                      return item.status.toLowerCase() === normalizedTab;
-                    })
-                    .map((item, index) => (
-                      <tr
-                        key={index}
-                        className="border-b border-dashed border-gray-200"
-                      >
-                        <td className="px-2 py-3 md:px-3 md:py-4">
-                          <div className="flex items-center">
-                            <div>
-                              <p className="text-xs md:text-sm lg:text-base font-medium">
-                                {item.firstName} {item.lastName}
-                              </p>
-                              <p className="text-xs text-gray-400 truncate max-w-[100px] md:max-w-none">
-                                {item.email}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
-                          ${item.hourlyRate}
-                        </td>
-                        <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden md:table-cell">
-                          {item.employeeId}
-                        </td>
-                        <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
-                          {item.shift}
-                        </td>
-                        <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
-                          {item.startDate}
-                        </td>
-                        <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
-                          {item.pin}
-                        </td>
-                        <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
-                          {item.processLogin === true ? "yes" : "no"}
-                        </td>
-                        <td className="px-2 py-3 md:px-3 md:py-4">
-                          <span
-                            className={`px-2 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium ${
-                              item.status === "active"
-                                ? "text-green-800 bg-green-100"
-                                : item.status === "pending"
-                                ? "text-[#B76E00] bg-yellow-100"
-                                : item.status === "banned"
-                                ? "text-[#B71D18] bg-[#FF563029]"
-                                : item.status === "rejected"
-                                ? "text-[#637381] bg-gray-100"
-                                : "text-gray-800 bg-gray-100"
-                            }`}
-                          >
-                            {item.status}
-                          </span>
-                        </td>
-                        <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
-                          <Mail
-                            onClick={() => handleMailClick(item.id)}
-                            className="text-brand"
-                          />
-
-                          <button
-                            onClick={() => {
-                              handleEdit(item.id);
-                            }}
-                            className="text-brand hover:underline"
-                          >
-                            <img
-                              src={edit}
-                              alt="Edit"
-                              className="w-4 h-4 md:w-5 md:h-5"
-                            />
-                          </button>
-                          <button className="text-brand hover:underline">
-                            <FaTrash
-                              className="text-red-500 cursor-pointer h-7"
-                              onClick={() => setDeleteId(item.id)} // Set the id of employee to delete
-                            />
-                          </button>
-
-                          {deleteId === item.id && (
-                            <div
-                              className="fixed inset-0 bg-opacity-50 backdrop-blur-sm
-        flex items-center justify-center z-50"
-                            >
-                              <div className="bg-white p-6 rounded-xl shadow-lg">
-                                <h2 className="text-lg font-semibold mb-4">
-                                  Are you sure?
-                                </h2>
-                                <p className="mb-4">
-                                  Do you really want to delete this employee?
-                                </p>
-                                <div className="flex justify-end space-x-3">
-                                  <button
-                                    className="px-4 py-2 bg-gray-300 rounded"
-                                    onClick={() => setDeleteId(null)} // Cancel clears deleteId (closes modal)
-                                  >
-                                    Cancel
-                                  </button>
-                                  <button
-                                    className="px-4 py-2 bg-red-500 text-white rounded"
-                                    onClick={async () => {
-                                      await handleDelete(item.id);
-                                      setDeleteId(null); // Close modal after deletion
-                                    }}
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                </tbody> */}
               </table>
 
               {showModal && (
@@ -557,7 +419,6 @@ const Employees = () => {
                   onClose={() => setShowModal(false)}
                 />
               )}
-              {/* Pagination */}
               <div className="flex flex-row justify-between items-center bg-white py-2 px-2 md:px-4 gap-2 ">
                 <p className="text-xs md:text-sm text-gray-600">
                   Page {currentPage} of {totalPages}

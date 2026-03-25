@@ -6,7 +6,6 @@ const LaborForecast = () => {
   return (
     <div className="p-4 mt-5">
       <div>
-        {" "}
         <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
           Labor Forecast
         </h1>
@@ -29,7 +28,6 @@ const LaborForecast = () => {
             <FaCircle className="text-[6px] text-gray-500" />
           </span>
           <span className="text-[14px] hover:cursor-pointer">
-            {" "}
             Labor Forecast
           </span>
         </div>

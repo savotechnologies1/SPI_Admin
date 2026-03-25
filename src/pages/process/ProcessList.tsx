@@ -178,7 +178,6 @@ const ProcessList = () => {
             </thead>
             <tbody>
               {isLoading ? (
-                // 4. Added Loader Row
                 <tr>
                   <td colSpan={9} className="text-center py-10">
                     <div className="flex flex-col items-center justify-center gap-2">

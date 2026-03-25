@@ -5,7 +5,6 @@ const TimeClockUpdate = () => {
   return (
     <div className="p-7  mt-5">
       <div>
-        {" "}
         <h1 className="font-bold text-[20px] md:text-[24px] text-black">
           Time clock update
         </h1>

@@ -47,7 +47,6 @@ const Tables = ({ metrics }) => {
   return (
     <div className="flex flex-col h-full">
       <div className="flex flex-col md:flex-row w-full mb-12 relative">
-        {/* Left: Income Statement */}
         <div className="w-full md:w-1/2 pr-8">
           <h2 className="text-blue-500 font-bold text-lg mb-6">
             Income Statement

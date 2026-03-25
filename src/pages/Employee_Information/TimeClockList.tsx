@@ -2,15 +2,12 @@ import React, { useCallback, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaCircle } from "react-icons/fa";
 import search_2 from "../../assets/search_2.png";
-import more from "../../assets/more.png";
 import back from "../../assets/back.png";
 import next from "../../assets/next.png";
-import data from "../../components/Data/TimeClockData";
 import { selectProcessApi } from "../Work_Instrcution.tsx/https/workInstructionApi";
 import { allTimeClock } from "./https/EmployeeApis";
 import { Loader } from "lucide-react";
-import { format } from "date-fns"; // Agar import nahi hai to ise add karein
-// Define interfaces for better type checking (if using TypeScript)
+import { format } from "date-fns";
 interface CustomerItem {
   id: string;
   name: string;
@@ -18,7 +15,7 @@ interface CustomerItem {
   process: string;
   hours: string;
   vacationDate: string;
-  vacationHours?: string; // vacationHours can be optional based on your backend mapping
+  vacationHours?: string;
 }
 
 interface ProcessOption {
@@ -29,19 +26,17 @@ interface ProcessOption {
 }
 
 const TimeClockList = () => {
-  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const rowsPerPage = 5; // Consider making this dynamic or a constant
+  const rowsPerPage = 5;
   const [customerData, setCustomerData] = useState<CustomerItem[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchVal, setSearchVal] = useState("");
-  const [processList, setProcessList] = useState<ProcessOption[]>([]); // State for process dropdown
-  const [selectedProcess, setSelectedProcess] = useState(""); // State for selected process/role filter
+  const [processList, setProcessList] = useState<ProcessOption[]>([]);
+  const [selectedProcess, setSelectedProcess] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch Processes for the dropdown
   useEffect(() => {
     const fetchProcesses = async () => {
       try {
@@ -55,7 +50,6 @@ const TimeClockList = () => {
     fetchProcesses();
   }, []);
 
-  // Fetch Time Clock List data
   const fetchEmployeeList = useCallback(
     async (page = 1) => {
       setLoading(true);
@@ -76,14 +70,12 @@ const TimeClockList = () => {
         setLoading(false);
       }
     },
-    [rowsPerPage, selectedProcess, searchVal], // Depend on searchVal and selectedProcess
+    [rowsPerPage, selectedProcess, searchVal],
   );
-
-  console.log("searchValsearchVal", searchVal);
 
   useEffect(() => {
     fetchEmployeeList(currentPage);
-  }, [currentPage, fetchEmployeeList]); // Depend on currentPage and the memoized fetchEmployeeList
+  }, [currentPage, fetchEmployeeList]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -95,20 +87,15 @@ const TimeClockList = () => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchVal(e.target.value);
-    setCurrentPage(1); // Reset to page 1 on new search
+    setCurrentPage(1);
   };
 
   const handleProcessChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedProcess(e.target.value);
-    setCurrentPage(1); // Reset to page 1 on new filter
+    setCurrentPage(1);
   };
 
-  // const handleRowClicked = (id: string) => {
-  //   navigate(`/time-sheet/${id}`); // Navigate to specific time sheet using ID
-  // };
-
   if (loading && customerData.length === 0) {
-    // Show loading only if no data has been loaded yet
     return (
       <div className="flex justify-center items-center h-screen">
         <p className="text-lg">
@@ -145,11 +132,9 @@ const TimeClockList = () => {
             <span className="text-sm md:text-base">Time Clock</span>
           </div>
 
-          {/* Table Section */}
           <div className="rounded-md mt-4 bg-white">
             <div className="p-2 md:p-4">
               <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 p-2 md:p-4">
-                {/* Dropdown for Role (now Process) */}
                 <div className="flex flex-col ">
                   <div className="flex flex-col w-full sm:w-auto border rounded-md p-1">
                     <select
@@ -168,7 +153,6 @@ const TimeClockList = () => {
                   </div>
                 </div>
 
-                {/* Search Field */}
                 <div className="flex-1 w-full relative border p-2 md:p-3 rounded-md">
                   <input
                     type="text"
@@ -204,9 +188,6 @@ const TimeClockList = () => {
                     <th className="px-2 py-2 text-left text-gray-400 text-xs md:text-sm font-medium hidden md:table-cell">
                       Vacation Date
                     </th>
-                    {/* <th className="px-2 py-2 text-left text-gray-400 text-xs md:text-sm font-medium hidden lg:table-cell">
-                      Vacation Hours
-                    </th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -224,11 +205,9 @@ const TimeClockList = () => {
                       <tr
                         key={item.id}
                         className={`border-b border-dashed border-gray-200 cursor-pointer hover:bg-gray-100`}
-                        // onClick={() => handleRowClicked(item.id)}
                       >
                         <td className="px-2 py-3">
                           <div className="flex items-center">
-                            {/* You might want to add an avatar placeholder here if available */}
                             <div>
                               <p className="text-xs md:text-sm font-medium">
                                 {item.name}
@@ -246,18 +225,16 @@ const TimeClockList = () => {
                           {item.hours}
                         </td>
                         <td className="px-2 py-3 text-xs md:text-sm font-medium hidden md:table-cell">
-  {item.createDate ? format(new Date(item.createDate), "MM/dd/yyyy") : "N/A"}
-</td>
-                        {/* <td className="px-2 py-3 text-xs md:text-sm font-medium hidden lg:table-cell">
-                          {item.vacationHours || "N/A"}
-                        </td> */}
+                          {item.createDate
+                            ? format(new Date(item.createDate), "MM/dd/yyyy")
+                            : "N/A"}
+                        </td>
                       </tr>
                     ))
                   )}
                 </tbody>
               </table>
 
-              {/* Pagination Controls */}
               <div className="flex flex-col sm:flex-row justify-between items-center bg-white py-2 px-2 md:px-4 gap-2">
                 <p className="text-xs md:text-sm text-gray-600">
                   Page {currentPage} of {totalPages}
@@ -290,7 +267,6 @@ const TimeClockList = () => {
         </div>
       </div>
 
-      {/* Modal */}
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
           <div className="bg-white p-4 md:p-6 rounded-lg w-3/4 sm:w-full max-w-md">
@@ -302,7 +278,6 @@ const TimeClockList = () => {
               <button
                 onClick={() => {
                   setIsOpen(false);
-                  // Add approval logic here
                 }}
                 className="px-4 py-2 bg-brand text-white rounded-md text-sm md:text-base"
               >

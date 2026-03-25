@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-
 import axios from "axios";
 import { toast } from "react-toastify";
 const FixedCost = () => {
@@ -31,8 +30,6 @@ const FixedCost = () => {
       <h2 className="text-2xl font-bold mb-6 text-gray-800 ">
         Fixed Cost Management
       </h2>
-
-      {/* Form Section */}
       <div className="bg-white rounded-xl shadow-md p-6 mb-8">
         <h3 className="text-lg font-semibold mb-4 text-gray-700">
           Add New Fixed Cost
@@ -47,9 +44,8 @@ const FixedCost = () => {
                 `${BASE_URL}/api/admin/fixed-data-calulation`,
                 values,
               );
-              console.log("responseresponse", response);
               toast.success("Fixed cost added successfully!");
-              setRecords([...records, response.data]); // add saved record with id
+              setRecords([...records, response.data]);
               resetForm();
             } catch (error) {
               console.error("Error adding fixed cost:", error);
@@ -58,7 +54,6 @@ const FixedCost = () => {
         >
           {({ errors, touched }) => (
             <Form className="">
-              {/* Category */}
               <div className="mb-5">
                 <label className="block text-sm font-medium text-gray-700 mb-2 ">
                   Cost Category
@@ -80,7 +75,6 @@ const FixedCost = () => {
                 />
               </div>
 
-              {/* Name */}
               <div className="mb-5">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Expense Name
@@ -102,7 +96,6 @@ const FixedCost = () => {
                 />
               </div>
 
-              {/* Cost */}
               <div className="mb-5">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Expense Cost / Year
@@ -127,7 +120,6 @@ const FixedCost = () => {
                 />
               </div>
 
-              {/* Depreciation */}
               <div className="mb-5">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Depreciation %

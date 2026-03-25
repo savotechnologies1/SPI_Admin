@@ -31,7 +31,6 @@ const UserAccess = () => {
   return (
     <div className="p-7">
       <div>
-        {" "}
         <h1 className="font-bold text-[20px] md:text-[24px] text-black">
           User Privilleges
         </h1>
@@ -59,7 +58,6 @@ const UserAccess = () => {
         </div>
       </div>
       <div className="mt-6 bg-white p-6 w-full rounded-2xl shadow-md">
-        {/* Role Selection */}
         <div className="grid md:grid-cols-2 gap-4">
           {[1, 2, 3, 4].map((num) => (
             <div key={num}>
@@ -82,7 +80,6 @@ const UserAccess = () => {
           ))}
         </div>
 
-        {/* Accordion Menu */}
         <div className="mt-6 border-t pt-4 ">
           {menuItems.map((item) => (
             <div key={item} className=" ">
@@ -104,7 +101,6 @@ const UserAccess = () => {
           ))}
         </div>
 
-        {/* Save Button */}
         <div className="mt-6 text-right">
           <button className="bg-brand text-white py-2 px-8 rounded-sm hover:bg-brand-700 transition">
             Save

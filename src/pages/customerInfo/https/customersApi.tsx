@@ -3,7 +3,6 @@ import axiosInstance from "../../../utils/axiosInstance";
 import { AxiosError } from "axios";
 
 export const addCustomer = async (apiData: object) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.post("/create-customer", apiData);
     if (response.status === 201) {
@@ -20,7 +19,6 @@ export const addCustomer = async (apiData: object) => {
 };
 
 export const customerList = async (page = 1, limit = 5, searchVal: string) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
       `/all-customer-list?page=${page}&limit=${limit}&search=${searchVal}`,
@@ -32,7 +30,6 @@ export const customerList = async (page = 1, limit = 5, searchVal: string) => {
 };
 
 export const customerDetail = async (id: string) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(`/get-customer-detail/${id}`);
     return response.data;

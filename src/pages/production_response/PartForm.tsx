@@ -7,42 +7,6 @@ import {
 import { selectSupplier } from "../supplier_chain/https/suppliersApi";
 import { toast } from "react-toastify";
 
-interface FormDataType {
-  partFamily: string;
-  partNumber: string;
-  partDescription: string;
-  cost: number;
-  leadTime: number;
-  supplierOrderQty: number;
-  companyName: string;
-  minStock: number;
-  availStock: number;
-  cycleTime: string;
-  processOrderRequired: string;
-  instructionRequired: string;
-  processId: string;
-  processDesc: string;
-  image: File[];
-}
-
-interface ProcessItem {
-  id: string;
-  name: string;
-  partFamily: string;
-  machineName?: string;
-}
-
-interface PartItem {
-  part_id: string;
-  process: {
-    processName: string;
-  };
-  partNumber: string;
-  partFamily: string;
-  cost: number;
-  cycleTime: string;
-}
-
 interface Supplier {
   id: string;
   name: string;
@@ -81,7 +45,6 @@ const PartForm = () => {
       defectDesc: "",
     },
     onSubmit: async (values, { setSubmitting, resetForm }) => {
-      // Mapping values exactly to your Backend Controller keys
       const payload = {
         type: values.type,
         partId: values.partId,
@@ -109,7 +72,6 @@ const PartForm = () => {
     },
   });
 
-  // 1. Initial Data Load
   useEffect(() => {
     const loadInitialData = async () => {
       try {
@@ -118,7 +80,6 @@ const PartForm = () => {
           selectSupplier(),
         ]);
 
-        // Handle both formats: { data: [...] } OR direct array [...]
         const parts = Array.isArray(partsRes) ? partsRes : partsRes?.data || [];
         const suppliers = Array.isArray(suppliersRes)
           ? suppliersRes
@@ -127,7 +88,7 @@ const PartForm = () => {
         setPartData(parts);
         setSupplierData(suppliers);
 
-        console.log("Parts Loaded:", parts); // Debugging ke liye
+        console.log("Parts Loaded:", parts);
       } catch (err) {
         console.error("Fetch Error:", err);
         toast.error("Failed to load parts or suppliers");
@@ -136,11 +97,9 @@ const PartForm = () => {
     loadInitialData();
   }, []);
 
-  // 2. Real-time Part Filtering (Jaise hi type karein)
   useEffect(() => {
     const query = formik.values.searchPart.trim().toLowerCase();
 
-    // Sirf tab filter karein jab input ho aur ID select na hui ho
     if (query && !formik.values.partId) {
       const filtered = partData.filter((p) =>
         p.partNumber?.toLowerCase().includes(query),
@@ -151,7 +110,6 @@ const PartForm = () => {
     }
   }, [formik.values.searchPart, formik.values.partId, partData]);
 
-  // 3. Real-time Supplier Filtering
   useEffect(() => {
     const query = formik.values.supplier.trim().toLowerCase();
 
@@ -177,7 +135,6 @@ const PartForm = () => {
           className="space-y-6"
           autoComplete="off"
         >
-          {/* PART SEARCH INPUT */}
           <div className="relative">
             <label className="block text-sm font-bold text-gray-700 mb-2">
               Search Part Number *
@@ -190,10 +147,9 @@ const PartForm = () => {
               value={formik.values.searchPart}
               onChange={(e) => {
                 formik.setFieldValue("searchPart", e.target.value);
-                formik.setFieldValue("partId", ""); // Clear ID while typing
+                formik.setFieldValue("partId", "");
               }}
             />
-            {/* Part Suggestions Dropdown */}
             {partSuggestions.length > 0 && (
               <ul className="absolute z-[100] left-0 right-0 bg-white border-2 border-blue-100 rounded-lg mt-1 max-h-56 overflow-y-auto shadow-2xl">
                 {partSuggestions.map((p) => (
@@ -215,8 +171,6 @@ const PartForm = () => {
               </ul>
             )}
           </div>
-
-          {/* SUPPLIER SEARCH INPUT */}
           <div className="relative">
             <label className="block text-sm font-bold text-gray-700 mb-2">
               Supplier (Optional)
@@ -232,7 +186,6 @@ const PartForm = () => {
                 formik.setFieldValue("supplierId", "");
               }}
             />
-            {/* Supplier Suggestions Dropdown */}
             {supplierSuggestions.length > 0 && (
               <ul className="absolute z-[100] left-0 right-0 bg-white border-2 border-green-100 rounded-lg mt-1 max-h-56 overflow-y-auto shadow-2xl">
                 {supplierSuggestions.map((s) => (
@@ -252,7 +205,6 @@ const PartForm = () => {
             )}
           </div>
 
-          {/* RETURN QUANTITY & STATUS */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -283,7 +235,6 @@ const PartForm = () => {
             </div>
           </div>
 
-          {/* DEFECT DESCRIPTION */}
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">
               Defect Description / Reason
@@ -298,7 +249,6 @@ const PartForm = () => {
             />
           </div>
 
-          {/* ACTION BUTTONS */}
           <div className="flex justify-between  items-center gap-4 pt-4">
             <button
               type="submit"

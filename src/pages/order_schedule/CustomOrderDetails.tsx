@@ -4,13 +4,10 @@ import { useForm } from "react-hook-form";
 
 const CustomOrderDetails = () => {
   const { register, handleSubmit } = useForm();
-  const onSubmit = (data: any) => {
-    console.log("Form Data:", data);
-  };
+  const onSubmit = (data: any) => {};
   return (
     <div className="p-4 mt-5">
       <div>
-        {" "}
         <h1 className="font-semibold text-[20px] md:text-[24px] text-black">
           Custom Order Schedule
         </h1>
@@ -31,7 +28,7 @@ const CustomOrderDetails = () => {
             <FaCircle className="text-[6px] text-gray-500" />
           </span>
           <span className="text-[14px] hover:cursor-pointer">
-            Custom Orders details{" "}
+            Custom Orders details
           </span>
         </div>
       </div>
@@ -39,7 +36,6 @@ const CustomOrderDetails = () => {
       <div className="py-6">
         <div className="p-4 bg-white rounded-2xl border shadow-md">
           <form onSubmit={handleSubmit(onSubmit)} className="">
-            {/* Channel & Platform */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-6 ">
               <div>
                 <label className="font-semibold">Order Number</label>
@@ -76,7 +72,6 @@ const CustomOrderDetails = () => {
               </div>
             </div>
 
-            {/* Personal Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-4 mt-4 bg-white px-6 ">
               <div>
                 <label className="font-semibold">Select Customer</label>
@@ -117,7 +112,6 @@ const CustomOrderDetails = () => {
               </div>
             </div>
 
-            {/* Codes & Dates */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 bg-white px-6 ">
               <div>
                 <label className="font-semibold">Product Number</label>
@@ -170,7 +164,6 @@ const CustomOrderDetails = () => {
               </div>
             </div>
 
-            {/* Bank Details */}
             <div className="bg-white px-6 ">
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 mt-4 gap-4">
                 <div>
@@ -267,8 +260,6 @@ const CustomOrderDetails = () => {
                 </div>
               </div>
             </div>
-
-            {/* Submit Button */}
           </form>
         </div>
       </div>

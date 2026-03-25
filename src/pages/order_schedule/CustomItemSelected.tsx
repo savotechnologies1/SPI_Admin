@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaTrashAlt, FaCartPlus } from "react-icons/fa";
-import bag from "../../assets/bag.png";
-import img from "../../assets/stack_1.png";
 import { toast } from "react-toastify";
-import {
-  scheduleCustomOrder,
-  scheduleStockOrder,
-} from "./https/schedulingApis";
+import { scheduleCustomOrder } from "./https/schedulingApis";
 import { useNavigate } from "react-router-dom";
 
 type Item = {

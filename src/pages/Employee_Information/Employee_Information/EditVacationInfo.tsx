@@ -1,11 +1,9 @@
 import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import delete_img from "../../../assets/delete_1.png";
 import {
   deleteEmployee,
   editEmployee,
-  employeeDetail,
   vacationReqDetail,
 } from "../https/EmployeeApis";
 import { useEffect } from "react";
@@ -47,7 +45,7 @@ const EditVacationInfo = () => {
         lastName: data.employee.lastName,
         fullName: data.employee.fullName,
         email: data.employee.email,
-        startDate: data.startDate.slice(0, 10), // "YYYY-MM-DD"
+        startDate: data.startDate.slice(0, 10),
         endDate: data.endDate.slice(0, 10),
         hours: data.hours,
         notes: data.notes || "",

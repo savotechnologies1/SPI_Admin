@@ -1,9 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { FaCircle } from "react-icons/fa";
-
 import StockOrderScheduleForm from "./StockOrderScheduleForm";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 
 const StockOrderSchedule = () => {
   return (

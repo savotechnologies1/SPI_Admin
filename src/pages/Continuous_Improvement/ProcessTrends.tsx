@@ -26,14 +26,6 @@ const manualData = [
   { name: "Energy", "2022": 90, "2023": 100, "2024": 38 },
   { name: "Technology", "2022": 20, "2023": 60, "2024": 45 },
 ];
-const machineData = [
-  { name: "Technology", "2022": 90, "2023": 40, "2024": 30 },
-  { name: "Car Brands", "2022": 88, "2023": 80, "2024": 35 },
-  { name: "Airlines", "2022": 40, "2023": 15, "2024": 42 },
-  { name: "Energy", "2022": 90, "2023": 100, "2024": 38 },
-  { name: "Technology", "2022": 20, "2023": 60, "2024": 45 },
-];
-
 export default function ProcessTrends() {
   return (
     <div className="p-4 mt-5  md:p-6">
@@ -86,7 +78,6 @@ export default function ProcessTrends() {
           </div>
         </div>
 
-        {/* Manual Line Chart */}
         <div className="bg-white shadow-md rounded-xl md:rounded-2xl p-3 md:p-4">
           <h2 className="text-base md:text-lg font-medium mb-2">Manual</h2>
           <div className="h-[250px] sm:h-[300px]">

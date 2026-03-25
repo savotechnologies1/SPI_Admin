@@ -26,7 +26,6 @@ const Timeline = () => {
       <div className="relative  pl-6">
         {events.map((event, index) => (
           <div key={index} className="mb-4 relative ">
-            {/* Dot */}
             <div
               className={`absolute -left-4 top-2 w-3 h-3   ${event.color} rounded-full`}
             ></div>

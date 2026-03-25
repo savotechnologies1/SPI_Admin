@@ -18,11 +18,9 @@ import {
   getProductParts,
 } from "./https/schedulingApis";
 import { useNavigate } from "react-router-dom";
-
-const initialProcess = { totalTime: "", processId: "", part: "" };
-
 import { RiDeleteBin6Line } from "react-icons/ri";
 import DatePicker from "react-datepicker";
+const initialProcess = { totalTime: "", processId: "", part: "" };
 
 const generateNewOrderNumber = () => Date.now().toString();
 interface BOMEntry {
@@ -76,7 +74,6 @@ const CustomOrderForm = () => {
       const response = await selectCustomer();
       setCustomerList(Array.isArray(response) ? response : []);
     } catch (error) {
-      console.error("Error fetching customers:", error);
       toast.error("Failed to fetch customers.");
     }
   };
@@ -86,7 +83,6 @@ const CustomOrderForm = () => {
       const response = await selectProductNumber();
       setProductList(Array.isArray(response) ? response : []);
     } catch (error) {
-      console.error("Error fetching products:", error);
       toast.error("Failed to fetch products.");
     }
   };
@@ -96,7 +92,6 @@ const CustomOrderForm = () => {
       const response = await selectPartNumber();
       setPartList(Array.isArray(response) ? response : []);
     } catch (error) {
-      console.error("Error fetching part numbers:", error);
       toast.error("Failed to fetch part numbers.");
     }
   };
@@ -106,7 +101,6 @@ const CustomOrderForm = () => {
       const response = await selectProcess();
       setProcessList(Array.isArray(response) ? response : []);
     } catch (error) {
-      console.error("Error fetching processes:", error);
       toast.error("Failed to fetch processes.");
     }
   };
@@ -127,26 +121,12 @@ const CustomOrderForm = () => {
     productQuantity: "",
     newParts: [initialProcess],
   };
-  const handleAddBOMRow = () => {
-    setBomEntries([
-      ...bomEntries,
-      {
-        partNumber: "",
-        qty: "",
-        process: "",
-        cycleTime: "",
-        instructionRequired: "",
-        isSaved: false,
-      },
-    ]);
-  };
 
   const handleDeleteBOM = (index: number) => {
     const updated = bomEntries.filter((_, i) => i !== index);
     setBomEntries(updated);
   };
 
-  // Handle inputs in BOM fields
   const handleBOMChange = (
     index: number,
     field: keyof BOMEntry,
@@ -185,18 +165,7 @@ const CustomOrderForm = () => {
     setBomEntries(updatedBOM);
     setSuggestions((prev) => ({ ...prev, [index]: [] }));
   };
-  const handleBOMProcessChange = (index: number, processId: string) => {
-    const updatedBOM = [...bomEntries];
-    updatedBOM[index] = { ...updatedBOM[index], processId: processId };
-    setBomEntries(updatedBOM);
-  };
-  const handleSaveBOMs = () => {
-    const updated = bomEntries.map((entry) => ({ ...entry, isSaved: true }));
-    setBomEntries(updated);
-    toast.success("BOM Entries Saved locally");
-  };
   const handleDeleteInventoryItem = (index: number) => {
-    // Confirm karein ki list update ho rahi hai
     const updatedList = inventoryList.filter((_, i) => i !== index);
     setInventoryList(updatedList);
   };
@@ -209,10 +178,8 @@ const CustomOrderForm = () => {
     const updatedList = [...inventoryList];
 
     if (field === "processId") {
-      // Jab user dropdown se naya process select kare
       const selectedProcess = processList.find((p) => p.id === value);
       updatedList[index].processId = value;
-      // Nested object ko bhi sync rakhte hain agar kahi display ho raha ho
       updatedList[index].process = {
         ...updatedList[index].process,
         id: value,
@@ -249,7 +216,7 @@ const CustomOrderForm = () => {
               }));
 
               const manualParts = bomEntries
-                .filter((item) => item.partId) // Sirf wo jisme part select kiya gaya ho
+                .filter((item) => item.partId)
                 .map((item) => ({
                   partId: item.partId,
                   partNumber: item.partNumber,
@@ -259,12 +226,11 @@ const CustomOrderForm = () => {
                   instructionRequired: item.instructionRequired === "Yes",
                 }));
 
-              // C. Dono ko combine karein (Ab is list mein deleted items nahi honge)
               const combinedBOM = [...productParts, ...manualParts];
 
               const finalData = {
                 ...values,
-                bomList: combinedBOM, // Backend ko filter ki hui final list jayegi
+                bomList: combinedBOM,
               };
 
               const res = await addCustomOrder(finalData);
@@ -272,7 +238,7 @@ const CustomOrderForm = () => {
               if (res && res.status === 201) {
                 toast.success("Custom Order Created!");
                 resetForm();
-                setInventoryList([]); // Form clear hone par list reset
+                setInventoryList([]);
                 setBomEntries([
                   {
                     partNumber: "",
@@ -322,71 +288,6 @@ const CustomOrderForm = () => {
               }
             };
 
-            // const handleProductSelectChange = (
-            //   e: React.ChangeEvent<HTMLSelectElement>
-            // ) => {
-            //   const selectedProductId = e.target.value;
-            //   setFieldValue("productId", selectedProductId);
-            //   if (selectedProductId) {
-            //     const selected = productList.find(
-            //       (p) => p.productId === selectedProductId
-            //     );
-            //     if (selected) {
-            //       const unitCost = selected.cost;
-            //       const quantity = 1; // Default quantity to 1
-            //       setSingleUnitCost(unitCost);
-            //       setFieldValue("cost", unitCost.toFixed(2));
-            //       setFieldValue("productQuantity", quantity);
-            //       setFieldValue("totalCost", (unitCost * quantity).toFixed(2));
-            //     }
-            //   } else {
-            //     setSingleUnitCost(null);
-            //     setFieldValue("cost", "");
-            //     setFieldValue("productQuantity", "");
-            //     setFieldValue("totalCost", "");
-            //   }
-            // };
-
-            // const handleProductSelectChange = async (
-            //   e: React.ChangeEvent<HTMLSelectElement>,
-            // ) => {
-            //   const selectedProductId = e.target.value;
-            //   setFieldValue("productId", selectedProductId);
-
-            //   if (selectedProductId) {
-            //     // Existing Cost Logic...
-            //     const selected = productList.find(
-            //       (p) => p.productId === selectedProductId,
-            //     );
-            //     if (selected) {
-            //       setSingleUnitCost(selected.cost);
-            //       setFieldValue("cost", selected.cost.toFixed(2));
-            //       setFieldValue("productQuantity", 1);
-            //       setFieldValue("totalCost", selected.cost.toFixed(2));
-            //     }
-
-            //     try {
-            //       const partsData = await getProductParts(selectedProductId);
-            //       if (partsData && partsData.length > 0) {
-            //         // Data format set karna taaki update aur delete smoothly chalein
-            //         const formattedParts = partsData.map((part: any) => ({
-            //           ...part,
-            //           // Process ID ko top level par rakhna asaan hota hai update ke liye
-            //           processId: part.process?.id || "",
-            //           instructionRequired: part.instructionRequired
-            //             ? "Yes"
-            //             : "No",
-            //         }));
-            //         setInventoryList(formattedParts);
-            //       }
-            //     } catch (error) {
-            //       console.error("Error fetching parts:", error);
-            //     }
-            //   } else {
-            //     setInventoryList([]);
-            //   }
-            // };
-
             const handleProductSelectChange = async (
               e: React.ChangeEvent<HTMLSelectElement>,
             ) => {
@@ -409,7 +310,6 @@ const CustomOrderForm = () => {
                   if (partsData && partsData.length > 0) {
                     const formattedParts = partsData.map((part: any) => ({
                       ...part,
-                      // API se aane wale process object ki ID ko primary field banayen
                       processId: part.processId || part.process?.id || "",
                       qty: part.partQuantity || 1,
                       instructionRequired: part.instructionRequired
@@ -425,12 +325,6 @@ const CustomOrderForm = () => {
                 setInventoryList([]);
               }
             };
-            const handlePartSelectChange = (
-              e: React.ChangeEvent<HTMLSelectElement>,
-            ) => {
-              setFieldValue("part_id", e.target.value);
-            };
-
             const handleQuantityChange = (
               e: React.ChangeEvent<HTMLInputElement>,
             ) => {
@@ -448,7 +342,6 @@ const CustomOrderForm = () => {
             return (
               <Form>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-6">
-                  {/* Order Number */}
                   <div>
                     <label className="font-semibold">Order Number</label>
                     <Field
@@ -459,7 +352,6 @@ const CustomOrderForm = () => {
                     />
                   </div>
 
-                  {/* Order Date - Updated to DatePicker */}
                   <div className="flex flex-col">
                     <label className="font-semibold mb-1">Order Date</label>
                     <div className="relative w-full">
@@ -486,7 +378,6 @@ const CustomOrderForm = () => {
                     />
                   </div>
 
-                  {/* Ship Date - Updated to DatePicker */}
                   <div className="flex flex-col">
                     <label className="font-semibold mb-1">Ship Date</label>
                     <div className="relative w-full">
@@ -682,14 +573,12 @@ const CustomOrderForm = () => {
                   </div>
                 </div>
 
-                {/* Inside your Formik return, find the Assign Part Number section */}
                 <div className="col-span-4 mt-6 px-6">
                   <h3 className="text-xl font-bold mb-4 text-gray-800 border-b pb-2">
                     Assign Part Number
                   </h3>
 
                   {bomEntries.map((entry, index) => {
-                    // 'entry' is defined STARTING HERE
                     return (
                       <div
                         key={index}
@@ -710,7 +599,6 @@ const CustomOrderForm = () => {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                          {/* 1. Part Number Search */}
                           <div className="relative">
                             <label className="text-sm font-medium text-gray-600">
                               Part Number
@@ -729,7 +617,6 @@ const CustomOrderForm = () => {
                               placeholder="Search part..."
                             />
 
-                            {/* Suggestions Dropdown */}
                             {suggestions[index]?.length > 0 && (
                               <ul className="absolute z-50 bg-white border rounded w-full max-h-48 overflow-y-auto shadow-xl mt-1">
                                 {suggestions[index].map((part) => (
@@ -749,7 +636,6 @@ const CustomOrderForm = () => {
                             )}
                           </div>
 
-                          {/* 2. Quantity */}
                           <div>
                             <label className="text-sm font-medium text-gray-600">
                               Quantity
@@ -764,13 +650,12 @@ const CustomOrderForm = () => {
                             />
                           </div>
 
-                          {/* 3. Process Dropdown - Correctly linked to entry.processId */}
                           <div>
                             <label className="text-sm font-medium text-gray-600">
                               Process
                             </label>
                             <select
-                              value={entry.processId || ""} // Yeh entry.processId se match karega
+                              value={entry.processId || ""}
                               onChange={(e) =>
                                 handleBOMChange(
                                   index,
@@ -789,7 +674,6 @@ const CustomOrderForm = () => {
                             </select>
                           </div>
 
-                          {/* 4. Cycle Time */}
                           <div>
                             <label className="text-sm font-medium text-gray-600">
                               Cycle Time
@@ -807,8 +691,6 @@ const CustomOrderForm = () => {
                               className="border p-2 rounded w-full mt-1"
                             />
                           </div>
-
-                          {/* 5. Instruction */}
                           <div>
                             <label className="text-sm font-medium text-gray-600">
                               Instruction
@@ -832,7 +714,6 @@ const CustomOrderForm = () => {
                         </div>
                       </div>
                     );
-                    // 'entry' becomes undefined AFTER THIS LINE
                   })}
                 </div>
                 <div className="bg-white px-6 mt-4">
@@ -949,12 +830,10 @@ const CustomOrderForm = () => {
                                     key={idx}
                                     className="border-t hover:bg-gray-50"
                                   >
-                                    {/* Part Number */}
                                     <td className="px-4 py-2 font-medium">
                                       {item.partNumber}
                                     </td>
 
-                                    {/* Quantity */}
                                     <td className="px-4 py-2">
                                       <input
                                         type="number"
@@ -970,7 +849,6 @@ const CustomOrderForm = () => {
                                       />
                                     </td>
 
-                                    {/* Process Dropdown - UPDATED HERE */}
                                     <td className="px-4 py-2">
                                       <select
                                         value={
@@ -997,7 +875,6 @@ const CustomOrderForm = () => {
                                       </select>
                                     </td>
 
-                                    {/* Cycle Time */}
                                     <td className="px-4 py-2">
                                       <input
                                         type="text"
@@ -1013,7 +890,6 @@ const CustomOrderForm = () => {
                                       />
                                     </td>
 
-                                    {/* Delete Action */}
                                     <td className="px-4 py-2 text-center">
                                       <button
                                         type="button"

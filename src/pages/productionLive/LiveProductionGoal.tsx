@@ -46,7 +46,6 @@ const LiveProductionGoal = () => {
       </div>
     );
   }
-  console.log("2222222222222222", processTablesData);
   return (
     <div className="p-4 mt-5">
       <div className="flex justify-between w-full gap-4">
@@ -68,9 +67,7 @@ const LiveProductionGoal = () => {
                     <p className="font-bold text-2xl">{item.value}</p>
                     <p>{item.label}</p>
                   </div>
-                  {/* You'll need to map your image assets based on item.image or a type */}
                   <div className="relative right-0">
-                    {/* Placeholder for shape/image - you'll need to handle these based on your API */}
                     <img src={`/assets/${item.image}`} alt="" />
                   </div>
                 </div>

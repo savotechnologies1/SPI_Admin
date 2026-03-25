@@ -1,12 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { PartContext } from "../../components/Context/PartContext";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaCircle, FaEdit, FaSpinner, FaTrash } from "react-icons/fa";
+import { FaCircle, FaSpinner, FaTrash } from "react-icons/fa";
 import edit from "../../assets/edit_icon.png";
 import add from "../../assets/add.png";
 import { bomList, deletePartNumber } from "./https/partProductApis";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 

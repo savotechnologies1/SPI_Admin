@@ -1,10 +1,9 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 
-// Load scanner without SSR (for Next.js)
 const BarcodeScannerComponent = dynamic(
   () => import("react-qr-barcode-scanner"),
-  { ssr: false }
+  { ssr: false },
 );
 
 const ScanBarcode = () => {

@@ -68,21 +68,6 @@ const EditCustomer = () => {
     fetchProcessDetail();
   }, [id]);
 
-  const handleDelete = async () => {
-    if (!id) {
-      console.error("Customer ID is missing");
-      return;
-    }
-    try {
-      const response = await deleteCustomer(id);
-      if (response?.status === 200) {
-        navigate("/customer-list");
-      }
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
-
   return (
     <div className="p-4 md:p-7  my-6">
       <div>
@@ -228,16 +213,8 @@ const EditCustomer = () => {
             )}
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-end items-end">
             <div className="mt-6 flex gap-4">
-              {/* <button
-                type="button"
-                onClick={handleDelete}
-                className="bg-red-500 text-white px-6 py-2 rounded-md"
-              >
-                Delete
-              </button> */}
               <button
                 type="submit"
                 className="bg-brand text-white px-6 py-2 rounded-md"

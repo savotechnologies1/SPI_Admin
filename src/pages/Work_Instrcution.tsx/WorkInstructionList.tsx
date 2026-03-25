@@ -30,19 +30,11 @@ const WorkInstructionList: React.FC = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const toggleOptions = (index: number) => {
-    setOpenOptionsIndex((prev) => (prev === index ? null : index));
-  };
   const { id } = useParams();
-
   const navigate = useNavigate();
-  const handleEdit = (id: string) => {
-    navigate(`/edit-work-instruction/${id}`);
-  };
   const [workData, setWorkData] = useState<WorkInstructionItem[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [searchVal, setSearchVal] = useState("");
-  const [showConfirmId, setShowConfirmId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedValue, setSelectedValue] = useState("all");
   const debouncedSearchVal = useDebounce(searchVal, 500);

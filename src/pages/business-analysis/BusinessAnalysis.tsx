@@ -3,18 +3,14 @@ import DatePicker from "react-datepicker";
 import Tables from "./Tables";
 import { FaSpinner } from "react-icons/fa";
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
-
 const BusinessAnalysis = () => {
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const [startDate, setStartDate] = useState(
     new Date(new Date().setDate(new Date().getDate() - 30)),
   );
   const [endDate, setEndDate] = useState(new Date());
-
   const formatDate = (date) => date.toISOString().split("T")[0];
-
   useEffect(() => {
     const fetchMetrics = async () => {
       setLoading(true);

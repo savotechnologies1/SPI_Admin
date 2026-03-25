@@ -50,7 +50,6 @@ export const updatePartNumber = async (id: string, apiData: object) => {
 };
 
 export const updateProductNumber = async (apiData: object, id: string) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.put(
       `/update-product-number/${id}`,
@@ -75,7 +74,6 @@ export const updateProductNumber = async (apiData: object, id: string) => {
 };
 
 export const selectProcess = async () => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(`/select-process`);
     return response.data;
@@ -85,7 +83,6 @@ export const selectProcess = async () => {
 };
 
 export const partNumberList = async (page = 1, limit = 5) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
       `/part-number-list?page=${page}&limit=${limit}`,
@@ -97,7 +94,6 @@ export const partNumberList = async (page = 1, limit = 5) => {
 };
 
 export const selectPartNamber = async () => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(`/select-part-number`);
     return response.data;
@@ -107,7 +103,6 @@ export const selectPartNamber = async () => {
 };
 
 export const createProductNumber = async (apiData: object) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.post(
       "/create-product-number",
@@ -145,7 +140,6 @@ export const bomList = async (
   searchVal: string,
   selectedValue: string,
 ) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
       `/bom-data-list?page=${page}&limit=${limit}&search=${searchVal}&type=${selectedValue}`,
@@ -157,7 +151,6 @@ export const bomList = async (
 };
 
 export const productTree = async (page = 1, limit = 5, searchVal: string) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
       `/get-product-tree?page=${page}&limit=${limit}&search=${searchVal}`,
@@ -215,7 +208,6 @@ export const deleteProductPartNumber = async (id: string) => {
 
     return response.data;
   } catch (error) {
-    console.error("Error deleting product part number", error);
     throw error;
   }
 };
@@ -228,7 +220,6 @@ export const deleteProductImage = async (id: string) => {
     }
     return response.data;
   } catch (error) {
-    console.error("Error deleting product part number", error);
     throw error;
   }
 };

@@ -2,7 +2,6 @@ import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
 
 export const addEmployee = async (apiData: object) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.post("/create-employee", apiData);
     if (response.status === 201) {
@@ -19,7 +18,7 @@ export const employeeList = async (
   limit = 5,
   isShopFloor: string,
   searchVal: string,
-  status = "", // 👈 Add status
+  status = "",
 ) => {
   try {
     const response = await axiosInstance.get(
@@ -33,7 +32,6 @@ export const employeeList = async (
 };
 
 export const employeeDetail = async (id: string) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(`/employee-detail/${id}`);
     return response.data;
@@ -102,7 +100,6 @@ export const vacationList = async (
 };
 
 export const vacationReqDetail = async (id: string) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(`/vacation-req-detail/${id}`);
     return response.data;
@@ -112,7 +109,6 @@ export const vacationReqDetail = async (id: string) => {
 };
 
 export const vacationReqStatus = async (data: object) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.patch(
       `/change-vacation-request-status`,
@@ -130,7 +126,6 @@ export const allTimeClock = async (
   filter: string,
   search: string,
 ) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.get(
       `/all-time-clock-list?page=${page}&limit=${limit}&filter=${filter}&search=${search}`,
@@ -143,7 +138,6 @@ export const allTimeClock = async (
 };
 
 export const sendVacationReqStatus = async (data: object) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axiosInstance.post(`/send-vacation-status`, data);
     if (response.status === 201) {

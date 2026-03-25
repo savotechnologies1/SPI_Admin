@@ -73,8 +73,6 @@ const OrderStatus = ({ orders }: OrderStatusProps) => {
         <h2 className="text-lg font-semibold mb-4">
           Fulfilled Orders (Total: {orders?.fulfilledOrders?.total || 0})
         </h2>
-
-        {/* Scrollable Table */}
         <div className="max-h-[400px] overflow-y-auto border rounded-lg">
           <table className="w-full text-sm border-collapse">
             <thead className="sticky top-0 bg-gray-100 z-10">

@@ -6,8 +6,6 @@ import scrap_cost from "../../assets/scrap_cost.png";
 import customer_return from "../../assets/customer_return.png";
 import LargeThermoformer from "./LargeThermoformer";
 import SmallThermoformer from "./SmallThermoformer";
-import MachineCycleTime from "./MachineCycleTime";
-import OperatorCycleTime from "./OperatorCycleTime";
 const data_1 = [
   {
     num: "$5,00,000",
@@ -37,13 +35,11 @@ const Machine = () => {
       <div className="flex flex-col md:flex-row  mt-2 gap-4  ">
         {data_1.map((item) => (
           <div className="flex flex-col justify-between  bg-white  rounded-md w-full p-2 gap-2 border bg-gradient-to-l from-[#FFF7ED]">
-            {" "}
             <div className="flex items-center gap-2">
               <div>
                 <img className="w-[40px]" src={item.scrap_img} alt="" />
               </div>
               <div className="">
-                {" "}
                 <p className="text-sm text-gray-600">{item.text}</p>
                 <p className="font-bold text-xl">{item.num}</p>
               </div>
@@ -52,13 +48,12 @@ const Machine = () => {
               <img src={item.scrap} alt="" />
             </div>
             <div className="text-sm text-gray-600">
-              Increase by{" "}
+              Increase by
               <span
                 className={`font-semibold rounded-md text-xs  ${item.textColor} ${item.bgColor}`}
               >
-                {" "}
                 {item.increase}
-              </span>{" "}
+              </span>
               this week
             </div>
           </div>

@@ -7,7 +7,6 @@ import {
   deleteProductImage,
   getPartNumberDetail,
   getProcessDetail,
-  partNumberList,
   selectProcess,
   updatePartNumber,
 } from "./https/partProductApis";
@@ -16,7 +15,6 @@ import { selectSupplier } from "../supplier_chain/https/suppliersApi";
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
-// --- Interfaces ---
 interface PartImage {
   id: string;
   imageUrl: string;
@@ -95,7 +93,6 @@ const EditPartForm = () => {
     );
   });
 
-  // Fetch Suppliers
   useEffect(() => {
     const fetchSuppliers = async () => {
       try {
@@ -108,21 +105,16 @@ const EditPartForm = () => {
     fetchSuppliers();
   }, []);
 
-  // Fetch Initial Data (Process & Detail)
   const fetchProcessDetail = async () => {
     if (!id) return;
     try {
       const response = await getPartNumberDetail(id);
       const data = response.data;
-
-      // यहाँ बदलाव करें: Company Name (FirstName LastName) फॉर्मेट बनाने के लिए
       let supplierDisplay = "";
       if (data.supplier) {
         const company = (data.supplier.companyName || "").trim();
         const firstName = (data.supplier.firstName || "").trim();
         const lastName = (data.supplier.lastName || "").trim();
-
-        // अगर Supplier डेटा है तो फॉर्मेट: Company (First Last)
         supplierDisplay = `${company} (${firstName} ${lastName})`.trim();
       } else {
         supplierDisplay = data.companyName || "";
@@ -136,7 +128,7 @@ const EditPartForm = () => {
         companyId: data.companyId || data.companyName || "",
       });
 
-      setSearchTerm(supplierDisplay); // अब यहाँ कंबाइन नाम सेट होगा
+      setSearchTerm(supplierDisplay);
       setExistingImages(data.partImages || []);
     } catch (error) {
       console.error("Error fetching detail:", error);
@@ -156,7 +148,6 @@ const EditPartForm = () => {
     fetchInitialData();
   }, [id]);
 
-  // Handle Process Description Auto-fill
   useEffect(() => {
     if (!selectedProcessId) {
       setValue("processDesc", "");
@@ -167,7 +158,6 @@ const EditPartForm = () => {
     });
   }, [selectedProcessId, setValue]);
 
-  // Handle Image Previews
   useEffect(() => {
     if (selectedImages && selectedImages.length > 0) {
       const files = Array.from(selectedImages);
@@ -200,15 +190,12 @@ const EditPartForm = () => {
   const onSubmit = async (data: PartFormInputs) => {
     if (!id) return;
     const formData = new FormData();
-
-    // Append all text fields
     Object.entries(data).forEach(([key, value]) => {
       if (key !== "image" && value !== undefined) {
         formData.append(key, String(value));
       }
     });
 
-    // Append new images
     if (data.image && data.image.length > 0) {
       Array.from(data.image).forEach((file) => {
         formData.append("partImages", file);
@@ -307,8 +294,6 @@ const EditPartForm = () => {
               className="border p-2 rounded w-full"
             />
           </label>
-
-          {/* Supplier Search Dropdown */}
           <div className="col-span-4 md:col-span-1 relative">
             <label className="block mb-1">Company Name</label>
             <input
@@ -330,7 +315,6 @@ const EditPartForm = () => {
             {showDropdown && searchTerm && filteredSuppliers.length > 0 && (
               <ul className="absolute z-[100] w-full bg-white border rounded shadow-xl mt-1 max-h-40 overflow-y-auto">
                 {filteredSuppliers.map((s) => {
-                  // यहाँ कंबाइन नाम का वेरिएबल बनाएं
                   const displayName = `${s.companyName} (${s.firstName} ${s.lastName})`;
 
                   return (
@@ -338,12 +322,11 @@ const EditPartForm = () => {
                       key={s.id}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b"
                       onMouseDown={() => {
-                        setSearchTerm(displayName); // क्लिक करने पर कंबाइन नाम दिखेगा
+                        setSearchTerm(displayName);
                         setValue("companyId", s.id);
                         setShowDropdown(false);
                       }}
                     >
-                      {/* लिस्ट में भी वही फॉर्मेट दिखेगा */}
                       <span className="font-semibold">{s.companyName}</span>
                       <span className="text-gray-500 ml-1">
                         ({s.firstName} {s.lastName})
@@ -430,11 +413,9 @@ const EditPartForm = () => {
             </>
           )}
 
-          {/* Image Display Section */}
           <div className="col-span-4">
             <label className="block font-medium mb-2">Images</label>
             <div className="flex flex-wrap gap-3">
-              {/* Previews of new selected images */}
               {previewImages.map((imgUrl, i) => (
                 <div key={`new-${i}`} className="relative w-20 h-20">
                   <img
@@ -449,7 +430,6 @@ const EditPartForm = () => {
                   />
                 </div>
               ))}
-              {/* Existing images from server */}
               {existingImages.map((img) => (
                 <div key={img.id} className="relative w-20 h-20">
                   <img

@@ -1,12 +1,12 @@
 import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react"; // Import useEffect
+import { useEffect } from "react";
 import {
   employeeDetail,
   editEmployee,
   deleteEmployee,
-} from "../https/EmployeeApis"; // Ensure correct imports
+} from "../https/EmployeeApis";
 
 type FormData = {
   firstName: string;
@@ -20,7 +20,7 @@ type FormData = {
   pin: string;
   role: string;
   processLogin: string;
-  termsAccepted: boolean; // Keep if needed for reset, but not visible in form
+  termsAccepted: boolean;
 };
 
 const EditEmployee = () => {
@@ -33,7 +33,7 @@ const EditEmployee = () => {
     clearErrors,
   } = useForm<FormData>();
 
-  const { id } = useParams<{ id: string }>(); // Specify type for id
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const onSubmit = async (data: FormData) => {
@@ -48,8 +48,7 @@ const EditEmployee = () => {
         navigate("/employees");
       }
     } catch (error: unknown) {
-      console.error("Failed to edit employee:", error); // Use console.error for errors
-      // You can also set a form-wide error here if needed
+      console.error("Failed to edit employee:", error);
     }
   };
 
@@ -61,9 +60,6 @@ const EditEmployee = () => {
     try {
       const response = await employeeDetail(id);
       const data = response.data;
-      console.log("Employee Detail data:", data);
-
-      // Format date for input[type="date"]
       const formattedStartDate = data?.startDate
         ? new Date(data.startDate).toISOString().split("T")[0]
         : "";
@@ -77,9 +73,9 @@ const EditEmployee = () => {
         pin: data.pin,
         shift: data.shift,
         role: data.role,
-        processLogin: String(data.processLogin), // Ensure boolean/other values are string for select
+        processLogin: String(data.processLogin),
         status: data.status,
-        startDate: formattedStartDate, // Use formatted date
+        startDate: formattedStartDate,
         termsAccepted: data.termsAccepted,
       });
     } catch (error) {
@@ -89,10 +85,9 @@ const EditEmployee = () => {
 
   useEffect(() => {
     if (id) {
-      // Only fetch if ID is available
       fetchEmployeeDetail();
     }
-  }, [id, reset]); // Add reset to dependencies if you want to refetch on ID change
+  }, [id, reset]);
 
   const handleDelete = async () => {
     if (!id) {
@@ -105,7 +100,7 @@ const EditEmployee = () => {
         navigate("/employees");
       }
     } catch (error: unknown) {
-      console.error("Error deleting employee:", error); // Use console.error
+      console.error("Error deleting employee:", error);
     }
   };
 
@@ -141,9 +136,8 @@ const EditEmployee = () => {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white p-6 rounded-xl shadow-md mt-4 space-y-4" // Removed max-w-xl
+        className="bg-white p-6 rounded-xl shadow-md mt-4 space-y-4"
       >
-        {/* Employee Name - First Name & Last Name pair */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">First Name</label>
@@ -177,7 +171,6 @@ const EditEmployee = () => {
           </div>
         </div>
 
-        {/* Full Name & Email pair */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Full Name</label>
@@ -215,7 +208,6 @@ const EditEmployee = () => {
           </div>
         </div>
 
-        {/* Hourly Rate & Shift pair */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Hourly Rate</label>
@@ -279,7 +271,6 @@ const EditEmployee = () => {
           </div>
         </div>
 
-        {/* Start Date & Pin pair */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Start Date</label>
@@ -334,7 +325,6 @@ const EditEmployee = () => {
           </div>
         </div>
 
-        {/* Employee Role & Station Login pair */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Employee Role</label>
@@ -361,9 +351,6 @@ const EditEmployee = () => {
               className="w-full border px-4 py-2 rounded-md text-gray-600"
             >
               <option value="">Require Shop Floor Login?</option>
-              {/* Note: In your original, 'all' was an option for processLogin.
-                  If `data.processLogin` could be 'all', 'true', or 'false',
-                  make sure your backend handles 'all' or adjust options if it expects boolean. */}
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
@@ -375,7 +362,6 @@ const EditEmployee = () => {
           </div>
         </div>
 
-        {/* Status (single field) */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Status</label>
@@ -397,14 +383,12 @@ const EditEmployee = () => {
               </p>
             )}
           </div>
-          <div className="sm:w-1/2">
-            {/* Empty div for spacing or another field */}
-          </div>
+          <div className="sm:w-1/2"></div>
         </div>
 
         <div className="flex justify-end pt-2 mt-6">
           <button
-            type="button" // Change to type="button" for delete to prevent form submission
+            type="button"
             onClick={handleDelete}
             className="bg-red-600 text-white px-4 py-2 rounded-md mr-4"
           >

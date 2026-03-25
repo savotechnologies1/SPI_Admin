@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import FixedCostGraph from "./FixedCostGraph";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { toast } from "react-toastify";
 const FixedCost = () => {
   const [records, setRecords] = useState([]);

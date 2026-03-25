@@ -1,49 +1,43 @@
 import { useEffect, useState } from "react";
 import { FaCircle, FaSpinner } from "react-icons/fa";
-import Machine from "./Machine";
 import HourByHour from "./HourByHour";
 import Dive from "./Dive";
-import Monitor from "./Monitor";
-import DatePicker from "react-datepicker";
 
 const tabs = ["Hour by Hour", "Dive"];
 
 const OperationPerformance = () => {
   const [activeTab, setActiveTab] = useState("Hour by Hour");
-  
-  const [loading, setLoading] = useState(true); // Loading state
-    useEffect(() => {
-      setLoading(true);
-      
-      // Yahan aap apna real API call kar sakte hain
-      const timer = setTimeout(() => {
-        setLoading(false);
-      }, 1000); // 1 second ka delay simulate kiya hai
-  
-      return () => clearTimeout(timer);
-    }, [activeTab]);
-  
- const renderTabContent = () => {
-     // Agar loading hai toh content ki jagah loader dikhao
-     if (loading) {
-       return (
-         <div className="flex flex-col items-center justify-center h-64">
-           <FaSpinner className="w-10 h-10 animate-spin text-brand" />
-           <p className="mt-2 text-gray-500 font-medium">Loading data...</p>
-         </div>
-       );
-     }
- 
-     switch (activeTab) {
-       case "Hour by Hour":
-         return <HourByHour />;
-       case "Dive":
-         return <Dive />;
-       default:
-         return null;
-     }
-   };
- 
+
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [activeTab]);
+
+  const renderTabContent = () => {
+    if (loading) {
+      return (
+        <div className="flex flex-col items-center justify-center h-64">
+          <FaSpinner className="w-10 h-10 animate-spin text-brand" />
+          <p className="mt-2 text-gray-500 font-medium">Loading data...</p>
+        </div>
+      );
+    }
+
+    switch (activeTab) {
+      case "Hour by Hour":
+        return <HourByHour />;
+      case "Dive":
+        return <Dive />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div>
       <div className="p-4 md:p-7">
@@ -52,11 +46,7 @@ const OperationPerformance = () => {
           Operational Performance
         </h1>
         <div className="flex justify-between mt-2 items-center">
-          <div className="flex gap-4 items-center ">
-            {/* <span className="text-xs sm:text-[16px] hover:cursor-pointer">
-              25/11/2025 (3:19 PM)
-            </span> */}
-          </div>
+          <div className="flex gap-4 items-center "></div>
         </div>
         <div className="flex justify-between mt-2 items-center">
           <div className="flex gap-4 items-center ">
