@@ -8,7 +8,7 @@ export const loginApi = async (userData: object) => {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };
@@ -22,7 +22,7 @@ export const forgetPassword = async (data: string) => {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };
@@ -38,7 +38,7 @@ export const otpVarify = async (data: object) => {
     }
 
     return response;
-  } catch (error) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };
@@ -59,7 +59,7 @@ export const resetPassword = async (data: object) => {
     }
 
     return response;
-  } catch (error) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };

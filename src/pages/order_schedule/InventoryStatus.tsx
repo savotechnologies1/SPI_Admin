@@ -26,8 +26,8 @@ const InventoryStatus = () => {
         setData(response.data.data);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching inventory:", error);
         setLoading(false);
+        throw error;
       }
     },
     [BASE_URL],
@@ -74,7 +74,6 @@ const InventoryStatus = () => {
       console.error("Update Error:", error);
     }
   };
-  const totalPages = Math.ceil(data.length / rowsPerPage) || 1;
   const currentRows = data.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage,

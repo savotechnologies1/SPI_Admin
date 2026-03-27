@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaCircle, FaTrash } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import { PartContext } from "../../components/Context/PartContext";
@@ -43,7 +43,7 @@ interface ProcessItem {
 
 interface PartItem {
   part_id: string;
-  process: {
+  process?: {
     processName: string;
   };
   partNumber: string;
@@ -55,9 +55,19 @@ interface PartItem {
 interface Supplier {
   id: string;
   companyName: string;
+  name?: string;
+  firstName?: string;
+  lastName?: string;
 }
 
-const PartForm = () => {
+interface PartListResponse {
+  data: PartItem[];
+  pagination?: {
+    totalPages: number;
+  };
+}
+
+const PartForm: React.FC = () => {
   const {
     register,
     handleSubmit,
@@ -81,14 +91,12 @@ const PartForm = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemToDeleteId, setItemToDeleteId] = useState<string | null>(null);
   const rowsPerPage = 5;
-
   const processId = watch("processId");
   const processOrderRequired = watch("processOrderRequired");
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
-
   const isProcessRequired = processOrderRequired === "true";
 
   if (!context) {
@@ -98,9 +106,9 @@ const PartForm = () => {
   const fetchSuppliers = async () => {
     try {
       const res = await selectSupplier();
-      setSuppliers(res);
+      setSuppliers(res || []);
     } catch (err) {
-      throw err;
+      console.error(err);
     }
   };
 
@@ -109,16 +117,19 @@ const PartForm = () => {
   }, []);
 
   const filteredSuppliers = suppliers.filter((s) =>
-    s.companyName?.toLowerCase().includes(searchTerm.toLowerCase()),
+    (s.companyName || "").toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const getAllPartList = async (page: number) => {
     try {
-      const response = await partNumberList(page, rowsPerPage);
-      setPartData(response.data);
+      const response = (await partNumberList(
+        page,
+        rowsPerPage,
+      )) as PartListResponse;
+      setPartData(response.data || []);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
-      throw error;
+      console.error(error);
     }
   };
 
@@ -126,9 +137,9 @@ const PartForm = () => {
     const fetchData = async () => {
       try {
         const processList = await selectProcess();
-        setProcessData(processList);
+        setProcessData(processList || []);
       } catch (error) {
-        throw error;
+        console.error(error);
       }
       getAllPartList(currentPage);
     };
@@ -156,8 +167,8 @@ const PartForm = () => {
     try {
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
-        if (key !== "image") {
-          formData.append(key, value as string);
+        if (key !== "image" && value !== undefined && value !== null) {
+          formData.append(key, String(value));
         }
       });
 
@@ -166,7 +177,7 @@ const PartForm = () => {
       }
 
       const response = await createPartNumber(formData);
-      if (response && response.status === 201) {
+      if (response && (response.status === 201 || response.status === 200)) {
         navigate("/part-table");
       }
     } catch (error) {
@@ -215,9 +226,8 @@ const PartForm = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
         >
-          {/* Part Family */}
-          <label className="block col-span-4 md:col-span-2">
-            Part Family
+          <div className="col-span-4 md:col-span-2">
+            <label className="block font-semibold mb-1">Part Family</label>
             <select
               {...register("partFamily", {
                 required: "Part Family is required",
@@ -232,15 +242,10 @@ const PartForm = () => {
                 </option>
               ))}
             </select>
-            {errors.partFamily && (
-              <p className="text-red-500 text-sm">
-                {errors.partFamily.message}
-              </p>
-            )}
-          </label>
+          </div>
 
-          <label className="block col-span-4 md:col-span-2">
-            Part Number
+          <div className="col-span-4 md:col-span-2">
+            <label className="block font-semibold mb-1">Part Number</label>
             <input
               type="text"
               {...register("partNumber", {
@@ -249,15 +254,10 @@ const PartForm = () => {
               placeholder="Enter Part Number"
               className="border p-2 rounded w-full"
             />
-            {errors.partNumber && (
-              <p className="text-red-500 text-sm">
-                {errors.partNumber.message}
-              </p>
-            )}
-          </label>
+          </div>
 
-          <label className="block col-span-4">
-            Part Description
+          <div className="col-span-4">
+            <label className="block font-semibold mb-1">Part Description</label>
             <textarea
               {...register("partDescription", {
                 required: "Part Description is required",
@@ -265,15 +265,10 @@ const PartForm = () => {
               placeholder="Part Description"
               className="border p-2 rounded w-full"
             />
-            {errors.partDescription && (
-              <p className="text-red-500 text-sm">
-                {errors.partDescription.message}
-              </p>
-            )}
-          </label>
+          </div>
 
           <div className="col-span-4 md:col-span-1">
-            <label>Cost</label>
+            <label className="block font-semibold mb-1">Cost</label>
             <input
               type="number"
               step="0.01"
@@ -282,7 +277,7 @@ const PartForm = () => {
             />
           </div>
           <div className="col-span-4 md:col-span-1">
-            <label>Lead Time (Days)</label>
+            <label className="block font-semibold mb-1">Lead Time (Days)</label>
             <input
               type="number"
               {...register("leadTime", { valueAsNumber: true })}
@@ -290,7 +285,9 @@ const PartForm = () => {
             />
           </div>
           <div className="col-span-4 md:col-span-1">
-            <label>Order Qty (Supplier)</label>
+            <label className="block font-semibold mb-1">
+              Order Qty (Supplier)
+            </label>
             <input
               type="number"
               {...register("supplierOrderQty", { valueAsNumber: true })}
@@ -299,7 +296,9 @@ const PartForm = () => {
           </div>
 
           <div className="col-span-4 md:col-span-1 relative">
-            <label className="block mb-1">Company (Supplier)</label>
+            <label className="block font-semibold mb-1">
+              Company (Supplier)
+            </label>
             <input
               type="hidden"
               {...register("companyName", { required: "Supplier is required" })}
@@ -324,26 +323,22 @@ const PartForm = () => {
                   <li
                     key={s.id}
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b last:border-0"
-                    onMouseDown={() => {
+                    onMouseDown={(e) => {
+                      e.preventDefault();
                       setSearchTerm(s.companyName);
                       setValue("companyName", s.id);
                       setShowDropdown(false);
                     }}
                   >
-                    {s.companyName} ({s.name})
+                    {s.companyName} {s.name ? `(${s.name})` : ""}
                   </li>
                 ))}
               </ul>
             )}
-            {errors.companyName && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.companyName.message}
-              </p>
-            )}
           </div>
 
           <div className="col-span-4 md:col-span-1">
-            <label>Minimum Stock</label>
+            <label className="block font-semibold mb-1">Minimum Stock</label>
             <input
               type="number"
               {...register("minStock", {
@@ -355,7 +350,7 @@ const PartForm = () => {
           </div>
 
           <div className="col-span-4 md:col-span-1">
-            <label>Available Stock</label>
+            <label className="block font-semibold mb-1">Available Stock</label>
             <input
               type="number"
               {...register("availStock", { valueAsNumber: true })}
@@ -364,7 +359,7 @@ const PartForm = () => {
           </div>
 
           <div className="col-span-4 md:col-span-1">
-            <label>Cycle Time (min)</label>
+            <label className="block font-semibold mb-1">Cycle Time (min)</label>
             <input
               {...register("cycleTime", { required: "Required" })}
               type="text"
@@ -374,7 +369,7 @@ const PartForm = () => {
           </div>
 
           <div className="col-span-4 md:col-span-1">
-            <label>Process Order Required</label>
+            <label className="block font-semibold mb-1">Process Required</label>
             <select
               {...register("processOrderRequired", { required: "Required" })}
               className="border p-2 rounded w-full"
@@ -387,8 +382,8 @@ const PartForm = () => {
 
           {isProcessRequired && (
             <>
-              <div className="col-span-4 md:col-span-2">
-                <label>Process</label>
+              <div className="col-span-4 md:col-span-1">
+                <label className="block font-semibold mb-1">Process</label>
                 <select
                   {...register("processId", { required: "Required" })}
                   className="border p-2 rounded w-full"
@@ -401,13 +396,16 @@ const PartForm = () => {
                   ))}
                 </select>
               </div>
-              <label className="block col-span-4 md:col-span-2">
-                Process Description
+              <div className="col-span-4 md:col-span-2">
+                <label className="block font-semibold mb-1">
+                  Process Description
+                </label>
                 <textarea
                   {...register("processDesc")}
                   className="border p-2 rounded w-full"
+                  readOnly
                 />
-              </label>
+              </div>
             </>
           )}
 
@@ -427,9 +425,8 @@ const PartForm = () => {
                         (_, i) => i !== index,
                       );
                       setSelectedImages(updatedImages);
-                      setValue("image", updatedImages);
                     }}
-                    className="absolute -top-2 -right-2 bg-white rounded-full text-red-600 shadow-md hover:scale-110 transition-transform z-10"
+                    className="absolute -top-2 -right-2 bg-white rounded-full text-red-600 shadow-md"
                   >
                     <MdCancel size={22} />
                   </button>
@@ -438,41 +435,39 @@ const PartForm = () => {
             </div>
           )}
 
-          <label className="block col-span-4 md:col-span-2 cursor-pointer border-2 border-dashed border-gray-300 bg-gray-50 p-4 rounded-lg text-center hover:bg-gray-100 transition">
-            <span className="text-gray-600 font-medium">
-              {selectedImages.length > 0
-                ? `${selectedImages.length} image(s) selected`
-                : "Tap or Click to Add Pictures"}
-            </span>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const files = e.target.files;
-                if (files && files.length > 0) {
-                  const fileArray = Array.from(files);
-                  const updatedFiles = [...selectedImages, ...fileArray];
-                  setSelectedImages(updatedFiles);
-                  setValue("image", updatedFiles);
-                }
-              }}
-            />
-          </label>
+          <div className="col-span-4 md:col-span-2">
+            <label className="block cursor-pointer border-2 border-dashed border-gray-300 bg-gray-50 p-4 rounded-lg text-center hover:bg-gray-100 transition">
+              <span className="text-gray-600 font-medium">
+                Tap or Click to Add Pictures
+              </span>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const files = e.target.files;
+                  if (files) {
+                    const fileArray = Array.from(files);
+                    setSelectedImages((prev) => [...prev, ...fileArray]);
+                  }
+                }}
+              />
+            </label>
+          </div>
 
-          <div className="flex justify-between items-center col-span-4">
+          <div className="flex justify-end items-center col-span-4">
             <button
               type="submit"
-              className="bg-brand text-white py-2 rounded-lg px-6 font-semibold shadow-md hover:bg-opacity-90 transition"
+              className="bg-brand text-white py-2 rounded-lg px-8 font-semibold shadow-md"
             >
-              Add/Edit Part Number
+              Save Part Number
             </button>
           </div>
         </form>
       </div>
 
-      <div className="mt-6 bg-white p-6 rounded-2xl shadow-md overflow-x-auto">
+      <div className="mt-8 bg-white p-6 rounded-2xl shadow-md overflow-x-auto">
         <table className="text-sm w-full min-w-[600px]">
           <thead className="bg-[#F4F6F8] text-left text-gray-500">
             <tr>
@@ -481,14 +476,14 @@ const PartForm = () => {
               <th className="px-4 py-3 font-medium">Part Family</th>
               <th className="px-4 py-3 font-medium">Cost</th>
               <th className="px-4 py-3 font-medium">Cycle Time</th>
-              <th className="px-4 py-3 font-medium">Action</th>
+              <th className="px-4 py-3 font-medium text-right">Action</th>
             </tr>
           </thead>
           <tbody className="text-gray-800">
             {partData.map((item) => (
               <tr
                 key={item.part_id}
-                className="border-b border-dashed border-gray-200 hover:bg-gray-50"
+                className="border-b border-dashed border-gray-200"
               >
                 <td className="px-4 py-4">
                   {item.process?.processName || "N/A"}
@@ -497,10 +492,10 @@ const PartForm = () => {
                 <td className="px-4 py-4">{item.partFamily}</td>
                 <td className="px-4 py-4">${item.cost}</td>
                 <td className="px-4 py-4">{item.cycleTime}</td>
-                <td className="px-4 py-4">
+                <td className="px-4 py-4 text-right">
                   <button
                     onClick={() => setItemToDeleteId(item.part_id)}
-                    className="text-red-500 hover:text-red-700 transition"
+                    className="text-red-500 hover:text-red-700"
                   >
                     <FaTrash />
                   </button>
@@ -511,15 +506,15 @@ const PartForm = () => {
         </table>
 
         {itemToDeleteId && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-[1000]">
-            <div className="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full">
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[1000]">
+            <div className="bg-white p-6 rounded-xl shadow-lg max-w-sm w-full">
               <h2 className="text-lg font-bold mb-2">Delete Part?</h2>
               <p className="text-gray-600 mb-6">
-                This action cannot be undone. Are you sure?
+                Are you sure? This cannot be undone.
               </p>
               <div className="flex justify-end space-x-3">
                 <button
-                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg"
+                  className="px-4 py-2 text-gray-600"
                   onClick={() => setItemToDeleteId(null)}
                 >
                   Cancel
@@ -535,22 +530,22 @@ const PartForm = () => {
           </div>
         )}
 
-        <div className="flex justify-between items-center mt-4">
-          <p className="text-sm text-gray-500">
+        <div className="flex justify-between items-center mt-6">
+          <p className="text-xs text-gray-500">
             Page {currentPage} of {totalPages}
           </p>
           <div className="flex gap-2">
             <button
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
-              className={`p-2 rounded border ${currentPage === 1 ? "bg-gray-50 text-gray-300" : "hover:bg-gray-100"}`}
+              className="p-1 border rounded disabled:opacity-30"
             >
               <FontAwesomeIcon icon={faArrowLeft} />
             </button>
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
-              className={`p-2 rounded border ${currentPage === totalPages ? "bg-gray-50 text-gray-300" : "hover:bg-gray-100"}`}
+              className="p-1 border rounded disabled:opacity-30"
             >
               <FontAwesomeIcon icon={faArrowRight} />
             </button>

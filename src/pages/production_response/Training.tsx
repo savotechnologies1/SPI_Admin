@@ -1,54 +1,56 @@
 import { IoClose, IoLogOutOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   completeTraningApi,
-  stationProcessDetail,
   stationTrainingProcessDetail,
-  traningStatus,
   updateStepTime,
 } from "./https/productionResponseApi";
-import CommentBox from "./CommentBox";
 import belt from "../../assets/belt-solid.png";
-import { formatDate } from "date-fns";
 import { FaPlay, FaSpinner } from "react-icons/fa";
-const BASE_URL = import.meta.env.VITE_SERVER_URL;
+const BASE_URL =
+  (import.meta as any).env.VITE_SERVER_URL || "http://localhost:5000";
+
 interface Image {
   imagePath: string;
 }
+
+interface Video {
+  videoPath: string;
+}
+
 interface Step {
   id: string;
   title: string;
   instruction: string;
   images: Image[];
+  videos?: Video[];
   stepNumber: number;
 }
 
 interface JobData {
   productionId: string;
-  part_id: string;
-  customPartId: string;
-  workInstructionSteps: Step[];
-  part: {
-    partNumber: string;
-    partDescription: string;
-  };
-  employeeInfo: { firstName: string; lastName: string };
-  process: { processName: string };
+  processName: string;
+  employeeName: string;
+  partNumber: string;
   cycleTime: string;
-  order: { orderNumber: string; orderDate: string };
+  workInstructionSteps: Step[];
+  incomingJobs?: Array<{ partNumber: string }>;
+  process?: {
+    machineName: string;
+  };
 }
 
 const Training = () => {
   const navigate = useNavigate();
   const { id: processId } = useParams<{ id: string }>();
 
-  const [jobData, setJobData] = useState<any | null>(null);
+  const [jobData, setJobData] = useState<JobData | null>(null);
   const [loading, setLoading] = useState(true);
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
-  const getUserId = () => {
+  const getUserId = (): string | null => {
     const rawData = localStorage.getItem("stationUserId");
     if (!rawData) return null;
     try {
@@ -61,7 +63,7 @@ const Training = () => {
 
   const stationUserId = getUserId();
 
-  const formatDate = (dateString: string | undefined): string => {
+  const formatDisplayDate = (dateString: string | undefined): string => {
     if (!dateString) return "Not Available";
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "long",
@@ -70,7 +72,7 @@ const Training = () => {
     });
   };
 
-  const formatCycleTime = (dateString: any) => {
+  const formatCycleTime = (dateString: string | undefined) => {
     if (!dateString) return "0 min";
     try {
       const startTime = new Date(dateString);
@@ -89,7 +91,7 @@ const Training = () => {
     }
   };
 
-  const fetchJobDetails = async () => {
+  const fetchJobDetails = useCallback(async () => {
     if (!processId || !stationUserId) {
       navigate("/station-login");
       return;
@@ -114,13 +116,13 @@ const Training = () => {
       } else {
         navigate("/station-login");
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Fetch error:", error);
       navigate("/station-login");
     } finally {
       setLoading(false);
     }
-  };
+  }, [processId, stationUserId, navigate]);
 
   const handleStepClick = async (stepId: string) => {
     if (!jobData?.productionId || completedSteps.has(stepId)) return;
@@ -137,7 +139,7 @@ const Training = () => {
   };
 
   const handleCompleteTraining = async () => {
-    if (!jobData?.productionId) return;
+    if (!jobData?.productionId || !processId || !stationUserId) return;
 
     try {
       setLoading(true);
@@ -166,12 +168,12 @@ const Training = () => {
 
   useEffect(() => {
     fetchJobDetails();
-  }, [processId]);
+  }, [fetchJobDetails]);
 
   if (loading)
     return (
       <div className="min-h-screen flex justify-center items-center">
-        <FaSpinner className="animate-spin text-2xl text-brand" />
+        <FaSpinner className="animate-spin text-2xl text-blue-600" />
       </div>
     );
 
@@ -233,14 +235,14 @@ const Training = () => {
                           {jobData.partNumber || "N/A"}
                         </td>
                         <td className="border border-white px-2 py-1 text-xs sm:text-sm">
-                          {formatDate(new Date().toISOString())}
+                          {formatDisplayDate(new Date().toISOString())}
                         </td>
                       </tr>
                       <tr>
                         <td className="border border-white px-2 py-1 text-xs sm:text-sm font-bold">
                           {incomingPart}
                         </td>
-                        <td className="text-xs font-mono font-bold  px-2 py-0.5 rounded">
+                        <td className="text-xs font-mono font-bold px-2 py-0.5 rounded">
                           Not Available
                         </td>
                       </tr>
@@ -267,12 +269,12 @@ const Training = () => {
 
       <div className="container mx-auto p-4 md:p-6 flex-grow max-w-6xl">
         <div className="py-4 flex flex-col gap-4">
-          {allSteps.map((step: any, index: number) => (
+          {allSteps.map((step, index) => (
             <div
               key={step.id || index}
               onClick={() => handleStepClick(step.id)}
               className={`flex flex-col md:flex-row gap-4 md:gap-6 items-start bg-white rounded-lg shadow-sm p-4 border-2 transition-all cursor-pointer
-                ${completedSteps.has(step.id) ? "border-green-500 bg-green-50" : "border-gray-100 hover:border-brand"}
+                ${completedSteps.has(step.id) ? "border-green-500 bg-green-50" : "border-gray-100 hover:border-blue-500"}
               `}
             >
               <div
@@ -283,21 +285,23 @@ const Training = () => {
               </div>
 
               <div className="flex flex-wrap gap-3 flex-shrink-0">
-                {step.images?.length > 0 && (
+                {step.images && step.images.length > 0 && (
                   <img
                     className="rounded-md w-32 h-32 md:w-40 md:h-40 object-cover border shadow-sm"
                     src={`${BASE_URL}/uploads/workInstructionImg/${step.images[0].imagePath}`}
                     alt={step.title}
                   />
                 )}
-                {step.videos?.length > 0 && (
+                {step.videos && step.videos.length > 0 && (
                   <div
                     className="relative w-32 h-32 md:w-40 md:h-40 bg-black rounded-md overflow-hidden group border"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setActiveVideo(
-                        `${BASE_URL}/uploads/workInstructionVideo/${step.videos[0].videoPath}`,
-                      );
+                      if (step.videos) {
+                        setActiveVideo(
+                          `${BASE_URL}/uploads/workInstructionVideo/${step.videos[0].videoPath}`,
+                        );
+                      }
                     }}
                   >
                     <video className="w-full h-full object-cover opacity-60">

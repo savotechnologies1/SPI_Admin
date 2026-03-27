@@ -61,11 +61,6 @@ const Machine = () => {
       </div>
       <LargeThermoformer />
       <SmallThermoformer />
-
-      <div className="bg-white rounded-md shadow-md mt-6">
-        {/* <MachineCycleTime />
-        <OperatorCycleTime /> */}
-      </div>
     </div>
   );
 };

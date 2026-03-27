@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, NavLink, useParams } from "react-router-dom";
 import { FaCircle } from "react-icons/fa";
@@ -18,7 +18,8 @@ import {
 import { MdCancel } from "react-icons/md";
 import { selectSupplier } from "../supplier_chain/https/suppliersApi";
 
-const BASE_URL = import.meta.env.VITE_SERVER_URL;
+const BASE_URL = (import.meta as any).env.VITE_SERVER_URL;
+
 interface BOMItem {
   id?: string;
   part_id?: string;
@@ -57,6 +58,8 @@ interface ProcessItem {
 interface SupplierItem {
   id: string;
   companyName: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 interface ExistingImage {
@@ -64,7 +67,12 @@ interface ExistingImage {
   imageUrl: string;
 }
 
-const EditProductForm = () => {
+interface PartLookupItem {
+  part_id: string;
+  partNumber: string;
+}
+
+const EditProductForm: React.FC = () => {
   const partContext = useContext(PartContext);
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -96,7 +104,7 @@ const EditProductForm = () => {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<ExistingImage[]>([]);
-  const [partData, setPartData] = useState<any[]>([]); // API response for parts
+  const [partData, setPartData] = useState<PartLookupItem[]>([]);
   const [suggestions, setSuggestions] = useState<{ [index: number]: string[] }>(
     {},
   );
@@ -120,6 +128,7 @@ const EditProductForm = () => {
       lName.includes(search)
     );
   });
+
   useEffect(() => {
     const fetchSuppliers = async () => {
       try {
@@ -154,7 +163,7 @@ const EditProductForm = () => {
         partDescription: data.partDescription || "",
         cost: data.cost || 0,
         leadTime: data.leadTime || 0,
-        companyName: data.companyId || data.companyName || "", // ID स्टोर करें
+        companyName: data.companyId || data.companyName || "",
         minStock: data.minStock || 0,
         availStock: data.availStock || 0,
         cycleTime: data.cycleTime || 0,
@@ -185,13 +194,18 @@ const EditProductForm = () => {
       console.error("Failed to fetch product details:", error);
     }
   };
+
   useEffect(() => {
     fetchProductDetail();
     const fetchInitialData = async () => {
-      const processes = await selectProcess();
-      setProcessData(processes);
-      const parts = await selectPartNamber();
-      setPartData(parts?.data || []);
+      try {
+        const processes = await selectProcess();
+        setProcessData(processes);
+        const parts = await selectPartNamber();
+        setPartData(parts?.data || []);
+      } catch (err) {
+        console.error(err);
+      }
     };
     fetchInitialData();
   }, [id]);
@@ -205,6 +219,7 @@ const EditProductForm = () => {
       setValue("processDesc", res.data?.processDesc || "");
     });
   }, [selectedProcessId, setValue]);
+
   const onSubmitProduct = async (data: ProductFormData) => {
     if (!id) {
       console.error("Product ID is missing");
@@ -228,6 +243,7 @@ const EditProductForm = () => {
       console.error("Error updating product:", err);
     }
   };
+
   const handleAddBOMRow = () => {
     setBomItems([
       ...bomItems,
@@ -404,7 +420,8 @@ const EditProductForm = () => {
                     <li
                       key={s.id}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm border-b"
-                      onMouseDown={() => {
+                      onMouseDown={(e) => {
+                        e.preventDefault();
                         setSearchTerm(displayName);
                         setValue("companyName", s.id);
                         setShowDropdown(false);
@@ -477,7 +494,6 @@ const EditProductForm = () => {
             </select>
           </div>
 
-          {/* Image Section Fixed Gap */}
           <div className="col-span-4 mt-4">
             <label className="block font-medium mb-2">Product Images</label>
             <label className="block cursor-pointer bg-gray-50 border-2 border-dashed rounded-lg p-6 text-center hover:bg-gray-100 transition">
@@ -500,7 +516,6 @@ const EditProductForm = () => {
               </span>
             </label>
 
-            {/* Images Preview with fixed Gap */}
             <div className="flex flex-wrap gap-3 mt-4">
               {existingImages.map((img) => (
                 <div key={img.id} className="relative w-20 h-20">
@@ -544,7 +559,6 @@ const EditProductForm = () => {
             </div>
           </div>
 
-          {/* BOM Section */}
           <div className="col-span-4 mt-6">
             <p className="font-semibold text-lg mb-4 border-b pb-2">
               Bill of Material (BOM)
@@ -573,7 +587,10 @@ const EditProductForm = () => {
                           <li
                             key={i}
                             className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
-                            onClick={() => handleSuggestionClick(index, sugg)}
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              handleSuggestionClick(index, sugg);
+                            }}
                           >
                             {sugg}
                           </li>

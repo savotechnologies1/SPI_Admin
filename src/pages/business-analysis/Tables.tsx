@@ -1,7 +1,35 @@
-const Tables = ({ metrics }) => {
+import React from "react";
+interface Metrics {
+  totalRevenue?: number;
+  totalCOGS?: number;
+  totalFixedCost?: number;
+  Profit?: number;
+  InventoryCost?: number;
+  bomCost?: number;
+  scrapCost?: number;
+  laborCost?: number;
+}
+
+interface TablesProps {
+  metrics: Metrics | null | undefined;
+}
+
+interface StatBlockProps {
+  label: string;
+  amount: number;
+  isTotal?: boolean;
+}
+
+interface BreakdownItemProps {
+  label: string;
+  amount: number;
+  isHeader?: boolean;
+}
+
+const Tables: React.FC<TablesProps> = ({ metrics }) => {
   if (!metrics) return null;
 
-  const formatCurrency = (amount) => {
+  const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
@@ -9,7 +37,11 @@ const Tables = ({ metrics }) => {
     }).format(amount);
   };
 
-  const StatBlock = ({ label, amount, isTotal = false }) => (
+  const StatBlock: React.FC<StatBlockProps> = ({
+    label,
+    amount,
+    isTotal = false,
+  }) => (
     <div className="mb-6">
       <div
         className={`font-bold text-gray-800 ${
@@ -22,7 +54,11 @@ const Tables = ({ metrics }) => {
     </div>
   );
 
-  const BreakdownItem = ({ label, amount, isHeader = false }) => (
+  const BreakdownItem: React.FC<BreakdownItemProps> = ({
+    label,
+    amount,
+    isHeader = false,
+  }) => (
     <div className={`mb-4 ${isHeader ? "" : "pl-0"}`}>
       <div
         className={`text-gray-800 ${

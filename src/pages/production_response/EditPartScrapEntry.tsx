@@ -10,17 +10,43 @@ import { selectSupplier } from "../supplier_chain/https/suppliersApi";
 import { FaArrowLeft, FaCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-const EditPartScrapEntry = () => {
-  const { id } = useParams();
+interface Part {
+  id: string;
+  part_id?: string;
+  partNumber: string;
+  availStock?: number;
+}
+
+interface Supplier {
+  id: string;
+  name?: string;
+  companyName?: string;
+}
+
+interface FormValues {
+  searchPart: string;
+  partId: string;
+  supplier: string;
+  supplierId: string;
+  returnQuantity: string;
+  scrapStatus: string;
+  type: string;
+  defectDesc: string;
+}
+
+const EditPartScrapEntry: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const [partData, setPartData] = useState([]);
-  const [supplierData, setSupplierData] = useState([]);
-  const [partSuggestions, setPartSuggestions] = useState([]);
-  const [supplierSuggestions, setSupplierSuggestions] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [partData, setPartData] = useState<Part[]>([]);
+  const [supplierData, setSupplierData] = useState<Supplier[]>([]);
+  const [partSuggestions, setPartSuggestions] = useState<Part[]>([]);
+  const [supplierSuggestions, setSupplierSuggestions] = useState<Supplier[]>(
+    [],
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const formik = useFormik({
+  const formik = useFormik<FormValues>({
     initialValues: {
       searchPart: "",
       partId: "",
@@ -33,19 +59,25 @@ const EditPartScrapEntry = () => {
     },
     enableReinitialize: true,
     onSubmit: async (values, { setSubmitting }) => {
+      if (!id) return;
+
       const payload = {
         type: "part",
         partId: values.partId,
         supplierId: values.supplierId || null,
         returnQuantity: Number(values.returnQuantity),
-        scrapStatus: values.scrapStatus,
+        scrapStatus: values.scrapStatus === "yes",
         defectDesc: values.defectDesc,
       };
 
       try {
         setSubmitting(true);
         const response = await updateScrapEntry(id, payload);
-        if (response.status === 200 || response.status === 201) {
+        if (
+          (response && response.status === 200) ||
+          (response && response.status === 201)
+        ) {
+          toast.success("Scrap entry updated successfully");
           navigate("/scrap-entries");
         }
       } catch (error: any) {
@@ -59,6 +91,7 @@ const EditPartScrapEntry = () => {
 
   useEffect(() => {
     const fetchInitialData = async () => {
+      if (!id) return;
       setIsLoading(true);
       try {
         const [partsRes, suppliersRes, detailRes] = await Promise.all([
@@ -67,15 +100,16 @@ const EditPartScrapEntry = () => {
           scrapEntryDetail(id),
         ]);
 
-        const allParts = Array.isArray(partsRes)
+        const allParts: Part[] = Array.isArray(partsRes)
           ? partsRes
           : partsRes?.data || [];
-        const allSuppliers = Array.isArray(suppliersRes)
+        const allSuppliers: Supplier[] = Array.isArray(suppliersRes)
           ? suppliersRes
           : suppliersRes?.data || [];
 
         setPartData(allParts);
         setSupplierData(allSuppliers);
+
         const entryData = detailRes.data.data;
         if (entryData) {
           formik.setValues({
@@ -97,12 +131,13 @@ const EditPartScrapEntry = () => {
       }
     };
 
-    if (id) fetchInitialData();
+    fetchInitialData();
   }, [id]);
+
   useEffect(() => {
     const query = formik.values.searchPart.trim().toLowerCase();
     if (query && !formik.values.partId) {
-      const filtered = partData.filter((p: any) =>
+      const filtered = partData.filter((p) =>
         p.partNumber?.toLowerCase().includes(query),
       );
       setPartSuggestions(filtered);
@@ -114,9 +149,10 @@ const EditPartScrapEntry = () => {
   useEffect(() => {
     const query = formik.values.supplier.trim().toLowerCase();
     if (query && !formik.values.supplierId) {
-      const filtered = supplierData.filter((s: any) =>
-        s.name?.toLowerCase().includes(query),
-      );
+      const filtered = supplierData.filter((s) => {
+        const name = s.name || s.companyName || "";
+        return name.toLowerCase().includes(query);
+      });
       setSupplierSuggestions(filtered);
     } else {
       setSupplierSuggestions([]);
@@ -127,7 +163,7 @@ const EditPartScrapEntry = () => {
     return <div className="p-10 text-center font-bold">Loading Details...</div>;
 
   return (
-    <div className="py-4 px-5 ">
+    <div className="py-4 px-5">
       <button
         onClick={() => navigate(-1)}
         className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition font-medium mb-4"
@@ -169,10 +205,11 @@ const EditPartScrapEntry = () => {
           />
           {partSuggestions.length > 0 && (
             <ul className="absolute z-50 left-4 right-4 bg-white border rounded-md mt-1 max-h-60 overflow-y-auto shadow-2xl">
-              {partSuggestions.map((p: any) => (
+              {partSuggestions.map((p) => (
                 <li
                   key={p.part_id || p.id}
                   className="p-3 hover:bg-blue-600 hover:text-white cursor-pointer border-b"
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => {
                     formik.setFieldValue("searchPart", p.partNumber);
                     formik.setFieldValue("partId", p.part_id || p.id);
@@ -201,22 +238,24 @@ const EditPartScrapEntry = () => {
           />
           {supplierSuggestions.length > 0 && (
             <ul className="absolute z-50 left-4 right-4 bg-white border rounded-md mt-1 max-h-60 overflow-y-auto shadow-2xl">
-              {supplierSuggestions.map((s: any) => (
+              {supplierSuggestions.map((s) => (
                 <li
                   key={s.id}
                   className="p-3 hover:bg-green-600 hover:text-white cursor-pointer border-b"
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => {
-                    formik.setFieldValue("supplier", s.name);
+                    formik.setFieldValue("supplier", s.name || s.companyName);
                     formik.setFieldValue("supplierId", s.id);
                     setSupplierSuggestions([]);
                   }}
                 >
-                  {s.name}
+                  {s.name || s.companyName}
                 </li>
               ))}
             </ul>
           )}
         </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-white p-4 border rounded-md shadow-sm">
             <label className="block font-semibold mb-1">
@@ -239,6 +278,7 @@ const EditPartScrapEntry = () => {
             </select>
           </div>
         </div>
+
         <div className="bg-white p-4 border rounded-md shadow-sm">
           <label className="block font-semibold mb-1">Defect Description</label>
           <textarea

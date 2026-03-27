@@ -14,8 +14,6 @@ import DatePicker from "react-datepicker";
 import {
   FaSortAmountDown,
   FaSortAmountUp,
-  FaSpinner,
-  FaTrophy,
 } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 

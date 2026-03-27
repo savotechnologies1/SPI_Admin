@@ -1,13 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  FormikProvider,
-  useFormik,
-  Field,
-  FieldArray,
-  Form,
-  FormikErrors,
-} from "formik";
+import { FormikProvider, useFormik, Field, FieldArray, Form } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
 import { MdCancel } from "react-icons/md";
@@ -21,7 +14,7 @@ import {
   workInstructionDetail,
 } from "./https/workInstructionApi";
 
-type Process = { id: string; name: string };
+type Process = { id: string; name: string; machineName: string };
 type Product = { id: string; partNumber: string };
 
 type ExistingFile = {

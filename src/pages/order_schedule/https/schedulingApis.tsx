@@ -5,8 +5,6 @@ import { AxiosError } from "axios";
 export const addStockOrder = async (apiData: object) => {
   try {
     const response = await axiosInstance.post("/create-stock-order", apiData);
-    console.log("responseresponse", response);
-
     if (response.status === 201) {
       toast.success(response.data.message);
     }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import scrap_cost from "../../assets/scrap_cost.png";
 import supplier_return from "../../assets/supplier_return.png";
@@ -15,27 +15,55 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
-const formatDollar = (value) => `$${Number(value).toLocaleString()}`;
 
-const Costing = () => {
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [cardsData, setCardsData] = useState([]);
-  const [monthlyCOGS, setMonthlyCOGS] = useState([]);
+// --- Interfaces ---
 
-  const BASE_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:5000";
+interface CardData {
+  num: string;
+  text: string;
+  scrap_img: string;
+}
+
+interface ChartData {
+  name: string;
+  value: number;
+}
+
+interface ApiResponse {
+  totalCOGS?: number;
+  supplierReturn?: number;
+  scrapCost?: number;
+  monthlyCOGS?: Record<string, number>;
+}
+const formatDollar = (value: string | number): string =>
+  `$${Number(value).toLocaleString()}`;
+
+const Costing: React.FC = () => {
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [cardsData, setCardsData] = useState<CardData[]>([]);
+  const [monthlyCOGS, setMonthlyCOGS] = useState<ChartData[]>([]);
+
+  const BASE_URL =
+    (import.meta as any).env.VITE_SERVER_URL || "http://localhost:5000";
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!startDate || !endDate) return;
+
       try {
         const formattedStart = format(startDate, "yyyy-MM-dd");
         const formattedEnd = format(endDate, "yyyy-MM-dd");
 
-        const res = await axios.get(`${BASE_URL}/api/admin/costing-data`, {
-          params: { startDate: formattedStart, endDate: formattedEnd },
-        });
+        const res = await axios.get<ApiResponse>(
+          `${BASE_URL}/api/admin/costing-data`,
+          {
+            params: { startDate: formattedStart, endDate: formattedEnd },
+          },
+        );
 
         const data = res.data;
+
         setCardsData([
           {
             num: formatDollar(data.totalCOGS || 0),
@@ -68,10 +96,11 @@ const Costing = () => {
           "Nov",
           "Dec",
         ];
+
         const cogs = data.monthlyCOGS || {};
         const yearKey = formattedStart.split("-")[0];
 
-        const chartData = months.map((month, index) => {
+        const chartData: ChartData[] = months.map((month, index) => {
           const monthNum = String(index + 1).padStart(2, "0");
           const key = `${yearKey}-${monthNum}`;
           return { name: month, value: cogs[key] || 0 };
@@ -84,9 +113,10 @@ const Costing = () => {
     };
 
     fetchData();
-  }, [startDate, endDate]);
+  }, [startDate, endDate, BASE_URL]);
 
-  const isToday = (date) => {
+  const isToday = (date: Date | null): boolean => {
+    if (!date) return false;
     const today = new Date();
     return date.toDateString() === today.toDateString();
   };
@@ -105,7 +135,7 @@ const Costing = () => {
             </label>
             <DatePicker
               selected={startDate}
-              onChange={(date) => setStartDate(date)}
+              onChange={(date: Date | null) => setStartDate(date)}
               dateFormat="MM/dd/yyyy"
               className="text-sm outline-none bg-transparent cursor-pointer w-24 text-gray-700"
             />
@@ -118,7 +148,7 @@ const Costing = () => {
             </label>
             <DatePicker
               selected={endDate}
-              onChange={(date) => setEndDate(date)}
+              onChange={(date: Date | null) => setEndDate(date)}
               dateFormat="MM/dd/yyyy"
               className="text-sm outline-none bg-transparent cursor-pointer w-24 text-gray-700"
             />
@@ -148,7 +178,7 @@ const Costing = () => {
               <img
                 className="w-8 h-8 object-contain"
                 src={item.scrap_img}
-                alt=""
+                alt={item.text}
               />
             </div>
             <div>
@@ -165,7 +195,7 @@ const Costing = () => {
             Monthly COGS Trend
           </h2>
           <p className="text-xs text-gray-400">
-            Year: {startDate.getFullYear()}
+            Year: {startDate?.getFullYear() || new Date().getFullYear()}
           </p>
         </div>
 
@@ -194,7 +224,7 @@ const Costing = () => {
                 width={60}
               />
               <Tooltip
-                formatter={(value) => [formatDollar(value), "COGS"]}
+                formatter={(value: number) => [formatDollar(value), "COGS"]}
                 contentStyle={{
                   borderRadius: "10px",
                   border: "none",

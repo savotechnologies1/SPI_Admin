@@ -4,17 +4,6 @@ import { toast } from "react-toastify";
 import { scheduleCustomOrder } from "./https/schedulingApis";
 import { useNavigate } from "react-router-dom";
 
-type Item = {
-  id: number;
-  text: string;
-  text1: string;
-  text2: string;
-  qty: number;
-  inputQty: string;
-  img: string;
-  img1?: string;
-};
-
 interface Customer {
   id: string;
   firstName: string;
@@ -59,11 +48,6 @@ interface CustomOrder {
   bomList?: BOMEntry[];
 }
 
-interface SchedulableCustomOrder extends CustomOrder {
-  scheduledQty: number;
-  selectedProcessId: string;
-}
-
 interface ItemForUI {
   id: string;
   img1: string;
@@ -78,7 +62,7 @@ interface ItemForUI {
 }
 
 interface CustomItemSelectedProps {
-  items: CustomOrder[];
+  items: any[];
   isLoading: boolean;
 }
 const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
@@ -91,9 +75,7 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
       return;
     }
 
-    // जब भी items (search results) बदलेंगे, available list अपडेट होगी
     const newTransformedItems = items.map((apiItem) => {
-      // BOM list में से पहली प्रोसेस निकालें (डिस्प्ले के लिए)
       const processName =
         apiItem.bomList?.[0]?.processName || "Multiple Processes";
 
@@ -101,7 +83,6 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
         id: apiItem.id,
         img1: "https://via.placeholder.com/150",
         orderNumber: apiItem.orderNumber,
-        // अगर product object है तो उसकी description लें
         text1: apiItem.product?.partDescription || "Custom Order",
         text2: processName,
         qty: apiItem.productQuantity || 1,
@@ -113,7 +94,7 @@ const CustomItemSelected = ({ items, isLoading }: CustomItemSelectedProps) => {
     });
 
     setAvailableItems(newTransformedItems);
-  }, [items]); // ← यह Dependency बहुत ज़रूरी है
+  }, [items]);
   const addToSelected = (itemToAdd: ItemForUI) => {
     const existingItemIndex = selectedItems.findIndex(
       (item) => item.id === itemToAdd.id,

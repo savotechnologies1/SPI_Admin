@@ -1,12 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, ChangeEvent } from "react";
 import { sendStationNotification } from "./https/productionResponseApi";
 
-export default function CommentBox({ employeeInfo }) {
-  const [comment, setComment] = useState("");
-  const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+interface EmployeeInfo {
+  id: string;
+  firstName?: string;
+  lastName?: string;
+  [key: string]: any;
+}
+
+interface CommentBoxProps {
+  employeeInfo: EmployeeInfo;
+}
+
+export default function CommentBox({ employeeInfo }: CommentBoxProps) {
+  const [comment, setComment] = useState<string>("");
+  const [image, setImage] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       setImage(file);
       setPreview(URL.createObjectURL(file));
@@ -18,15 +30,17 @@ export default function CommentBox({ employeeInfo }) {
       alert("Please enter a comment or choose an image.");
       return;
     }
+
     const formData = new FormData();
     formData.append("comment", comment);
     formData.append("employeeId", employeeInfo.id);
+
     if (image) {
       formData.append("PartEnquiryImg", image);
     }
 
     try {
-      const res = await sendStationNotification(formData);
+      await sendStationNotification(formData);
       setComment("");
       setImage(null);
       setPreview(null);
@@ -42,7 +56,9 @@ export default function CommentBox({ employeeInfo }) {
         placeholder="Write your comments"
         className="border border-gray-400 py-2 px-4 rounded-md w-full placeholder-gray-400 bg-transparent text-sm md:text-base"
         value={comment}
-        onChange={(e) => setComment(e.target.value)}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setComment(e.target.value)
+        }
       />
 
       <div className="flex gap-3 w-full md:w-auto items-center">

@@ -36,7 +36,7 @@ export default function PartTable() {
   const [searchVal, setSearchVal] = useState("");
   const [selectedValue, setSelectedValue] = useState("all");
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false); // Loader state
+  const [isLoading, setIsLoading] = useState(false);
 
   const rowsPerPage = 10;
 

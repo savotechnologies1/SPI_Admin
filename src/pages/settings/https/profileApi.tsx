@@ -4,7 +4,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 export const updateProfile = async (
   data: object,
   profileImg: string,
-  file: boolean
+  file: boolean,
 ) => {
   try {
     const response = await axiosInstance.put(
@@ -23,13 +23,13 @@ export const updateProfile = async (
             headers: {
               "Content-Type": "application/json",
             },
-          }
+          },
     );
     if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };
@@ -39,7 +39,7 @@ export const getProfile = async () => {
     const response = await axiosInstance.get("/profile-detail");
 
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     throw error;
   }
 };
@@ -51,7 +51,7 @@ export const deleteProfile = async () => {
       toast.success(response.data.message);
     }
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     toast.error(error.response.data.message);
   }
 };

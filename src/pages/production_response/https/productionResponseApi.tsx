@@ -1,6 +1,13 @@
 import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
-import { AxiosError } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
+
+const getErrorMessage = (error: unknown): string => {
+  if (axios.isAxiosError(error)) {
+    return error.response?.data?.message || "An unexpected error occurred";
+  }
+  return "An unexpected error occurred";
+};
 
 export const selecEmployeeProcessApi = async () => {
   try {
@@ -8,20 +15,20 @@ export const selecEmployeeProcessApi = async () => {
       `/select-schedule-employee-process`,
     );
     return response.data;
-  } catch (error: any) {
-    // toast.error(error.response.data.message);
+  } catch (error) {
+    console.error(getErrorMessage(error));
   }
 };
 
-export const stationLogin = async (userData: object) => {
+export const stationLogin = async (userData: Record<string, any>) => {
   try {
     const response = await axiosInstance.post("/station-login", userData);
     if (response.status === 201) {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: any) {
-    toast.error(error.response.data.message);
+  } catch (error) {
+    toast.error(getErrorMessage(error));
   }
 };
 
@@ -52,6 +59,7 @@ export const stationTrainingProcessDetail = async (
     throw error;
   }
 };
+
 export const traningStatus = async (data: {
   stationUserId: string;
   processId: string;
@@ -71,21 +79,10 @@ export const traningStatus = async (data: {
   }
 };
 
-// export const traningStatus = async (params: { stationUserId: string, processId: string, productId: string }) => {
-//   try {
-//     // URL ko dhyan se check karein
-//     const response = await axiosInstance.get(`/trainig-status/${params.processId}`, {
-//       params: {
-//         stationId: params.stationUserId, // Yeh string honi chahiye, object nahi
-//         productId: params.productId
-//       }
-//     });
-//     return response.data;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
-export const stationLogoutApi = async (id: string, logoutData) => {
+export const stationLogoutApi = async (
+  id: string,
+  logoutData: Record<string, any>,
+) => {
   try {
     const response = await axiosInstance.post(`/station-logout/${id}`, {
       logoutData,
@@ -94,10 +91,11 @@ export const stationLogoutApi = async (id: string, logoutData) => {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: any) {
-    toast.error(error.response.data.message);
+  } catch (error) {
+    toast.error(getErrorMessage(error));
   }
 };
+
 export const completeOrder = async (
   id: string,
   orderId: string,
@@ -124,8 +122,8 @@ export const completeOrder = async (
     }
 
     return response;
-  } catch (error: any) {
-    toast.error(error?.response?.data?.message || "Something went wrong");
+  } catch (error) {
+    toast.error(getErrorMessage(error));
   }
 };
 
@@ -137,6 +135,7 @@ export const selectPartNamber1 = async () => {
     throw error;
   }
 };
+
 export const selectProductNamber1 = async () => {
   try {
     const response = await axiosInstance.get(`/select-products`);
@@ -145,6 +144,7 @@ export const selectProductNamber1 = async () => {
     throw error;
   }
 };
+
 export const completeScanOrder = async (
   id: string,
   orderId: string,
@@ -171,10 +171,11 @@ export const completeScanOrder = async (
     }
 
     return response;
-  } catch (error: any) {
-    toast.error(error?.response?.data?.message || "Something went wrong");
+  } catch (error) {
+    toast.error(getErrorMessage(error));
   }
 };
+
 export const completeTraningApi = async (id: string) => {
   try {
     const response = await axiosInstance.put(`/complete-traning/${id}`);
@@ -184,37 +185,16 @@ export const completeTraningApi = async (id: string) => {
     }
 
     return response;
-  } catch (error: any) {
-    toast.error(error?.response?.data?.message || "Something went wrong");
+  } catch (error) {
+    toast.error(getErrorMessage(error));
   }
 };
 
-// export const updateStepTime = async (
-//   productionId: string,
-//   stepId: string,
-//   prevStepId: string
-// ) => {
-//   try {
-//     const response = await axiosInstance.put(
-//       `/production-response/update-step-time`,,
-//       { stepId, prevStepId }
-//     );
-
-//     if (response.status === 200) {
-//       toast.success("Step marked as completed.");
-//     }
-
-//     return response.data;
-//   } catch (error: any) {
-//     toast.error(error?.response?.data?.message || "Failed to update step.");
-//   }
-// };
 export const updateStepTime = async (data: {
   productionId: string;
   stepId: string;
 }) => {
   try {
-    // Data ko body ke roop mein bhejein (second parameter)
     const response = await axiosInstance.post(
       `/production-response/update-step-time`,
       data,
@@ -224,6 +204,7 @@ export const updateStepTime = async (data: {
     throw error;
   }
 };
+
 export const scrapOrder = async (
   id: string,
   orderId: string,
@@ -244,8 +225,8 @@ export const scrapOrder = async (
     }
 
     return response;
-  } catch (error: any) {
-    toast.error(error?.response?.data?.message || "Something went wrong");
+  } catch (error) {
+    toast.error(getErrorMessage(error));
   }
 };
 
@@ -254,27 +235,30 @@ export const processPartScan = async (
   scannedBarcode: string,
   employeeId: string,
 ) => {
-  const response = await axiosInstance.post(
-    `/production/${productionId}/scan`,
-    {
-      barcode: scannedBarcode,
-      employeeId: employeeId,
-    },
-  );
-  return response.data;
+  try {
+    const response = await axiosInstance.post(
+      `/production/${productionId}/scan`,
+      {
+        barcode: scannedBarcode,
+        employeeId: employeeId,
+      },
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
-export const ScrapEntryApi = async (userData: object) => {
+export const ScrapEntryApi = async (userData: Record<string, any>) => {
   try {
     const response = await axiosInstance.post("/add-scrap-entry", userData);
     if (response.status === 201) {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: any) {
-    console.log("errorerror", error.response);
-    toast.error(error.response.data.message);
-    throw error; // <-- IMPORTANT: Add this line
+  } catch (error) {
+    toast.error(getErrorMessage(error));
+    throw error;
   }
 };
 
@@ -309,10 +293,8 @@ export const selectProductNumber = async () => {
     const response = await axiosInstance.get(`/select-schedule-product-number`);
     return response.data.data;
   } catch (error: unknown) {
-    const axiosError = error as AxiosError<{ message: string }>;
-    if (axiosError.response?.data?.message) {
-      toast.error(axiosError.response.data.message);
-    } else {
+    if (axios.isAxiosError(error) && error.response?.data?.message) {
+      toast.error(error.response.data.message);
     }
     return [];
   }
@@ -327,19 +309,22 @@ export const scrapEntryDetail = async (id: string) => {
   }
 };
 
-export const updateScrapEntry = async (id: string, data: object) => {
+export const updateScrapEntry = async (
+  id: string,
+  data: Record<string, any>,
+) => {
   try {
     const response = await axiosInstance.put(`/update-scrap-entry/${id}`, data);
     if (response.status === 200) {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: any) {
-    toast.error(error.response.data.message);
+  } catch (error) {
+    toast.error(getErrorMessage(error));
   }
 };
 
-export const sendStationNotification = async (data: object) => {
+export const sendStationNotification = async (data: FormData) => {
   try {
     const response = await axiosInstance.post(`/send-notification`, data, {
       headers: {
@@ -350,8 +335,8 @@ export const sendStationNotification = async (data: object) => {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: any) {
-    toast.error(error.response.data.message);
+  } catch (error) {
+    toast.error(getErrorMessage(error));
   }
 };
 
@@ -362,7 +347,7 @@ export const deleteScrapEntry = async (id: string) => {
       toast.success(response.data.message);
     }
     return response;
-  } catch (error: unknown) {
-    toast.error(error.response.data.message);
+  } catch (error) {
+    toast.error(getErrorMessage(error));
   }
 };

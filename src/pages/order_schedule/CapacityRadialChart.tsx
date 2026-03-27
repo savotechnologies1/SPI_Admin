@@ -1,11 +1,25 @@
+import React from "react";
 import ReactApexChart from "react-apexcharts";
-const CapacityRadialChart = ({ processCompletion, overallAverage }) => {
-  if (!processCompletion || processCompletion.length === 0) return null;
+import { ApexOptions } from "apexcharts";
 
-  const series = processCompletion.map((p) =>
-    parseFloat(p.completionPercentage),
+interface ProcessCompletionItem {
+  processName: string;
+  completionPercentage: string | number;
+}
+interface CapacityRadialChartProps {
+  processCompletion: ProcessCompletionItem[] | null | undefined;
+  overallAverage: string | number;
+}
+const CapacityRadialChart: React.FC<CapacityRadialChartProps> = ({
+  processCompletion,
+  overallAverage,
+}) => {
+  if (!processCompletion || processCompletion.length === 0) return null;
+  const series: number[] = processCompletion.map((p) =>
+    parseFloat(String(p.completionPercentage)),
   );
-  const labels = processCompletion.map((p) => p.processName);
+
+  const labels: string[] = processCompletion.map((p) => p.processName);
 
   const palette = [
     "#1abc9c",
@@ -24,13 +38,19 @@ const CapacityRadialChart = ({ processCompletion, overallAverage }) => {
     (_, index) => palette[index % palette.length],
   );
 
-  const options = {
-    chart: { type: "radialBar" },
+  const options: ApexOptions = {
+    chart: {
+      type: "radialBar",
+    },
     plotOptions: {
       radialBar: {
         hollow: { size: "50%" },
         dataLabels: {
-          name: { fontSize: "14px", color: "#666", fontWeight: "600" },
+          name: {
+            fontSize: "14px",
+            color: "#666",
+            fontWeight: "600",
+          },
           value: {
             fontSize: "20px",
             color: "#000",
@@ -41,7 +61,7 @@ const CapacityRadialChart = ({ processCompletion, overallAverage }) => {
             show: true,
             label: "Average",
             formatter: () => {
-              return parseFloat(overallAverage || 0).toFixed(2) + "%";
+              return parseFloat(String(overallAverage || 0)).toFixed(2) + "%";
             },
           },
         },

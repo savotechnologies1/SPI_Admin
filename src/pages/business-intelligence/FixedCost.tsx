@@ -3,12 +3,33 @@ import axios from "axios";
 import FixedCostGraph from "./FixedCostGraph";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { toast } from "react-toastify";
-const FixedCost = () => {
-  const [records, setRecords] = useState([]);
-  const BASE_URL = import.meta.env.VITE_SERVER_URL;
+
+interface FixedCostRecord {
+  id: string | number;
+  category: string;
+  expenseName: string;
+  expenseCost: string | number;
+  depreciation: string | number;
+}
+
+interface GraphData {
+  totals: {
+    totalFixedCost?: number;
+    totalRevenue?: number;
+  };
+}
+
+const FixedCost: React.FC = () => {
+  const [records, setRecords] = useState<FixedCostRecord[]>([]);
+  const [graphData, setGraphData] = useState<GraphData | null>(null);
+  const BASE_URL =
+    (import.meta as any).env.VITE_SERVER_URL || "http://localhost:8086";
+
   const fetchFixedCosts = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/admin/fixed-data`);
+      const response = await axios.get<{ data: FixedCostRecord[] }>(
+        `${BASE_URL}/api/admin/fixed-data`,
+      );
       setRecords(response.data.data);
     } catch (error) {
       console.error("Error fetching fixed costs:", error);
@@ -19,16 +40,17 @@ const FixedCost = () => {
     fetchFixedCosts();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string | number) => {
     try {
       await axios.delete(`${BASE_URL}/api/admin/fixed-cost-delete/${id}`);
       toast.success("Fixed cost deleted successfully!");
-      setRecords(records.filter((r) => r.id !== id));
+      setRecords((prev) => prev.filter((r) => r.id !== id));
     } catch (error) {
       console.error("Error deleting record:", error);
+      toast.error("Failed to delete record");
     }
   };
-  const [graphData, setGraphData] = useState<any>(null);
+
   const costing = graphData
     ? [
         {
@@ -38,17 +60,21 @@ const FixedCost = () => {
         },
       ]
     : [];
+
   return (
-    <div className="p-6  bg-gray-50 min-h-screen">
+    <div className="p-6 bg-gray-50 min-h-screen">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
         Fixed Cost Management
       </h2>
+
       <div className="bg-white shadow-md rounded-2xl p-4 mt-6 w-full mb-10">
         <div className="flex justify-between mb-6">
-          <div>Current Year Total cost</div>
+          <div className="font-semibold text-gray-700">
+            Current Year Total cost
+          </div>
         </div>
         <ResponsiveContainer width="100%" height={50}>
-          <BarChart layout="vertical" width={500} height={20} data={costing}>
+          <BarChart layout="vertical" data={costing}>
             <XAxis type="number" hide />
             <YAxis type="category" dataKey="name" hide />
             <Bar dataKey="part1" stackId="a" fill="#052C89" />
@@ -56,6 +82,7 @@ const FixedCost = () => {
           </BarChart>
         </ResponsiveContainer>
       </div>
+
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="flex-1 bg-white rounded-xl shadow-md overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
@@ -72,19 +99,19 @@ const FixedCost = () => {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Category
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Expense Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Annual Cost
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Depreciation
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Actions
                     </th>
                   </tr>
@@ -101,7 +128,7 @@ const FixedCost = () => {
                         {r.expenseName}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        ${parseFloat(r.expenseCost).toLocaleString()}
+                        ${Number(r.expenseCost).toLocaleString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                         {r.depreciation}%
@@ -123,7 +150,7 @@ const FixedCost = () => {
             <div className="p-8 text-center">
               <div className="text-gray-400 mb-2">No fixed costs added yet</div>
               <p className="text-sm text-gray-500">
-                Add your first fixed cost using the form above
+                Add your first fixed cost using the form
               </p>
             </div>
           )}

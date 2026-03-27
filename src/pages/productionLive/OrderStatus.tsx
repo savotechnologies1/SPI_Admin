@@ -1,7 +1,6 @@
 import data from "../../components/Data/orderStatus2";
 import client_icon from "../../assets/client.png";
 import date_icon from "../../assets/date.png";
-
 import { FaCalendar } from "react-icons/fa";
 
 const OrderStatus = () => {

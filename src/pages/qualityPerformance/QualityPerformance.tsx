@@ -2,8 +2,6 @@ import { NavLink } from "react-router-dom";
 import img1 from "../../assets/green.png";
 import scrap_1 from "../../assets/scrap_1.png";
 import scrap_cost from "../../assets/scrap_cost.png";
-import customer_return from "../../assets/customer_return.png";
-import supplier_return from "../../assets/supplier_return.png";
 import SupplierReturn from "./SupplierReturn";
 import ScrapBar from "./ScrapBar";
 import { useEffect, useState } from "react";

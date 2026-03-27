@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import axios from "axios";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft, FaCircle } from "react-icons/fa";
 import {
   scrapEntryDetail,
   selectProductNamber1,
-  selectProductNumber,
   updateScrapEntry,
 } from "./https/productionResponseApi";
 import { BASE_URL } from "../../utils/axiosInstance";
@@ -14,6 +12,7 @@ import { selectCustomer } from "../order_schedule/https/schedulingApis";
 import { toast } from "react-toastify";
 const EditProductScrapEntry = () => {
   const { id } = useParams();
+  const safeId = id || "";
   const navigate = useNavigate();
 
   const [productData, setProductData] = useState([]);
@@ -46,8 +45,11 @@ const EditProductScrapEntry = () => {
 
       try {
         setSubmitting(true);
-        const response = await updateScrapEntry(id, payload);
-        if (response.status === 200 || response.status === 201) {
+        const response = await updateScrapEntry(safeId, payload);
+        if (
+          (response && response.status === 200) ||
+          (response && response.status === 201)
+        ) {
           navigate("/scrap-entries");
         }
       } catch (error: any) {
@@ -66,16 +68,14 @@ const EditProductScrapEntry = () => {
         const [productsRes, customersRes, detailRes] = await Promise.all([
           selectProductNamber1(),
           selectCustomer(),
-          scrapEntryDetail(id),
+          scrapEntryDetail(safeId),
         ]);
 
-        const products = Array.isArray(productsRes)
-          ? productsRes
-          : productsRes?.data || [];
-        const customers = Array.isArray(customersRes)
-          ? customersRes
-          : customersRes?.data || [];
-
+        const productsResData = productsRes as any;
+        const products = Array.isArray(productsResData)
+          ? productsResData
+          : productsResData?.data || [];
+        const customers = customersRes as any;
         setProductData(products);
         setCustomerData(customers);
 

@@ -201,7 +201,7 @@ const CustomOrderForm = () => {
       <div className="p-4 bg-white rounded-2xl border shadow-md">
         <Formik
           initialValues={initialFormValues}
-          validationSchema={customOrderValidation} // Uncomment if you have validation
+          validationSchema={customOrderValidation}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             try {
               const productParts = inventoryList.map((item) => ({

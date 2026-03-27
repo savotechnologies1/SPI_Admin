@@ -1,16 +1,28 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import { searchCustomOrder } from "./https/schedulingApis";
 import { SearchResultItem } from "../../utils/Interfaces";
 import CustomItemSelected from "./CustomItemSelected";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "react-datepicker/dist/react-datepicker.css";
 
-const CustomOrderSchedule = () => {
+interface FormValues {
+  customerName: string;
+  shipDate: Date | null;
+  partNumber: string;
+}
+
+interface SearchParams {
+  customerName?: string;
+  partNumber?: string;
+  shipDate?: string;
+}
+
+const CustomOrderSchedule: React.FC = () => {
   const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const formatLocalDate = (date: Date | null) => {
+
+  const formatLocalDate = (date: Date | null): string => {
     if (!date) return "";
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -18,9 +30,8 @@ const CustomOrderSchedule = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const fetchOrders = async (params: any = {}) => {
+  const fetchOrders = async (params: SearchParams = {}) => {
     setIsLoading(true);
-    console.log("API calling with params:", params);
     try {
       const response = await searchCustomOrder(params);
       setSearchResults(response.data || []);
@@ -37,10 +48,10 @@ const CustomOrderSchedule = () => {
   }, []);
 
   const handleSearchSubmit = async (
-    values: any,
-    { setSubmitting }: FormikHelpers<any>,
+    values: FormValues,
+    { setSubmitting }: FormikHelpers<FormValues>,
   ) => {
-    const formattedValues = {
+    const formattedValues: SearchParams = {
       customerName: values.customerName || "",
       partNumber: values.partNumber || "",
       shipDate: values.shipDate ? formatLocalDate(values.shipDate) : "",
@@ -57,7 +68,7 @@ const CustomOrderSchedule = () => {
       </h1>
 
       <div className="p-4 bg-white rounded-2xl border shadow-md mb-6">
-        <Formik
+        <Formik<FormValues>
           initialValues={{
             customerName: "",
             shipDate: null,
@@ -73,7 +84,6 @@ const CustomOrderSchedule = () => {
             return (
               <Form>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-6 ">
-                  {/* Customer Name */}
                   <div>
                     <label className="font-semibold block mb-2">
                       Customer Name
@@ -97,7 +107,7 @@ const CustomOrderSchedule = () => {
                     <div className="datepicker-wrapper">
                       <DatePicker
                         selected={values.shipDate}
-                        onChange={(date) => {
+                        onChange={(date: Date | null) => {
                           setFieldValue("shipDate", date);
                           if (date === null) {
                             fetchOrders({});
@@ -159,4 +169,5 @@ const CustomOrderSchedule = () => {
     </div>
   );
 };
+
 export default CustomOrderSchedule;

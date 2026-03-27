@@ -13,6 +13,7 @@ export interface ProductNumberInterface {
   cost: number;
   availStock: number;
   type: string;
+  productDescription: string;
 }
 
 export interface WorkInstructions {

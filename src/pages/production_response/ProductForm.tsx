@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import { useFormik } from "formik";
 import {
   ScrapEntryApi,
@@ -7,13 +7,38 @@ import {
 import { selectCustomer } from "../order_schedule/https/schedulingApis";
 import { toast } from "react-toastify";
 
-const ProductForm = () => {
-  const [productData, setProductData] = useState([]);
-  const [customerData, setCustomerData] = useState([]);
-  const [productSuggestions, setProductSuggestions] = useState([]);
-  const [customerSuggestions, setCustomerSuggestions] = useState([]);
+// 1. Define Interfaces
+interface Product {
+  id: string;
+  part_id?: string;
+  partNumber: string;
+  availStock?: number;
+}
 
-  const formik = useFormik({
+interface Customer {
+  id: string;
+  name: string;
+}
+
+interface FormValues {
+  searchPart: string;
+  partId: string;
+  customer: string;
+  customerId: string;
+  returnQuantity: string;
+  scrapStatus: string;
+  type: string;
+  defectDesc: string;
+}
+
+const ProductForm: React.FC = () => {
+  const [productData, setProductData] = useState<Product[]>([]);
+  const [customerData, setCustomerData] = useState<Customer[]>([]);
+  const [productSuggestions, setProductSuggestions] = useState<Product[]>([]);
+  const [customerSuggestions, setCustomerSuggestions] = useState<Customer[]>(
+    [],
+  );
+  const formik = useFormik<FormValues>({
     initialValues: {
       searchPart: "",
       partId: "",
@@ -30,7 +55,7 @@ const ProductForm = () => {
         partId: values.partId,
         customerId: values.customerId || null,
         returnQuantity: Number(values.returnQuantity),
-        scrapStatus: values.scrapStatus,
+        scrapStatus: values.scrapStatus === "yes",
         defectDesc: values.defectDesc,
       };
 
@@ -53,29 +78,34 @@ const ProductForm = () => {
   });
 
   useEffect(() => {
-    (async () => {
+    const fetchData = async () => {
       try {
         const [products, customers] = await Promise.all([
           selectProductNamber1(),
           selectCustomer(),
         ]);
+        const pData = products as any;
+        const pList: Product[] = Array.isArray(pData)
+          ? pData
+          : pData?.data || [];
+        const cData = customers as any;
+        const cList: Customer[] = Array.isArray(cData)
+          ? cData
+          : cData?.data || [];
 
-        setProductData(
-          Array.isArray(products) ? products : products?.data || [],
-        );
-        setCustomerData(
-          Array.isArray(customers) ? customers : customers?.data || [],
-        );
+        setProductData(pList);
+        setCustomerData(cList);
       } catch (err) {
-        console.error("Error fetching data:", err);
+        throw err;
       }
-    })();
+    };
+    fetchData();
   }, []);
 
   useEffect(() => {
     const query = formik.values.searchPart.toLowerCase().trim();
     if (query && !formik.values.partId) {
-      const filtered = productData.filter((p: any) =>
+      const filtered = productData.filter((p) =>
         p.partNumber?.toLowerCase().includes(query),
       );
       setProductSuggestions(filtered);
@@ -87,7 +117,7 @@ const ProductForm = () => {
   useEffect(() => {
     const query = formik.values.customer.toLowerCase().trim();
     if (query && !formik.values.customerId) {
-      const filtered = customerData.filter((c: any) =>
+      const filtered = customerData.filter((c) =>
         c.name?.toLowerCase().includes(query),
       );
       setCustomerSuggestions(filtered);
@@ -103,7 +133,7 @@ const ProductForm = () => {
   };
 
   return (
-    <div className=" p-4">
+    <div className="p-4">
       <form
         onSubmit={formik.handleSubmit}
         className="space-y-4"
@@ -116,17 +146,18 @@ const ProductForm = () => {
             placeholder="Search product number....."
             className="border py-3 px-4 rounded-md w-full text-gray-600 focus:ring-2 focus:ring-blue-400 outline-none"
             value={formik.values.searchPart}
-            onChange={(e) => {
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
               formik.setFieldValue("searchPart", e.target.value);
               formik.setFieldValue("partId", "");
             }}
           />
           {productSuggestions.length > 0 && (
             <ul className="absolute z-50 left-4 right-4 bg-white border rounded-md mt-1 max-h-60 overflow-y-auto shadow-2xl">
-              {productSuggestions.map((product: any) => (
+              {productSuggestions.map((product) => (
                 <li
                   key={product.part_id || product.id}
                   className="p-3 hover:bg-blue-600 hover:text-white cursor-pointer border-b"
+                  onMouseDown={(e) => e.preventDefault()} // Helps selection trigger before blur
                   onClick={() => {
                     formik.setFieldValue("searchPart", product.partNumber);
                     formik.setFieldValue(
@@ -155,17 +186,18 @@ const ProductForm = () => {
             placeholder="Search Customer name..."
             className="border py-3 px-4 rounded-md w-full text-gray-600 focus:ring-2 focus:ring-blue-400 outline-none"
             value={formik.values.customer}
-            onChange={(e) => {
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
               formik.setFieldValue("customer", e.target.value);
               formik.setFieldValue("customerId", "");
             }}
           />
           {customerSuggestions.length > 0 && (
             <ul className="absolute z-50 left-4 right-4 bg-white border rounded-md mt-1 max-h-60 overflow-y-auto shadow-2xl">
-              {customerSuggestions.map((customer: any) => (
+              {customerSuggestions.map((customer) => (
                 <li
                   key={customer.id}
                   className="p-3 hover:bg-green-600 hover:text-white cursor-pointer border-b"
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => {
                     formik.setFieldValue("customer", customer.name);
                     formik.setFieldValue("customerId", customer.id);
@@ -197,11 +229,12 @@ const ProductForm = () => {
               className="border py-3 px-4 rounded-md w-full text-gray-600 bg-white"
               {...formik.getFieldProps("scrapStatus")}
             >
-              <option value="yes">Yes </option>
-              <option value="no">No </option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
             </select>
           </div>
         </div>
+
         <div className="bg-white p-4 border rounded-md">
           <label className="block font-semibold mb-1">Defect Description</label>
           <textarea

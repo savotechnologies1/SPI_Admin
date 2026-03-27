@@ -16,6 +16,7 @@ const EditSuppliers = () => {
     email?: string;
     address?: string;
     billingTerms?: string;
+    companyName: string;
   }
 
   const {
@@ -31,7 +32,7 @@ const EditSuppliers = () => {
   const onSubmit = async (data: object) => {
     try {
       const response = await editSupplier(data, id!).then();
-      if (response.status === 200) {
+      if (response && response.status === 200) {
         navigate("/all-supplier");
       }
     } catch (error: unknown) {

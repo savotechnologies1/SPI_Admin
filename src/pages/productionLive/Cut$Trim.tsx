@@ -1,5 +1,31 @@
+import React from "react";
 import profile from "../../assets/profile.png";
-const getShiftHours = (shift) => {
+export interface HourlyDataItem {
+  hour: string;
+  target?: number; // Optional
+  actual: number;
+  scrap: number;
+}
+
+export interface Employee {
+  name: string;
+  profileImage?: string;
+}
+
+interface TotalData {
+  actual?: number;
+  scrap?: number;
+}
+
+interface ProcessTableProps {
+  processName: string;
+  machineName: string;
+  hourlyData: HourlyDataItem[];
+  total?: TotalData;
+  employees: (Employee | string)[];
+}
+
+const getShiftHours = (shift: number): string[] => {
   if (shift === 1) {
     return [
       "06:00",
@@ -36,9 +62,16 @@ const getShiftHours = (shift) => {
   }
 };
 
-const ProcessTable = ({ processName, machineName, hourlyData, employees }) => {
+const ProcessTable: React.FC<ProcessTableProps> = ({
+  processName,
+  machineName,
+  hourlyData,
+  total,
+  employees,
+}) => {
   const currentHour = new Date().getHours();
-  let shift = 1;
+  let shift: number = 1;
+
   if (currentHour >= 6 && currentHour < 14) shift = 1;
   else if (currentHour >= 14 && currentHour < 22) shift = 2;
   else shift = 3;
@@ -51,7 +84,7 @@ const ProcessTable = ({ processName, machineName, hourlyData, employees }) => {
 
   const shiftTotal = filteredData.reduce(
     (acc, item) => {
-      acc.target += item.target;
+      acc.target += item.target || 0;
       acc.actual += item.actual;
       acc.scrap += item.scrap;
       return acc;
@@ -62,7 +95,7 @@ const ProcessTable = ({ processName, machineName, hourlyData, employees }) => {
   return (
     <div className="p-2 rounded-lg mx-auto">
       <h2 className="font-semibold mb-4 text-center text-[#1C252E]">
-        {processName} ( {machineName})
+        {processName} ({machineName})
       </h2>
 
       <table className="w-full border-collapse">
@@ -85,7 +118,7 @@ const ProcessTable = ({ processName, machineName, hourlyData, employees }) => {
               }`}
             >
               <td className="py-1 px-2 text-xs border">{item.hour}</td>
-              <td className="py-1 px-2 text-xs border">{item.target}</td>
+              <td className="py-1 px-2 text-xs border">{item.target ?? 0}</td>
               <td className="py-1 px-2 text-xs border">{item.actual}</td>
               <td className="py-1 px-2 text-xs border">{item.scrap}</td>
             </tr>
@@ -93,8 +126,12 @@ const ProcessTable = ({ processName, machineName, hourlyData, employees }) => {
           <tr className="font-semibold">
             <td className="py-1 px-2 text-xs border">Total</td>
             <td className="py-1 px-2 text-xs border"></td>
-            <td className="py-1 px-2 text-xs border">{shiftTotal.actual}</td>
-            <td className="py-1 px-2 text-xs border">{shiftTotal.scrap}</td>
+            <td className="py-1 px-2 text-xs border">
+              {total?.actual ?? shiftTotal.actual}
+            </td>
+            <td className="py-1 px-2 text-xs border">
+              {total?.scrap ?? shiftTotal.scrap}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -102,19 +139,27 @@ const ProcessTable = ({ processName, machineName, hourlyData, employees }) => {
       <div className="mt-2">
         <p className="bg-gray-100 text-sm font-semibold p-1">EMP</p>
         <div className="flex flex-col">
-          {employees.map((emp, index) => (
-            <div key={index} className="flex items-center gap-4 p-1 border-b">
-              <img
-                className="w-[20px]"
-                src={emp.profileImage || profile}
-                alt=""
-              />
-              <p className="text-xs">{emp.name}</p>
-            </div>
-          ))}
+          {employees.map((emp, index) => {
+            // Type Guard: Check if emp is a string or an object
+            const isString = typeof emp === "string";
+            const empName = isString ? emp : emp.name;
+            const empImage = isString ? profile : emp.profileImage || profile;
+
+            return (
+              <div key={index} className="flex items-center gap-4 p-1 border-b">
+                <img
+                  className="w-[20px]"
+                  src={empImage as string}
+                  alt={empName}
+                />
+                <p className="text-xs">{empName}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
   );
 };
+
 export default ProcessTable;

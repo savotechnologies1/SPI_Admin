@@ -3,14 +3,26 @@ import DatePicker from "react-datepicker";
 import Tables from "./Tables";
 import { FaSpinner } from "react-icons/fa";
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
+interface BusinessMetrics {
+  totalRevenue: number;
+  totalCOGS: number;
+  totalFixedCost: number;
+  Profit: number;
+  InventoryCost: number;
+  scrapCost: number;
+  bomCost: number;
+  laborCost: number;
+  supplierReturn: number;
+}
+
 const BusinessAnalysis = () => {
-  const [metrics, setMetrics] = useState(null);
+  const [metrics, setMetrics] = useState<BusinessMetrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState(
     new Date(new Date().setDate(new Date().getDate() - 30)),
   );
   const [endDate, setEndDate] = useState(new Date());
-  const formatDate = (date) => date.toISOString().split("T")[0];
+  const formatDate = (date: Date) => date.toISOString().split("T")[0];
   useEffect(() => {
     const fetchMetrics = async () => {
       setLoading(true);
@@ -20,7 +32,7 @@ const BusinessAnalysis = () => {
             startDate,
           )}&endDate=${formatDate(endDate)}`,
         );
-        const data = await res.json();
+        const data: BusinessMetrics = await res.json();
         setMetrics(data);
       } catch (error) {
         console.error("API Error:", error);
@@ -34,7 +46,7 @@ const BusinessAnalysis = () => {
           bomCost: 70842.6,
           laborCost: 45860.0,
           supplierReturn: 0,
-        });
+        } as BusinessMetrics);
       } finally {
         setLoading(false);
       }
@@ -54,14 +66,14 @@ const BusinessAnalysis = () => {
           <div className="flex items-center gap-2 bg-white p-2 rounded shadow-sm border">
             <DatePicker
               selected={startDate}
-              onChange={(date) => setStartDate(date)}
+              onChange={(date) => setStartDate(date as Date)}
               dateFormat="MM/dd/yyyy"
               className="outline-none text-sm w-24 text-center cursor-pointer"
             />
             <span className="text-gray-400">|</span>
             <DatePicker
               selected={endDate}
-              onChange={(date) => setEndDate(date)}
+              onChange={(date) => setEndDate(date as Date)}
               dateFormat="MM/dd/yyyy"
               className="outline-none text-sm w-24 text-center cursor-pointer"
             />

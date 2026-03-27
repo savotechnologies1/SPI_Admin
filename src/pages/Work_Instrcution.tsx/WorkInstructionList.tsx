@@ -14,6 +14,7 @@ interface WorkInstructionItem {
   id: string;
   instructionTitle: string;
   process: {
+    machineName: string;
     processName: string;
   };
   PartNumber: {
@@ -22,6 +23,7 @@ interface WorkInstructionItem {
   steps: Array<unknown>;
   createdAt: string;
   type: string;
+  machineName: string;
 }
 
 const WorkInstructionList: React.FC = () => {

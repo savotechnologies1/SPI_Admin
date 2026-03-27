@@ -2,10 +2,10 @@ import React, { ReactNode } from "react";
 
 interface TableCardProps {
   title: string;
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
-const TableCard: React.FC<TableCardProps> = ({ title, children }) => (
+const TableCard = ({ title, children }: TableCardProps) => (
   <div className="bg-white rounded-2xl p-4 w-full">
     <h3 className="text-lg font-semibold mb-3">{title}</h3>
     {children}

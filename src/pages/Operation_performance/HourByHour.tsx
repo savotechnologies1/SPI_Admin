@@ -1,27 +1,67 @@
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import scrap_cost from "../../assets/scrap_cost.png";
 import supplier_return from "../../assets/supplier_return.png";
-import axios from "axios";
-import { useEffect, useState } from "react";
 import ProcessTable from "../productionLive/Cut$Trim";
 
-const HourByHour = () => {
-  const BASE_URL = import.meta.env.VITE_SERVER_URL;
-  const [processTablesData, setProcessTablesData] = useState([]);
-  const [totalData, setTotalData] = useState();
+interface HourlyEntry {
+  hour: string;
+  actual: number;
+  scrap: number;
+}
+
+interface ProcessData {
+  processName: string;
+  machineName: string;
+  hourlyData: HourlyEntry[];
+  total: {
+    actual: number;
+    scrap: number;
+  };
+  employees: string[]; 
+}
+
+interface GrandTotals {
+  actual: number;
+  scrap: number;
+}
+
+interface HourlyApiResponse {
+  allProcessData: ProcessData[];
+  grandTotals: GrandTotals;
+}
+
+const HourByHour: React.FC = () => {
+  const BASE_URL =
+    (import.meta as any).env.VITE_SERVER_URL || "http://localhost:8086";
+
+  const [processTablesData, setProcessTablesData] = useState<ProcessData[]>([]);
+  const [totalData, setTotalData] = useState<GrandTotals | undefined>(
+    undefined,
+  );
+
   const fetchData = async () => {
-    const response = await axios.get(
-      `${BASE_URL}/api/admin/production/overview`,
-    );
+    try {
+      await axios.get(`${BASE_URL}/api/admin/production/overview`);
+    } catch (error) {
+      console.error("Error fetching overview:", error);
+    }
   };
 
   const fetcHourlyhData = async () => {
-    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const response = await axios.get(
-      `${BASE_URL}/api/admin/production/processes/hourly?tz=${userTimeZone}`,
-    );
-    setProcessTablesData(response.data.allProcessData);
-    setTotalData(response.data.grandTotals);
+    try {
+      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const response = await axios.get<HourlyApiResponse>(
+        `${BASE_URL}/api/admin/production/processes/hourly?tz=${userTimeZone}`,
+      );
+      setProcessTablesData(response.data.allProcessData || []);
+      setTotalData(response.data.grandTotals);
+    } catch (error) {
+      console.error("Error fetching hourly data:", error);
+    }
   };
+
   useEffect(() => {
     fetchData();
     fetcHourlyhData();
@@ -31,6 +71,7 @@ const HourByHour = () => {
   if (currentHour >= 6 && currentHour < 14) shift = 1;
   else if (currentHour >= 14 && currentHour < 22) shift = 2;
   else shift = 3;
+
   return (
     <div>
       <div className="flex flex-col md:flex-row mt-2 gap-4">
@@ -41,7 +82,7 @@ const HourByHour = () => {
             </div>
             <div>
               <p className="text-sm text-gray-600">Total Actual</p>
-              <p className="font-bold text-xl">{totalData?.actual}</p>
+              <p className="font-bold text-xl">{totalData?.actual ?? 0}</p>
             </div>
           </div>
         </div>
@@ -57,13 +98,12 @@ const HourByHour = () => {
             </div>
             <div>
               <p className="text-sm text-gray-600">Total Scrap</p>
-              <p className="font-bold text-xl">{totalData?.scrap}</p>
+              <p className="font-bold text-xl">{totalData?.scrap ?? 0}</p>
             </div>
           </div>
         </div>
       </div>
-
-      <div className="grid gird-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mt-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mt-6">
         {processTablesData.map((process, index) => (
           <div key={index} className="bg-white">
             <ProcessTable
@@ -71,7 +111,7 @@ const HourByHour = () => {
               machineName={process.machineName}
               hourlyData={process.hourlyData}
               total={process.total}
-              employees={process.employees}
+              employees={process.employees} 
             />
           </div>
         ))}

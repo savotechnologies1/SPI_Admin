@@ -1,36 +1,26 @@
+
 import React from "react";
-
-interface ManualItem {
-  processId: string;
-  processName: string;
-  processDesc: string;
-  part: string;
-  totalQuantity: number;
-  totalCompleted: number;
-  totalScrap: number;
-}
-
-interface MonitorItem {
+export interface ManualItem {
   process: string;
-  processDesc: string;
+  part: string;
+  qty: number | string;
+  scrap: number;
+}
+export interface MonitorItem {
+  process: string;
   part: string;
   cycleTime: string;
-  qty: string;
-  scrap: number;
 }
-interface ProductionItem {
-  processName: string;
-  processDesc: string;
+export interface ProductionItem {
+  process: string;
   part: string;
   scrap: number;
 }
-
 interface DataTableProps {
   manualData: ManualItem[];
   monitorData: MonitorItem[];
   productionScrapData: ProductionItem[];
 }
-
 const DataTable: React.FC<DataTableProps> = ({
   manualData,
   monitorData,
@@ -63,7 +53,6 @@ const DataTable: React.FC<DataTableProps> = ({
           </table>
         </div>
       </div>
-
       <div>
         <h2 className="text-lg font-semibold mb-3">Part to Monitor</h2>
         <div className="overflow-x-auto">

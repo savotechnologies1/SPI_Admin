@@ -1,32 +1,85 @@
-import "react-datepicker/dist/react-datepicker.css";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
-import DataTable from "../Operation_performance/DataTable";
-import "react-datepicker/dist/react-datepicker.css";
-
+import axios from "axios";
+import DataTable, {
+  ManualItem,
+  MonitorItem,
+  ProductionItem,
+} from "../Operation_performance/DataTable";
 import { Calendar, ArrowRight } from "lucide-react";
+import "react-datepicker/dist/react-datepicker.css";
+import "react-datepicker/dist/react-datepicker.css";
+interface ApiManualItem {
+  process: string;
+  part: string;
+  totalQuantity: number;
+  totalScrap: number;
+}
 
-const MonitorManagement = () => {
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [manualData, setManualData] = useState([]);
-  const [monitorData, setMonitorData] = useState([]);
-  const [productionScrapData, setProductionScrapData] = useState([]);
+interface ApiMonitorItem {
+  process: string;
+  part: string;
+  cycleTime: string;
+}
 
-  const BASE_URL = import.meta.env.VITE_SERVER_URL;
+interface ApiProductionItem {
+  process: string;
+  part: string;
+  scrap: number;
+}
+
+interface MonitorApiResponse {
+  manualTable: ApiManualItem[];
+  monitorTable: ApiMonitorItem[];
+  productionScrap: ApiProductionItem[];
+}
+
+const MonitorManagement: React.FC = () => {
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [manualData, setManualData] = useState<ManualItem[]>([]);
+  const [monitorData, setMonitorData] = useState<MonitorItem[]>([]);
+  const [productionScrapData, setProductionScrapData] = useState<
+    ProductionItem[]
+  >([]);
+
+  const BASE_URL =
+    (import.meta as any).env.VITE_SERVER_URL || "http://localhost:5000";
 
   const fetchData = async () => {
+    if (!startDate || !endDate) return;
+
     try {
-      const res = await axios.get(`${BASE_URL}/api/admin/monitor-chart-data`, {
-        params: {
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString(),
+      const res = await axios.get<MonitorApiResponse>(
+        `${BASE_URL}/api/admin/monitor-chart-data`,
+        {
+          params: {
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+          },
         },
-      });
-      setManualData(res.data.manualTable);
-      setMonitorData(res.data.monitorTable);
-      setProductionScrapData(res.data.productionScrap);
+      );
+
+      const mappedManual: ManualItem[] = (res.data.manualTable || []).map(
+        (item) => ({
+          process: item.process,
+          part: item.part,
+          qty: item.totalQuantity,
+          scrap: item.totalScrap,
+        }),
+      );
+
+      const mappedScrap: ProductionItem[] = (
+        res.data.productionScrap || []
+      ).map((item) => ({
+        process: item.process,
+        part: item.part,
+        scrap: item.scrap,
+      }));
+
+      setManualData(mappedManual);
+      setMonitorData(res.data.monitorTable || []);
+      setProductionScrapData(mappedScrap);
     } catch (err) {
       console.error("Error fetching data", err);
     }
@@ -35,9 +88,8 @@ const MonitorManagement = () => {
   useEffect(() => {
     fetchData();
   }, [startDate, endDate]);
-
   return (
-    <div className="p-6 bg-gray-50 min-h-screen mt-5">
+    <div className="p-4 md:p-6 bg-gray-50 min-h-screen mt-5">
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 mt-5">
         <div>
           <h1 className="font-bold text-2xl text-gray-800 tracking-tight">
@@ -59,7 +111,7 @@ const MonitorManagement = () => {
               </span>
               <DatePicker
                 selected={startDate}
-                onChange={(date) => setStartDate(date)}
+                onChange={(date: Date | null) => setStartDate(date)}
                 dateFormat="MM/dd/yyyy"
                 className="bg-transparent text-sm font-semibold text-gray-700 outline-none w-24 cursor-pointer"
               />
@@ -67,7 +119,6 @@ const MonitorManagement = () => {
           </div>
 
           <ArrowRight size={16} className="text-gray-300" />
-
           <div className="flex items-center gap-3 px-3 py-1 hover:bg-gray-50 rounded-xl transition-all cursor-pointer">
             <div className="flex flex-col text-left">
               <span className="text-[10px] text-gray-400 font-bold uppercase leading-none">
@@ -75,15 +126,16 @@ const MonitorManagement = () => {
               </span>
               <DatePicker
                 selected={endDate}
-                onChange={(date) => setEndDate(date)}
+                onChange={(date: Date | null) => setEndDate(date)}
                 dateFormat="MM/dd/yyyy"
-                minDate={startDate}
+                minDate={startDate || undefined}
                 className="bg-transparent text-sm font-semibold text-gray-700 outline-none w-24 cursor-pointer"
               />
             </div>
           </div>
         </div>
       </div>
+
       <div className="bg-white rounded-3xl shadow-md border border-gray-100 p-6">
         <DataTable
           manualData={manualData}
@@ -91,12 +143,14 @@ const MonitorManagement = () => {
           productionScrapData={productionScrapData}
         />
       </div>
+
       <style>{`
         .react-datepicker {
           border: none !important;
           border-radius: 12px !important;
           box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
           font-family: inherit !important;
+          z-index: 99;
         }
         .react-datepicker__header {
           background-color: #fff !important;

@@ -21,7 +21,6 @@ import EditCustomer from "./pages/customerInfo/EditCustomer";
 import ProcessList from "./pages/process/ProcessList";
 import EditProcess from "./pages/process/EditPorcess";
 import Import from "./pages/import/Import";
-import UserAccess from "./pages/userAccess/UserAccess";
 import PartForm from "./pages/product&BOM/PartForm";
 import { PartProvider } from "./components/Context/PartContext";
 import PartTable from "./pages/product&BOM/PartTable";
@@ -36,7 +35,6 @@ import EditSuppliers from "./pages/supplier_chain/EditSuppliers";
 import SupplierOrders from "./pages/supplier_chain/SupplierOrders";
 import SupplierInventory from "./pages/supplier_chain/SupplierInventory";
 import SupplierPartList from "./pages/supplier_chain/SupplierPartList";
-import StationLogout from "./pages/production_response/StationLogout";
 import RunSchedule from "./pages/production_response/RunSchedule";
 import RunWithScan from "./pages/production_response/RunWithScan";
 import Training from "./pages/production_response/Training";
@@ -50,7 +48,6 @@ import AddEmployee from "./pages/Employee_Information/Employee_Information/AddEm
 import EditEmployee from "./pages/Employee_Information/Employee_Information/EditEmployee";
 import VacationApproval from "./pages/Employee_Information/Employee_Information/VacationApproval";
 import TimeClockUpdate from "./pages/Employee_Information/Employee_Information/TimeClockUpdate";
-import ClockInOut from "./pages/timeClock/timeClock/ClockInOut";
 import VacationRequest from "./pages/timeClock/timeClock/VacationRequest";
 import VacationList from "./pages/Employee_Information/Employee_Information/VacationList";
 import TimeSheet from "./pages/timeClock/timeClock/TimeSheet";
@@ -87,7 +84,6 @@ const App = () => {
   const { isLoading, token } = useAuth();
 
   if (isLoading) {
-    // Show loader until token check is done
     return (
       <div className="flex justify-center items-center h-screen">
         <Loader className="text-brand" />
@@ -99,7 +95,6 @@ const App = () => {
       <ToastContainer style={{ zIndex: 99999 }} />
       <Router basename="/admin">
         <Routes>
-          {/* Public Routes */}
           <Route path="sign-in" element={<SignIn />} />
           <Route path="sign-up" element={<SignUp />} />
           <Route path="forget-password" element={<ForgetPassowrd />} />
@@ -138,13 +133,6 @@ const App = () => {
             path="edit-product-scrap-entry/:id"
             element={token ? <EditProductScrapEntry /> : <Training />}
           />
-          {/* Protected Routes */}
-          {/* <Route
-            path="/"
-            element={
-              token ? <Layout /> : <Navigate to="/sign-in" replace />
-            }
-          > */}
           <Route path="/" element={token ? <Layout /> : <SignIn />}>
             <Route index element={<DashboardDetails />} />
             <Route path="dashboardDetailes" element={<DashboardDetails />} />
@@ -224,7 +212,6 @@ const App = () => {
             <Route path="vacation-approval" element={<VacationApproval />} />
             <Route path="time-clock" element={<TimeClockList />} />
             <Route path="update" element={<TimeClockUpdate />} />
-            {/* <Route path="clock-in-out" element={<ClockInOut />} /> */}
             <Route path="vaction-request" element={<VacationRequest />} />
             <Route
               path="edit-vaction-request/:id"

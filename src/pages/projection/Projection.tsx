@@ -56,7 +56,10 @@ const Projection: React.FC = () => {
             {projections?.orderCard?.title || "Total Open Order Revenue"}
           </p>
           <h2 className="text-3xl font-bold mt-2">
-            ${projections?.orderCard?.value?.toLocaleString() || 0}
+            {/* ${projections?.orderCard?.value?.toLocaleString() || 0} */}$
+            {projections?.totalOpenOrderRevenue?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}
           </h2>
         </div>
 
@@ -65,7 +68,10 @@ const Projection: React.FC = () => {
             {projections?.partCard?.title || "Total Open Parts Cost"}
           </p>
           <h2 className="text-3xl font-bold mt-2">
-            ${projections?.partCard?.value?.toLocaleString() || 0}
+            {/* ${projections?.partCard?.value?.toLocaleString() || 0}*/}$
+            {projections?.totalOpenPartsCost?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}
           </h2>
         </div>
 
@@ -74,7 +80,10 @@ const Projection: React.FC = () => {
             {projections?.employeeCard?.title || "Total Open Labor Cost"}
           </p>
           <h2 className="text-3xl font-bold mt-2">
-            ${projections?.employeeCard?.value?.toLocaleString() || 0}
+            {/* ${projections?.employeeCard?.value?.toLocaleString() || 0} */}$
+            {projections?.totalOpenLaborCost?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}
           </h2>
         </div>
 
@@ -83,7 +92,7 @@ const Projection: React.FC = () => {
             {projections?.fixedCostCard?.title || "Fixed Cost"}
           </p>
           <h2 className="text-3xl font-bold mt-2">
-            ${projections?.fixedCostCard?.value?.toLocaleString() || 0}
+            ${projections?.totalFixedCost?.value?.toLocaleString() || 0}
           </h2>
         </div>
       </div>

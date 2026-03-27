@@ -13,14 +13,15 @@ export const workInstructionApi = async () => {
 export const addWorkInstruction = async (data: object) => {
   try {
     const response = await axiosInstance.post("/create-work-instruction", data);
-    localStorage.setItem("instructionId", response);
+    if (response.data && response.data.id) {
+      localStorage.setItem("instructionId", String(response.data.id));
+    }
+
     if (response.status === 201) {
       toast.success(response.data.message);
     }
     return response;
   } catch (error: any) {
-    console.error("Add Work Instruction Error:", error);
-
     if (error.response && error.response.data) {
       toast.error(error.response.data.message);
     } else {
@@ -28,7 +29,6 @@ export const addWorkInstruction = async (data: object) => {
     }
   }
 };
-
 export const addWorkinstructionInfo = async (data: object) => {
   try {
     const response = await axiosInstance.post(
@@ -179,9 +179,11 @@ export const selectProductApi = async () => {
   }
 };
 
-export const selectProductInfoApi = async () => {
+export const selectProductInfoApi = async (search: string) => {
   try {
-    const response = await axiosInstance.get(`/select-product-info`);
+    const response = await axiosInstance.get(
+      `/select-product-info?search=${search}`,
+    );
     if (response.status === 200) {
       toast.success(response.data.message);
     }
@@ -190,7 +192,11 @@ export const selectProductInfoApi = async () => {
     toast.error(error.response.data.message);
   }
 };
-
+// Example api call structure
+// export const selectProductInfoApi = async (search: string) => {
+//   const response = await axios.get(`/your-endpoint-path?search=${search}`);
+//   return response.data;
+// };
 export const selectProductRelatedPartsApi = async (productId: string) => {
   try {
     const response = await axiosInstance.get(

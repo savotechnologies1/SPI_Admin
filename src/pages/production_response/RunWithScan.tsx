@@ -35,9 +35,10 @@ const RunWithScan = () => {
       try {
         setLoading(true);
         const stationUserId = localStorage.getItem("stationUserId");
-        const response = await stationProcessDetail(jobId, stationUserId);
+        const response = await stationProcessDetail(jobId, stationUserId || "");
         if (response?.data) setJobData(response.data);
       } catch (error: any) {
+        console.error("Fetch error", error);
         if (error?.status === 404) navigate("/station-login");
       } finally {
         setLoading(false);
@@ -46,6 +47,9 @@ const RunWithScan = () => {
     [navigate],
   );
 
+  useEffect(() => {
+    fetchJobDetails(id);
+  }, [id, fetchJobDetails]);
   useEffect(() => {
     fetchJobDetails(id);
   }, [id, fetchJobDetails]);

@@ -1,3 +1,5 @@
+
+import React from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -7,6 +9,8 @@ import {
   Title,
   Tooltip,
   Legend,
+  ChartData,
+  ChartOptions,
 } from "chart.js";
 
 ChartJS.register(
@@ -18,12 +22,25 @@ ChartJS.register(
   Legend,
 );
 
-const CapacityBarChart = ({ chartData }) => {
+interface CapacityBarChartProps {
+  chartData:
+    | {
+        labels: string[];
+        datasets: {
+          label: string;
+          data: number[];
+        }[];
+      }
+    | null
+    | undefined;
+}
+
+const CapacityBarChart: React.FC<CapacityBarChartProps> = ({ chartData }) => {
   if (!chartData) return null;
 
-  const data = {
-    ...chartData,
-    datasets: chartData?.datasets?.map((ds) => ({
+  const data: ChartData<"bar"> = {
+    labels: chartData.labels,
+    datasets: (chartData.datasets || []).map((ds) => ({
       ...ds,
       backgroundColor: [
         "rgba(0, 210, 150, 0.8)",
@@ -47,12 +64,16 @@ const CapacityBarChart = ({ chartData }) => {
     })),
   };
 
-  const options = {
+  const options: ChartOptions<"bar"> = {
     indexAxis: "y" as const,
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { display: true, position: "bottom", labels: { boxWidth: 10 } },
+      legend: {
+        display: true,
+        position: "bottom" as const,
+        labels: { boxWidth: 10 },
+      },
     },
     scales: {
       x: {
@@ -60,18 +81,26 @@ const CapacityBarChart = ({ chartData }) => {
         grid: { color: "#e5e5e5" },
         ticks: {
           stepSize: 60,
-          callback: (value: number) =>
-            value % 60 === 0 ? `${value / 60} hr` : `${value} min`,
+          callback: (value: string | number) => {
+            const numValue =
+              typeof value === "string" ? parseFloat(value) : value;
+            return numValue % 60 === 0
+              ? `${numValue / 60} hr`
+              : `${numValue} min`;
+          },
           font: { size: 12 },
         },
       },
-      y: { grid: { display: false }, ticks: { font: { size: 14 } } },
+      y: {
+        grid: { display: false },
+        ticks: { font: { size: 14 } },
+      },
     },
   };
 
   return (
     <div className="w-full h-[400px] mx-auto p-4 bg-white rounded-lg shadow-lg">
-      <h1 className="font-medium">Open Orders Process</h1>
+      <h1 className="font-medium mb-4">Open Orders Process</h1>
       <Bar data={data} options={options} />
     </div>
   );

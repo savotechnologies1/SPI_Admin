@@ -41,7 +41,6 @@ const OperationPerformance = () => {
   return (
     <div>
       <div className="p-4 md:p-7">
-        {" "}
         <h1 className="font-bold text-[20px] md:text-[24px] text-black">
           Operational Performance
         </h1>

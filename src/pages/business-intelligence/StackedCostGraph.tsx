@@ -1,3 +1,4 @@
+import React from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -7,6 +8,8 @@ import {
   Title,
   Tooltip,
   Legend,
+  ChartData,
+  ChartOptions,
 } from "chart.js";
 
 ChartJS.register(
@@ -18,8 +21,8 @@ ChartJS.register(
   Legend,
 );
 
-const StackedCostGraph = () => {
-  const chartData = {
+const StackedCostGraph: React.FC = () => {
+  const chartData: ChartData<"bar"> = {
     labels: ["Cost"],
     datasets: [
       {
@@ -35,12 +38,12 @@ const StackedCostGraph = () => {
     ],
   };
 
-  const options = {
-    indexAxis: "y",
+  const options: ChartOptions<"bar"> = {
+    indexAxis: "y" as const,
     responsive: true,
     plugins: {
       legend: {
-        position: "top",
+        position: "top" as const,
         labels: { color: "black" },
       },
       title: {
@@ -62,7 +65,11 @@ const StackedCostGraph = () => {
     },
   };
 
-  return <Bar data={chartData} options={options} />;
+  return (
+    <div className="w-full h-full">
+      <Bar data={chartData} options={options} />
+    </div>
+  );
 };
 
 export default StackedCostGraph;

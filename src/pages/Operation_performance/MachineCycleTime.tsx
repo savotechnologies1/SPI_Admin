@@ -45,7 +45,7 @@ const MachineCycleTime = () => {
               dataKey="time" 
               tick={{ fontSize: 12 }}
               tickMargin={10}
-              interval={window.innerWidth < 768 ? 2 : 0} // Show fewer ticks on mobile
+              interval={window.innerWidth < 768 ? 2 : 0} 
             />
             <YAxis 
               tick={{ fontSize: 12 }}

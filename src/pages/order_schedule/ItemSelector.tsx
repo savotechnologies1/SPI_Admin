@@ -65,7 +65,6 @@ const ItemSelector = () => {
   return (
     <div className="py-6 min-h-screen">
       <div className="grid md:grid-cols-2 gap-6 bg-white rounded-xl p-4">
-        {/* Left Section */}
         <div>
           <h2 className="text-lg font-semibold mb-4">Available Items:</h2>
           <div className="space-y-4">
@@ -85,7 +84,7 @@ const ItemSelector = () => {
                     </p>
                   </div>
                   <button
-                    onClick={() => addItem(item )}
+                    onClick={() => addItem(item)}
                     disabled={alreadyAdded}
                     className={`text-xl items-center ${
                       alreadyAdded
@@ -101,7 +100,6 @@ const ItemSelector = () => {
           </div>
         </div>
 
-        {/* Right Section */}
         <div>
           <h2 className="text-lg font-semibold mb-4">Selected Items:</h2>
           <div className="space-y-4">
@@ -131,7 +129,7 @@ const ItemSelector = () => {
                     </div>
                   </div>
                 </div>
-              )
+              ),
             )}
           </div>
         </div>

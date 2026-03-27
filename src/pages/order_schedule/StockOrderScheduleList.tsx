@@ -18,17 +18,6 @@ function useDebounce(value: string, delay: number): string {
   return debouncedValue;
 }
 
-interface WorkInstructionItem {
-  id: string;
-  imageUrl: string;
-  name: string;
-  partDesc: string;
-  stepNumber: string;
-  description: string;
-  submitDate: string;
-  statusColor: string;
-}
-
 const StockOrderScheduleList: React.FC = () => {
   const [workData, setWorkData] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState(1);

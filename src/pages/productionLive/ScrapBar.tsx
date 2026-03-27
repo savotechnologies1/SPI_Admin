@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -7,16 +8,9 @@ import {
   Title,
   Tooltip,
   Legend,
+  ChartData,
+  ChartOptions,
 } from "chart.js";
-import { useEffect, useState } from "react";
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-);
 
 ChartJS.register(
   CategoryScale,
@@ -27,19 +21,32 @@ ChartJS.register(
   Legend,
 );
 
-const ScrapBar = ({ apiData }) => {
-  const [chartData, setChartData] = useState(null);
+interface ScrapApiItem {
+  processName?: string;
+  machineName?: string;
+  scrapQuantity?: number;
+  scrap?: number;
+}
+
+interface ScrapBarProps {
+  apiData: ScrapApiItem[] | null | undefined;
+}
+
+const ScrapBar: React.FC<ScrapBarProps> = ({ apiData }) => {
+  const [chartData, setChartData] = useState<ChartData<"bar"> | null>(null);
 
   useEffect(() => {
     if (!apiData || apiData.length === 0) {
       setChartData(null);
       return;
     }
-    const scrapByProcess = {};
+
+    const scrapByProcess: Record<string, number> = {};
+
     apiData.forEach((item) => {
       const name = `${item?.processName || "Unknown"} (${item?.machineName || "N/A"})`;
-      scrapByProcess[name] =
-        (scrapByProcess[name] || 0) + (item.scrapQuantity || item.scrap || 0);
+      const quantity = item.scrapQuantity || item.scrap || 0;
+      scrapByProcess[name] = (scrapByProcess[name] || 0) + quantity;
     });
 
     const labels = Object.keys(scrapByProcess);
@@ -61,16 +68,21 @@ const ScrapBar = ({ apiData }) => {
     });
   }, [apiData]);
 
-  const options = {
+  const options: ChartOptions<"bar"> = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: "top" },
+      legend: { position: "top" as const },
       tooltip: { enabled: true },
     },
     scales: {
-      y: { beginAtZero: true, grid: { display: false } },
-      x: { grid: { display: false } },
+      y: {
+        beginAtZero: true,
+        grid: { display: false },
+      },
+      x: {
+        grid: { display: false },
+      },
     },
   };
 
@@ -91,4 +103,5 @@ const ScrapBar = ({ apiData }) => {
     </div>
   );
 };
+
 export default ScrapBar;

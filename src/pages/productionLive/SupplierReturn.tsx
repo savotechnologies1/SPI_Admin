@@ -1,7 +1,6 @@
 import data from "../../components/Data/customerReturnData";
 import client_icon from "../../assets/client.png";
 import date_icon from "../../assets/date.png";
-
 import pin from "../../assets/pin.png";
 import copy from "../../assets/copy.png";
 import filter from "../../assets/byte_filter.png";
@@ -26,7 +25,7 @@ const SupplierReturn = () => {
         </div>
       </div>
 
-     <div className="overflow-x-auto py-6  overflow-y-auto max-h-[300px]">
+      <div className="overflow-x-auto py-6  overflow-y-auto max-h-[300px]">
         <table className="w-full  bg-white">
           <thead>
             <tr className="border-b">

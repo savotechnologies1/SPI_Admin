@@ -388,16 +388,7 @@ const sections: Section[] = [
         icon: time_clock,
         hasSubmenu: true,
         submenu: [
-          // {
-          //   key: "Clockinout",
-          //   label: "Clock in and out",
-          //   path: "/clock-in-out",
-          // },
-          // {
-          //   key: "VacationRequest",
-          //   label: "Vacation Request",
-          //   path: "/vaction-request",
-          // },
+       
           {
             key: "Vacation Request approval",
             label: "Vacation Request approval",
