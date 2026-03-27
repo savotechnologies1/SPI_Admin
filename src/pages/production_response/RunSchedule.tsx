@@ -808,7 +808,6 @@ const RunSchedule = () => {
             : null,
         );
 
-        // Phir backend se latest data (Next Part Name, etc.) refresh karein
         await fetchJobDetails(id);
       }
     } catch (error: any) {
