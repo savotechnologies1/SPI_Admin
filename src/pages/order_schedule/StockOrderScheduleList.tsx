@@ -181,14 +181,12 @@ const StockOrderScheduleList: React.FC = () => {
                       {rowItem.partDetails?.partNumber || "N/A"}
                     </td>
                     <td className="px-4 py-3">
-                      {rowItem.part?.process?.processName ||
-                        rowItem.customPart?.process?.processName ||
-                        "N/A"}
-                      (
-                      {rowItem.part?.process?.machineName ||
-                        rowItem.customPart?.process?.machineName}
-                      )
-                    </td>
+  {rowItem.partDetails?.processName || "N/A"} 
+  {" "}
+  <span className="text-gray-400 text-xs">
+    ({rowItem.partDetails?.machineName || "N/A"})
+  </span>
+</td>
                     <td className="px-4 py-3">
                       {formatDate(rowItem.order_date)}
                     </td>
