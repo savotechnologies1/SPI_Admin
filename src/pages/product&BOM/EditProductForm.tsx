@@ -445,6 +445,14 @@ const EditProductForm: React.FC = () => {
               className="border p-2 rounded w-full"
             />
           </div>
+ <div className="col-span-4 md:col-span-1">
+            <label>Available Stock</label>
+            <input
+              type="number"
+              {...register("availStock", { valueAsNumber: true })}
+              className="border p-2 rounded w-full"
+            />
+          </div>
 
           <div className="col-span-4 md:col-span-1">
             <label>Cycle Time (Min)</label>
