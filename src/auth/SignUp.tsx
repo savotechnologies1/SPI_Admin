@@ -23,7 +23,6 @@ const SignUp = () => {
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
-      {/* Left Image Section - Hidden on mobile */}
       <div className="hidden lg:block lg:w-1/2 relative bg-gray-100">
         <img
           src={signin}
@@ -31,15 +30,10 @@ const SignUp = () => {
           className="w-full h-full object-cover min-h-[50vh] lg:min-h-screen"
         />
       </div>
-
-      {/* Right Form Section */}
       <div className="w-full lg:w-1/2 bg-white flex items-center justify-center py-8 lg:py-0 relative">
-        {/* Logo - Hidden on mobile, visible on desktop */}
         <div className="absolute top-6 right-6 hidden lg:block">
           <img className="w-40" src={logo} alt="Company Logo" />
         </div>
-
-        {/* Mobile Logo - Centered at top */}
         <div className="absolute top-4 left-0 right-0 mx-auto lg:hidden">
           <img className="w-32 mx-auto" src={logo} alt="Company Logo" />
         </div>
@@ -50,7 +44,6 @@ const SignUp = () => {
           </h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {/* Email Field */}
             <div>
               <label className="block text-gray-700 mb-2 font-medium">
                 Email
@@ -76,7 +69,6 @@ const SignUp = () => {
               )}
             </div>
 
-            {/* Password Field */}
             <div>
               <label className="block text-gray-700 mb-2 font-medium">
                 Password
@@ -114,8 +106,6 @@ const SignUp = () => {
                 </p>
               )}
             </div>
-
-            {/* Confirm Password Field */}
             <div>
               <label className="block text-gray-700 mb-2 font-medium">
                 Confirm Password
@@ -153,23 +143,17 @@ const SignUp = () => {
                 </p>
               )}
             </div>
-
-            {/* Sign Up Button */}
             <button
               type="submit"
               className="w-full bg-[#213C70] hover:bg-[#1a315a] text-white py-3 px-4 rounded-lg font-medium transition-colors duration-300"
             >
               Sign Up
             </button>
-
-            {/* Social Login Divider */}
             <div className="flex items-center justify-center my-4 text-gray-500 text-sm">
               <span className="h-px bg-gray-300 flex-1"></span>
               <span className="px-3">Or sign up with</span>
               <span className="h-px bg-gray-300 flex-1"></span>
             </div>
-
-            {/* Social Login Buttons */}
             <div className="flex gap-4 justify-center mb-6">
               {[
                 { src: fb, alt: "Facebook" },
@@ -185,10 +169,8 @@ const SignUp = () => {
                 </button>
               ))}
             </div>
-
-            {/* Login Link */}
             <div className="text-center text-gray-600">
-              Already have an account?{" "}
+              Already have an account?
               <Link
                 to="/sign-in"
                 className="text-[#4AA6BB] hover:underline font-medium"

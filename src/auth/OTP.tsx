@@ -14,12 +14,9 @@ const OTP = () => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
     const value = e.target.value;
     if (!/^[0-9]?$/.test(value)) return;
-
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-
-    // Move to next input if current has value
     if (value && index < 5 && inputRefs.current[index + 1]) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -54,28 +51,19 @@ const OTP = () => {
   const [seconds, setSeconds] = useState(30);
 
   useEffect(() => {
-    // 2. Jab tak seconds 0 se zyada hain, tab tak har second pe countdown chalao.
     if (seconds > 0) {
       const timerId = setInterval(() => {
-        // Har second, seconds ki value 1 se kam kardo.
         setSeconds((prevSeconds) => prevSeconds - 1);
       }, 1000);
-
-      // 3. Cleanup function: Jab component hatega ya 'seconds' update hoga,
-      // toh purana interval clear ho jayega. Isse memory leaks nahi hote.
       return () => clearInterval(timerId);
     }
-    // 4. Dependency Array [seconds]: Yeh effect tabhi chalega jab 'seconds' ki value badlegi.
   }, [seconds]);
-
-  // Function to format time as 00:SS
   const formatTime = () => {
     const remainingSeconds = seconds % 60;
     return `00:${String(remainingSeconds).padStart(2, "0")}`;
   };
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
-      {/* Left Image Section - Hidden on mobile */}
       <div className="hidden lg:block lg:w-1/2 relative bg-gray-100">
         <img
           src={signin}

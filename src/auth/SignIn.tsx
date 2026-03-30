@@ -58,19 +58,19 @@ const SignIn = () => {
             src={logo}
             alt="Logo"
             className="
-    h-8 
-    sm:h-10 
-    md:h-12 
-    lg:h-14 
-    xl:h-16 
-    2xl:h-18 
-    w-auto 
-    max-w-[120px] 
-    sm:max-w-[150px] 
-    md:max-w-[180px] 
-    lg:max-w-[220px] 
-    object-contain
-  "
+            h-8 
+            sm:h-10 
+            md:h-12 
+            lg:h-14 
+            xl:h-16 
+            2xl:h-18 
+            w-auto 
+            max-w-[120px] 
+            sm:max-w-[150px] 
+            md:max-w-[180px] 
+            lg:max-w-[220px] 
+            object-contain
+          "
           />
 
           <img src={setting} alt="Settings" />
@@ -89,9 +89,8 @@ const SignIn = () => {
               type="text"
               {...register("userName", { required: "Username is required" })}
               placeholder="Enter your username"
-              className={`w-full border p-2 rounded outline-none focus:ring-2 focus:ring-brand/50 ${
-                errors.userName ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full border p-2 rounded outline-none focus:ring-2 focus:ring-brand/50 ${errors.userName ? "border-red-500" : "border-gray-300"
+                }`}
               autoComplete="username"
             />
             {errors.userName && (
@@ -110,9 +109,8 @@ const SignIn = () => {
                 type={showPassword ? "text" : "password"}
                 {...register("password", { required: "Password is required" })}
                 placeholder="********"
-                className={`w-full border p-2 rounded outline-none focus:ring-2 focus:ring-brand/50 ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full border p-2 rounded outline-none focus:ring-2 focus:ring-brand/50 ${errors.password ? "border-red-500" : "border-gray-300"
+                  }`}
                 autoComplete="current-password"
               />
               <img
@@ -141,11 +139,10 @@ const SignIn = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full p-3 rounded text-white font-bold flex items-center justify-center gap-2 transition-all ${
-              isSubmitting
+            className={`w-full p-3 rounded text-white font-bold flex items-center justify-center gap-2 transition-all ${isSubmitting
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-brand hover:bg-brand-dark active:scale-[0.98]"
-            }`}
+              }`}
           >
             {isSubmitting ? (
               <>
