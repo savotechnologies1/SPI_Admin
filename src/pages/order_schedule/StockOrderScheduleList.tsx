@@ -198,7 +198,7 @@ const StockOrderScheduleList: React.FC = () => {
                         <span className="font-medium">
                           {rowItem.completed_by === "Admin"
                             ? "Admin"
-                            : `${rowItem?.completed_by} ${rowItem?.completed_by}`}
+                            : `${rowItem?.completed_by}`}
                         </span>
                       ) : (
                         <span className="text-gray-400 italic">Pending</span>

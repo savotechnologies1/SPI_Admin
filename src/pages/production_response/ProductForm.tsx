@@ -39,16 +39,16 @@ const ProductForm: React.FC = () => {
     [],
   );
   const formik = useFormik<FormValues>({
-    initialValues: {
-      searchPart: "",
-      partId: "",
-      customer: "",
-      customerId: "",
-      returnQuantity: "",
-      scrapStatus: "yes",
-      type: "product",
-      defectDesc: "",
-    },
+  initialValues: {
+    searchPart: "",
+    partId: "",
+    customer: "",
+    customerId: "",
+    returnQuantity: "",
+    scrapStatus: "", // <-- Yahan "" kar dein
+    type: "product",
+    defectDesc: "",
+  },
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       const payload = {
         type: values.type,
@@ -63,7 +63,6 @@ const ProductForm: React.FC = () => {
         setSubmitting(true);
         const res = await ScrapEntryApi(payload);
         if (res) {
-          toast.success("Product scrap entry saved successfully!");
           resetForm();
           setProductSuggestions([]);
           setCustomerSuggestions([]);
@@ -177,7 +176,7 @@ const ProductForm: React.FC = () => {
           )}
         </div>
 
-        <div className="bg-white p-4 border rounded-md relative">
+        <div className="bg-white relative">
           <label className="block font-semibold mb-1">
             Customer (Optional)
           </label>
@@ -212,7 +211,7 @@ const ProductForm: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white p-4 border rounded-md">
+          <div className="bg-white rounded-md">
             <label className="block font-semibold mb-1">
               Return Quantity *
             </label>
@@ -223,19 +222,22 @@ const ProductForm: React.FC = () => {
               {...formik.getFieldProps("returnQuantity")}
             />
           </div>
-          <div className="bg-white p-4 border rounded-md">
-            <label className="block font-semibold mb-1">Scrap Status</label>
-            <select
-              className="border py-3 px-4 rounded-md w-full text-gray-600 bg-white"
-              {...formik.getFieldProps("scrapStatus")}
-            >
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </select>
-          </div>
+        <div className="bg-white  rounded-md">
+  <label className="block font-semibold mb-1">Scrap Status</label>
+  <select
+    className="border py-3 px-4 rounded-md w-full text-gray-600 bg-white"
+    {...formik.getFieldProps("scrapStatus")}
+  >
+    {/* Ye line add karein */}
+    <option value="" disabled>-- Select Option --</option>
+    
+    <option value="yes">Yes</option>
+    <option value="no">No</option>
+  </select>
+</div>
         </div>
 
-        <div className="bg-white p-4 border rounded-md">
+        <div className="bg-white rounded-md">
           <label className="block font-semibold mb-1">Defect Description</label>
           <textarea
             rows={3}
@@ -251,7 +253,7 @@ const ProductForm: React.FC = () => {
             disabled={
               formik.isSubmitting ||
               !formik.values.partId ||
-              !formik.values.returnQuantity
+              !formik.values.returnQuantity|| !formik.values.scrapStatus // <-- Ye check add karein
             }
             className="px-10 py-3 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-800 transition disabled:bg-gray-400"
           >

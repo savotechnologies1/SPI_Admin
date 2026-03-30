@@ -33,17 +33,18 @@ const PartForm = () => {
     [],
   );
 
-  const formik = useFormik({
-    initialValues: {
-      type: "part",
-      searchPart: "",
-      partId: "",
-      supplier: "",
-      supplierId: "",
-      returnQuantity: "",
-      scrapStatus: " ",
-      defectDesc: "",
-    },
+ const formik = useFormik({
+  initialValues: {
+    type: "part",
+    searchPart: "",
+    partId: "",
+    supplier: "",
+    supplierId: "",
+    returnQuantity: "",
+    scrapStatus: "", // Isse empty rakhein taaki default option dikhe
+    defectDesc: "",
+  },
+  // ... baaki code same rahega
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       const payload = {
         type: values.type,
@@ -219,20 +220,22 @@ const PartForm = () => {
                 onChange={formik.handleChange}
               />
             </div>
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                Update Stock (Scrap Status)
-              </label>
-              <select
-                name="scrapStatus"
-                className="w-full border-2 border-gray-200 py-3 px-4 rounded-lg outline-none focus:border-blue-500 bg-white"
-                value={formik.values.scrapStatus}
-                onChange={formik.handleChange}
-              >
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </div>
+     <div>
+  <label className="block text-sm font-bold text-gray-700 mb-2">
+    Update Stock (Scrap Status)
+  </label>
+  <select
+    name="scrapStatus"
+    className="w-full border-2 border-gray-200 py-3 px-4 rounded-lg outline-none focus:border-blue-500 bg-white"
+    value={formik.values.scrapStatus}
+    onChange={formik.handleChange}
+  >
+    {/* Ye raha default option */}
+    <option value="" disabled>-- Select Option --</option> 
+    <option value="yes">Yes</option>
+    <option value="no">No</option>
+  </select>
+</div>
           </div>
 
           <div>
@@ -255,7 +258,8 @@ const PartForm = () => {
               disabled={
                 formik.isSubmitting ||
                 !formik.values.partId ||
-                !formik.values.returnQuantity
+                !formik.values.returnQuantity||
+                  !formik.values.scrapStatus // Status select karna compulsory ho jayega
               }
               className="px-10 py-3 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-800 transition disabled:bg-gray-400"
             >

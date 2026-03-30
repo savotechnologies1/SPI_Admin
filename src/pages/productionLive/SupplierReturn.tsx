@@ -77,7 +77,7 @@ const SupplierReturn = () => {
                 </td>
 
                 <td className="px-4 py-4 text-sm sm:text-base  ">
-                  {item.defect}
+                  {item.defectDesc}
                 </td>
                 <td className="px-4 py-4 text-sm sm:text-base  ">{item.qty}</td>
               </tr>

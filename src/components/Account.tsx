@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import img from "../assets/pofile_img.jpg";
 import cross from "../assets/cross.png";
-import home from "../assets/home.png";
 import { Link, useNavigate } from "react-router-dom";
-import upgrade from "../assets/upgrade.png";
 import { getProfile } from "../pages/settings/https/profileApi";
 import { FiHome, FiUser } from "react-icons/fi";
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
