@@ -211,6 +211,7 @@ export const scrapOrder = async (
   order_type: string,
   partId: string,
   employeeId: string,
+  completedBy:string
 ) => {
   try {
     const response = await axiosInstance.put(`/scrap-order/${id}`, {
@@ -218,6 +219,7 @@ export const scrapOrder = async (
       order_type,
       partId,
       employeeId,
+      completedBy
     });
 
     if (response.status === 201) {

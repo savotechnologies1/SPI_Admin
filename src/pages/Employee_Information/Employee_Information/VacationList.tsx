@@ -614,13 +614,13 @@ const VacationList: React.FC = () => {
         <h1 className="font-bold text-xl md:text-2xl text-black">
           Vacation List for approval
         </h1>
-        <NavLink
+        {/* <NavLink
           to="/add-employee"
           className="py-2 px-7 rounded-lg bg-brand text-white flex gap-2 items-center h-fit"
         >
           <img src={add} alt="" className="w-4 h-4" />
           <span>New Employee</span>
-        </NavLink>
+        </NavLink> */}
       </div>
 
       <div className="flex flex-wrap items-center mt-2 gap-2 text-sm md:text-base">
@@ -628,7 +628,7 @@ const VacationList: React.FC = () => {
           Dashboard
         </NavLink>
         <FaCircle className="text-[4px] text-gray-500" />
-        <span className="cursor-pointer">Employees</span>
+        <span className="cursor-pointer">Vacation List</span>
         <FaCircle className="text-[4px] text-gray-500" />
         <span className="text-gray-400">List</span>
       </div>
@@ -758,9 +758,9 @@ const VacationList: React.FC = () => {
                         onClick={() => handleMailClick(item.id, item.status)}
                         className="text-brand cursor-pointer w-5 h-5"
                       />
-                      <button onClick={() => handleEdit(item.id)}>
+                      {/* <button onClick={() => handleEdit(item.id)}>
                         <img src={edit} alt="Edit" className="w-5 h-5" />
-                      </button>
+                      </button> */}
                       <div className="relative">
                         <FaTrash
                           className="text-red-500 cursor-pointer w-5 h-5"

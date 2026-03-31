@@ -1,7 +1,9 @@
 import { FaCircle } from "react-icons/fa";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useEffect } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css"; 
 import {
   employeeDetail,
   editEmployee,
@@ -16,7 +18,7 @@ type FormData = {
   hourlyRate: string;
   shift: string;
   status: string;
-  startDate: string;
+  startDate: Date | null; 
   pin: string;
   role: string;
   processLogin: string;
@@ -28,22 +30,24 @@ const EditEmployee = () => {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
-    setError,
-    clearErrors,
   } = useForm<FormData>();
 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const onSubmit = async (data: FormData) => {
-    console.log("Form Submitted:", data);
-    if (!id) {
-      console.error("Employee ID is missing");
-      return;
-    }
+    if (!id) return;
+
+    // API ko data bhejte waqt format standard (YYYY-MM-DD) hi rakhein taaki backend reject na kare
+    const formattedData = {
+      ...data,
+      startDate: data.startDate ? data.startDate.toISOString().split("T")[0] : "",
+    };
+
     try {
-      const response = await editEmployee(data, id);
+      const response = await editEmployee(formattedData, id);
       if (response?.status === 200) {
         navigate("/employees");
       }
@@ -53,16 +57,10 @@ const EditEmployee = () => {
   };
 
   const fetchEmployeeDetail = async () => {
-    if (!id) {
-      console.error("Employee ID is missing");
-      return;
-    }
+    if (!id) return;
     try {
       const response = await employeeDetail(id);
       const data = response.data;
-      const formattedStartDate = data?.startDate
-        ? new Date(data.startDate).toISOString().split("T")[0]
-        : "";
 
       reset({
         firstName: data.firstName,
@@ -75,7 +73,8 @@ const EditEmployee = () => {
         role: data.role,
         processLogin: String(data.processLogin),
         status: data.status,
-        startDate: formattedStartDate,
+        // API se aane wali date string ko Date object mein convert karein
+        startDate: data.startDate ? new Date(data.startDate) : null,
         termsAccepted: data.termsAccepted,
       });
     } catch (error) {
@@ -84,21 +83,14 @@ const EditEmployee = () => {
   };
 
   useEffect(() => {
-    if (id) {
-      fetchEmployeeDetail();
-    }
+    if (id) fetchEmployeeDetail();
   }, [id, reset]);
 
   const handleDelete = async () => {
-    if (!id) {
-      console.error("Employee ID is missing");
-      return;
-    }
+    if (!id) return;
     try {
       const response = await deleteEmployee(id);
-      if (response?.status === 200) {
-        navigate("/employees");
-      }
+      if (response?.status === 200) navigate("/employees");
     } catch (error: unknown) {
       console.error("Error deleting employee:", error);
     }
@@ -108,295 +100,131 @@ const EditEmployee = () => {
     <div className="p-4 md:p-7 mt-5">
       <div>
         <div className="flex flex-col sm:flex-row justify-between gap-4">
-          <div>
-            <h1 className="font-bold text-xl md:text-2xl text-black">
-              Edit Employee
-            </h1>
-          </div>
+          <h1 className="font-bold text-xl md:text-2xl text-black">Edit Employee</h1>
         </div>
 
         <div className="flex flex-wrap items-center mt-2 gap-1 md:gap-2">
-          <p className={`text-sm md:text-base text-black`}>
+          <p className="text-sm md:text-base text-black">
             <NavLink to={"/dashboardDetailes"}>Dashboard</NavLink>
           </p>
-          <span>
-            <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
-          </span>
-          <span className="text-sm md:text-base hover:cursor-pointer">
-            Employees
-          </span>
-          <span>
-            <FaCircle className="text-[4px] md:text-[6px] text-gray-500" />
-          </span>
-          <span className="text-sm md:text-base hover:cursor-pointer">
-            Edit Employee
-          </span>
+          <span><FaCircle className="text-[4px] md:text-[6px] text-gray-500" /></span>
+          <span className="text-sm md:text-base hover:cursor-pointer">Employees</span>
+          <span><FaCircle className="text-[4px] md:text-[6px] text-gray-500" /></span>
+          <span className="text-sm md:text-base hover:cursor-pointer">Edit Employee</span>
         </div>
       </div>
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="bg-white p-6 rounded-xl shadow-md mt-4 space-y-4"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-6 rounded-xl shadow-md mt-4 space-y-4">
+        {/* Name Fields */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">First Name</label>
-            <input
-              {...register("firstName", {
-                required: "First Name is required",
-              })}
-              placeholder="First Name"
-              className="w-full border px-4 py-2 rounded-md"
-            />
-            {errors.firstName && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.firstName.message}
-              </p>
-            )}
+            <input {...register("firstName", { required: "First Name is required" })} className="w-full border px-4 py-2 rounded-md" />
+            {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName.message}</p>}
           </div>
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Last Name</label>
-            <input
-              {...register("lastName", {
-                required: "Last Name is required",
-              })}
-              placeholder="Last Name"
-              className="w-full border px-4 py-2 rounded-md"
-            />
-            {errors.lastName && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.lastName.message}
-              </p>
-            )}
+            <input {...register("lastName", { required: "Last Name is required" })} className="w-full border px-4 py-2 rounded-md" />
+            {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName.message}</p>}
           </div>
         </div>
 
+        {/* Email & Full Name */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Full Name</label>
-            <input
-              {...register("fullName", {
-                required: "Full Name is required",
-              })}
-              placeholder="Full Name"
-              className="w-full border px-4 py-2 rounded-md"
-            />
-            {errors.fullName && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.fullName.message}
-              </p>
-            )}
+            <input {...register("fullName", { required: "Full Name is required" })} className="w-full border px-4 py-2 rounded-md" />
           </div>
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Employee Email</label>
-            <input
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
-                },
-              })}
-              placeholder="Enter Email"
-              className="w-full border px-4 py-2 rounded-md"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.email.message}
-              </p>
-            )}
+            <input {...register("email", { required: "Email is required" })} className="w-full border px-4 py-2 rounded-md" />
           </div>
         </div>
 
+        {/* Rate & Shift */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Hourly Rate</label>
-            <input
-              {...register("hourlyRate", {
-                required: "Hourly Rate is required",
-                pattern: {
-                  value: /^\d+(\.\d{1,2})?$/,
-                  message:
-                    "Hourly Rate must be a valid number (e.g., 25 or 25.50)",
-                },
-                onBlur: (e) => {
-                  const value = e.target.value;
-                  if (value && !/^\d+(\.\d{1,2})?$/.test(value)) {
-                    setError("hourlyRate", {
-                      type: "manual",
-                      message:
-                        "Hourly Rate must be a valid number (e.g., 25 or 25.50)",
-                    });
-                  } else {
-                    clearErrors("hourlyRate");
-                  }
-                },
-              })}
-              type="text"
-              inputMode="numeric"
-              placeholder="$25/Hour"
-              onKeyDown={(e) => {
-                if (["e", "E", "+", "-"].includes(e.key)) {
-                  e.preventDefault();
-                }
-                if (e.key === "." && e.currentTarget.value.includes(".")) {
-                  e.preventDefault();
-                }
-              }}
-              className="w-full border px-4 py-2 rounded-md"
-            />
-            {errors.hourlyRate && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.hourlyRate.message}
-              </p>
-            )}
+            <input {...register("hourlyRate", { required: "Required" })} className="w-full border px-4 py-2 rounded-md" />
           </div>
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Shift</label>
-            <select
-              {...register("shift", {
-                required: "Shift is required",
-              })}
-              className="w-full border px-4 py-2 rounded-md text-gray-600"
-            >
-              <option value="">Select Shift</option>
+            <select {...register("shift")} className="w-full border px-4 py-2 rounded-md text-gray-600">
               <option value="day">Day</option>
               <option value="night">Night</option>
             </select>
-            {errors.shift && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.shift.message}
-              </p>
-            )}
           </div>
         </div>
 
+        {/* Start Date (UPDATED FOR MM/DD/YYYY) */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Start Date</label>
-            <input
-              type="date"
-              {...register("startDate", {
-                required: "Start Date is required",
-              })}
-              placeholder="Start date"
-              className="w-full border px-4 py-2 rounded-md text-gray-600"
+            <Controller
+              control={control}
+              name="startDate"
+              rules={{ required: "Start Date is required" }}
+              render={({ field }) => (
+                <DatePicker
+                  placeholderText="MM/DD/YYYY"
+                  className="w-full border px-4 py-2 rounded-md text-gray-600 focus:outline-none focus:ring-2 focus:ring-brand"
+                  selected={field.value}
+                  onChange={(date) => field.onChange(date)}
+                  dateFormat="MM/dd/yyyy" // <--- Yahan format change kiya hai
+                  wrapperClassName="w-full"
+                />
+              )}
             />
-            {errors.startDate && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.startDate.message}
-              </p>
-            )}
+            {errors.startDate && <p className="text-red-500 text-sm mt-1">{errors.startDate.message}</p>}
           </div>
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Pin</label>
-            <input
-              {...register("pin", {
-                required: "PIN is required",
-                pattern: {
-                  value: /^\d{5}$/,
-                  message: "PIN must be exactly 5 digits",
-                },
-                onBlur: (e) => {
-                  const value = e.target.value;
-                  if (value && !/^\d{5}$/.test(value)) {
-                    setError("pin", {
-                      type: "manual",
-                      message: "PIN must be exactly 5 digits",
-                    });
-                  } else {
-                    clearErrors("pin");
-                  }
-                },
-              })}
-              type="text"
-              inputMode="numeric"
-              placeholder="54215"
-              onKeyDown={(e) => {
-                if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
-                  e.preventDefault();
-                }
-              }}
-              className="w-full border px-4 py-2 rounded-md"
-            />
-            {errors.pin && (
-              <p className="text-red-500 text-sm mt-1">{errors.pin.message}</p>
-            )}
+            <input {...register("pin", { required: "Required" })} className="w-full border px-4 py-2 rounded-md" />
           </div>
         </div>
 
+        {/* Role & Station Login */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Employee Role</label>
-            <select
-              {...register("role", {
-                required: "Employee Role is required",
-              })}
-              className="w-full border px-4 py-2 rounded-md text-gray-600"
-            >
-              <option value="">Select Role</option>
+            <select {...register("role")} className="w-full border px-4 py-2 rounded-md">
               <option value="Shop_Floor">Shop Floor</option>
               <option value="Frontline_Manager">Frontline Manager</option>
             </select>
-            {errors.role && (
-              <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>
-            )}
           </div>
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Station Login</label>
-            <select
-              {...register("processLogin", {
-                required: "Station Login is required",
-              })}
-              className="w-full border px-4 py-2 rounded-md text-gray-600"
-            >
-              <option value="">Require Shop Floor Login?</option>
+            <select {...register("processLogin")} className="w-full border px-4 py-2 rounded-md">
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
-            {errors.processLogin && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.processLogin.message}
-              </p>
-            )}
           </div>
         </div>
 
+        {/* Status */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="sm:w-1/2">
             <label className="font-semibold block mb-1">Status</label>
-            <select
-              {...register("status", {
-                required: "Status is required",
-              })}
-              className="w-full border px-4 py-2 rounded-md text-gray-600"
-            >
-              <option value="">Select Status</option>
-              <option value="pending">Pending</option>
+            <select {...register("status")} className="w-full border px-4 py-2 rounded-md">
               <option value="active">Active</option>
+              <option value="pending">Pending</option>
               <option value="banned">Banned</option>
-              <option value="rejected">Rejected</option>
             </select>
-            {errors.status && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.status.message}
-              </p>
-            )}
           </div>
-          <div className="sm:w-1/2"></div>
         </div>
 
+        {/* Action Buttons */}
         <div className="flex justify-end pt-2 mt-6">
-          <button
+          {/* <button
             type="button"
             onClick={handleDelete}
             className="bg-red-600 text-white px-4 py-2 rounded-md mr-4"
           >
             Delete
-          </button>
+          </button> */}
           <button
             type="submit"
-            className="bg-brand text-white px-4 py-2 rounded-md"
+            className="bg-brand bg-blue-600 text-white px-4 py-2 rounded-md"
           >
             Save Changes
           </button>

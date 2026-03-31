@@ -30,7 +30,7 @@ const processTemplate = [
 
 const partTemplate = [
   ["partFamily", "partNumber", "partDescription", "type", "cost", "leadTime", "minStock", "availStock", "supplierOrderQty", "cycleTime", "processName", "processDesc", "processOrderRequired", "instructionRequired", "companyName", "fileName"],
-  ["Cut trim Components", "PR-100", "PR-100 Description", "part", "20", "2", "2", "48", "50", "10", "Cut trim", "Cut trim description", "TRUE", "0", "SPI Custom", "part"],
+  ["Cut trim Components", "PR-100", "PR-100 Description", "part", "20", "2", "2", "48", "50", "10", "Cut trim", "Cut trim description", "TRUE", "TRUE", "SPI Custom", "part"],
 ];
 
 const productTemplate = [
@@ -276,14 +276,17 @@ const Import: React.FC = () => {
           </div>
 
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-             <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50">
-                <label className="cursor-pointer">
-                  <input type="file" className="hidden" accept=".csv" onChange={handleFileChange} />
-                  <div className="bg-blue-600 text-white px-5 py-2 rounded-lg inline-block font-medium">Browse Files</div>
-                </label>
-                {file && <p className="mt-4 text-blue-600 font-bold">{file.name}</p>}
-             </div>
-
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50">
+              {/* Naya text jo browse button ke upar dikhega */}
+              <p className="text-gray-500 mb-4">Only .csv files are supported. Please select a CSV file to upload.</p>
+              
+              <label className="cursor-pointer">
+                <input type="file" className="hidden" accept=".csv" onChange={handleFileChange} />
+                <div className="bg-blue-600 text-white px-5 py-2 rounded-lg inline-block font-medium">Browse Files</div>
+              </label>
+              
+              {file && <p className="mt-4 text-blue-600 font-bold">{file.name}</p>}
+          </div>
              <button
               onClick={() => handleUpload(false)}
               disabled={!file || !selected || isUploading}
