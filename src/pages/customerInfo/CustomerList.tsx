@@ -43,8 +43,6 @@ const CustomerList = () => {
     try {
       const response = await customerList(page, rowsPerPage, searchVal);
       setCustomerData(response.data);
-      console.log("esponse.pagination", response);
-
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
       throw error;
@@ -185,23 +183,18 @@ const CustomerList = () => {
                           </div>
                         </div>
                       </td>
-
                       <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell max-w-[150px] whitespace-normal break-words">
                         {item.address}
                       </td>
-
                       <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden sm:table-cell">
                         {item.customerPhone}
                       </td>
-
                       <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden md:table-cell ">
                         {item.billingTerms} Days
                       </td>
-
                       <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden md:table-cell ">
                         Admin
                       </td>
-
                       <td className="px-2 py-3 md:px-3 md:py-4 text-xs md:text-sm lg:text-base font-medium hidden lg:table-cell">
                         <span className="px-2 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-green-800 bg-green-100">
                           {new Date(item.createdAt).toLocaleDateString(
@@ -214,8 +207,6 @@ const CustomerList = () => {
                           )}
                         </span>
                       </td>
-
-                      {/* Actions */}
                       <td className="px-2 py-3 md:px-3 md:py-4 flex gap-2 md:gap-4">
                         <button
                           className="text-brand hover:underline"
@@ -227,12 +218,10 @@ const CustomerList = () => {
                             className="w-4 h-4 md:w-5 md:h-5"
                           />
                         </button>
-
                         <FaTrash
                           className="text-red-500 cursor-pointer h-5 w-5"
                           onClick={() => setShowConfirmId(item.id)}
                         />
-
                         {showConfirmId === item.id && (
                           <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
                             <div className="bg-white p-6 rounded-xl shadow-lg">
@@ -317,3 +306,4 @@ const CustomerList = () => {
 };
 
 export default CustomerList;
+
