@@ -12,8 +12,8 @@ import "react-datepicker/dist/react-datepicker.css";
 interface ApiManualItem {
   process: string;
   part: string;
-  totalQuantity: number;
-  totalScrap: number;
+  qty: number;
+  scrap: number;
 }
 
 interface ApiMonitorItem {
@@ -64,8 +64,8 @@ const MonitorManagement: React.FC = () => {
         (item) => ({
           process: item.process,
           part: item.part,
-          qty: item.totalQuantity,
-          scrap: item.totalScrap,
+          qty: item.qty,
+          scrap: item.scrap,
         }),
       );
 

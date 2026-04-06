@@ -18,7 +18,8 @@ import {
 import "react-datepicker/dist/react-datepicker.css";
 
 const Dive = () => {
-  const [selectedStation, setSelectedStation] = useState<string>("");
+ const [selectedStation, setSelectedStation] = useState<string>("All Machines");
+
   const [selectedEmployee, setSelectedEmployee] = useState<string>("");
   const [productivityTable, setProductivityTable] = useState<any[]>([]);
   const [topPerformers, setTopPerformers] = useState<any[]>([]);
@@ -68,13 +69,10 @@ const Dive = () => {
       }
       if (selected) params.append("partId", selected);
       const res = await axios.get(`${url}?${params.toString()}`);
-
       setProductivityTable(res.data.productivity || []);
       setTopPerformers(res.data.topPerformers || []);
-
       const processed = processApiData(res.data.data);
       setDashboardData(processed);
-
       if (!selectedStation && processed.stations.length > 0)
         setSelectedStation(processed.stations[0]);
     } catch (error) {
@@ -99,58 +97,132 @@ const Dive = () => {
     getData();
   }, [startDate, endDate, selected]);
 
-  const processApiData = (data: any[]) => {
-    const uniqueMachines = new Set<string>();
-    const uniqueEmployees = new Set<string>();
-    const machineStats: any = {};
+// const processApiData = (data: any[]) => {
+//   const uniqueMachines = new Set<string>();
+//   const uniqueEmployees = new Set<string>();
+//   const machineStats: any = {};
 
-    data.forEach((item) => {
-      const mName = item.machineName || item.processName;
-      uniqueMachines.add(mName);
-      if (item.employee) uniqueEmployees.add(item.employee);
+//   data.forEach((item) => {
+//     const mName = item.machineName || item.processName;
+//     uniqueMachines.add(mName);
+//     if (item.employee) uniqueEmployees.add(item.employee);
 
-      if (!machineStats[mName]) {
-        machineStats[mName] = {
-          text: mName,
-          process: item.processName,
-          effTotal: 0,
-          prodTotal: 0,
-          ctTotal: 0,
-          count: 0,
-        };
-      }
-      machineStats[mName].effTotal += parseFloat(item.efficiency) || 0;
-      machineStats[mName].prodTotal += parseFloat(item.productivity) || 0;
-      machineStats[mName].ctTotal += parseFloat(item.avgCycleTime) || 0;
-      machineStats[mName].count++;
-    });
+//     if (!machineStats[mName]) {
+//       machineStats[mName] = {
+//         text: mName,
+//         process: item.processName,
+//         effTotal: 0,
+//         prodTotal: 0,
+//         ctTotal: 0,
+//         count: 0,
+//         validCTCount: 0, // Naya counter sirf sahi entries ke liye
+//       };
+//     }
 
-    const processMetrics = Object.values(machineStats).map((s: any) => ({
-      text: s.text,
-      process: s.process,
-      efficiency: (s.effTotal / s.count).toFixed(1) + "%",
-      productivity: (s.prodTotal / s.count).toFixed(1) + "%",
-      avgCycle: (s.ctTotal / s.count).toFixed(2),
-    }));
+//     const currentCT = parseFloat(item.avgCycleTime) || 0;
+    
+//     machineStats[mName].effTotal += parseFloat(item.efficiency) || 0;
+//     machineStats[mName].prodTotal += parseFloat(item.productivity) || 0;
+//     machineStats[mName].count++;
 
-    return {
-      processMetrics,
-      stations: Array.from(uniqueMachines),
-      employees: Array.from(uniqueEmployees),
-      partsCompleted: data,
-      avgCycleTime: processMetrics.map((m) => ({
-        name: m.text,
-        avgCycle: parseFloat(m.avgCycle),
-      })),
-    };
+//     // FIX: Agar cycle time 0 se bada hai, tabhi count karein
+//     if (currentCT > 0) {
+//       machineStats[mName].ctTotal += currentCT;
+//       machineStats[mName].validCTCount++; 
+//     }
+//   });
+
+//   const processMetrics = Object.values(machineStats).map((s: any) => ({
+//     text: s.text,
+//     process: s.process,
+//     efficiency: (s.effTotal / s.count).toFixed(1) + "%",
+//     productivity: (s.prodTotal / s.count).toFixed(1) + "%",
+//     // FIX: s.count ki jagah s.validCTCount use karein
+//     avgCycle: s.validCTCount > 0 ? (s.ctTotal / s.validCTCount).toFixed(2) : "0.00",
+//   }));
+
+//   return {
+//     processMetrics,
+//     stations: Array.from(uniqueMachines),
+//     employees: Array.from(uniqueEmployees),
+//     partsCompleted: data,
+//     avgCycleTime: processMetrics.map((m) => ({
+//       name: m.text,
+//       avgCycle: parseFloat(m.avgCycle),
+//     })),
+//   };
+// };
+  
+const processApiData = (data: any[]) => {
+  const uniqueMachines = new Set<string>();
+  const machineStats: any = {};
+  
+  // Global totals for "All Machines" card
+  let totalEff = 0, totalProd = 0, totalCT = 0, totalCount = 0, totalValidCT = 0;
+
+  data.forEach((item) => {
+    const mName = item.machineName || item.processName;
+    uniqueMachines.add(mName);
+
+    if (!machineStats[mName]) {
+      machineStats[mName] = { text: mName, effTotal: 0, prodTotal: 0, ctTotal: 0, count: 0, validCTCount: 0 };
+    }
+
+    const eff = parseFloat(item.efficiency) || 0;
+    const prod = parseFloat(item.productivity) || 0;
+    const ct = parseFloat(item.avgCycleTime) || 0;
+
+    machineStats[mName].effTotal += eff;
+    machineStats[mName].prodTotal += prod;
+    machineStats[mName].count++;
+    
+    totalEff += eff;
+    totalProd += prod;
+    totalCount++;
+
+    if (ct > 0) {
+      machineStats[mName].ctTotal += ct;
+      machineStats[mName].validCTCount++;
+      totalCT += ct;
+      totalValidCT++;
+    }
+  });
+
+  const processMetrics = Object.values(machineStats).map((s: any) => ({
+    text: s.text,
+    efficiency: (s.effTotal / s.count).toFixed(1) + "%",
+    productivity: (s.prodTotal / s.count).toFixed(1) + "%",
+    avgCycle: s.validCTCount > 0 ? (s.ctTotal / s.validCTCount).toFixed(2) : "0.00",
+  }));
+
+  // "All Machines" metric add karein
+  const allMetric = {
+    text: "All Machines",
+    efficiency: totalCount > 0 ? (totalEff / totalCount).toFixed(1) + "%" : "0.0%",
+    productivity: totalCount > 0 ? (totalProd / totalCount).toFixed(1) + "%" : "0.0%",
+    avgCycle: totalValidCT > 0 ? (totalCT / totalValidCT).toFixed(2) : "0.00"
   };
 
-  const filteredParts = dashboardData.partsCompleted.filter(
-    (p: any) =>
-      (!selectedStation || p.machineName === selectedStation) &&
-      (!selectedEmployee || p.employee === selectedEmployee),
-  );
+  return {
+    processMetrics: [allMetric, ...processMetrics], // Pehla card All Machines ka hoga
+    stations: Array.from(uniqueMachines),
+    employees: Array.from(new Set(data.map(i => i.employee).filter(Boolean))),
+    partsCompleted: data,
+    avgCycleTime: processMetrics.map((m) => ({ name: m.text, avgCycle: parseFloat(m.avgCycle) })),
+  };
+};
 
+
+// const filteredParts = dashboardData.partsCompleted.filter(
+//     (p: any) =>
+//       (!selectedStation || p.machineName === selectedStation) &&
+//       (!selectedEmployee || p.employee === selectedEmployee),
+//   );
+const filteredParts = dashboardData.partsCompleted.filter(
+  (p: any) =>
+    (!selectedStation || selectedStation === "All Machines" || p.machineName === selectedStation) &&
+    (!selectedEmployee || p.employee === selectedEmployee),
+);
   return (
     <div className="p-4 space-y-6 bg-gray-50 min-h-screen">
       <div className="flex flex-wrap items-center gap-4 justify-between mb-4 bg-white p-4 rounded shadow-sm">
@@ -212,7 +284,7 @@ const Dive = () => {
           ))}
         </div>
 
-        <div className="md:w-[20%] bg-white p-4 rounded shadow-sm max-h-[250px] overflow-y-auto">
+        {/* <div className="md:w-[20%] bg-white p-4 rounded shadow-sm max-h-[250px] overflow-y-auto">
           <h3 className="font-bold text-gray-700 mb-3 border-b pb-1">
             Machines
           </h3>
@@ -232,8 +304,30 @@ const Dive = () => {
               </span>
             </label>
           ))}
-        </div>
-
+        </div> */}
+<div className="md:w-[20%] bg-white p-4 rounded shadow-sm max-h-[250px] overflow-y-auto">
+  <h3 className="font-bold text-gray-700 mb-3 border-b pb-1">Machines</h3>
+  <label className="flex items-center gap-2 mb-2 cursor-pointer">
+    <input
+      type="radio"
+      name="station"
+      checked={selectedStation === "" || selectedStation === "All Machines"}
+      onChange={() => setSelectedStation("")}
+    />
+    <span className="text-xs font-medium">All Machines</span>
+  </label>
+  {dashboardData.stations.map((s: string) => (
+    <label key={s} className="flex items-center gap-2 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+      <input
+        type="radio"
+        name="station"
+        checked={selectedStation === s}
+        onChange={() => setSelectedStation(s)}
+      />
+      <span className="text-xs font-medium text-gray-600 truncate">{s}</span>
+    </label>
+  ))}
+</div>
         <div className="md:w-[20%] bg-white p-4 rounded shadow-sm max-h-[250px] overflow-y-auto">
           <h3 className="font-bold text-gray-700 mb-3 border-b pb-1">
             Employees

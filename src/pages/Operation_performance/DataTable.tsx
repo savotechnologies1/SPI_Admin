@@ -55,7 +55,7 @@ const DataTable: React.FC<DataTableProps> = ({
       </div>
       <div>
         <h2 className="text-lg font-semibold mb-3">Part to Monitor</h2>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto overflow-y-auto max-h-[300px] border border-gray-200 rounded-lg">
           <table className="w-full text-sm text-left border border-gray-200">
             <thead className="bg-gray-100">
               <tr>
