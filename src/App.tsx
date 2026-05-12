@@ -93,7 +93,7 @@ const App = () => {
   return (
     <PartProvider>
       <ToastContainer style={{ zIndex: 99999 }} />
-      <Router basename="/admin">
+      <Router basename="/">
         <Routes>
           <Route path="sign-in" element={<SignIn />} />
           <Route path="sign-up" element={<SignUp />} />

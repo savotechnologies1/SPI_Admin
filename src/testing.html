@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BHIVES - Payment & Scheduling System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<style>
+    :root {
+        --bhives-blue: #002d5b;
+        --bhives-bg: #f4f7f6;
+        --gold: #ffcc00;
+        --text-dark: #333;
+        --sidebar-width: 240px;
+    }
+
+    body {
+        font-family: sans-serif;
+        margin: 0;
+        background: var(--bhives-bg);
+    }
+
+    .app-container {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        width: var(--sidebar-width);
+        background: var(--bhives-blue);
+        color: white;
+        padding: 20px;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar ul li {
+        padding: 12px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-bottom: 5px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .sidebar ul li.active {
+        background: rgba(255, 255, 255, 0.1);
+        border-left: 4px solid var(--gold);
+    }
+
+    /* Main Content */
+    .main-content {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+    }
+
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 15px 20px;
+        border-bottom: 1px solid #eee;
+        background: #fafafa;
+    }
+
+    .gold-border {
+        border-left: 5px solid var(--gold);
+    }
+
+    /* Table */
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 15px 20px;
+        text-align: left;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .badge {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .paid {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    /* Action Buttons */
+    .btn-link {
+        background: var(--bhives-blue);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: var(--gold);
+        color: black;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    /* Scheduling Items */
+    .scheduling-grid {
+        padding: 20px;
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .paid-item-card {
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 8px;
+        width: 250px;
+        background: #fff;
+    }
+
+    /* Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-content {
+        background: white;
+        width: 450px;
+        margin: 100px auto;
+        border-radius: 10px;
+        padding: 25px;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .input-group {
+        margin-top: 15px;
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    .catalog-mini {
+        margin: 20px 0;
+        background: #f9f9f9;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+        font-size: 13px;
+    }
+</style>
+
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar (Matching your UI) -->
+        <nav class="sidebar">
+            <div class="logo">
+                <img src="https://via.placeholder.com/40" alt="Logo"> <span>BHIVES</span>
+            </div>
+            <ul>
+                <li><i class="fa fa-home"></i> Dashboard</li>
+                <li class="active"><i class="fa fa-list"></i> Order Schedule List</li>
+                <li><i class="fa fa-calendar"></i> Stock Schedule</li>
+                <li><i class="fa fa-users"></i> Customer Info</li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h1>All Schedule Orders</h1>
+                <div class="profile-info">
+                    <i class="fa fa-bell"></i>
+                    <img src="https://via.placeholder.com/30" alt="User" class="avatar">
+                </div>
+            </header>
+
+            <!-- SECTION 1: Master Order List -->
+            <section class="card">
+                <div class="card-header">
+                    <h3>Created Orders (Awaiting Payment)</h3>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Order Number</th>
+                            <th>Customer Name</th>
+                            <th>Product</th>
+                            <th>Order Date</th>
+                            <th>Payment Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderTableBody">
+                        <!-- Table rows generated by JS -->
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- SECTION 2: Scheduling (Only Paid Orders) -->
+            <section class="card scheduling-section">
+                <div class="card-header gold-border">
+                    <h3>Available to be Scheduled (Paid Only)</h3>
+                </div>
+                <div class="scheduling-grid" id="schedulingGrid">
+                    <!-- Paid orders show up here -->
+                    <p class="empty-msg">No paid orders available for scheduling yet.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- PAYMENT MODAL (The POS Strategy) -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Send Payment Link (POS Interface)</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="customer-preview">
+                    <p>Order: <span id="mOrderNum" class="bold"></span></p>
+                    <div class="input-group">
+                        <label>Customer Email (Link Destination)</label>
+                        <input type="email" id="mEmail" placeholder="Enter email address">
+                    </div>
+                </div>
+
+                <div class="catalog-mini">
+                    <h4>Add Catalog Items (Optional)</h4>
+                    <div class="item-list">
+                        <div class="item"><span>Wireless Headphones</span> <strong>$129.99</strong> <button>+</button>
+                        </div>
+                        <div class="item"><span>Custom Engraved Mug</span> <strong>$25.00</strong> <button>+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="total-row">Total: <span id="mTotal">$0.00</span></div>
+                    <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button class="btn-primary" id="sendBtn" onclick="processPayment()">Send Payment Link</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let orders = [
+            { id: "1778231694608", customer: "John Doe", email: "john@example.com", product: "GM Single Smooth", date: "05/08/2026", status: "pending", total: 450.00 },
+            { id: "1777292414131", customer: "Alice Smith", email: "alice@smith.com", product: "30012T Thermo", date: "04/27/2026", status: "pending", total: 1200.00 }
+        ];
+
+        let activeOrderId = null;
+
+        function renderOrders() {
+            const tableBody = document.getElementById('orderTableBody');
+            tableBody.innerHTML = orders.filter(o => o.status === "pending").map(o => `
+        <tr>
+            <td>${o.id}</td>
+            <td>${o.customer}</td>
+            <td>${o.product}</td>
+            <td>${o.date}</td>
+            <td><span class="badge pending">Pending Payment</span></td>
+            <td><button class="btn-link" onclick="openPaymentModal('${o.id}')">Send Link</button></td>
+        </tr>
+    `).join('');
+
+            renderScheduling();
+        }
+
+        function renderScheduling() {
+            const grid = document.getElementById('schedulingGrid');
+            const paidOrders = orders.filter(o => o.status === "paid");
+
+            if (paidOrders.length === 0) {
+                grid.innerHTML = '<p class="empty-msg">No paid orders available for scheduling yet.</p>';
+                return;
+            }
+
+            grid.innerHTML = paidOrders.map(o => `
+        <div class="paid-item-card animated-in">
+            <strong>${o.product}</strong>
+            <p>Customer: ${o.customer}</p>
+            <p>Status: <span class="badge paid">PAID</span></p>
+            <button class="btn-primary" style="width:100%">Schedule Now</button>
+        </div>
+    `).join('');
+        }
+
+        // Modal Controls
+        function openPaymentModal(id) {
+            activeOrderId = id;
+            const order = orders.find(o => o.id === id);
+            document.getElementById('mOrderNum').innerText = id;
+            document.getElementById('mEmail').value = order.email;
+            document.getElementById('mTotal').innerText = `$${order.total.toFixed(2)}`;
+            document.getElementById('paymentModal').style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById('paymentModal').style.display = "none";
+        }
+
+        // Process Simulated Payment
+        function processPayment() {
+            const btn = document.getElementById('sendBtn');
+            btn.innerText = "Sending Link...";
+            btn.disabled = true;
+
+            // Simulate Payment Link Cycle
+            setTimeout(() => {
+                alert("Payment Link Sent Successfully! \nCustomer has paid via PayPal.");
+
+                // Update Status to Paid
+                const order = orders.find(o => o.id === activeOrderId);
+                order.status = "paid";
+
+                closeModal();
+                renderOrders(); // Refresh lists
+                btn.innerText = "Send Payment Link";
+                btn.disabled = false;
+            }, 1500);
+        }
+
+        // Start
+        renderOrders();
+    </script>
+</body>
+
+</html>
