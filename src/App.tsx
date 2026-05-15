@@ -80,6 +80,7 @@ import EditVacationInfo from "./pages/Employee_Information/Employee_Information/
 import FixedCost from "./pages/fixed-cost-management/FixedCost";
 import MonitorManagement from "./pages/productionLive/MonitorManagement";
 import CustomOrder from "./pages/order_schedule/CustomOrder";
+import OrderCateglog from "./pages/order_schedule/OrderCateglog";
 const App = () => {
   const { isLoading, token } = useAuth();
 
@@ -238,6 +239,7 @@ const App = () => {
             <Route path="business-analysis" element={<BusinessAnalysis />} />
             <Route path="projection" element={<Projection />} />
             <Route path="fixed-cost-management" element={<FixedCost />} />
+            <Route path="order-catelog" element={<OrderCateglog />} />
           </Route>
         </Routes>
       </Router>

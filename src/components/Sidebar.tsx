@@ -173,6 +173,19 @@ const sections: Section[] = [
         ],
       },
       {
+        key: "Order Management",
+        label: "Order Management ",
+        icon: production_live,
+        hasSubmenu: true,
+        submenu: [
+          {
+            key: "Order Management",
+            label: "Order Management",
+            path: "/order-managment",
+          }
+        ],
+      },
+      {
         key: "Customer Information ",
         label: "Customer Information ",
         icon: production_live,
