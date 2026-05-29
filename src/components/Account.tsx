@@ -95,19 +95,17 @@ const Account = ({ onClose }: AccountProps) => {
                     <Link to={`/${section.path}`}>
                       <button
                         className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-all duration-300
-        ${
-          activeTab === section.key
-            ? "bg-brand text-white"
-            : "text-gray-700 hover:bg-brand hover:text-white"
-        }`}
+        ${activeTab === section.key
+                            ? "bg-brand text-white"
+                            : "text-gray-700 hover:bg-brand hover:text-white"
+                          }`}
                         onClick={() => setActiveTab(section.key)}
                       >
                         <span className="text-xl">{section.icon}</span>
 
                         <span
-                          className={`text-sm font-medium transition-opacity duration-300 ${
-                            isOpen ? "opacity-100" : "opacity-0"
-                          }`}
+                          className={`text-sm font-medium transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0"
+                            }`}
                         >
                           {section.label}
                         </span>

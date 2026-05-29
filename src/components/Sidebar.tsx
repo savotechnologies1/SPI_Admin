@@ -17,6 +17,7 @@ import {
   faRightFromBracket,
   faUser,
   faVectorSquare,
+  faListCheck
 } from "@fortawesome/free-solid-svg-icons";
 import {
   MdAssessment,
@@ -58,6 +59,8 @@ const customer_relation = <FaHandshake className="text-xl" />;
 const projection = <BiBarChartAlt2 className="text-xl" />;
 const import_icon = <MdFileDownload className="text-xl" />;
 const logout = <FontAwesomeIcon icon={faRightFromBracket} color="red" />;
+const order_management_icon = <FontAwesomeIcon icon={faListCheck} />;
+
 interface SubmenuItem {
   key: string;
   label: string;
@@ -175,15 +178,17 @@ const sections: Section[] = [
       {
         key: "Order Management",
         label: "Order Management ",
-        icon: production_live,
-        hasSubmenu: true,
-        submenu: [
-          {
-            key: "Order Management",
-            label: "Order Management",
-            path: "/order-managment",
-          }
-        ],
+        icon: order_management_icon,
+        path: "/order-managment",
+
+        // hasSubmenu: true,
+        // submenu: [
+        //   {
+        //     key: "Order Management",
+        //     label: "Order Management",
+        //     path: "/order-managment",
+        //   }
+        // ],
       },
       {
         key: "Customer Information ",

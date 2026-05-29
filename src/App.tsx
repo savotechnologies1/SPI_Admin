@@ -81,6 +81,8 @@ import FixedCost from "./pages/fixed-cost-management/FixedCost";
 import MonitorManagement from "./pages/productionLive/MonitorManagement";
 import CustomOrder from "./pages/order_schedule/CustomOrder";
 import OrderCateglog from "./pages/order_schedule/OrderCateglog";
+import SuccessPage from "./pages/payment/SuccessPage";
+import CancelPage from "./pages/payment/CancelPage";
 const App = () => {
   const { isLoading, token } = useAuth();
 
@@ -239,7 +241,10 @@ const App = () => {
             <Route path="business-analysis" element={<BusinessAnalysis />} />
             <Route path="projection" element={<Projection />} />
             <Route path="fixed-cost-management" element={<FixedCost />} />
-            <Route path="order-catelog" element={<OrderCateglog />} />
+            <Route path="order-managment" element={<OrderCateglog />} />
+            <Route path="/success" element={<SuccessPage />} />
+            <Route path="/cancel" element={<CancelPage />} />
+
           </Route>
         </Routes>
       </Router>

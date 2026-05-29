@@ -565,8 +565,8 @@ const StockOrderForm: React.FC = () => {
     try {
       const response = await addStockOrder(values);
       if (response) {
-         navigate(`/checkout/${values.orderNumber}`); 
-        // navigate("/stock-order-schedule");
+        //  navigate(`/checkout/${values.orderNumber}`); 
+        navigate("/stock-order-schedule");
       }
       resetForm({
         values: {
