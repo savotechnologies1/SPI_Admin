@@ -3634,10 +3634,30 @@ const OrderCatalog: React.FC = () => {
   //       setIsProcessing(false);
   //   }
   // };
+  const validateEmail = (email: string) => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+};
 const handleFinalCheckout = async () => {
+   const trimmedEmail = guestInfo.email.trim();
+
+    // 1. Check agar email empty hai (Sirf jab 'EMAIL' method ho)
+    if (selectedMethod === 'EMAIL' && !trimmedEmail) {
+        alert("Please provide an email address to send the payment link.");
+        return;
+    }
+
+    // 2. Check agar email ka format sahi hai (Zaroori check)
+    if (trimmedEmail && !validateEmail(trimmedEmail)) {
+        alert("Kripya sahi format mein email enter karein (e.g. name@example.com)");
+        return;
+    }
     const finalCustomerDetails = {
         name: guestInfo.name.trim() || "Guest Customer",
-        email: guestInfo.email.trim() || `guest_${Date.now()}@bhives.com`,
+        email: trimmedEmail || `guest_${Date.now()}@bhives.com`,
         phone: guestInfo.phone.trim() || "0000000000"
     };
 
