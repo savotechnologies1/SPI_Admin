@@ -13,7 +13,7 @@ const SuccessPage = () => {
     const verifyStatus = async () => {
         const authToken = localStorage.getItem('auth_token');
         try {
-            const res = await axios.get(`http://localhost:8080/api/admin/get-order-status?id=${orderId}`, {
+            const res = await axios.get(`https://api.bhives.co/api/admin/get-order-status?id=${orderId}`, {
                 headers: { Authorization: `Bearer ${authToken}` }
             });
 
@@ -45,7 +45,7 @@ const SuccessPage = () => {
             try {
                 if (gateway === 'paypal' && paypalToken) {
                     console.log("Capturing PayPal Payment...");
-                    await axios.post('http://localhost:8080/api/admin/capture-paypal', 
+                    await axios.post('https://api.bhives.co/api/admin/capture-paypal', 
                         { paypalToken: paypalToken }, 
                         { headers: { Authorization: `Bearer ${authToken}` } }
                     );

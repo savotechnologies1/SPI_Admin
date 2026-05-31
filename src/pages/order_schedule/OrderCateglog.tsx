@@ -3458,7 +3458,7 @@ import {
 } from 'lucide-react';
 
 // --- Configuration ---
-const BASE_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:8080';
+const BASE_URL = import.meta.env.VITE_SERVER_URL || 'https://api.bhives.co';
 
 // --- Types ---
 interface Product {
