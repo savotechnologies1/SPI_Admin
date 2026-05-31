@@ -3652,7 +3652,7 @@ const handleFinalCheckout = async () => {
 
     // 2. Check agar email ka format sahi hai (Zaroori check)
     if (trimmedEmail && !validateEmail(trimmedEmail)) {
-        alert("Kripya sahi format mein email enter karein (e.g. name@example.com)");
+        alert("Please provide a valid email address.");
         return;
     }
     const finalCustomerDetails = {
