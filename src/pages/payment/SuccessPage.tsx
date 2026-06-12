@@ -20,8 +20,6 @@ const SuccessPage = () => {
             if (res.data.status === 'PAID') {
                 setStatus('success');
             } else {
-                // If not paid yet, check again in 3 seconds (Polling)
-                console.log("Payment status still pending... retrying in 3s");
                 setTimeout(verifyStatus, 3000);
             }
         } catch (err) {

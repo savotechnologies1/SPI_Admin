@@ -180,15 +180,6 @@ const sections: Section[] = [
         label: "Order Management ",
         icon: order_management_icon,
         path: "/order-managment",
-
-        // hasSubmenu: true,
-        // submenu: [
-        //   {
-        //     key: "Order Management",
-        //     label: "Order Management",
-        //     path: "/order-managment",
-        //   }
-        // ],
       },
       {
         key: "Customer Information ",
@@ -206,11 +197,6 @@ const sections: Section[] = [
             label: "Add & Edit Customer",
             path: "/new-customer",
           },
-          // {
-          //   key: "Edit Customer",
-          //   label: "Edit Customer",
-          //   path: "/edit-customer/:id",
-          // },
         ],
       },
 
@@ -247,11 +233,6 @@ const sections: Section[] = [
             label: "Supplier Order List",
             path: "/supplier-order-list",
           },
-          // {
-          //   key: "SupplierPartList",
-          //   label: "Supplier part list",
-          //   path: "/supplier-list",
-          // },
           {
             key: "SupplierInventory",
             label: "Supplier inventory",
@@ -357,22 +338,11 @@ const sections: Section[] = [
             label: "All work Instruction",
             path: "work-instructions-list",
           },
-          // {
-          //   key: "select process & product",
-          //   label: "select process & product",
-          //   path: "/work-instruction",
-          // },
           {
             key: "Add & Edit work Instruction",
             label: "Add & Edit work Instruction ",
             path: "/add-work-instruction",
           },
-          // {
-          //   key: "Edit work Instruction",
-          //   label: "Edit work Instruction",
-          //   path: "/edit-work-instruction",
-          // },
-
           {
             key: "Apply work instruction to diffrent product/process",
             label: " Apply work instruction to diffrent product/process ",
@@ -509,7 +479,6 @@ interface SidebarProps {
 
 const Sidebar = ({ activeMenu, clicked }: SidebarProps) => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
-  // const profile = useSelector((state) => state.profile.data);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -518,8 +487,8 @@ const Sidebar = ({ activeMenu, clicked }: SidebarProps) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("auth_token"); // Clear the loggedIn flag from localStorage
-    navigate("/sign-in"); // Redirect to the sign-in page
+    localStorage.removeItem("auth_token"); 
+    navigate("/sign-in"); 
   };
 
   return (
@@ -646,7 +615,6 @@ const Sidebar = ({ activeMenu, clicked }: SidebarProps) => {
                                       <IoIosArrowForward
                                         color="#637381"
                                         className={
-                                          // eslint-disable-next-line no-constant-condition
                                           `${
                                             activeMenu
                                               ? "inline"

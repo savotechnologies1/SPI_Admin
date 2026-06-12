@@ -39,7 +39,6 @@ const SignIn = () => {
         navigate("/", { replace: true });
       }
     } catch (error: unknown) {
-      // Improved error handling
       const axiosError = error as {
         response?: { data?: { message?: string } };
       };
